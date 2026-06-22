@@ -3,13 +3,21 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: IntegrateWise OS internal operations API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: leads
+    description: CRM lead operations
+  - name: clients
+    description: Client operations
+  - name: deals
+    description: Deal / pipeline operations
+  - name: ai
+    description: Twin assistant operations
 paths:
   /healthz:
     get:
@@ -24,7 +32,250 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /leads:
+    get:
+      operationId: listLeads
+      tags: [leads]
+      summary: List leads
+      responses:
+        "200":
+          description: A list of leads
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Lead"
+    post:
+      operationId: createLead
+      tags: [leads]
+      summary: Create a lead
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LeadInput"
+      responses:
+        "201":
+          description: Lead created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Lead"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /leads/{id}:
+    get:
+      operationId: getLead
+      tags: [leads]
+      summary: Get a lead with linked context
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      responses:
+        "200":
+          description: Lead detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LeadDetail"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    patch:
+      operationId: updateLead
+      tags: [leads]
+      summary: Update a lead
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LeadUpdate"
+      responses:
+        "200":
+          description: Updated lead
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Lead"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /leads/{id}/qualify:
+    post:
+      operationId: qualifyLead
+      tags: [leads]
+      summary: Mark a lead as qualified
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QualifyLeadInput"
+      responses:
+        "200":
+          description: Qualified lead
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Lead"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /leads/{id}/convert:
+    post:
+      operationId: convertLead
+      tags: [leads]
+      summary: Convert a lead into a client and an open deal
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConvertLeadInput"
+      responses:
+        "200":
+          description: Conversion result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConvertResult"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /leads/{id}/activities:
+    get:
+      operationId: listLeadActivities
+      tags: [leads]
+      summary: List activities for a lead
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      responses:
+        "200":
+          description: Activities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Activity"
+    post:
+      operationId: createLeadActivity
+      tags: [leads]
+      summary: Log an activity on a lead
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ActivityInput"
+      responses:
+        "201":
+          description: Activity created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Activity"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /clients:
+    get:
+      operationId: listClients
+      tags: [clients]
+      summary: List clients
+      responses:
+        "200":
+          description: A list of clients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Client"
+
+  /deals:
+    get:
+      operationId: listDeals
+      tags: [deals]
+      summary: List deals
+      responses:
+        "200":
+          description: A list of deals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Deal"
+
+  /ai/chat:
+    post:
+      operationId: twinChat
+      tags: [ai]
+      summary: Ask the Twin assistant, grounded in entity context
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TwinChatInput"
+      responses:
+        "200":
+          description: Twin reply
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TwinChatResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
 components:
+  parameters:
+    IdParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
   schemas:
     HealthStatus:
       type: object
@@ -34,3 +285,286 @@ components:
       required:
         - status
 
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    Lead:
+      type: object
+      required:
+        - id
+        - firstName
+        - score
+        - status
+        - source
+        - createdAt
+        - updatedAt
+      properties:
+        id: { type: string }
+        firstName: { type: string }
+        lastName: { type: ["string", "null"] }
+        company: { type: ["string", "null"] }
+        jobTitle: { type: ["string", "null"] }
+        email: { type: ["string", "null"] }
+        phone: { type: ["string", "null"] }
+        linkedinUrl: { type: ["string", "null"] }
+        score: { type: integer }
+        status: { type: string }
+        source: { type: string }
+        tags:
+          type: ["array", "null"]
+          items: { type: string }
+        notes: { type: ["string", "null"] }
+        owner: { type: ["string", "null"] }
+        clientId: { type: ["string", "null"] }
+        convertedDealId: { type: ["string", "null"] }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    LeadInput:
+      type: object
+      required:
+        - firstName
+      properties:
+        firstName: { type: string, minLength: 1 }
+        lastName: { type: string }
+        company: { type: string }
+        jobTitle: { type: string }
+        email: { type: string }
+        phone: { type: string }
+        linkedinUrl: { type: string }
+        score: { type: integer }
+        status: { type: string }
+        source: { type: string }
+        tags:
+          type: array
+          items: { type: string }
+        notes: { type: string }
+        owner: { type: string }
+
+    LeadUpdate:
+      type: object
+      properties:
+        firstName: { type: string, minLength: 1 }
+        lastName: { type: string }
+        company: { type: string }
+        jobTitle: { type: string }
+        email: { type: string }
+        phone: { type: string }
+        linkedinUrl: { type: string }
+        score: { type: integer }
+        status: { type: string }
+        source: { type: string }
+        tags:
+          type: array
+          items: { type: string }
+        notes: { type: string }
+        owner: { type: string }
+
+    QualifyLeadInput:
+      type: object
+      properties:
+        score: { type: integer }
+        note: { type: string }
+
+    ConvertLeadInput:
+      type: object
+      properties:
+        clientName: { type: string }
+        dealTitle: { type: string }
+        valueCents: { type: integer }
+
+    LeadDetail:
+      type: object
+      required:
+        - lead
+        - activities
+        - tasks
+      properties:
+        lead:
+          $ref: "#/components/schemas/Lead"
+        client:
+          anyOf:
+            - $ref: "#/components/schemas/Client"
+            - type: "null"
+        deal:
+          anyOf:
+            - $ref: "#/components/schemas/Deal"
+            - type: "null"
+        activities:
+          type: array
+          items:
+            $ref: "#/components/schemas/Activity"
+        tasks:
+          type: array
+          items:
+            $ref: "#/components/schemas/Task"
+
+    ConvertResult:
+      type: object
+      required:
+        - lead
+        - client
+        - deal
+      properties:
+        lead:
+          $ref: "#/components/schemas/Lead"
+        client:
+          $ref: "#/components/schemas/Client"
+        deal:
+          $ref: "#/components/schemas/Deal"
+
+    Client:
+      type: object
+      required:
+        - id
+        - name
+        - status
+        - healthScore
+        - mrrCents
+        - createdAt
+        - updatedAt
+      properties:
+        id: { type: string }
+        name: { type: string }
+        industry: { type: ["string", "null"] }
+        website: { type: ["string", "null"] }
+        status: { type: string }
+        healthScore: { type: integer }
+        mrrCents: { type: integer }
+        owner: { type: ["string", "null"] }
+        tags:
+          type: ["array", "null"]
+          items: { type: string }
+        notes: { type: ["string", "null"] }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    Deal:
+      type: object
+      required:
+        - id
+        - title
+        - stage
+        - valueCents
+        - probability
+        - createdAt
+        - updatedAt
+      properties:
+        id: { type: string }
+        title: { type: string }
+        clientId: { type: ["string", "null"] }
+        leadId: { type: ["string", "null"] }
+        stage: { type: string }
+        valueCents: { type: integer }
+        probability: { type: integer }
+        closeDate: { type: ["string", "null"] }
+        owner: { type: ["string", "null"] }
+        notes: { type: ["string", "null"] }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    Activity:
+      type: object
+      required:
+        - id
+        - type
+        - summary
+        - occurredAt
+        - createdAt
+      properties:
+        id: { type: string }
+        type: { type: string }
+        summary: { type: string }
+        body: { type: ["string", "null"] }
+        actor: { type: ["string", "null"] }
+        leadId: { type: ["string", "null"] }
+        dealId: { type: ["string", "null"] }
+        clientId: { type: ["string", "null"] }
+        contactId: { type: ["string", "null"] }
+        projectId: { type: ["string", "null"] }
+        sessionId: { type: ["string", "null"] }
+        occurredAt: { type: string, format: date-time }
+        createdAt: { type: string, format: date-time }
+
+    ActivityInput:
+      type: object
+      required:
+        - summary
+      properties:
+        type: { type: string }
+        summary: { type: string, minLength: 1 }
+        body: { type: string }
+
+    Task:
+      type: object
+      required:
+        - id
+        - title
+        - status
+        - priority
+        - createdAt
+        - updatedAt
+      properties:
+        id: { type: string }
+        title: { type: string }
+        description: { type: ["string", "null"] }
+        status: { type: string }
+        priority: { type: string }
+        dueDate: { type: ["string", "null"] }
+        assignedTo: { type: ["string", "null"] }
+        leadId: { type: ["string", "null"] }
+        dealId: { type: ["string", "null"] }
+        clientId: { type: ["string", "null"] }
+        projectId: { type: ["string", "null"] }
+        completedAt: { type: ["string", "null"], format: date-time }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    TwinMessage:
+      type: object
+      required:
+        - role
+        - content
+      properties:
+        role: { type: string }
+        content: { type: string }
+
+    TwinSuggestion:
+      type: object
+      required:
+        - title
+        - detail
+      properties:
+        title: { type: string }
+        detail: { type: string }
+        kind: { type: string }
+
+    TwinChatInput:
+      type: object
+      required:
+        - message
+      properties:
+        message: { type: string, minLength: 1 }
+        entityType: { type: string }
+        entityId: { type: string }
+        history:
+          type: array
+          items:
+            $ref: "#/components/schemas/TwinMessage"
+
+    TwinChatResponse:
+      type: object
+      required:
+        - reply
+        - suggestions
+      properties:
+        reply: { type: string }
+        suggestions:
+          type: array
+          items:
+            $ref: "#/components/schemas/TwinSuggestion"
