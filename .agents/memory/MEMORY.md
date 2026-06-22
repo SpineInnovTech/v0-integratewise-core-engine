@@ -1,0 +1,2 @@
+- [Three-repo architecture](three-repo-arch.md) — integratewise-live (Cloudflare platform), iwa-frontend (customer product), iwa-customer-zero (internal ops = this repo)
+- [Supabase stub is tech debt](supabase-stub.md) — no Supabase exists; views have migration artifacts; stub must chain fully; replace with Cloudflare API calls

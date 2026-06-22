@@ -1,4 +1,7 @@
-// Stub supabase client - app runs in demo/mock mode, no real Supabase needed
+// Temporary stub — no Supabase in the stack.
+// Backend is Cloudflare Workers (integratewise-live).
+// This exists only to silence migration artifacts in demo mode.
+// Replace individual view calls with /api/... fetch calls as routes are built.
 
 type MockUser = {
   id: string
@@ -36,6 +39,30 @@ const MOCK_SESSION: MockSession = {
   user: MOCK_USER,
 }
 
+// A chainable query builder that returns empty data for any call chain.
+// Supports arbitrary depth: .from().select().eq().order().limit().single() etc.
+function makeQueryBuilder(singleMode = false): unknown {
+  const terminal = singleMode
+    ? { data: null, error: null }
+    : { data: [], error: null, count: 0 }
+
+  const handler: ProxyHandler<object> = {
+    get(_target, prop) {
+      if (prop === "then") return undefined // not a Promise
+      if (prop === "data") return terminal.data
+      if (prop === "error") return terminal.error
+      if (prop === "count") return 0
+      // .single() and .maybeSingle() resolve immediately with null data
+      if (prop === "single" || prop === "maybeSingle") {
+        return () => ({ data: null, error: null })
+      }
+      // Any other method returns another chainable builder
+      return (..._args: unknown[]) => makeQueryBuilder(prop === "single" || prop === "maybeSingle")
+    },
+  }
+  return new Proxy({}, handler)
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const stubClient: any = {
   auth: {
@@ -47,22 +74,25 @@ const stubClient: any = {
     onAuthStateChange: (_callback: unknown) => ({
       data: { subscription: { unsubscribe: () => {} } },
     }),
+    resetPasswordForEmail: async () => ({ error: null }),
+    updateUser: async () => ({ data: { user: MOCK_USER }, error: null }),
   },
-  from: (_table: string) => ({
-    select: (_cols: string) => ({
-      eq: (_col: string, _val: unknown) => ({ data: [], error: null }),
-      order: (_col: string) => ({ data: [], error: null }),
-      single: () => ({ data: null, error: null }),
-      limit: (_n: number) => ({ data: [], error: null }),
+  from: (_table: string) => makeQueryBuilder(),
+  rpc: (_fn: string, _args?: unknown) => makeQueryBuilder(),
+  storage: {
+    from: (_bucket: string) => ({
+      upload: async () => ({ data: null, error: null }),
+      download: async () => ({ data: null, error: null }),
+      getPublicUrl: () => ({ data: { publicUrl: "" } }),
+      remove: async () => ({ data: null, error: null }),
+      list: async () => ({ data: [], error: null }),
     }),
-    insert: (_data: unknown) => ({ data: null, error: null }),
-    update: (_data: unknown) => ({
-      eq: (_col: string, _val: unknown) => ({ data: null, error: null }),
-    }),
-    delete: () => ({
-      eq: (_col: string, _val: unknown) => ({ data: null, error: null }),
-    }),
+  },
+  channel: (_name: string) => ({
+    on: () => ({ subscribe: () => {} }),
+    subscribe: () => {},
   }),
+  removeChannel: () => {},
 }
 
 export function createClient() {
@@ -70,5 +100,9 @@ export function createClient() {
 }
 
 export function createBrowserClient() {
+  return stubClient
+}
+
+export function createServerClient() {
   return stubClient
 }
