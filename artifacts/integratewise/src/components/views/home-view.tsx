@@ -102,7 +102,7 @@ export function HomeView() {
     }
 
     const getMetricValue = (name: string) => {
-      const metric = metrics.find((m: any) => m.metric_name === name)
+      const metric = metrics.find((m: any) => m.metric_name === name) as any
       if (!metric) return "—"
       const value = Number(metric.metric_value)
       if (metric.metric_unit === "currency") {

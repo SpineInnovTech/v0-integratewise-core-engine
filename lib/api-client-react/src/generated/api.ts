@@ -34,7 +34,7 @@ import type {
   LeadUpdate,
   QualifyLeadInput,
   TwinChatInput,
-  TwinChatResponse
+  TwinReply
 } from './api.schemas';
 
 import { customFetch } from '../custom-fetch';
@@ -882,9 +882,9 @@ export const getTwinChatUrl = () => {
 /**
  * @summary Ask the Twin assistant, grounded in entity context
  */
-export const twinChat = async (twinChatInput: TwinChatInput, options?: RequestInit): Promise<TwinChatResponse> => {
+export const twinChat = async (twinChatInput: TwinChatInput, options?: RequestInit): Promise<TwinReply> => {
 
-  return customFetch<TwinChatResponse>(getTwinChatUrl(),
+  return customFetch<TwinReply>(getTwinChatUrl(),
   {
     ...options,
     method: 'POST',

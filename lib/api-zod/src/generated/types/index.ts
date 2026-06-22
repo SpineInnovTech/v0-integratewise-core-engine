@@ -21,6 +21,6 @@ export * from './leadUpdate';
 export * from './qualifyLeadInput';
 export * from './task';
 export * from './twinChatInput';
-export * from './twinChatResponse';
 export * from './twinMessage';
+export * from './twinReply';
 export * from './twinSuggestion';

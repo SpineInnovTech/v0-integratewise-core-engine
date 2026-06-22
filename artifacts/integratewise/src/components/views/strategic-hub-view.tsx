@@ -150,11 +150,11 @@ export function StrategicHubView() {
       if (roiRes.data) setRoiData(roiRes.data)
 
       // Calculate metrics
-      const totalRevenue = roiRes.data?.reduce((sum, r) => sum + (r.revenue_generated || 0), 0) || 0
-      const totalDeals = dealsRes.data?.filter((d) => d.stage === "won").length || 0
+      const totalRevenue = roiRes.data?.reduce((sum: number, r: any) => sum + (r.revenue_generated || 0), 0) || 0
+      const totalDeals = dealsRes.data?.filter((d: any) => d.stage === "won").length || 0
       const totalLeads = leadsRes.data?.length || 0
       const avgRoi = roiRes.data?.length
-        ? roiRes.data.reduce((sum, r) => sum + (r.roi_percentage || 0), 0) / roiRes.data.length
+        ? roiRes.data.reduce((sum: number, r: any) => sum + (r.roi_percentage || 0), 0) / roiRes.data.length
         : 0
 
       setMetrics({ totalRevenue, totalDeals, totalLeads, avgRoi })

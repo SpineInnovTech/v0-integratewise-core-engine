@@ -19,6 +19,7 @@ import IntegrationsPage from "@/pages/integrations/index";
 import KnowledgePage from "@/pages/knowledge/index";
 import KnowledgeCategoryPage from "@/pages/knowledge/category/index";
 import LeadsPage from "@/pages/leads/index";
+import LeadDetailPage from "@/pages/leads/detail/index";
 import MetricsPage from "@/pages/metrics/index";
 import PipelinePage from "@/pages/pipeline/index";
 import ProductsPage from "@/pages/products/index";
@@ -56,6 +57,7 @@ function Router() {
       <Route path="/knowledge" component={KnowledgePage} />
       <Route path="/knowledge/:category" component={KnowledgeCategoryPage} />
       <Route path="/leads" component={LeadsPage} />
+      <Route path="/leads/:id" component={LeadDetailPage} />
       <Route path="/metrics" component={MetricsPage} />
       <Route path="/pipeline" component={PipelinePage} />
       <Route path="/products" component={ProductsPage} />

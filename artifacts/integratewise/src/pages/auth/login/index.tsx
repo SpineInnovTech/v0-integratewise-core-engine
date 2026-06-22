@@ -22,7 +22,7 @@ export default function LoginPage() {
     if (isMockAuthEnabled()) {
       navigate("/")
     }
-  }, [router])
+  }, [navigate])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()

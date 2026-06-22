@@ -7,7 +7,7 @@
  */
 import type { TwinSuggestion } from './twinSuggestion';
 
-export interface TwinChatResponse {
+export interface TwinReply {
   reply: string;
   suggestions: TwinSuggestion[];
 }

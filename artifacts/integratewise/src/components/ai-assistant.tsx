@@ -52,7 +52,7 @@ export function AIAssistant({ open, onOpenChange }: AIAssistantProps) {
       const data = await res.json()
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: data.response || "I couldn't process that request." },
+        { role: "assistant", content: data.reply || "I couldn't process that request." },
       ])
     } catch (error) {
       setMessages((prev) => [

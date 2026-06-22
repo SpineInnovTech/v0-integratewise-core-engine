@@ -219,7 +219,7 @@ export interface TwinChatInput {
   history?: TwinMessage[];
 }
 
-export interface TwinChatResponse {
+export interface TwinReply {
   reply: string;
   suggestions: TwinSuggestion[];
 }

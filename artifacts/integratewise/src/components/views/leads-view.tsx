@@ -1,12 +1,41 @@
-
 import { useState } from "react"
-import useSWR, { mutate } from "swr"
+import { Link } from "wouter"
+import { useQueryClient } from "@tanstack/react-query"
+import {
+  useListLeads,
+  useCreateLead,
+  useUpdateLead,
+  useQualifyLead,
+  useConvertLead,
+  getListLeadsQueryKey,
+  type Lead,
+  type LeadInput,
+} from "@workspace/api-client-react"
+import { useToast } from "@/hooks/use-toast"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Progress } from "@/components/ui/progress"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import {
   Users,
   Plus,
@@ -19,9 +48,14 @@ import {
   MoreHorizontal,
   ArrowUpRight,
   TrendingUp,
+  ChevronRight,
 } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { createClient } from "@/lib/supabase/client"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 const statusConfig: Record<string, { label: string; color: string }> = {
   new: { label: "New", color: "bg-blue-500" },
@@ -32,50 +66,131 @@ const statusConfig: Record<string, { label: string; color: string }> = {
   lost: { label: "Lost", color: "bg-red-500" },
 }
 
-const sourceConfig: Record<string, { label: string; icon: string }> = {
-  linkedin: { label: "LinkedIn", icon: "linkedin" },
-  website: { label: "Website", icon: "globe" },
-  referral: { label: "Referral", icon: "users" },
-  hubspot: { label: "HubSpot", icon: "database" },
-  event: { label: "Event", icon: "calendar" },
-  cold_outreach: { label: "Outreach", icon: "mail" },
+const sourceLabels: Record<string, string> = {
+  apollo: "Apollo",
+  linkedin: "LinkedIn",
+  website: "Website",
+  referral: "Referral",
+  hubspot: "HubSpot",
+  event: "Event",
+  cold_outreach: "Outreach",
 }
 
-const fetcher = async () => {
-  const supabase = createClient()
-  const { data, error } = await supabase.from("leads").select("*").order("score", { ascending: false })
-  if (error) throw error
-  return data
+const emptyForm: LeadInput = {
+  firstName: "",
+  lastName: "",
+  company: "",
+  jobTitle: "",
+  email: "",
+  phone: "",
+  linkedinUrl: "",
+  source: "manual",
+  notes: "",
 }
 
 export function LeadsView() {
-  const { data: leads, isLoading } = useSWR("leads", fetcher)
+  const { toast } = useToast()
+  const queryClient = useQueryClient()
+  const invalidateLeads = () =>
+    queryClient.invalidateQueries({ queryKey: getListLeadsQueryKey() })
+
+  const { data: leads, isLoading } = useListLeads()
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState<string | null>(null)
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [form, setForm] = useState<LeadInput>(emptyForm)
 
-  const filteredLeads = leads?.filter((lead: any) => {
+  const createLead = useCreateLead()
+  const updateLead = useUpdateLead()
+  const qualifyLead = useQualifyLead()
+  const convertLead = useConvertLead()
+
+  const filteredLeads = leads?.filter((lead) => {
     const matchesSearch =
       !search ||
-      lead.first_name?.toLowerCase().includes(search.toLowerCase()) ||
-      lead.last_name?.toLowerCase().includes(search.toLowerCase()) ||
+      lead.firstName?.toLowerCase().includes(search.toLowerCase()) ||
+      lead.lastName?.toLowerCase().includes(search.toLowerCase()) ||
       lead.company?.toLowerCase().includes(search.toLowerCase()) ||
       lead.email?.toLowerCase().includes(search.toLowerCase())
     const matchesStatus = !statusFilter || lead.status === statusFilter
     return matchesSearch && matchesStatus
   })
 
-  // Stats
   const stats = {
     total: leads?.length || 0,
-    new: leads?.filter((l: any) => l.status === "new").length || 0,
-    qualified: leads?.filter((l: any) => l.status === "qualified").length || 0,
-    converted: leads?.filter((l: any) => l.status === "converted").length || 0,
+    new: leads?.filter((l) => l.status === "new").length || 0,
+    qualified: leads?.filter((l) => l.status === "qualified").length || 0,
+    converted: leads?.filter((l) => l.status === "converted").length || 0,
   }
 
-  const updateLeadStatus = async (leadId: string, newStatus: string) => {
-    const supabase = createClient()
-    await supabase.from("leads").update({ status: newStatus, updated_at: new Date().toISOString() }).eq("id", leadId)
-    mutate("leads")
+  const handleCreate = () => {
+    if (!form.firstName.trim()) {
+      toast({ title: "First name is required", variant: "destructive" })
+      return
+    }
+    const payload: LeadInput = Object.fromEntries(
+      Object.entries(form).filter(([, v]) => v !== "" && v != null),
+    ) as LeadInput
+    createLead.mutate(
+      { data: payload },
+      {
+        onSuccess: (lead) => {
+          invalidateLeads()
+          setDialogOpen(false)
+          setForm(emptyForm)
+          toast({
+            title: "Lead added",
+            description: `${lead.firstName} ${lead.lastName ?? ""}`.trim(),
+          })
+        },
+        onError: () =>
+          toast({ title: "Could not add lead", variant: "destructive" }),
+      },
+    )
+  }
+
+  const setStatus = (lead: Lead, status: string, label: string) => {
+    updateLead.mutate(
+      { id: lead.id, data: { status } },
+      {
+        onSuccess: () => {
+          invalidateLeads()
+          toast({ title: label, description: `${lead.firstName} ${lead.lastName ?? ""}`.trim() })
+        },
+        onError: () => toast({ title: "Update failed", variant: "destructive" }),
+      },
+    )
+  }
+
+  const handleQualify = (lead: Lead) => {
+    qualifyLead.mutate(
+      { id: lead.id, data: {} },
+      {
+        onSuccess: () => {
+          invalidateLeads()
+          toast({ title: "Lead qualified", description: `${lead.firstName} ${lead.lastName ?? ""}`.trim() })
+        },
+        onError: () => toast({ title: "Qualify failed", variant: "destructive" }),
+      },
+    )
+  }
+
+  const handleConvert = (lead: Lead) => {
+    convertLead.mutate(
+      { id: lead.id, data: {} },
+      {
+        onSuccess: (result) => {
+          invalidateLeads()
+          queryClient.invalidateQueries({ queryKey: ["/api/clients"] })
+          queryClient.invalidateQueries({ queryKey: ["/api/deals"] })
+          toast({
+            title: "Converted to client",
+            description: `${result.client.name} + open deal created`,
+          })
+        },
+        onError: () => toast({ title: "Convert failed", variant: "destructive" }),
+      },
+    )
   }
 
   return (
@@ -84,12 +199,79 @@ export function LeadsView() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Leads</h1>
-          <p className="text-muted-foreground">Manage and track your sales leads</p>
+          <p className="text-muted-foreground">Capture, qualify, and convert — your real pipeline</p>
         </div>
-        <Button className="bg-primary hover:bg-primary/90">
-          <Plus className="h-4 w-4 mr-2" />
-          Add Lead
-        </Button>
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="bg-primary hover:bg-primary/90">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Lead
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[520px]">
+            <DialogHeader>
+              <DialogTitle>Add a lead</DialogTitle>
+              <DialogDescription>Capture a new lead into the pipeline. Only a first name is required.</DialogDescription>
+            </DialogHeader>
+            <div className="grid grid-cols-2 gap-4 py-2">
+              <div className="space-y-1.5">
+                <Label htmlFor="firstName">First name *</Label>
+                <Input id="firstName" value={form.firstName} onChange={(e) => setForm({ ...form, firstName: e.target.value })} />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="lastName">Last name</Label>
+                <Input id="lastName" value={form.lastName} onChange={(e) => setForm({ ...form, lastName: e.target.value })} />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="company">Company</Label>
+                <Input id="company" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="jobTitle">Title</Label>
+                <Input id="jobTitle" value={form.jobTitle} onChange={(e) => setForm({ ...form, jobTitle: e.target.value })} />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="email">Email</Label>
+                <Input id="email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="phone">Phone</Label>
+                <Input id="phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+              </div>
+              <div className="space-y-1.5 col-span-2">
+                <Label htmlFor="linkedinUrl">LinkedIn URL</Label>
+                <Input id="linkedinUrl" value={form.linkedinUrl} onChange={(e) => setForm({ ...form, linkedinUrl: e.target.value })} />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="source">Source</Label>
+                <Select value={form.source} onValueChange={(v) => setForm({ ...form, source: v })}>
+                  <SelectTrigger id="source">
+                    <SelectValue placeholder="Source" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="manual">Manual</SelectItem>
+                    <SelectItem value="apollo">Apollo</SelectItem>
+                    <SelectItem value="linkedin">LinkedIn</SelectItem>
+                    <SelectItem value="website">Website</SelectItem>
+                    <SelectItem value="referral">Referral</SelectItem>
+                    <SelectItem value="event">Event</SelectItem>
+                    <SelectItem value="cold_outreach">Outreach</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="notes">Notes</Label>
+              <Textarea id="notes" rows={2} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
+              <Button onClick={handleCreate} disabled={createLead.isPending}>
+                {createLead.isPending ? "Adding…" : "Add Lead"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Stats Cards */}
@@ -189,45 +371,42 @@ export function LeadsView() {
             <Skeleton key={i} className="h-24 w-full" />
           ))}
         </div>
-      ) : (
+      ) : filteredLeads && filteredLeads.length > 0 ? (
         <div className="space-y-3">
-          {filteredLeads?.map((lead: any) => {
+          {filteredLeads.map((lead) => {
             const status = statusConfig[lead.status] || statusConfig.new
-            const source = sourceConfig[lead.source] || { label: lead.source, icon: "globe" }
+            const sourceLabel = sourceLabels[lead.source] || lead.source
             return (
               <Card key={lead.id} className="bg-card hover:shadow-md transition-shadow">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Link href={`/leads/${lead.id}`} className="flex items-center gap-4 group flex-1 min-w-0">
+                      <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                         <span className="text-lg font-semibold text-primary">
-                          {lead.first_name?.[0]}
-                          {lead.last_name?.[0]}
+                          {lead.firstName?.[0]}
+                          {lead.lastName?.[0]}
                         </span>
                       </div>
-                      <div>
+                      <div className="min-w-0">
                         <div className="flex items-center gap-2">
-                          <h3 className="font-semibold text-foreground">
-                            {lead.first_name} {lead.last_name}
+                          <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors truncate">
+                            {lead.firstName} {lead.lastName}
                           </h3>
-                          {lead.linkedin_url && (
-                            <a href={lead.linkedin_url} target="_blank" rel="noopener noreferrer">
-                              <Linkedin className="h-4 w-4 text-blue-500 hover:text-blue-600" />
-                            </a>
-                          )}
+                          <ChevronRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                         </div>
                         <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <Building2 className="h-3.5 w-3.5" />
-                            {lead.company}
-                          </span>
-                          {lead.job_title && <span className="text-muted-foreground/60">• {lead.job_title}</span>}
+                          {lead.company && (
+                            <span className="flex items-center gap-1 truncate">
+                              <Building2 className="h-3.5 w-3.5 flex-shrink-0" />
+                              {lead.company}
+                            </span>
+                          )}
+                          {lead.jobTitle && <span className="text-muted-foreground/60 truncate">• {lead.jobTitle}</span>}
                         </div>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-6">
-                      {/* Lead Score */}
-                      <div className="text-center">
+                    </Link>
+                    <div className="flex items-center gap-6 flex-shrink-0">
+                      <div className="text-center hidden md:block">
                         <div className="flex items-center gap-2">
                           <Progress value={lead.score} className="w-16 h-2" />
                           <span className="text-sm font-medium text-foreground">{lead.score}</span>
@@ -235,16 +414,20 @@ export function LeadsView() {
                         <p className="text-xs text-muted-foreground mt-1">Score</p>
                       </div>
 
-                      {/* Source */}
-                      <Badge variant="secondary" className="text-xs">
-                        {source.label}
+                      <Badge variant="secondary" className="text-xs hidden sm:inline-flex">
+                        {sourceLabel}
                       </Badge>
 
-                      {/* Status */}
                       <Badge className={`${status.color} text-white`}>{status.label}</Badge>
 
-                      {/* Contact Actions */}
                       <div className="flex items-center gap-2">
+                        {lead.linkedinUrl && (
+                          <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
+                            <a href={lead.linkedinUrl} target="_blank" rel="noopener noreferrer">
+                              <Linkedin className="h-4 w-4 text-blue-500" />
+                            </a>
+                          </Button>
+                        )}
                         {lead.email && (
                           <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
                             <a href={`mailto:${lead.email}`}>
@@ -261,7 +444,6 @@ export function LeadsView() {
                         )}
                       </div>
 
-                      {/* More Actions */}
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -269,16 +451,16 @@ export function LeadsView() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => updateLeadStatus(lead.id, "contacted")}>
+                          <DropdownMenuItem onClick={() => setStatus(lead, "contacted", "Marked as contacted")}>
                             Mark as Contacted
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => updateLeadStatus(lead.id, "qualified")}>
-                            Mark as Qualified
+                          <DropdownMenuItem onClick={() => handleQualify(lead)}>
+                            Qualify
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => updateLeadStatus(lead.id, "converted")}>
+                          <DropdownMenuItem onClick={() => handleConvert(lead)}>
                             Convert to Client
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-500" onClick={() => updateLeadStatus(lead.id, "lost")}>
+                          <DropdownMenuItem className="text-red-500" onClick={() => setStatus(lead, "lost", "Marked as lost")}>
                             Mark as Lost
                           </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -286,10 +468,9 @@ export function LeadsView() {
                     </div>
                   </div>
 
-                  {/* Tags */}
-                  {lead.tags?.length > 0 && (
+                  {lead.tags && lead.tags.length > 0 && (
                     <div className="flex items-center gap-2 mt-3 pl-16">
-                      {lead.tags.map((tag: string) => (
+                      {lead.tags.map((tag) => (
                         <Badge key={tag} variant="outline" className="text-xs">
                           {tag}
                         </Badge>
@@ -301,6 +482,16 @@ export function LeadsView() {
             )
           })}
         </div>
+      ) : (
+        <Card className="bg-card">
+          <CardContent className="p-12 text-center">
+            <Users className="h-10 w-10 text-muted-foreground/40 mx-auto mb-3" />
+            <p className="text-foreground font-medium">No leads yet</p>
+            <p className="text-sm text-muted-foreground mt-1">
+              Add your first lead to start building the pipeline.
+            </p>
+          </CardContent>
+        </Card>
       )}
     </div>
   )
