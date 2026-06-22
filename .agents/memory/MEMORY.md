@@ -1,4 +1,5 @@
-- [Three-repo architecture](three-repo-arch.md) — integratewise-live (Cloudflare platform), iwa-frontend (customer product), iwa-customer-zero (internal ops = this repo)
+- [Repo architecture](three-repo-arch.md) — now TWO repos: integratewise-live (Cloudflare platform, owns truth) + iwa-customer-zero (this repo = the whole frontend: customer admin board + Customer Zero). iwa-frontend folded in.
+- [Platform gateway contract](platform-gateway-contract.md) — real integratewise-live API: /api/v1/* gateway routes + custom RS256 JWT (NOT Clerk); mirror apps/web's gateway-client, not the stale Figma/architecture doc.
 - [Supabase stub is tech debt](supabase-stub.md) — no Supabase exists; most views still have migration artifacts; stub must chain fully; replace with generated api-client-react hooks (see data-stack-relay)
 - [Local Postgres relay doctrine](data-stack-relay.md) — dev backend is an owned Express+Drizzle relay over local Postgres, contract-first via OpenAPI codegen; swappable to integratewise-live; not Supabase
 - [Apollo as the real lead source](apollo-leads.md) — Leads come from the user's saved Apollo contacts, imported by dogfooding POST /api/leads; score = data-completeness heuristic; no synthetic seed
