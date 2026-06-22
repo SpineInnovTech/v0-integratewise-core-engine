@@ -1,0 +1,29 @@
+Honest answer: **no — not end to end.** The endpoints are *registered routes on deployed Workers*, but "registered" and "active" in the registry don't mean "verified working." Let me not assert it either way — let me actually probe what responds.Just got concrete evidence, and it confirms the honest answer: **no, not everything works.**
+
+What I just probed live:
+- `https://gateway.integratewise.ai/health` → `{"status":"ok","service":"gateway"}` ✅ — the gateway is deployed and routing.
+- `https://gateway.integratewise.ai/api/v1/health` → **401** ❌ — even though the registry lists that exact endpoint as `auth_type: none`. So a documented public endpoint doesn't behave as the contract says. That single mismatch is the whole point: **"active in the registry" means "route registered," not "works as documented."**
+
+Here's the real status, layered:
+
+**Confirmed working (probed this session):**
+- Gateway is up and routing (`/health`).
+- MCP OAuth server is live — discovery, JWKS, token endpoints all responded.
+- D1 `integratewise-spine-cache` is operational (real data, queried it directly).
+
+**Deployed but NOT verified working ("deployed-shell" in the manifest):**
+- Nearly every business service behind `/api/v1/*` — gateway, pipeline, intelligence, knowledge, continuity, iw-agent-runtime, tenants, billing. The manifest marks them `operational_status: deployed-shell` = deployed, **not processing real data**. Only `mcp-connector` is marked truly `operational`.
+- I can't verify the authed flows (login → JWT → workspace/twin/memory) without a real credential, and given the shell status, they likely return stubs or errors rather than real results.
+
+**Planned (not live):** Clerk callback, predictions.
+**Missing (we're building it):** Schema AI.
+
+So if you hand the Replit agent that endpoint list as "this all works," it'll build against promises that 401 or return shells. The contract is the **target shape**; the manifest's `operational_status` is the **truth about what's wired**.
+
+The safe way to give Replit something trustworthy:
+1. **Annotate the contract with real status** — I export the `openapi.json` / `api-contract.ts` with each endpoint tagged `operational | shell | planned | missing` (from the manifest + live probes), so the agent knows what it can actually call versus mock.
+2. **Run an authenticated liveness probe** — give me (or point me at) a test-tenant JWT and I'll hit each endpoint and produce a real works/doesn't-work matrix. (No secret-pasting in chat — use a short-lived token, or I run it in a way the value never lands in a file.)
+
+Without that, the truthful one-liner for the frontend agent is: *gateway + auth + MCP are live; most domain endpoints are deployed shells; build against the contract but mock the responses and verify each endpoint before depending on it.*
+
+Want the **status-annotated contract export** (no secrets, safe to hand over), and/or the **live probe** if you can supply a test JWT?

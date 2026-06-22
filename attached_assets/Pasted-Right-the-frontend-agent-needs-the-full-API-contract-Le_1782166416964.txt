@@ -1,0 +1,85 @@
+Right — the frontend agent needs the full API contract. Let me pull it from the source of truth (the endpoint registry, DECISION 32) and cross-check against the gateway's actual routes so it's accurate, not guessed.Pulled it from the endpoint registry (canonical contract, DECISION 32) and cross-checked the gateway source. Here's the full surface, auth → end, for the Replit frontend agent.
+
+## Base URLs
+- **API gateway (single public origin):** `https://gateway.integratewise.ai`
+- **Auth/OAuth proxy:** `https://auth.integratewise.ai/oauth/*` → MCP connector
+- **MCP (agent surface):** `https://mcp.integratewise.ai`
+- All app calls send `Authorization: Bearer <JWT>`. The gateway derives `tenant_id`/`role` from the JWT — the frontend never sets tenant headers.
+
+## 1. Auth & identity
+| Method | Path | Auth | Status |
+|---|---|---|---|
+| POST | `/api/v1/auth/signup` | credential | active |
+| POST | `/api/v1/auth/login` | credential → returns RS256 JWT | active |
+| GET | `/api/v1/auth/me` | JWT | active |
+| POST | `/api/v1/auth/clerk/callback` | clerk | **planned** (DEC 30 target) |
+| GET | `/api/v1/health` | none | active |
+
+**MCP OAuth (for agents, not the user UI):** discovery `/.well-known/oauth-authorization-server`, `/oauth/authorize`, `/oauth/token`, `/oauth/revoke`, `/oauth/register`, JWKS `/.well-known/jwks.json` — grants `authorization_code`, `client_credentials`, `refresh_token`.
+
+## 2. Workspace / projections (the L1 read surface)
+| Method | Path | Auth |
+|---|---|---|
+| GET | `/api/v1/workspace/*` (D1-direct Spine reads) | JWT |
+| GET | `/api/v1/projections/morning-context` | JWT |
+| GET | `/api/v1/projections/entity360/:entityId` | JWT |
+| GET | `/api/v1/projections/governance/board` | JWT |
+
+## 3. Pipeline / entities
+| Method | Path | Auth |
+|---|---|---|
+| POST | `/api/v1/entity/:type/:id` | JWT |
+
+## 4. Intelligence
+| Method | Path | Auth | Status |
+|---|---|---|---|
+| GET | `/api/v1/insights` | JWT | active |
+| GET | `/api/v1/signals` | JWT | active |
+| POST | `/api/v1/predictions` | JWT | planned |
+| POST | `/api/v1/execution-packages` | JWT | active (premium: `execution`) |
+| POST | `/api/v1/handoff/outcome` | JWT | active |
+
+## 5. Twin / cognitive (premium-gated → feature `twin`)
+| Method | Path | Auth |
+|---|---|---|
+| POST | `/api/v1/cognitive/twin` | JWT |
+| POST | `/api/v1/twin/propose` | JWT |
+| POST | `/api/v1/twin/handoff` | JWT |
+| POST | `/api/v1/handoff` | JWT |
+
+## 6. Memory / knowledge
+| Method | Path | Auth |
+|---|---|---|
+| POST | `/api/v1/memory/query` | JWT |
+
+## 7. Connectors
+| Method | Path | Auth |
+|---|---|---|
+| GET | `/api/v1/connectors/catalog` | JWT |
+| POST | `/api/v1/connectors/:provider/authorize` | JWT |
+
+## 8. Billing
+| Method | Path | Auth |
+|---|---|---|
+| POST | `/api/v1/billing/checkout` | JWT |
+| POST | `/api/v1/billing/webhooks/stripe` | signature (backend only) |
+
+## 9. Tenants / entitlements (internal-facing)
+| Method | Path | Auth | Surface |
+|---|---|---|---|
+| GET | `/api/v1/entitlements/:tenantId` | JWT | internal |
+
+## 10. Realtime / MCP
+| Method | Path | Auth |
+|---|---|---|
+| WS | `/api/v1/stream` | JWT |
+| MCP | `/api/v1/mcp` (and `mcp.integratewise.ai`) | OAuth2 |
+
+**Gateway also has these route prefixes** (in source, not all in the registry yet — registry write-helper is pending per DEC 32): `/api/v1/projections`, `/api/v1/analytics` (→BFF), `/api/v1/agents` (→intelligence), `/api/v1/support`, `/api/v1/tenants`, `/api/v1/public/contact` (public, no JWT).
+
+Three honest flags for the frontend agent:
+- **Status matters:** Clerk callback + predictions are `planned`, not live. Auth today is credential login → gateway JWT (DEC 20); Clerk is the target (DEC 30). Build to the JWT now, swap to Clerk later.
+- **Premium gating:** `cognitive/twin`, `brain`, `twin/handoff`, `execution-packages` are entitlement-gated (shadow-enforced today). Expect 402/403 when entitlement is off.
+- **Billing says `stripe` in the registry, but DEC 34 mandates Razorpay** — unresolved conflict. Don't hardcode Stripe in the frontend until that's settled.
+
+Want me to **export this as a machine-readable contract** the Replit agent can ingest — an OpenAPI 3.1 `openapi.json` (or a typed `api-contract.ts`) with these paths, methods, auth types, and statuses? That's the cleanest thing to hand an agent, and it carries zero secrets (Clerk publishable key + base URLs only). I can generate it from the registry so it stays the single source of truth.
