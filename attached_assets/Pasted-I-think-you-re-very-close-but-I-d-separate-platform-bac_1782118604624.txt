@@ -1,0 +1,229 @@
+I think you're very close, but I'd separate **platform backend** from **Customer Zero operations** a little more than you're describing.
+
+Because if Customer Zero owns auth, tenants, schema, and platform governance, then you've accidentally made:
+
+```text id="z34fow"
+Customer Zero
+=
+Platform
+```
+
+again.
+
+And you've spent weeks trying to get away from that.
+
+---
+
+I'd structure it like this:
+
+## Repo 1 — integratewise-live (Platform)
+
+This is the canonical backend.
+
+```text id="mwl6z5"
+integratewise-live
+=================
+
+Identity
+├── Clerk
+├── Auth
+├── RBAC
+├── Organizations
+└── Sessions
+
+Tenant Platform
+├── Tenant Registry
+├── Tenant Provisioning
+├── Tenant Policies
+├── Tenant Capabilities
+└── Tenant Lifecycle
+
+Schema Platform
+├── Schema AI
+├── Schema Pool
+├── Entity Models
+├── Validation
+└── Schema Provider
+
+Spine
+├── Entities
+├── Memory
+├── Signals
+├── Knowledge
+└── Relationships
+
+Platform Services
+├── Connectors
+├── Nango
+├── MCP
+├── Governance
+├── Continuity
+├── Execution
+└── Twin Runtime
+```
+
+This repo owns truth.
+
+---
+
+## Repo 2 — Customer Zero
+
+Customer Zero becomes a **platform client**.
+
+```text id="5l2q7x"
+iwa-customer-zero
+=================
+
+Operations
+├── CRM
+├── Customer Success
+├── Projects
+├── Tasks
+├── Metrics
+├── Knowledge
+└── Integrations
+
+Platform Operations
+├── Tenant Dashboard
+├── Billing Dashboard
+├── Usage
+├── Connector Health
+├── Execution Center
+└── AI Operations
+```
+
+This is your operating surface.
+
+---
+
+### The critical distinction
+
+Customer Zero should be allowed to manage:
+
+```text id="z7m0w4"
+Tenants
+Users
+Billing
+Approvals
+```
+
+through APIs.
+
+But it shouldn't own them.
+
+The ownership stays here:
+
+```text id="5hnx0g"
+integratewise-live
+```
+
+---
+
+### Flow
+
+User signup:
+
+```text id="w5z69w"
+Customer Zero UI
+        ↓
+Platform API
+        ↓
+Create Tenant
+        ↓
+Schema AI
+        ↓
+Provision Tenant
+        ↓
+Return Tenant Context
+```
+
+---
+
+User login:
+
+```text id="p3wvwi"
+Customer Zero UI
+        ↓
+Clerk
+        ↓
+Platform
+        ↓
+Resolve Tenant
+        ↓
+Return Capabilities
+```
+
+---
+
+Hydration:
+
+```text id="dzh6uk"
+Customer Zero UI
+        ↓
+Connect Notion
+        ↓
+Platform Connector Layer
+        ↓
+Schema AI
+        ↓
+Spine
+        ↓
+Entity360
+```
+
+---
+
+### Why I prefer this
+
+Because later you'll have:
+
+```text id="0hm3fd"
+Customer Zero
+AI Workspace
+BI Workbench
+Customer Success App
+Founder App
+```
+
+all doing:
+
+```text id="w8u0wp"
+GET /tenant
+GET /entity360
+GET /memory
+POST /connector
+POST /approval
+```
+
+against the same platform.
+
+---
+
+### In one sentence
+
+I would make:
+
+```text id="l0f75m"
+integratewise-live
+```
+
+the **platform that owns identity, tenancy, schema, memory, governance, and execution**.
+
+And make:
+
+```text id="6f2d6h"
+Customer Zero
+```
+
+the **first and most privileged consumer of that platform**, containing your SaaS admin panel, operational dashboards, CRM, customer success, billing views, and company operating surface.
+
+That gives you:
+
+```text id="v9wl8n"
+One backend
+Many projections
+Customer Zero is a tenant
+Customer Zero is also the admin client
+```
+
+which fits both your platform doctrine and your desire to preserve the operational surface you've already built.
