@@ -1,0 +1,60 @@
+Auth & identity — mostly accurate
+• POST /api/v1/auth/signup, POST /api/v1/auth/login, GET /api/v1/auth/me → exact in auth.ts + INTERNAL_AUTH.
+• GET /api/v1/health (and root /health) → present (root is the only truly public unauthed one).
+• POST /api/v1/auth/clerk/callback → still planned (no code).
+• Extra real ones: /update, /reset-password, /oauth/google|github/(start|callback).
+
+Workspace / projections (L1) — accurate as wildcard + specifics
+• GET /api/v1/workspace/* → supported (D1-direct in workspace-spine.ts for several + full WORKFLOW surface).
+  • Concrete examples now noted: /initialize*, /tenant-config, /connectors, /profile, /engineering, /dashboard, /entities, /goals, /readiness, /projection/:dept, /navigation, /space/*, /view/*, onboarding/hydration paths, etc.
+• Projections exact: morning-context, entity360/:entityId, governance/board.
+• Bonus: inbox also implemented.
+
+Pipeline / entities
+• POST /api/v1/entity/:type/:id → marked missing in contract.
+  • No direct route or handler. Closest live surfaces: /api/v1/workspace/entities, /api/v1/pipeline/entities, entity360 projections, /api/v1/cognitive/entity360, spine entities in pipeline.
+
+Intelligence
+• GET /api/v1/insights, GET /api/v1/signals → routed (with rewrites) to INTELLIGENCE.
+• POST /api/v1/predictions → planned (no implementation).
+• POST /api/v1/execution-packages, POST /api/v1/handoff/outcome → present (routed/handled).
+
+Twin / cognitive (premium)
+• POST /api/v1/cognitive/twin, POST /api/v1/twin/handoff, POST /api/v1/execution-packages → routed to AGENT_RUNTIME (with gateway rewrites + special twin-handoff handler). Entitlements already gate them.
+• POST /api/v1/twin/propose → marked missing. No direct path (propose logic lives at /v1/memory/propose and internally in twin orchestration).
+• POST /api/v1/handoff → kept as shell with note (use the twin/handoff variants).
+
+Memory / knowledge
+• POST /api/v1/memory/query → marked missing.
+  • No exact path. Routed via /api/v1/knowledge/* → KNOWLEDGE. Actual surfaces include /v1/memory/search, org/personal/conversational memory, etc.
+
+Connectors
+• GET /api/v1/connectors/catalog → direct D1 implementation in gateway (good).
+• POST /api/v1/connectors/:provider/authorize (and callback/status/disconnect) → routed to tenants.
+
+Billing
+• Both paths present (checkout + webhooks/stripe or billing webhooks). Razorpay vs Stripe conflict flag kept.
+
+Tenants / entitlements
+• GET /api/v1/entitlements/:tenantId → rewritten and handled.
+• /api/v1/tenants/* → routed.
+
+Realtime / MCP
+• WS: Actual mount is /stream (also /ws, /sse, /stream/events) → WORKFLOW. Contract updated (was listed as /api/v1/stream).
+• MCP surface (/tools, /invoke, etc. + OAuth) → verified earlier (operational on the dedicated surface).
+
+Additional gateway prefixes you called out (confirmed in current ROUTES + handlers)
+• /api/v1/projections, /api/v1/analytics (→ WORKFLOW), /api/v1/agents (→ INTELLIGENCE), /api/v1/support + /public/contact|newsletter, /api/v1/tenants, and many /cognitive/* variants.
+
+Contract file updated
+I updated contracts/api-contract.ts (/Users/nirmal/Github/integratewise-live/contracts/api-contract.ts) with:
+• More precise statuses (missing where no code path exists).
+• Better notes with actual supported subpaths (especially workspace/*).
+• Fixed stream path.
+• Updated CONTRACT_SUMMARY to reflect the cross-check.
+
+The machine-readable contract for the Replit/frontend agent is now tighter and based on the actual gateway source + bindings we verified.
+
+The original list was a reasonable high-level view pulled from the registry, but several specifics were aspirational or used different concrete paths than the code currently exposes.
+
+All of this is now consistent with the MCP/auth fixes + binding/worker alignment from the previous steps.
