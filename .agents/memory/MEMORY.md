@@ -2,5 +2,3 @@
 - [Supabase stub is tech debt](supabase-stub.md) — no Supabase exists; most views still have migration artifacts; stub must chain fully; replace with generated api-client-react hooks (see data-stack-relay)
 - [Local Postgres relay doctrine](data-stack-relay.md) — dev backend is an owned Express+Drizzle relay over local Postgres, contract-first via OpenAPI codegen; swappable to integratewise-live; not Supabase
 - [Apollo as the real lead source](apollo-leads.md) — Leads come from the user's saved Apollo contacts, imported by dogfooding POST /api/leads; score = data-completeness heuristic; no synthetic seed
-- [Duplicate React from FRONTEND](react-duplicate-frontend.md) — FRONTEND pins react@18.3.1, leaks into vite artifacts' optimizer → ReactCurrentDispatcher crash; fix with resolve.alias to artifact-local react/react-dom
-- [Clerk auth wiring](clerk-auth-wiring.md) — integratewise uses real Replit-managed Clerk (frontend withAuth + api-server requireAuth on /api over same-origin cookies); supersedes the old "Clerk retired / demo mode" doctrine

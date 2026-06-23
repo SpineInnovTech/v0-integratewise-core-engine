@@ -1,16 +1,7 @@
-import { Switch, Route, Redirect, Router as WouterRouter } from "wouter";
+import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Show } from "@clerk/react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
-import {
-  basePath,
-  ClerkAppProvider,
-  Landing,
-  SignInPage,
-  SignUpPage,
-  withAuth,
-} from "@/components/auth/clerk-config";
 
 // Pages
 import HomePage from "@/pages/home";
@@ -40,80 +31,48 @@ import SettingsPage from "@/pages/settings/index";
 import StrategyPage from "@/pages/strategy/index";
 import TasksPage from "@/pages/tasks/index";
 import WebsitePage from "@/pages/website/index";
+import AuthLoginPage from "@/pages/auth/login/index";
+import AuthSignUpPage from "@/pages/auth/sign-up/index";
+import AuthSignUpSuccessPage from "@/pages/auth/sign-up-success/index";
+import AuthErrorPage from "@/pages/auth/error/index";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient();
 
-// Base path "/": signed-in users get the dashboard, signed-out users get the
-// public landing (never auto-redirected to sign-in).
-function HomeRedirect() {
-  return (
-    <>
-      <Show when="signed-in">
-        <HomePage />
-      </Show>
-      <Show when="signed-out">
-        <Landing />
-      </Show>
-    </>
-  );
-}
-
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={HomeRedirect} />
-
-      {/* Clerk auth routes — the /*? optional wildcard matches both the bare URL
-          and Clerk's OAuth sub-paths. Copy verbatim. */}
-      <Route path="/sign-in/*?" component={SignInPage} />
-      <Route path="/sign-up/*?" component={SignUpPage} />
-
-      {/* Legacy mock-auth routes now redirect to the real Clerk flows. */}
-      <Route path="/auth/login">
-        <Redirect to="/sign-in" />
-      </Route>
-      <Route path="/auth/sign-up">
-        <Redirect to="/sign-up" />
-      </Route>
-      <Route path="/auth/sign-up-success">
-        <Redirect to="/sign-in" />
-      </Route>
-      <Route path="/auth/error">
-        <Redirect to="/sign-in" />
-      </Route>
-
-      {/* Protected app routes — require a signed-in Clerk session. */}
-      <Route path="/admin" component={withAuth(AdminPage)} />
-      <Route path="/architecture" component={withAuth(ArchitecturePage)} />
-      <Route path="/brainstorming" component={withAuth(BrainstormingPage)} />
-      <Route path="/campaigns" component={withAuth(CampaignsPage)} />
-      <Route path="/clients" component={withAuth(ClientsPage)} />
-      <Route path="/clients/:id" component={withAuth(ClientDetailPage)} />
-      <Route path="/content" component={withAuth(ContentPage)} />
-      <Route path="/data-flow" component={withAuth(DataFlowPage)} />
-      <Route path="/data-sources" component={withAuth(DataSourcesPage)} />
-      <Route path="/deals" component={withAuth(DealsPage)} />
-      <Route path="/integrations" component={withAuth(IntegrationsPage)} />
-      <Route path="/knowledge" component={withAuth(KnowledgePage)} />
-      <Route
-        path="/knowledge/:category"
-        component={withAuth(KnowledgeCategoryPage)}
-      />
-      <Route path="/leads" component={withAuth(LeadsPage)} />
-      <Route path="/leads/:id" component={withAuth(LeadDetailPage)} />
-      <Route path="/metrics" component={withAuth(MetricsPage)} />
-      <Route path="/pipeline" component={withAuth(PipelinePage)} />
-      <Route path="/products" component={withAuth(ProductsPage)} />
-      <Route path="/projects" component={withAuth(ProjectsPage)} />
-      <Route path="/sales" component={withAuth(SalesPage)} />
-      <Route path="/services" component={withAuth(ServicesPage)} />
-      <Route path="/sessions" component={withAuth(SessionsPage)} />
-      <Route path="/settings" component={withAuth(SettingsPage)} />
-      <Route path="/strategy" component={withAuth(StrategyPage)} />
-      <Route path="/tasks" component={withAuth(TasksPage)} />
-      <Route path="/website" component={withAuth(WebsitePage)} />
-
+      <Route path="/" component={HomePage} />
+      <Route path="/admin" component={AdminPage} />
+      <Route path="/architecture" component={ArchitecturePage} />
+      <Route path="/brainstorming" component={BrainstormingPage} />
+      <Route path="/campaigns" component={CampaignsPage} />
+      <Route path="/clients" component={ClientsPage} />
+      <Route path="/clients/:id" component={ClientDetailPage} />
+      <Route path="/content" component={ContentPage} />
+      <Route path="/data-flow" component={DataFlowPage} />
+      <Route path="/data-sources" component={DataSourcesPage} />
+      <Route path="/deals" component={DealsPage} />
+      <Route path="/integrations" component={IntegrationsPage} />
+      <Route path="/knowledge" component={KnowledgePage} />
+      <Route path="/knowledge/:category" component={KnowledgeCategoryPage} />
+      <Route path="/leads" component={LeadsPage} />
+      <Route path="/leads/:id" component={LeadDetailPage} />
+      <Route path="/metrics" component={MetricsPage} />
+      <Route path="/pipeline" component={PipelinePage} />
+      <Route path="/products" component={ProductsPage} />
+      <Route path="/projects" component={ProjectsPage} />
+      <Route path="/sales" component={SalesPage} />
+      <Route path="/services" component={ServicesPage} />
+      <Route path="/sessions" component={SessionsPage} />
+      <Route path="/settings" component={SettingsPage} />
+      <Route path="/strategy" component={StrategyPage} />
+      <Route path="/tasks" component={TasksPage} />
+      <Route path="/website" component={WebsitePage} />
+      <Route path="/auth/login" component={AuthLoginPage} />
+      <Route path="/auth/sign-up" component={AuthSignUpPage} />
+      <Route path="/auth/sign-up-success" component={AuthSignUpSuccessPage} />
+      <Route path="/auth/error" component={AuthErrorPage} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -123,10 +82,8 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-        <WouterRouter base={basePath}>
-          <ClerkAppProvider>
-            <Router />
-          </ClerkAppProvider>
+        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+          <Router />
         </WouterRouter>
         <Toaster />
       </ThemeProvider>
