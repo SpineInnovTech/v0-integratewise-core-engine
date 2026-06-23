@@ -1,0 +1,885 @@
+@import "tailwindcss";
+@import "./styles/design-tokens.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Avoid flash before React loads; matches the paper canvas (Forest/Paper/Gold) */
+body,
+#root {
+  min-height: 100vh;
+  background: var(--iw-paper, #f4f0e8);
+}
+
+:root {
+  --font-size: 16px;
+  /* ============================================================
+   * IntegrateWise Brand Palette - Premium Editorial Paper & Ink
+   * ============================================================ */
+
+  /* Paper Base (Backgrounds) */
+  --iw-paper: #f4f0e8;
+  --iw-paper-warm: #ebe5d8;
+  --iw-paper-deep: #e0d9c8;
+
+  /* Ink (Texts) */
+  --iw-ink: #0c0c0c;
+
+  /* Forest (Primary Green) */
+  --iw-forest: #1a3a2a;
+  --iw-forest-mid: #2d5a3d;
+  --iw-forest-bright: #3d7a50;
+
+  /* Aliases for legacy iw-blue/iw-purple (now forest/gold per design system) */
+  --iw-blue: var(--iw-forest);
+  --iw-blue-mid: var(--iw-forest-mid);
+  --iw-purple: var(--iw-gold);
+
+  /* Gold (Accents) */
+  --iw-gold: #b8943f;
+  --iw-gold-light: #d4ac5a;
+  --iw-gold-pale: #f0e0b0;
+
+  /* Neutrals & Accents */
+  --iw-slate: #28332c;
+  --iw-slate-mid: #3d5247;
+  --iw-red: #8b2020;
+  --iw-rule: #c4baa8;
+  --iw-rule-light: #d8d0c0;
+
+  /* Semantic Mappings */
+  --background: var(--iw-paper);
+  --foreground: var(--iw-ink);
+  --card: var(--iw-paper-warm);
+  --card-foreground: var(--iw-ink);
+  --popover: var(--iw-paper-warm);
+  --popover-foreground: var(--iw-ink);
+
+  --primary: var(--iw-forest);
+  --primary-foreground: var(--iw-paper);
+
+  --secondary: var(--iw-paper-warm);
+  --secondary-foreground: var(--iw-ink);
+
+  --muted: var(--iw-paper-deep);
+  --muted-foreground: var(--iw-slate);
+
+  --accent: var(--iw-gold);
+  --accent-foreground: var(--iw-ink);
+
+  --destructive: var(--iw-red);
+  --destructive-foreground: var(--iw-paper);
+
+  --border: var(--iw-rule);
+  --input: transparent;
+  --input-background: var(--iw-paper-warm);
+  --switch-background: var(--iw-rule);
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: var(--iw-forest);
+
+  /* Chart Colors - Muted & Coordinated */
+  --chart-1: var(--iw-forest);
+  --chart-2: var(--iw-gold);
+  --chart-3: var(--iw-slate);
+  --chart-4: var(--iw-red);
+  --chart-5: var(--iw-forest-mid);
+
+  --radius: 0.75rem;
+
+  /* Sidebar - Warm Paper Style */
+  --sidebar: var(--iw-paper-warm);
+  --sidebar-foreground: var(--iw-ink);
+  --sidebar-primary: var(--iw-forest);
+  --sidebar-primary-foreground: var(--iw-paper);
+  --sidebar-accent: var(--iw-paper-deep);
+  --sidebar-accent-foreground: var(--iw-ink);
+  --sidebar-border: var(--iw-rule-light);
+  --sidebar-ring: var(--iw-forest);
+
+  /* Figma L1/L2 Design Tokens - Editorial Light Theme */
+  --iw-bg-primary: var(--iw-paper);
+  --iw-bg-secondary: var(--iw-paper-warm);
+  --iw-bg-tertiary: var(--iw-paper-deep);
+  --iw-nav-primary: var(--iw-forest);
+  --iw-nav-hover: var(--iw-forest-bright);
+  --iw-nav-dark: var(--iw-forest-mid);
+  --iw-text-primary: var(--iw-ink);
+  --iw-text-secondary: rgba(12, 12, 12, 0.8);
+  --iw-text-tertiary: rgba(12, 12, 12, 0.6);
+  --iw-border: var(--iw-rule);
+  --iw-border-light: var(--iw-rule-light);
+
+  /* Domain colors */
+  --iw-domain-cs: var(--iw-forest);
+  --iw-domain-sales: var(--iw-gold);
+  --iw-domain-revops: var(--iw-slate);
+  --iw-domain-marketing: var(--iw-red);
+  --iw-domain-product: var(--iw-forest-mid);
+  --iw-domain-finance: #2d5a3d;
+  --iw-domain-service: var(--iw-gold-light);
+  --iw-domain-procurement: #3d7a50;
+  --iw-domain-it: #5a5550;
+  --iw-domain-education: #b8943f;
+
+  /* L2 Signal colors */
+  --iw-signal-critical: var(--iw-red);
+  --iw-signal-warning: var(--iw-gold);
+  --iw-signal-info: var(--iw-slate);
+  --iw-signal-success: var(--iw-forest-bright);
+  --iw-signal-ai: rgba(26, 58, 42, 0.15);
+
+  /* Marketing Design Tokens */
+  --iw-mkt-bg: var(--iw-paper);
+  --iw-mkt-bg-secondary: var(--iw-paper-warm);
+  --iw-mkt-accent: var(--iw-forest);
+  --iw-mkt-accent-hover: var(--iw-forest-bright);
+  --iw-mkt-accent-light: var(--iw-paper-warm);
+  --iw-mkt-accent-muted: var(--iw-rule-light);
+  --iw-mkt-text: var(--iw-ink);
+  --iw-mkt-text-secondary: var(--iw-slate);
+  --iw-mkt-text-muted: var(--iw-rule);
+  --iw-mkt-text-body: var(--iw-ink);
+  --iw-mkt-border: var(--iw-rule);
+  --iw-mkt-border-light: var(--iw-rule-light);
+  --iw-mkt-dark-bg: var(--iw-paper-deep);
+  --iw-mkt-dark-surface: rgba(235, 229, 216, 0.5);
+  --iw-mkt-dark-border: var(--iw-rule);
+  --iw-mkt-dark-text: var(--iw-ink);
+  --iw-mkt-dark-text-muted: rgba(12, 12, 12, 0.7);
+  --iw-mkt-pending-bg: var(--iw-gold-pale);
+  --iw-mkt-pending-text: var(--iw-gold);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* IntegrateWise custom tokens */
+  --color-iw-ink: var(--iw-ink);
+  --color-iw-paper: var(--iw-paper);
+  --color-iw-paper-warm: var(--iw-paper-warm);
+  --color-iw-paper-deep: var(--iw-paper-deep);
+  --color-iw-rule: var(--iw-rule);
+  --color-iw-rule-light: var(--iw-rule-light);
+  --color-iw-forest: var(--iw-forest);
+  --color-iw-forest-mid: var(--iw-forest-mid);
+  --color-iw-forest-bright: var(--iw-forest-bright);
+  --color-iw-gold: var(--iw-gold);
+  --color-iw-gold-light: var(--iw-gold-light);
+  --color-iw-gold-pale: var(--iw-gold-pale);
+  --color-iw-slate: var(--iw-slate);
+  --color-iw-slate-mid: var(--iw-slate-mid);
+  --color-iw-red: var(--iw-red);
+  --color-iw-red-pale: var(--iw-red-pale);
+  --color-iw-navy: var(--iw-navy);
+  --color-iw-indigo: var(--iw-indigo);
+  --color-iw-text-secondary: var(--iw-text-secondary);
+  --color-cloud: var(--cloud);
+
+  /* Typography */
+  --font-iw-display: "Bebas Neue", sans-serif;
+  --font-iw-serif: "DM Serif Display", serif;
+  --font-iw-sans: "Instrument Sans", sans-serif;
+  --font-iw-mono: "IBM Plex Mono", monospace;
+
+  /* Standard overrides */
+  --font-sans:
+    "Instrument Sans", "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
+
+  /* Custom Borders */
+  --border-width-heavy: 2.5px;
+
+  /* Background Image for Paper Texture */
+  --background-image-tactile-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-image: var(--background-image-tactile-noise);
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+}
+
+html {
+  font-size: var(--font-size);
+  scroll-behavior: smooth;
+}
+
+/* Antigravity dark section utility */
+.ag-dark {
+  background: var(--ag-dark-bg);
+  color: var(--ag-dark-text);
+}
+.ag-dark-surface {
+  background: var(--ag-dark-surface);
+}
+.ag-dark-surface-2 {
+  background: var(--ag-dark-surface-2);
+}
+
+/* Antigravity rounded section transition */
+.ag-rounded-section {
+  border-radius: 2rem;
+  overflow: hidden;
+}
+@media (min-width: 768px) {
+  .ag-rounded-section {
+    border-radius: 2.5rem;
+  }
+}
+
+/* Glassmorphism */
+.ag-glass {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.ag-glass-light {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+/* Landing (marketing) card & button */
+.glass-card {
+  position: relative;
+  padding: 1.25rem;
+  border-radius: 0.5rem;
+  background: rgba(244, 240, 232, 0.3);
+  backdrop-filter: blur(10px);
+  border: 2.5px solid rgba(26, 58, 42, 0.5); /* Forest Green (1a3a2a) border */
+}
+.glass-card::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  border: 1px solid rgba(184, 148, 63, 0.4); /* Gold (b8943f) inner border */
+}
+.btn-lift {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.btn-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(184, 148, 63, 0.2);
+}
+
+/* Glow effects */
+.ag-glow-blue {
+  box-shadow: 0 0 80px -20px rgba(26, 58, 42, 0.15);
+}
+.ag-glow-purple {
+  box-shadow: 0 0 80px -20px rgba(184, 148, 63, 0.15);
+}
+
+/* Gradient Text */
+.ag-gradient-text {
+  background: linear-gradient(135deg, #1a3a2a 0%, #b8943f 40%, #d4ac5a 70%, #1a3a2a 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: ag-gradient-shift 6s ease-in-out infinite;
+}
+.ag-gradient-text-subtle {
+  background: linear-gradient(135deg, #6b665f 0%, #1a3a2a 50%, #b8943f 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: ag-gradient-shift 8s ease-in-out infinite;
+}
+@keyframes ag-gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Shimmer */
+.ag-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.ag-shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+  animation: ag-shimmer 3s ease-in-out infinite;
+}
+@keyframes ag-shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 200%;
+  }
+}
+
+/* Aurora background glow */
+.ag-aurora {
+  position: relative;
+}
+.ag-aurora::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    rgba(26, 58, 42, 0.03) 0deg,
+    rgba(184, 148, 63, 0.03) 120deg,
+    rgba(212, 172, 90, 0.03) 240deg,
+    rgba(26, 58, 42, 0.03) 360deg
+  );
+  animation: ag-aurora-spin 20s linear infinite;
+  pointer-events: none;
+}
+@keyframes ag-aurora-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Gradient border cards */
+.ag-gradient-border {
+  position: relative;
+  background: #fff;
+  border-radius: 1rem;
+  z-index: 0;
+}
+.ag-gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    rgba(26, 58, 42, 0.2),
+    rgba(184, 148, 63, 0.2),
+    rgba(212, 172, 90, 0.2)
+  );
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.ag-gradient-border:hover::before {
+  opacity: 1;
+}
+
+/* Stat card glow */
+.ag-stat-glow {
+  transition:
+    box-shadow 0.4s ease,
+    transform 0.3s ease;
+}
+.ag-stat-glow:hover {
+  box-shadow:
+    0 8px 32px -8px rgba(26, 58, 42, 0.18),
+    0 0 0 1px rgba(26, 58, 42, 0.08);
+}
+
+/* Pulsing dot */
+.ag-pulse-dot {
+  position: relative;
+}
+.ag-pulse-dot::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: inherit;
+  transform: translate(-50%, -50%);
+  animation: ag-pulse 2s ease-in-out infinite;
+  opacity: 0;
+}
+@keyframes ag-pulse {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(2.5);
+    opacity: 0.15;
+  }
+}
+
+/* Hero badge pill */
+.ag-hero-badge {
+  background: linear-gradient(135deg, rgba(26, 58, 42, 0.08), rgba(184, 148, 63, 0.08));
+  border: 1px solid rgba(26, 58, 42, 0.12);
+  backdrop-filter: blur(8px);
+}
+
+/* Premium CTA button */
+.ag-cta-primary {
+  background: linear-gradient(135deg, #0c0c0c 0%, #1a3a2a 50%, #0c0c0c 100%);
+  background-size: 200% 200%;
+  animation: ag-gradient-shift 4s ease-in-out infinite;
+  box-shadow:
+    0 4px 16px -4px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+  transition: box-shadow 0.3s ease;
+}
+.ag-cta-primary:hover {
+  box-shadow:
+    0 8px 32px -4px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+}
+
+/* Section divider gradient */
+.ag-section-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(26, 58, 42, 0.15),
+    rgba(184, 148, 63, 0.15),
+    transparent
+  );
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+::selection {
+  background: rgba(26, 58, 42, 0.25);
+  color: #142e20;
+}
+
+/* Figma L2 Intelligence Card variants */
+.iw-signal-critical {
+  border-left: 3px solid var(--iw-signal-critical);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+}
+.iw-signal-warning {
+  border-left: 3px solid var(--iw-signal-warning);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+}
+.iw-signal-info {
+  border-left: 3px solid var(--iw-signal-info);
+  box-shadow: 0 0 20px rgba(26, 58, 42, 0.4);
+}
+.iw-signal-success {
+  border-left: 3px solid var(--iw-signal-success);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+}
+.iw-intelligence-card {
+  background: var(--iw-bg-secondary);
+  border: 1px solid var(--iw-border);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+/* L2 "Suggested by IntegrateWise" insight card */
+.l2-suggested-card {
+  background: linear-gradient(135deg, rgba(26, 58, 42, 0.25) 0%, rgba(184, 148, 63, 0.2) 100%);
+  border-color: rgba(184, 148, 63, 0.3);
+}
+
+/* Landing: workspace preview animation (subtle pulse on signal card) */
+@keyframes workspace-signal-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(245, 158, 11, 0);
+  }
+}
+.workspace-signal-pulse {
+  animation: workspace-signal-pulse 2.5s ease-in-out infinite;
+}
+
+/* Reduced motion preferences for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .btn-lift:hover {
+    transform: none;
+  }
+
+  .grain-overlay {
+    display: none;
+  }
+
+  .ag-aurora::before {
+    animation: none;
+  }
+
+  .ag-pulse-dot::after {
+    animation: none;
+    display: none;
+  }
+
+  .ag-cta-primary {
+    animation: none;
+  }
+}
+
+/* Focus visible for keyboard navigation */
+:focus-visible {
+  outline: 2px solid var(--iw-accent);
+  outline-offset: 2px;
+}
+
+/* Skip to main content link for accessibility */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--iw-accent);
+  color: var(--iw-bg-primary);
+  padding: 8px;
+  text-decoration: none;
+  z-index: 100;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* Shimmer animation for loading states */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 1.5s infinite;
+}
+
+@layer components {
+  .editorial-heading {
+    @apply font-iw-display tracking-wide leading-none;
+    letter-spacing: 0.02em;
+    line-height: 1.05;
+  }
+  .editorial-serif {
+    @apply font-iw-serif;
+    line-height: 1.4;
+  }
+  .editorial-mono {
+    @apply font-iw-mono text-xs tracking-normal;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-3 bg-iw-ink text-iw-paper font-iw-sans font-semibold text-sm rounded-full transition-all duration-300 hover:bg-iw-forest hover:scale-[0.98] active:scale-[0.96];
+  }
+  .btn-outline {
+    @apply inline-flex items-center justify-center px-6 py-3 border-2 border-iw-ink text-iw-ink font-iw-sans font-semibold text-sm rounded-full transition-all duration-300 hover:bg-iw-ink hover:text-iw-paper;
+  }
+}
+
+/* ============================================================
+ * BLUE RETIRED -> FOREST / GOLD  (design-system enforcement)
+ * Product palette is Forest + Paper + Gold (no blue/indigo/cyan/violet).
+ * Tailwind v4 generates color utilities from these theme vars, so remapping
+ * the cool ramps here converts every cool-color utility (blue, indigo, sky,
+ * cyan, teal, violet, purple, fuchsia) across the whole app to forest/gold
+ * at once - no per-component edits needed.
+ * (Status ramps green/amber/red/rose/emerald are intentionally left intact.)
+ * ============================================================ */
+@theme {
+  /* Blue → Forest */
+  --color-blue-50: #eef3f0;
+  --color-blue-100: #d8e4dc;
+  --color-blue-200: #b9cfc2;
+  --color-blue-300: #8fb3a0;
+  --color-blue-400: #5e9277;
+  --color-blue-500: #3d7a50;
+  --color-blue-600: #2d5a3d;
+  --color-blue-700: #1a3a2a;
+  --color-blue-800: #142e20;
+  --color-blue-900: #0e2016;
+  --color-blue-950: #081109;
+
+  /* Indigo → Forest */
+  --color-indigo-50: #eef3f0;
+  --color-indigo-100: #d8e4dc;
+  --color-indigo-200: #b9cfc2;
+  --color-indigo-300: #8fb3a0;
+  --color-indigo-400: #5e9277;
+  --color-indigo-500: #3d7a50;
+  --color-indigo-600: #2d5a3d;
+  --color-indigo-700: #1a3a2a;
+  --color-indigo-800: #142e20;
+  --color-indigo-900: #0e2016;
+  --color-indigo-950: #081109;
+
+  /* Sky → Forest */
+  --color-sky-50: #eef3f0;
+  --color-sky-100: #d8e4dc;
+  --color-sky-200: #b9cfc2;
+  --color-sky-300: #8fb3a0;
+  --color-sky-400: #5e9277;
+  --color-sky-500: #3d7a50;
+  --color-sky-600: #2d5a3d;
+  --color-sky-700: #1a3a2a;
+  --color-sky-800: #142e20;
+  --color-sky-900: #0e2016;
+  --color-sky-950: #081109;
+
+  /* Cyan → Forest-bright */
+  --color-cyan-50: #eef3f0;
+  --color-cyan-100: #d8e4dc;
+  --color-cyan-200: #b9cfc2;
+  --color-cyan-300: #8fb3a0;
+  --color-cyan-400: #5e9277;
+  --color-cyan-500: #3d7a50;
+  --color-cyan-600: #2d5a3d;
+  --color-cyan-700: #1a3a2a;
+  --color-cyan-800: #142e20;
+  --color-cyan-900: #0e2016;
+  --color-cyan-950: #081109;
+
+  /* Teal → Forest-bright */
+  --color-teal-50: #eef3f0;
+  --color-teal-100: #d8e4dc;
+  --color-teal-200: #b9cfc2;
+  --color-teal-300: #8fb3a0;
+  --color-teal-400: #5e9277;
+  --color-teal-500: #3d7a50;
+  --color-teal-600: #2d5a3d;
+  --color-teal-700: #1a3a2a;
+  --color-teal-800: #142e20;
+  --color-teal-900: #0e2016;
+  --color-teal-950: #081109;
+
+  /* Violet → Gold */
+  --color-violet-50: #faf4e6;
+  --color-violet-100: #f0e0b0;
+  --color-violet-200: #e7d59a;
+  --color-violet-300: #d4ac5a;
+  --color-violet-400: #c79f4a;
+  --color-violet-500: #b8943f;
+  --color-violet-600: #9a7a34;
+  --color-violet-700: #7c6129;
+  --color-violet-800: #5e4a1f;
+  --color-violet-900: #403214;
+  --color-violet-950: #2a210d;
+
+  /* Purple → Gold */
+  --color-purple-50: #faf4e6;
+  --color-purple-100: #f0e0b0;
+  --color-purple-200: #e7d59a;
+  --color-purple-300: #d4ac5a;
+  --color-purple-400: #c79f4a;
+  --color-purple-500: #b8943f;
+  --color-purple-600: #9a7a34;
+  --color-purple-700: #7c6129;
+  --color-purple-800: #5e4a1f;
+  --color-purple-900: #403214;
+  --color-purple-950: #2a210d;
+
+  /* Fuchsia → Gold */
+  --color-fuchsia-50: #faf4e6;
+  --color-fuchsia-100: #f0e0b0;
+  --color-fuchsia-200: #e7d59a;
+  --color-fuchsia-300: #d4ac5a;
+  --color-fuchsia-400: #c79f4a;
+  --color-fuchsia-500: #b8943f;
+  --color-fuchsia-600: #9a7a34;
+  --color-fuchsia-700: #7c6129;
+  --color-fuchsia-800: #5e4a1f;
+  --color-fuchsia-900: #403214;
+  --color-fuchsia-950: #2a210d;
+}
+
+/* Slate (Tailwind blue-gray) → warm Paper/Ink neutral (no blue cast). */
+@theme {
+  --color-slate-50: #f5f3ef;
+  --color-slate-100: #e9e5dd;
+  --color-slate-200: #d8d2c6;
+  --color-slate-300: #c4baa8;
+  --color-slate-400: #a89a88;
+  --color-slate-500: #8a8580;
+  --color-slate-600: #6b665f;
+  --color-slate-700: #4a4640;
+  --color-slate-800: #2f2c28;
+  --color-slate-900: #1c1a17;
+  --color-slate-950: #0c0c0c;
+}
+
+/* Pink → Gold (airtight cool coverage) — keeps the whole app Forest/Paper/Gold.
+   Status ramps (green/amber/red/emerald) remain intact; only off-system pink is remapped. */
+@theme {
+  /* Pink → Gold */
+  --color-pink-50: #faf4e6;
+  --color-pink-100: #f0e0b0;
+  --color-pink-200: #e7d59a;
+  --color-pink-300: #d4ac5a;
+  --color-pink-400: #c79f4a;
+  --color-pink-500: #b8943f;
+  --color-pink-600: #9a7a34;
+  --color-pink-700: #7c6129;
+  --color-pink-800: #5e4a1f;
+  --color-pink-900: #403214;
+  --color-pink-950: #2a210d;
+}
+
+/* ============================================================
+ * ADDITIONAL STATUS / COOL REMAPS (paper + forest + gold only)
+ * Extend enforcement so emerald/rose/amber/orange/green also resolve
+ * to Forest/Paper/Gold/Red (red kept for danger).
+ * ============================================================ */
+@theme {
+  /* Emerald / Green → Forest (success / healthy / live) */
+  --color-emerald-50: #eef3f0;
+  --color-emerald-100: #d8e4dc;
+  --color-emerald-200: #b9cfc2;
+  --color-emerald-300: #8fb3a0;
+  --color-emerald-400: #5e9277;
+  --color-emerald-500: #3d7a50;
+  --color-emerald-600: #2d5a3d;
+  --color-emerald-700: #1a3a2a;
+  --color-emerald-800: #142e20;
+  --color-emerald-900: #0e2016;
+  --color-emerald-950: #081109;
+
+  --color-green-50: #eef3f0;
+  --color-green-100: #d8e4dc;
+  --color-green-200: #b9cfc2;
+  --color-green-300: #8fb3a0;
+  --color-green-400: #5e9277;
+  --color-green-500: #3d7a50;
+  --color-green-600: #2d5a3d;
+  --color-green-700: #1a3a2a;
+  --color-green-800: #142e20;
+  --color-green-900: #0e2016;
+  --color-green-950: #081109;
+
+  /* Rose / Red variants kept for danger but aligned to iw-red family */
+  --color-rose-50: #f5e0e0;
+  --color-rose-100: #f0d0d0;
+  --color-rose-200: #e8b8b8;
+  --color-rose-300: #d88a8a;
+  --color-rose-400: #c06060;
+  --color-rose-500: #8b2020;
+  --color-rose-600: #6f1a1a;
+  --color-rose-700: #551414;
+  --color-rose-800: #3c0f0f;
+  --color-rose-900: #250a0a;
+  --color-rose-950: #150505;
+
+  /* Amber / Orange → Gold (warning / at-risk) */
+  --color-amber-50: #faf4e6;
+  --color-amber-100: #f0e0b0;
+  --color-amber-200: #e7d59a;
+  --color-amber-300: #d4ac5a;
+  --color-amber-400: #c79f4a;
+  --color-amber-500: #b8943f;
+  --color-amber-600: #9a7a34;
+  --color-amber-700: #7c6129;
+  --color-amber-800: #5e4a1f;
+  --color-amber-900: #403214;
+  --color-amber-950: #2a210d;
+
+  --color-orange-50: #faf4e6;
+  --color-orange-100: #f0e0b0;
+  --color-orange-200: #e7d59a;
+  --color-orange-300: #d4ac5a;
+  --color-orange-400: #c79f4a;
+  --color-orange-500: #b8943f;
+  --color-orange-600: #9a7a34;
+  --color-orange-700: #7c6129;
+  --color-orange-800: #5e4a1f;
+  --color-orange-900: #403214;
+  --color-orange-950: #2a210d;
+}

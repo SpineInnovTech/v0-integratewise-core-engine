@@ -30,8 +30,10 @@ Customer Zero is a platform client. It does not own auth, tenants, schema, or da
 
 ## Where things live
 
-- `artifacts/integratewise/src/App.tsx` — wouter router, all 30 routes
-- `artifacts/integratewise/src/index.css` — Tailwind v4 theme (oklch color tokens, Inter font)
+- `artifacts/integratewise/src/App.tsx` — wouter router; persistent `WorkspaceShell` + `SpineProvider` wrap a route switch that renders views via `ModuleHost` (auth routes render bare, outside the shell)
+- `artifacts/integratewise/src/spine/` — the L1 adaptive layer: `types.ts`, registries (`role-registry`, `industry-registry`, `module-registry`, `schema-availability`), `derive-workspace.ts` resolver, and `spine-context.tsx` (role × industry × schema state + localStorage)
+- `artifacts/integratewise/src/components/workspace/` — persistent shell (`workspace-shell`, `workspace-sidebar` with role/industry switchers, `workspace-topbar`), `role-dashboard` (adaptive Home), `module-host` (schema gate), `schema-empty-state`
+- `artifacts/integratewise/src/index.css` — Tailwind v4 theme (oklch color tokens, Inter font) + `--iw-*` brand palette (light + dark)
 - `artifacts/integratewise/src/lib/supabase/client.ts` — **temporary stub** (chainable no-op) until Cloudflare API calls are wired
 - `artifacts/integratewise/src/components/views/` — 25 page-level view components (leads-view + lead-detail-view are live on the relay; the other 23 still use the Supabase stub)
 - `artifacts/integratewise/src/pages/leads/` — Leads list + `/leads/:id` detail (the executable CRM vertical slice)
@@ -40,6 +42,8 @@ Customer Zero is a platform client. It does not own auth, tenants, schema, or da
 
 ## Architecture decisions
 
+- **L1 adaptive workspace layer** — the surface is *derived*, not hardcoded: `deriveWorkspace({role, industry, schema})` maps (role × industry × schema availability) → { modules, role profile, industry topics }. The sidebar + role Home render from the result; adding a role/industry/module is a config change in `src/spine/*`, never a per-screen branch. The shell (sidebar + topbar) lives outside the route switch so it never unmounts on navigation.
+- **Schema-aware rendering** — `schema-availability.ts` marks each schema group `live | seeded | off`. Relay-backed groups (person/company/deal) are `live`; stub-backed groups are `seeded` (render the view with a "sample data" banner); `off` degrades to a graceful `SchemaEmptyState`. `ModuleHost` is the single gate.
 - **Demo mode always on** — `isMockAuthEnabled()` always returns true; no real auth needed for dev
 - **Supabase stub is intentional tech debt** — views imported from the Vercel version called Supabase directly; they will be replaced with `fetch('/api/...')` calls to `integratewise-live` Cloudflare Workers
 - **No direct DB access from Customer Zero** — Customer Zero calls the api-server relay over `/api`, never a database directly

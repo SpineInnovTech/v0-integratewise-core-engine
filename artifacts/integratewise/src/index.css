@@ -64,6 +64,23 @@
   --shadow-2xl: 0px 25px 50px -12px rgba(0,0,0,0.12);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
+
+  /* IntegrateWise brand palette (L1 adaptive layer) */
+  --iw-blue: #4256AB;
+  --iw-blue-50: #eef1f9;
+  --iw-blue-100: #dde3f3;
+  --iw-blue-500: #4256AB;
+  --iw-blue-900: #2a3870;
+  --iw-pink: #D46780;
+  --iw-pink-50: #fbeef1;
+  --iw-success: #3D8B6E;
+  --iw-success-50: #ecf5f1;
+  --iw-warning: #D4883E;
+  --iw-warning-50: #faf1e7;
+  --iw-danger: #DC4A4A;
+  --iw-danger-50: #fdecec;
+  --iw-purple: #7B5EA7;
+  --iw-purple-50: #f2eef8;
 }
 
 .dark {
@@ -115,6 +132,23 @@
   --opaque-button-border-intensity: 9;
   --elevate-1: rgba(255,255,255, .04);
   --elevate-2: rgba(255,255,255, .09);
+
+  /* IntegrateWise brand palette — dark overrides */
+  --iw-blue: #6678c9;
+  --iw-blue-50: #1c2545;
+  --iw-blue-100: #233060;
+  --iw-blue-500: #6678c9;
+  --iw-blue-900: #3a4a8f;
+  --iw-pink: #e088a0;
+  --iw-pink-50: #3a2630;
+  --iw-success: #57a98a;
+  --iw-success-50: #1c3329;
+  --iw-warning: #e0a05f;
+  --iw-warning-50: #3a2e1c;
+  --iw-danger: #e86a6a;
+  --iw-danger-50: #3a2020;
+  --iw-purple: #9d80c7;
+  --iw-purple-50: #2c2440;
 }
 
 @theme inline {

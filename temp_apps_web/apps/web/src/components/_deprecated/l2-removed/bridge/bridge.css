@@ -1,0 +1,177 @@
+/* Bridge UI - Anti-Gravity Effects */
+
+.bridge-container {
+  perspective: 1000px;
+  min-height: calc(100vh - 80px);
+  position: relative;
+  overflow: hidden;
+  padding: 2rem;
+  background: radial-gradient(circle at 50% 50%, #faf8f3 0%, #f5f3ef 100%);
+}
+
+.floating-panel {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-style: preserve-3d;
+  position: relative;
+}
+
+.floating-panel:hover {
+  transform: translateY(-5px) rotateX(2deg) rotateY(-2deg);
+}
+
+/* Layer Bands (The Foundations) */
+.layer-bands {
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  z-index: 1;
+}
+
+.layer-band {
+  height: 10px;
+  border-radius: 20px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.2rem;
+  text-transform: uppercase;
+  color: white;
+  opacity: 0.7;
+  box-shadow: 0 0 15px currentColor;
+}
+
+.band-data {
+  background: #5e9277;
+  color: #5e9277;
+}
+
+.band-memory {
+  background: #2d5a3d;
+  color: #2d5a3d;
+}
+
+.band-think {
+  background: #8a8580;
+  color: #8a8580;
+}
+
+.band-act {
+  background: #c79f4a;
+  color: #c79f4a;
+}
+
+.layer-band span {
+  position: absolute;
+  top: -20px;
+  left: 0;
+  color: var(--text-secondary);
+}
+
+/* Glowing Fibers */
+.fiber {
+  position: absolute;
+  pointer-events: none;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: drawFiber 3s forwards ease-in-out;
+  opacity: 0.4;
+  z-index: 2;
+}
+
+@keyframes drawFiber {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.fiber-pulse {
+  animation: pulseFiber 4s infinite alternate;
+}
+
+@keyframes pulseFiber {
+  from {
+    opacity: 0.3;
+    stroke-width: 1px;
+  }
+
+  to {
+    opacity: 0.7;
+    stroke-width: 2px;
+  }
+}
+
+/* cockpit effects */
+.cockpit-surface {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotateX(60deg);
+  width: 90%;
+  height: 400px;
+  background: radial-gradient(ellipse at center, rgba(78, 108, 157, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* grid */
+.abstract-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    linear-gradient(rgba(184, 196, 210, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(184, 196, 210, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* node scatter */
+.node-circle {
+  fill: var(--brand-san-marino);
+  filter: blur(2px);
+  animation: floatNode 6s infinite ease-in-out;
+}
+
+@keyframes floatNode {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(5px, -10px);
+  }
+}
+
+/* custom animations */
+.animate-magnet-pin {
+  animation: magnetPin 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes magnetPin {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

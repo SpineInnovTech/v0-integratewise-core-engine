@@ -1,0 +1,267 @@
+/**
+ * IntegrateWise — Canonical Design Tokens
+ * ========================================
+ * Source: IntegrateWise Canonical Architecture v2.0
+ * Authority: Nirmal (Founder)
+ * Status: LOCKED — do not change colours without explicit instruction
+ *
+ * Design Language:
+ *   Forest  (#1A3A2A) — stability, growth, institutional trust
+ *   Paper   (#F4F0E8) — warmth, texture, human scale
+ *   Gold    (#B8943F) — insight, premium, wayfinding
+ *
+ * Fonts (loaded in index.html):
+ *   Bebas Neue        → display / hero headlines ONLY
+ *   DM Serif Display  → h1–h3 (serif headings)
+ *   Instrument Sans   → h4–h6, body, UI (default sans)
+ *   IBM Plex Mono     → code, technical labels, data
+ */
+
+:root {
+  /* ── 1. CORE PALETTE ───────────────────────────────────────────────
+     Raw values. All other tokens reference these.
+     Do NOT use these directly in components — use semantic tokens. */
+
+  --iw-ink: #0c0c0c;
+  --iw-ink-muted: #5a5550;
+  --iw-ink-ghost: #8a8580;
+
+  --iw-paper: #f4f0e8;
+  --iw-paper-warm: #ebe5d8;
+  --iw-paper-deep: #e0d9c8;
+
+  --iw-rule: #c4baa8;
+  --iw-rule-light: #d8d0c0;
+
+  --iw-forest: #1a3a2a;
+  --iw-forest-mid: #2d5a3d;
+  --iw-forest-bright: #3d7a50;
+
+  --iw-gold: #b8943f;
+  --iw-gold-light: #d4ac5a;
+  --iw-gold-pale: #f0e0b0;
+
+  --iw-slate: #28332c;
+  --iw-slate-mid: #3d5247;
+
+  --iw-red: #8b2020;
+  --iw-red-pale: #f5e0e0;
+
+  /* Blue retired → Forest. Many dashboards reference var(--iw-blue) for data accents;
+     it was never defined. Mapping it to forest-bright removes all stray blue at the source. */
+  --iw-blue: var(--iw-forest-bright);
+
+  /* Cool accents retired → Forest family (no blue gradients per design system). */
+  --iw-navy: var(--iw-forest);
+  --iw-indigo: var(--iw-forest-mid);
+
+  /* Purple retired → Gold (secondary accent contrast to Forest). All var(--iw-purple) resolve here. */
+  --iw-purple: var(--iw-gold);
+  --iw-purple-light: var(--iw-gold-light);
+  --cloud: #eef3f0;
+
+  /* ── 2. SEMANTIC TOKENS ────────────────────────────────────────────
+     Purpose-mapped. Use these in components. */
+
+  /* Surfaces */
+  --iw-surface-canvas: var(--iw-paper);
+  --iw-surface-default: var(--iw-paper-warm);
+  --iw-surface-subtle: var(--iw-paper-deep);
+  --iw-surface-raised: #f9f6ef;
+  --iw-surface-inverse: var(--iw-ink);
+
+  /* Text */
+  --iw-text-strong: var(--iw-ink);
+  --iw-text-default: var(--iw-ink);
+  --iw-text-muted: var(--iw-ink-muted);
+  --iw-text-faint: var(--iw-ink-ghost);
+  --iw-text-inverse: var(--iw-paper);
+  --iw-text-accent: var(--iw-forest-mid);
+  --iw-text-highlight: var(--iw-gold);
+
+  /* Borders */
+  --iw-border-subtle: var(--iw-rule-light);
+  --iw-border-default: var(--iw-rule);
+  --iw-border-strong: #a89a88;
+  --iw-border-accent: var(--iw-gold);
+
+  /* Status */
+  --iw-status-success: var(--iw-forest-bright);
+  --iw-status-warning: var(--iw-gold);
+  --iw-status-danger: var(--iw-red);
+  --iw-status-info: var(--iw-slate-mid);
+
+  /* Overlays */
+  --iw-overlay-soft: rgba(12, 12, 12, 0.04);
+  --iw-overlay-medium: rgba(12, 12, 12, 0.08);
+  --iw-overlay-strong: rgba(12, 12, 12, 0.16);
+
+  /* Primary / accent shortcuts */
+  --iw-primary: var(--iw-forest);
+  --iw-primary-hover: var(--iw-forest-mid);
+  --iw-primary-soft: rgba(26, 58, 42, 0.08);
+  --iw-accent: var(--iw-gold);
+  --iw-accent-soft: var(--iw-gold-pale);
+
+  /* ── 3. SIGNAL TOKENS (L2 Awareness) ──────────────────────────────*/
+  --iw-signal-critical: var(--iw-red);
+  --iw-signal-warning: var(--iw-gold);
+  --iw-signal-info: var(--iw-slate-mid);
+  --iw-signal-success: var(--iw-forest-bright);
+  --iw-signal-ai: rgba(26, 58, 42, 0.15);
+
+  /* ── 4. NAV / BG ALIASES (legacy — kept for backward compat) ──────*/
+  --iw-bg-primary: var(--iw-paper);
+  --iw-bg-secondary: var(--iw-paper-warm);
+  --iw-bg-tertiary: var(--iw-paper-deep);
+  --iw-nav-primary: var(--iw-forest);
+  --iw-nav-hover: var(--iw-forest-bright);
+  --iw-nav-dark: var(--iw-forest-mid);
+  --iw-text-primary: var(--iw-ink);
+  --iw-text-secondary: rgba(12, 12, 12, 0.8);
+  --iw-text-tertiary: rgba(12, 12, 12, 0.6);
+  --iw-border: var(--iw-rule);
+  --iw-border-light: var(--iw-rule-light);
+
+  /* ── 5. DOMAIN COLORS ──────────────────────────────────────────────
+     One accent per business domain, used in nav + workbench identity. */
+  --iw-domain-cs: var(--iw-forest);
+  --iw-domain-sales: var(--iw-gold);
+  --iw-domain-revops: var(--iw-slate);
+  --iw-domain-marketing: var(--iw-red);
+  --iw-domain-product: var(--iw-forest-mid);
+  --iw-domain-finance: #2d5a3d;
+  --iw-domain-service: var(--iw-gold-light);
+  --iw-domain-procurement: #3d7a50;
+  --iw-domain-it: #5a5550;
+  --iw-domain-education: #b8943f;
+  --iw-domain-bizops: var(--iw-forest);
+  --iw-domain-hr: var(--iw-gold);
+  --iw-domain-legal: var(--iw-slate-mid);
+
+  /* ── 6. WORKBENCH PRODUCT TOKENS ───────────────────────────────────
+     Used by workbench/cockpit surfaces. wb- prefix. */
+
+  /* Type scale */
+  --wb-fs-page: 36px; /* Page title — DM Serif 700 */
+  --wb-fs-section: 24px; /* Section headline — DM Serif 400 */
+  --wb-fs-sub: 18px; /* Subsection — Instrument Sans 600 */
+  --wb-fs-body: 15px; /* Body — Instrument Sans 400 */
+  --wb-fs-label: 12px; /* Label — Instrument Sans 500 uppercase */
+  --wb-fs-meta: 11px; /* Metric label / metadata */
+  --wb-fs-table: 13px; /* Data tables — IBM Plex Mono */
+  --wb-fs-stamp: 11px; /* Timestamps — IBM Plex Mono */
+  --wb-fs-metric-hero: 32px; /* Hero metric — IBM Plex Mono 500 */
+  --wb-fs-metric: 18px; /* Standard metric value */
+
+  /* Spacing */
+  --wb-sp-0: 4px;
+  --wb-sp-1: 8px;
+  --wb-sp-2: 12px;
+  --wb-sp-3: 16px;
+  --wb-sp-4: 24px;
+  --wb-sp-5: 32px;
+  --wb-sp-6: 48px;
+  --wb-sp-7: 64px;
+  --wb-sp-8: 96px;
+  --wb-page-margin: 32px;
+  --wb-gutter: 24px;
+  --wb-max-width: 1440px;
+
+  /* Radii */
+  --wb-r-card: 8px;
+  --wb-r-control: 6px;
+  --wb-r-pill: 999px;
+  --wb-r-dot: 50%;
+
+  /* Shadows */
+  --wb-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --wb-shadow-hover: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --wb-shadow-elev: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --wb-shadow-modal: 0 8px 32px rgba(0, 0, 0, 0.12);
+
+  /* Borders */
+  --wb-bw: 1px;
+  --wb-bw-strong: 2px;
+
+  /* Motion */
+  --wb-t-fast: 0.15s;
+  --wb-t-base: 0.2s;
+  --wb-t-card: 0.25s;
+  --wb-t-page: 0.4s;
+  --wb-ease: ease-out;
+
+  /* Workbench accent weights */
+  --wb-user-accent: var(--iw-forest);
+  --wb-cognitive-accent: var(--iw-gold);
+  --wb-twin-accent: var(--iw-forest-bright);
+  --wb-operator-accent: var(--iw-slate);
+
+  /* Memory layer accents */
+  --wb-memory-personal: var(--iw-gold);
+  --wb-memory-org: var(--iw-forest);
+  --wb-memory-conv: var(--iw-forest-mid);
+
+  /* ── 7. MARKETING TOKENS ───────────────────────────────────────────*/
+  --iw-mkt-bg: var(--iw-paper);
+  --iw-mkt-bg-secondary: var(--iw-paper-warm);
+  --iw-mkt-accent: var(--iw-forest);
+  --iw-mkt-accent-hover: var(--iw-forest-bright);
+  --iw-mkt-accent-light: var(--iw-paper-warm);
+  --iw-mkt-accent-muted: var(--iw-rule-light);
+  --iw-mkt-text: var(--iw-ink);
+  --iw-mkt-text-secondary: var(--iw-slate);
+  --iw-mkt-text-muted: var(--iw-rule);
+  --iw-mkt-text-body: var(--iw-ink);
+  --iw-mkt-border: var(--iw-rule);
+  --iw-mkt-border-light: var(--iw-rule-light);
+  --iw-mkt-pending-bg: var(--iw-gold-pale);
+  --iw-mkt-pending-text: var(--iw-gold);
+}
+
+/* ── DARK MODE ─────────────────────────────────────────────────────────
+   Applied via .dark class. Forest + Gold accents persist. */
+.dark {
+  --iw-surface-canvas: #0e1410;
+  --iw-surface-default: #162018;
+  --iw-surface-subtle: #1e2820;
+  --iw-surface-raised: #2a3830;
+  --iw-surface-inverse: var(--iw-paper);
+
+  --iw-text-strong: var(--iw-paper);
+  --iw-text-default: var(--iw-paper);
+  --iw-text-muted: #b8ae9e;
+  --iw-text-faint: #8a8070;
+  --iw-text-inverse: var(--iw-ink);
+  --iw-text-accent: var(--iw-forest-bright);
+  --iw-text-highlight: var(--iw-gold-light);
+
+  --iw-border-subtle: rgba(196, 186, 168, 0.1);
+  --iw-border-default: rgba(196, 186, 168, 0.16);
+  --iw-border-strong: rgba(196, 186, 168, 0.28);
+  --iw-border-accent: var(--iw-gold);
+
+  --iw-status-success: var(--iw-forest-bright);
+  --iw-status-warning: var(--iw-gold-light);
+  --iw-status-danger: #c04040;
+  --iw-status-info: #2d5a3d;
+
+  --iw-overlay-soft: rgba(244, 240, 232, 0.04);
+  --iw-overlay-medium: rgba(244, 240, 232, 0.08);
+  --iw-overlay-strong: rgba(0, 0, 0, 0.4);
+
+  --iw-primary: var(--iw-forest-bright);
+  --iw-primary-hover: var(--iw-forest-mid);
+  --iw-primary-soft: rgba(61, 122, 80, 0.16);
+  --iw-accent-soft: rgba(184, 148, 63, 0.16);
+
+  --iw-bg-primary: #0e1410;
+  --iw-bg-secondary: #162018;
+  --iw-bg-tertiary: #1e2820;
+  --iw-nav-primary: var(--iw-forest-mid);
+  --iw-text-primary: var(--iw-paper);
+  --iw-text-secondary: rgba(244, 240, 232, 0.8);
+  --iw-text-tertiary: rgba(244, 240, 232, 0.5);
+  --iw-border: rgba(196, 186, 168, 0.16);
+  --iw-border-light: rgba(196, 186, 168, 0.1);
+}
