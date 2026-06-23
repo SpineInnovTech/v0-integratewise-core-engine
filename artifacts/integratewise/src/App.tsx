@@ -1,82 +1,137 @@
-/**
- * IntegrateWise — IW Continuity Bridge over the Spine, empowered by AI
- *
- * Unified entry point merging:
- *   - Marketing site (Anti-Gravity design, Dir 1)
- *   - Workspace app (Business Operations, Dir 2)
- *   - Backend services (integratewise-complete, Dir 3)
- *
- * "AI That Thinks in Context, Waits for Approvals."
- */
+import { Switch, Route, Redirect, Router as WouterRouter } from "wouter";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Show } from "@clerk/react";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/toaster";
+import {
+  basePath,
+  ClerkAppProvider,
+  Landing,
+  SignInPage,
+  SignUpPage,
+  withAuth,
+} from "@/components/auth/clerk-config";
 
-import React from "react";
-import { RouterProvider } from "react-router";
-import { router } from "./routes";
-import { AuthProvider } from "@/contexts/auth-context";
+// Pages
+import HomePage from "@/pages/home";
+import AdminPage from "@/pages/admin/index";
+import ArchitecturePage from "@/pages/architecture/index";
+import BrainstormingPage from "@/pages/brainstorming/index";
+import CampaignsPage from "@/pages/campaigns/index";
+import ClientsPage from "@/pages/clients/index";
+import ClientDetailPage from "@/pages/clients/detail/index";
+import ContentPage from "@/pages/content/index";
+import DataFlowPage from "@/pages/data-flow/index";
+import DataSourcesPage from "@/pages/data-sources/index";
+import DealsPage from "@/pages/deals/index";
+import IntegrationsPage from "@/pages/integrations/index";
+import KnowledgePage from "@/pages/knowledge/index";
+import KnowledgeCategoryPage from "@/pages/knowledge/category/index";
+import LeadsPage from "@/pages/leads/index";
+import LeadDetailPage from "@/pages/leads/detail/index";
+import MetricsPage from "@/pages/metrics/index";
+import PipelinePage from "@/pages/pipeline/index";
+import ProductsPage from "@/pages/products/index";
+import ProjectsPage from "@/pages/projects/index";
+import SalesPage from "@/pages/sales/index";
+import ServicesPage from "@/pages/services/index";
+import SessionsPage from "@/pages/sessions/index";
+import SettingsPage from "@/pages/settings/index";
+import StrategyPage from "@/pages/strategy/index";
+import TasksPage from "@/pages/tasks/index";
+import WebsitePage from "@/pages/website/index";
+import NotFound from "@/pages/not-found";
 
-function RootFallback() {
+const queryClient = new QueryClient();
+
+// Base path "/": signed-in users get the dashboard, signed-out users get the
+// public landing (never auto-redirected to sign-in).
+function HomeRedirect() {
   return (
-    <div
-      className="min-h-screen flex items-center justify-center"
-      style={{
-        background: "#0e1410",
-        color: "var(--iw-text-faint)",
-        fontFamily: "system-ui, sans-serif",
-      }}
-    >
-      <div className="text-center">
-        <div
-          className="w-10 h-10 border-2 border-iw-forest-bright border-t-transparent rounded-full animate-spin mx-auto mb-4"
-          style={{ animation: "spin 0.8s linear infinite" }}
-        />
-        <p>Loading IntegrateWise...</p>
-      </div>
-    </div>
+    <>
+      <Show when="signed-in">
+        <HomePage />
+      </Show>
+      <Show when="signed-out">
+        <Landing />
+      </Show>
+    </>
   );
 }
 
-class RootErrorBoundary extends React.Component<
-  { children: React.ReactNode },
-  { hasError: boolean; error: Error | null }
-> {
-  state = { hasError: false, error: null as Error | null };
-
-  static getDerivedStateFromError(error: Error) {
-    return { hasError: true, error };
-  }
-
-  render() {
-    if (this.state.hasError && this.state.error) {
-      return (
-        <div
-          className="min-h-screen flex items-center justify-center p-6"
-          style={{
-            background: "#0e1410",
-            color: "var(--cloud)",
-            fontFamily: "system-ui, sans-serif",
-          }}
-        >
-          <div className="max-w-lg">
-            <h1 className="text-xl font-semibold mb-2 text-red-400">Something went wrong</h1>
-            <pre className="text-sm text-[var(--iw-text-faint)] overflow-auto rounded bg-black/30 p-4">
-              {this.state.error.message}
-            </pre>
-          </div>
-        </div>
-      );
-    }
-    return this.props.children;
-  }
-}
-
-export default function App() {
+function Router() {
   return (
-    <RootErrorBoundary>
-      <AuthProvider>
-        <React.Suspense fallback={<RootFallback />}>
-          <RouterProvider router={router} />
-        </React.Suspense>
-      </AuthProvider>
-    </RootErrorBoundary>
+    <Switch>
+      <Route path="/" component={HomeRedirect} />
+
+      {/* Clerk auth routes — the /*? optional wildcard matches both the bare URL
+          and Clerk's OAuth sub-paths. Copy verbatim. */}
+      <Route path="/sign-in/*?" component={SignInPage} />
+      <Route path="/sign-up/*?" component={SignUpPage} />
+
+      {/* Legacy mock-auth routes now redirect to the real Clerk flows. */}
+      <Route path="/auth/login">
+        <Redirect to="/sign-in" />
+      </Route>
+      <Route path="/auth/sign-up">
+        <Redirect to="/sign-up" />
+      </Route>
+      <Route path="/auth/sign-up-success">
+        <Redirect to="/sign-in" />
+      </Route>
+      <Route path="/auth/error">
+        <Redirect to="/sign-in" />
+      </Route>
+
+      {/* Protected app routes — require a signed-in Clerk session. */}
+      <Route path="/admin" component={withAuth(AdminPage)} />
+      <Route path="/architecture" component={withAuth(ArchitecturePage)} />
+      <Route path="/brainstorming" component={withAuth(BrainstormingPage)} />
+      <Route path="/campaigns" component={withAuth(CampaignsPage)} />
+      <Route path="/clients" component={withAuth(ClientsPage)} />
+      <Route path="/clients/:id" component={withAuth(ClientDetailPage)} />
+      <Route path="/content" component={withAuth(ContentPage)} />
+      <Route path="/data-flow" component={withAuth(DataFlowPage)} />
+      <Route path="/data-sources" component={withAuth(DataSourcesPage)} />
+      <Route path="/deals" component={withAuth(DealsPage)} />
+      <Route path="/integrations" component={withAuth(IntegrationsPage)} />
+      <Route path="/knowledge" component={withAuth(KnowledgePage)} />
+      <Route
+        path="/knowledge/:category"
+        component={withAuth(KnowledgeCategoryPage)}
+      />
+      <Route path="/leads" component={withAuth(LeadsPage)} />
+      <Route path="/leads/:id" component={withAuth(LeadDetailPage)} />
+      <Route path="/metrics" component={withAuth(MetricsPage)} />
+      <Route path="/pipeline" component={withAuth(PipelinePage)} />
+      <Route path="/products" component={withAuth(ProductsPage)} />
+      <Route path="/projects" component={withAuth(ProjectsPage)} />
+      <Route path="/sales" component={withAuth(SalesPage)} />
+      <Route path="/services" component={withAuth(ServicesPage)} />
+      <Route path="/sessions" component={withAuth(SessionsPage)} />
+      <Route path="/settings" component={withAuth(SettingsPage)} />
+      <Route path="/strategy" component={withAuth(StrategyPage)} />
+      <Route path="/tasks" component={withAuth(TasksPage)} />
+      <Route path="/website" component={withAuth(WebsitePage)} />
+
+      <Route component={NotFound} />
+    </Switch>
   );
 }
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+        <WouterRouter base={basePath}>
+          <ClerkAppProvider>
+            <Router />
+          </ClerkAppProvider>
+        </WouterRouter>
+        <Toaster />
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+}
+
+export default App;
