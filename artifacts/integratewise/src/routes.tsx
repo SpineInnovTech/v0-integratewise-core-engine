@@ -27,12 +27,20 @@ const NotFound = () => (
     <div className="text-center space-y-4">
       <h1 className="text-4xl font-bold text-foreground">404</h1>
       <p className="text-muted-foreground">Page not found</p>
-      <a href="/app" className="text-primary font-bold hover:underline">
+      <a
+        href={`${import.meta.env.BASE_URL}app`}
+        className="text-primary font-bold hover:underline"
+      >
         Go to app
       </a>
     </div>
   </div>
 );
+
+// Router basename = the artifact's mounted base path (Replit BASE_PATH → Vite
+// `base` → import.meta.env.BASE_URL), normalized without a trailing slash so
+// react-router matches correctly when the app is served under a path prefix.
+const routerBasename = import.meta.env.BASE_URL.replace(/\/+$/, "") || "/";
 
 export const router = createBrowserRouter([
   // Root redirects to /app (app entry point)
@@ -131,4 +139,4 @@ export const router = createBrowserRouter([
 
   // 404 - app only
   { path: "*", Component: NotFound },
-]);
+], { basename: routerBasename });

@@ -3,3 +3,4 @@
 - [Supabase stub is tech debt](supabase-stub.md) — no Supabase exists; most views still have migration artifacts; stub must chain fully; replace with generated api-client-react hooks (see data-stack-relay)
 - [Local Postgres relay doctrine](data-stack-relay.md) — dev backend is an owned Express+Drizzle relay over local Postgres, contract-first via OpenAPI codegen; swappable to integratewise-live; not Supabase
 - [Apollo as the real lead source](apollo-leads.md) — Leads come from the user's saved Apollo contacts, imported by dogfooding POST /api/leads; score = data-completeness heuristic; no synthetic seed
+- [local-mock offline boot](local-mock-boot.md) — adopted apps/web frontend; VITE_SPINE_PROVIDER=local-mock is the master offline switch; two parallel auth layers force you to neutralize gateway calls inside authManager, not the providers

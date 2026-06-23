@@ -116,6 +116,54 @@ function getRefreshTokenKey(userId: string): string {
   return `${REFRESH_TOKEN_PREFIX}${userId}`;
 }
 
+// ─── Local-mock (offline dev) ────────────────────────────────────────────────
+
+const SPINE_PROVIDER = import.meta.env.VITE_SPINE_PROVIDER || "spine-db";
+const IS_LOCAL_MOCK = SPINE_PROVIDER === "local-mock";
+
+/** The tenant-zero (god-view) identity Customer Zero operates as offline. */
+const LOCAL_MOCK_USER = {
+  sub: "iw-customer-zero",
+  email: "connect@integratewise.ai",
+  tenant_id: "iw-customer-zero",
+  role: "admin",
+  name: "Customer Zero",
+};
+
+/** Base64url-encode a JSON object (no padding) for a decode-only JWT. */
+function base64UrlEncode(obj: Record<string, any>): string {
+  return btoa(JSON.stringify(obj))
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+}
+
+/**
+ * Build an UNSIGNED, decode-only JWT for offline local-mock dev. The signature
+ * segment is a placeholder — this token is never sent to or verified by a real
+ * gateway (the spine + gateway clients are fully mocked in local-mock mode).
+ */
+function createMockJwt(claims: Record<string, any>): string {
+  const nowSec = Math.floor(Date.now() / 1000);
+  const header = base64UrlEncode({ alg: "none", typ: "JWT" });
+  const payload = base64UrlEncode({
+    iat: nowSec,
+    exp: nowSec + 60 * 60 * 24 * 365, // 1 year — refresh is disabled in local-mock
+    ...claims,
+  });
+  return `${header}.${payload}.local-mock`;
+}
+
+/**
+ * True if a token is one of our offline local-mock tokens (unsigned; the
+ * signature segment is the literal "local-mock"). These must NEVER be trusted
+ * by, or transmitted to, a real gateway.
+ */
+function isLocalMockToken(token: string): boolean {
+  const parts = token.split(".");
+  return parts.length === 3 && parts[2] === "local-mock";
+}
+
 // ─── AuthManager Implementation ─────────────────────────────────────────────
 
 class AuthManagerImpl implements IAuthManager {
@@ -137,8 +185,11 @@ class AuthManagerImpl implements IAuthManager {
   private _initPromise: Promise<void> | null = null;
 
   constructor() {
-    // Attempt silent refresh on construction (page load)
-    this._initPromise = this._silentRefreshOnLoad();
+    // Offline local-mock boot mints a tenant-zero session with NO network;
+    // every other provider attempts a silent refresh from a stored token.
+    this._initPromise = IS_LOCAL_MOCK
+      ? this._initLocalMockSession()
+      : this._silentRefreshOnLoad();
   }
 
   // ─── Public API ──────────────────────────────────────────────────────────
@@ -393,6 +444,19 @@ class AuthManagerImpl implements IAuthManager {
         return;
       }
 
+      // An offline local-mock token must never be trusted by — or sent to — a
+      // real gateway. If one was persisted (e.g. flipping local-mock → gateway),
+      // drop it and require a real login.
+      if (isLocalMockToken(storedToken)) {
+        try {
+          localStorage.removeItem(ACCESS_TOKEN_KEY);
+        } catch {
+          /* ignore */
+        }
+        this._initialized = true;
+        return;
+      }
+
       // Check if token is still valid (not expired)
       const expiresAt = getTokenExpiry(storedToken);
       const nowSec = Math.floor(Date.now() / 1000);
@@ -411,6 +475,36 @@ class AuthManagerImpl implements IAuthManager {
       // (e.g. revoked/rotated server-side). Non-blocking: fast boot is preserved and
       // the session is cleared only if the gateway explicitly rejects the token.
       void this._validateSessionWithServer(storedToken);
+    } catch {
+      this._clearSession();
+    } finally {
+      this._initialized = true;
+      this._initPromise = null;
+    }
+  }
+
+  /**
+   * Offline local-mock boot. Adopts a stored token if present and unexpired
+   * (session continuity), otherwise mints a synthetic tenant-zero
+   * (iw-customer-zero) session. Performs NO network calls — never hits /auth/me.
+   */
+  private async _initLocalMockSession(): Promise<void> {
+    try {
+      // Only adopt a persisted *mock* token (continuity across reloads). A real
+      // token from a prior gateway session is ignored — minting a fresh mock
+      // token below overwrites it so local-mock never runs under a real tenant.
+      const storedToken = localStorage.getItem(ACCESS_TOKEN_KEY);
+      if (storedToken && isLocalMockToken(storedToken)) {
+        try {
+          if (getTokenExpiry(storedToken) > Math.floor(Date.now() / 1000)) {
+            this._setSession(storedToken);
+            return;
+          }
+        } catch {
+          /* malformed stored token — fall through and mint a fresh mock session */
+        }
+      }
+      this._setSession(createMockJwt(LOCAL_MOCK_USER));
     } catch {
       this._clearSession();
     } finally {
@@ -451,6 +545,18 @@ class AuthManagerImpl implements IAuthManager {
    * If invalid, the session is cleared and re-login is required.
    */
   private async _doRefresh(): Promise<string> {
+    // Offline local-mock: never validate against a real gateway. The minted
+    // session is long-lived — hand back the current token (mint one if missing).
+    if (IS_LOCAL_MOCK) {
+      const existing = this._accessToken || localStorage.getItem(ACCESS_TOKEN_KEY);
+      if (existing) {
+        if (!this._session) this._setSession(existing);
+        this._emitEvent("TOKEN_REFRESHED", this._session);
+        return existing;
+      }
+      return this._setSession(createMockJwt(LOCAL_MOCK_USER)).accessToken;
+    }
+
     const token = this._accessToken || localStorage.getItem(ACCESS_TOKEN_KEY);
     if (!token) {
       throw new Error("No access token available");
@@ -478,6 +584,9 @@ class AuthManagerImpl implements IAuthManager {
    * Schedule proactive token validation (exp - 5 minutes).
    */
   private _scheduleProactiveRefresh(expiresAt: number): void {
+    // Offline local-mock: never schedule a network-bound token refresh.
+    if (IS_LOCAL_MOCK) return;
+
     // Clear any existing timer
     if (this._refreshTimer) {
       clearTimeout(this._refreshTimer);
