@@ -224,3 +224,138 @@ export interface TwinReply {
   suggestions: TwinSuggestion[];
 }
 
+export type LeadIntelligenceStatus = typeof LeadIntelligenceStatus[keyof typeof LeadIntelligenceStatus];
+
+
+export const LeadIntelligenceStatus = {
+  ready: 'ready',
+  gateway_unavailable: 'gateway_unavailable',
+  insufficient_context: 'insufficient_context',
+  error: 'error',
+} as const;
+
+export type LeadIntelligenceVerdict = typeof LeadIntelligenceVerdict[keyof typeof LeadIntelligenceVerdict];
+
+
+export const LeadIntelligenceVerdict = {
+  approach: 'approach',
+  hold: 'hold',
+  pass: 'pass',
+  unknown: 'unknown',
+} as const;
+
+export type IntelligenceSignalBasis = typeof IntelligenceSignalBasis[keyof typeof IntelligenceSignalBasis];
+
+
+export const IntelligenceSignalBasis = {
+  evidence: 'evidence',
+  inference: 'inference',
+  unknown: 'unknown',
+} as const;
+
+export interface IntelligenceSignal {
+  id: string;
+  label: string;
+  /** @nullable */
+  hit: boolean | null;
+  basis: IntelligenceSignalBasis;
+  text: string;
+  citations: string[];
+}
+
+export type IntelligenceAnswerQuestion = typeof IntelligenceAnswerQuestion[keyof typeof IntelligenceAnswerQuestion];
+
+
+export const IntelligenceAnswerQuestion = {
+  why_qualified: 'why_qualified',
+  why_first_fit: 'why_first_fit',
+  problem: 'problem',
+  current_solution: 'current_solution',
+  in_our_track: 'in_our_track',
+  recommended_action: 'recommended_action',
+} as const;
+
+export type IntelligenceAnswerBasis = typeof IntelligenceAnswerBasis[keyof typeof IntelligenceAnswerBasis];
+
+
+export const IntelligenceAnswerBasis = {
+  evidence: 'evidence',
+  inference: 'inference',
+  unknown: 'unknown',
+} as const;
+
+export interface IntelligenceAnswer {
+  question: IntelligenceAnswerQuestion;
+  basis: IntelligenceAnswerBasis;
+  answer: string;
+  citations: string[];
+  /** @nullable */
+  unknownReason?: string | null;
+}
+
+export type IntelligenceSourceName = typeof IntelligenceSourceName[keyof typeof IntelligenceSourceName];
+
+
+export const IntelligenceSourceName = {
+  Apollo: 'Apollo',
+  Notion: 'Notion',
+} as const;
+
+export type IntelligenceSourceKind = typeof IntelligenceSourceKind[keyof typeof IntelligenceSourceKind];
+
+
+export const IntelligenceSourceKind = {
+  company_facts: 'company_facts',
+  icp: 'icp',
+  policy: 'policy',
+} as const;
+
+export type IntelligenceSourceStatus = typeof IntelligenceSourceStatus[keyof typeof IntelligenceSourceStatus];
+
+
+export const IntelligenceSourceStatus = {
+  live: 'live',
+  unavailable: 'unavailable',
+} as const;
+
+export interface IntelligenceSource {
+  name: IntelligenceSourceName;
+  kind: IntelligenceSourceKind;
+  /** @nullable */
+  asOf?: string | null;
+  /** @nullable */
+  url?: string | null;
+  status: IntelligenceSourceStatus;
+}
+
+export type GatewayStatusStatus = typeof GatewayStatusStatus[keyof typeof GatewayStatusStatus];
+
+
+export const GatewayStatusStatus = {
+  connected: 'connected',
+  unavailable: 'unavailable',
+} as const;
+
+export interface GatewayStatus {
+  status: GatewayStatusStatus;
+  /** @nullable */
+  message?: string | null;
+  /** @nullable */
+  retryAfterSeconds?: number | null;
+}
+
+export interface LeadIntelligence {
+  status: LeadIntelligenceStatus;
+  leadId: string;
+  verdict: LeadIntelligenceVerdict;
+  /** @nullable */
+  fitScore: number | null;
+  computedAt: string;
+  /** @nullable */
+  summary: string | null;
+  signals: IntelligenceSignal[];
+  answers: IntelligenceAnswer[];
+  sources: IntelligenceSource[];
+  gateway: GatewayStatus;
+}
+

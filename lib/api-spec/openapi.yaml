@@ -213,6 +213,35 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+  /leads/{id}/intelligence:
+    get:
+      operationId: getLeadIntelligence
+      tags: [leads]
+      summary: Live, grounded lead intelligence (Obtain It)
+      description: >
+        Proactively answers whether to pursue a lead by reading live company
+        facts (Apollo) and the organisation's ICP and lead-selection policy
+        (the single Notion wiki) through the platform intelligence gateway.
+        Strictly grounded: every claim is tagged evidence or inference,
+        unknowns are explicit, and nothing is stored or fabricated. When the
+        gateway is not configured or unreachable it returns status
+        gateway_unavailable with HTTP 200 (never fake or stale data).
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      responses:
+        "200":
+          description: Lead intelligence (may report an unavailable gateway)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LeadIntelligence"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
   /clients:
     get:
       operationId: listClients
@@ -568,3 +597,119 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/TwinSuggestion"
+
+    LeadIntelligence:
+      type: object
+      required:
+        - status
+        - leadId
+        - verdict
+        - fitScore
+        - computedAt
+        - summary
+        - signals
+        - answers
+        - sources
+        - gateway
+      properties:
+        status:
+          type: string
+          enum: [ready, gateway_unavailable, insufficient_context, error]
+        leadId: { type: string }
+        verdict:
+          type: string
+          enum: [approach, hold, pass, unknown]
+        fitScore: { type: ["integer", "null"] }
+        computedAt: { type: string, format: date-time }
+        summary: { type: ["string", "null"] }
+        signals:
+          type: array
+          items:
+            $ref: "#/components/schemas/IntelligenceSignal"
+        answers:
+          type: array
+          items:
+            $ref: "#/components/schemas/IntelligenceAnswer"
+        sources:
+          type: array
+          items:
+            $ref: "#/components/schemas/IntelligenceSource"
+        gateway:
+          $ref: "#/components/schemas/GatewayStatus"
+
+    IntelligenceSignal:
+      type: object
+      required:
+        - id
+        - label
+        - hit
+        - basis
+        - text
+        - citations
+      properties:
+        id: { type: string }
+        label: { type: string }
+        hit: { type: ["boolean", "null"] }
+        basis:
+          type: string
+          enum: [evidence, inference, unknown]
+        text: { type: string }
+        citations:
+          type: array
+          items: { type: string }
+
+    IntelligenceAnswer:
+      type: object
+      required:
+        - question
+        - basis
+        - answer
+        - citations
+      properties:
+        question:
+          type: string
+          enum:
+            - why_qualified
+            - why_first_fit
+            - problem
+            - current_solution
+            - in_our_track
+            - recommended_action
+        basis:
+          type: string
+          enum: [evidence, inference, unknown]
+        answer: { type: string }
+        citations:
+          type: array
+          items: { type: string }
+        unknownReason: { type: ["string", "null"] }
+
+    IntelligenceSource:
+      type: object
+      required:
+        - name
+        - kind
+        - status
+      properties:
+        name:
+          type: string
+          enum: [Apollo, Notion]
+        kind:
+          type: string
+          enum: [company_facts, icp, policy]
+        asOf: { type: ["string", "null"], format: date-time }
+        url: { type: ["string", "null"] }
+        status:
+          type: string
+          enum: [live, unavailable]
+
+    GatewayStatus:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum: [connected, unavailable]
+        message: { type: ["string", "null"] }
+        retryAfterSeconds: { type: ["integer", "null"] }

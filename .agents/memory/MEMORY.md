@@ -3,3 +3,4 @@
 - [Local Postgres relay doctrine](data-stack-relay.md) — dev backend is an owned Express+Drizzle relay over local Postgres, contract-first via OpenAPI codegen; swappable to integratewise-live; not Supabase
 - [Apollo as the real lead source](apollo-leads.md) — Leads come from the user's saved Apollo contacts, imported by dogfooding POST /api/leads; score = data-completeness heuristic; no synthetic seed
 - [L1 adaptive layer](l1-adaptive-layer.md) — surface derived from role × industry × schema via src/spine/* registries; persistent shell outside the route switch; ModuleHost gates on schema (live/seeded/off)
+- [Lead Intelligence gateway](lead-intelligence-gateway.md) — "Obtain It" panel reads live through a platform gateway; client keeps NO cache (RQ staleTime/gcTime 0, refetchOnMount always); honest gateway_unavailable fallback; no local scoring/DB

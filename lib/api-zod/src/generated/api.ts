@@ -346,6 +346,52 @@ export const CreateLeadActivityBody = zod.object({
 
 
 /**
+ * Proactively answers whether to pursue a lead by reading live company facts (Apollo) and the organisation's ICP and lead-selection policy (the single Notion wiki) through the platform intelligence gateway. Strictly grounded: every claim is tagged evidence or inference, unknowns are explicit, and nothing is stored or fabricated. When the gateway is not configured or unreachable it returns status gateway_unavailable with HTTP 200 (never fake or stale data).
+
+ * @summary Live, grounded lead intelligence (Obtain It)
+ */
+export const GetLeadIntelligenceParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const GetLeadIntelligenceResponse = zod.object({
+  "status": zod.enum(['ready', 'gateway_unavailable', 'insufficient_context', 'error']),
+  "leadId": zod.string(),
+  "verdict": zod.enum(['approach', 'hold', 'pass', 'unknown']),
+  "fitScore": zod.number().nullable(),
+  "computedAt": zod.coerce.date(),
+  "summary": zod.string().nullable(),
+  "signals": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "hit": zod.boolean().nullable(),
+  "basis": zod.enum(['evidence', 'inference', 'unknown']),
+  "text": zod.string(),
+  "citations": zod.array(zod.string())
+})),
+  "answers": zod.array(zod.object({
+  "question": zod.enum(['why_qualified', 'why_first_fit', 'problem', 'current_solution', 'in_our_track', 'recommended_action']),
+  "basis": zod.enum(['evidence', 'inference', 'unknown']),
+  "answer": zod.string(),
+  "citations": zod.array(zod.string()),
+  "unknownReason": zod.string().nullish()
+})),
+  "sources": zod.array(zod.object({
+  "name": zod.enum(['Apollo', 'Notion']),
+  "kind": zod.enum(['company_facts', 'icp', 'policy']),
+  "asOf": zod.coerce.date().nullish(),
+  "url": zod.string().nullish(),
+  "status": zod.enum(['live', 'unavailable'])
+})),
+  "gateway": zod.object({
+  "status": zod.enum(['connected', 'unavailable']),
+  "message": zod.string().nullish(),
+  "retryAfterSeconds": zod.number().nullish()
+})
+})
+
+
+/**
  * @summary List clients
  */
 export const ListClientsResponseItem = zod.object({

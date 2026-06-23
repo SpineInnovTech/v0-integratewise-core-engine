@@ -31,6 +31,7 @@ import type {
   Lead,
   LeadDetail,
   LeadInput,
+  LeadIntelligence,
   LeadUpdate,
   QualifyLeadInput,
   TwinChatInput,
@@ -716,6 +717,85 @@ export const useCreateLeadActivity = <TError = ErrorType<Error>,
       > => {
       return useMutation(getCreateLeadActivityMutationOptions(options));
     }
+
+export const getGetLeadIntelligenceUrl = (id: string,) => {
+
+
+
+
+  return `/api/leads/${id}/intelligence`
+}
+
+/**
+ * Proactively answers whether to pursue a lead by reading live company facts (Apollo) and the organisation's ICP and lead-selection policy (the single Notion wiki) through the platform intelligence gateway. Strictly grounded: every claim is tagged evidence or inference, unknowns are explicit, and nothing is stored or fabricated. When the gateway is not configured or unreachable it returns status gateway_unavailable with HTTP 200 (never fake or stale data).
+
+ * @summary Live, grounded lead intelligence (Obtain It)
+ */
+export const getLeadIntelligence = async (id: string, options?: RequestInit): Promise<LeadIntelligence> => {
+
+  return customFetch<LeadIntelligence>(getGetLeadIntelligenceUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetLeadIntelligenceQueryKey = (id: string,) => {
+    return [
+    `/api/leads/${id}/intelligence`
+    ] as const;
+    }
+
+
+export const getGetLeadIntelligenceQueryOptions = <TData = Awaited<ReturnType<typeof getLeadIntelligence>>, TError = ErrorType<Error>>(id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getLeadIntelligence>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetLeadIntelligenceQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getLeadIntelligence>>> = ({ signal }) => getLeadIntelligence(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getLeadIntelligence>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetLeadIntelligenceQueryResult = NonNullable<Awaited<ReturnType<typeof getLeadIntelligence>>>
+export type GetLeadIntelligenceQueryError = ErrorType<Error>
+
+
+/**
+ * @summary Live, grounded lead intelligence (Obtain It)
+ */
+
+export function useGetLeadIntelligence<TData = Awaited<ReturnType<typeof getLeadIntelligence>>, TError = ErrorType<Error>>(
+ id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getLeadIntelligence>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetLeadIntelligenceQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
 
 export const getListClientsUrl = () => {
 

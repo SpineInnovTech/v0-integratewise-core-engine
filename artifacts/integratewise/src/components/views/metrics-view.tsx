@@ -1,10 +1,27 @@
 import useSWR from "swr"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis, Tooltip, PieChart, Pie, Cell } from "recharts"
+import {
+  Area as AreaBase,
+  AreaChart,
+  ResponsiveContainer,
+  XAxis as XAxisBase,
+  YAxis as YAxisBase,
+  Tooltip as TooltipBase,
+  PieChart,
+  Pie as PieBase,
+  Cell,
+} from "recharts"
+import type { FC } from "react"
 import { Bot, TrendingUp, Briefcase, Cloud, Package, GraduationCap } from "lucide-react"
 import { useMetrics } from "@/lib/hooks/use-data"
 import { createClient } from "@/lib/supabase/client"
+
+const Area = AreaBase as unknown as FC<any>
+const XAxis = XAxisBase as unknown as FC<any>
+const YAxis = YAxisBase as unknown as FC<any>
+const Tooltip = TooltipBase as unknown as FC<any>
+const Pie = PieBase as unknown as FC<any>
 
 const tierData = [
   { name: "Professional", value: 35, color: "hsl(var(--chart-1))", icon: Briefcase },
@@ -189,7 +206,7 @@ export function MetricsView() {
                       <XAxis dataKey="month" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
                       <YAxis
                         tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }}
-                        tickFormatter={(v) => `₹${v}L`}
+                        tickFormatter={(v: number) => `₹${v}L`}
                       />
                       <Tooltip formatter={(value: number) => [`₹${value}L`, "Revenue"]} />
                       <Area

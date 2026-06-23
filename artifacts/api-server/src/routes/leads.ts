@@ -19,6 +19,8 @@ import {
   ListLeadActivitiesResponseItem,
   CreateLeadActivityParams,
   CreateLeadActivityBody,
+  GetLeadIntelligenceParams,
+  GetLeadIntelligenceResponse,
 } from "@workspace/api-zod";
 import * as leads from "../repositories/leads";
 import * as clients from "../repositories/clients";
@@ -26,6 +28,7 @@ import * as deals from "../repositories/deals";
 import * as activities from "../repositories/activities";
 import * as tasks from "../repositories/tasks";
 import * as leadsService from "../services/leads-service";
+import * as intelligenceService from "../services/intelligence-service";
 
 const router: IRouter = Router();
 
@@ -180,6 +183,27 @@ router.post("/leads/:id/activities", async (req, res): Promise<void> => {
   });
 
   res.status(201).json(ListLeadActivitiesResponseItem.parse(activity));
+});
+
+// Lead Intelligence ("Obtain It"): live, grounded, read-only. The relay reads
+// ICP/policy/company facts through the platform gateway at request time and
+// stores nothing. When the gateway is down it returns an honest unavailable
+// state (HTTP 200), never a guessed verdict or stale copy.
+router.get("/leads/:id/intelligence", async (req, res): Promise<void> => {
+  const params = GetLeadIntelligenceParams.safeParse(req.params);
+  if (!params.success) {
+    res.status(400).json({ error: params.error.message });
+    return;
+  }
+
+  const lead = await leads.findById(params.data.id);
+  if (!lead) {
+    res.status(404).json({ error: "Lead not found" });
+    return;
+  }
+
+  const result = await intelligenceService.getLeadIntelligence(lead);
+  res.json(GetLeadIntelligenceResponse.parse(result));
 });
 
 export default router;
