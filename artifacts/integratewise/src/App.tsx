@@ -1,94 +1,82 @@
-import { Switch, Route, Router as WouterRouter } from "wouter";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/toaster";
+/**
+ * IntegrateWise — IW Continuity Bridge over the Spine, empowered by AI
+ *
+ * Unified entry point merging:
+ *   - Marketing site (Anti-Gravity design, Dir 1)
+ *   - Workspace app (Business Operations, Dir 2)
+ *   - Backend services (integratewise-complete, Dir 3)
+ *
+ * "AI That Thinks in Context, Waits for Approvals."
+ */
 
-// Pages
-import HomePage from "@/pages/home";
-import AdminPage from "@/pages/admin/index";
-import ArchitecturePage from "@/pages/architecture/index";
-import BrainstormingPage from "@/pages/brainstorming/index";
-import CampaignsPage from "@/pages/campaigns/index";
-import ClientsPage from "@/pages/clients/index";
-import ClientDetailPage from "@/pages/clients/detail/index";
-import ContentPage from "@/pages/content/index";
-import DataFlowPage from "@/pages/data-flow/index";
-import DataSourcesPage from "@/pages/data-sources/index";
-import DealsPage from "@/pages/deals/index";
-import IntegrationsPage from "@/pages/integrations/index";
-import KnowledgePage from "@/pages/knowledge/index";
-import KnowledgeCategoryPage from "@/pages/knowledge/category/index";
-import LeadsPage from "@/pages/leads/index";
-import LeadDetailPage from "@/pages/leads/detail/index";
-import MetricsPage from "@/pages/metrics/index";
-import PipelinePage from "@/pages/pipeline/index";
-import ProductsPage from "@/pages/products/index";
-import ProjectsPage from "@/pages/projects/index";
-import SalesPage from "@/pages/sales/index";
-import ServicesPage from "@/pages/services/index";
-import SessionsPage from "@/pages/sessions/index";
-import SettingsPage from "@/pages/settings/index";
-import StrategyPage from "@/pages/strategy/index";
-import TasksPage from "@/pages/tasks/index";
-import WebsitePage from "@/pages/website/index";
-import AuthLoginPage from "@/pages/auth/login/index";
-import AuthSignUpPage from "@/pages/auth/sign-up/index";
-import AuthSignUpSuccessPage from "@/pages/auth/sign-up-success/index";
-import AuthErrorPage from "@/pages/auth/error/index";
-import NotFound from "@/pages/not-found";
+import React from "react";
+import { RouterProvider } from "react-router";
+import { router } from "./routes";
+import { AuthProvider } from "@/contexts/auth-context";
 
-const queryClient = new QueryClient();
-
-function Router() {
+function RootFallback() {
   return (
-    <Switch>
-      <Route path="/" component={HomePage} />
-      <Route path="/admin" component={AdminPage} />
-      <Route path="/architecture" component={ArchitecturePage} />
-      <Route path="/brainstorming" component={BrainstormingPage} />
-      <Route path="/campaigns" component={CampaignsPage} />
-      <Route path="/clients" component={ClientsPage} />
-      <Route path="/clients/:id" component={ClientDetailPage} />
-      <Route path="/content" component={ContentPage} />
-      <Route path="/data-flow" component={DataFlowPage} />
-      <Route path="/data-sources" component={DataSourcesPage} />
-      <Route path="/deals" component={DealsPage} />
-      <Route path="/integrations" component={IntegrationsPage} />
-      <Route path="/knowledge" component={KnowledgePage} />
-      <Route path="/knowledge/:category" component={KnowledgeCategoryPage} />
-      <Route path="/leads" component={LeadsPage} />
-      <Route path="/leads/:id" component={LeadDetailPage} />
-      <Route path="/metrics" component={MetricsPage} />
-      <Route path="/pipeline" component={PipelinePage} />
-      <Route path="/products" component={ProductsPage} />
-      <Route path="/projects" component={ProjectsPage} />
-      <Route path="/sales" component={SalesPage} />
-      <Route path="/services" component={ServicesPage} />
-      <Route path="/sessions" component={SessionsPage} />
-      <Route path="/settings" component={SettingsPage} />
-      <Route path="/strategy" component={StrategyPage} />
-      <Route path="/tasks" component={TasksPage} />
-      <Route path="/website" component={WebsitePage} />
-      <Route path="/auth/login" component={AuthLoginPage} />
-      <Route path="/auth/sign-up" component={AuthSignUpPage} />
-      <Route path="/auth/sign-up-success" component={AuthSignUpSuccessPage} />
-      <Route path="/auth/error" component={AuthErrorPage} />
-      <Route component={NotFound} />
-    </Switch>
+    <div
+      className="min-h-screen flex items-center justify-center"
+      style={{
+        background: "#0e1410",
+        color: "var(--iw-text-faint)",
+        fontFamily: "system-ui, sans-serif",
+      }}
+    >
+      <div className="text-center">
+        <div
+          className="w-10 h-10 border-2 border-iw-forest-bright border-t-transparent rounded-full animate-spin mx-auto mb-4"
+          style={{ animation: "spin 0.8s linear infinite" }}
+        />
+        <p>Loading IntegrateWise...</p>
+      </div>
+    </div>
   );
 }
 
-function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-          <Router />
-        </WouterRouter>
-        <Toaster />
-      </ThemeProvider>
-    </QueryClientProvider>
-  );
+class RootErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error: Error | null }
+> {
+  state = { hasError: false, error: null as Error | null };
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  render() {
+    if (this.state.hasError && this.state.error) {
+      return (
+        <div
+          className="min-h-screen flex items-center justify-center p-6"
+          style={{
+            background: "#0e1410",
+            color: "var(--cloud)",
+            fontFamily: "system-ui, sans-serif",
+          }}
+        >
+          <div className="max-w-lg">
+            <h1 className="text-xl font-semibold mb-2 text-red-400">Something went wrong</h1>
+            <pre className="text-sm text-[var(--iw-text-faint)] overflow-auto rounded bg-black/30 p-4">
+              {this.state.error.message}
+            </pre>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
 }
 
-export default App;
+export default function App() {
+  return (
+    <RootErrorBoundary>
+      <AuthProvider>
+        <React.Suspense fallback={<RootFallback />}>
+          <RouterProvider router={router} />
+        </React.Suspense>
+      </AuthProvider>
+    </RootErrorBoundary>
+  );
+}

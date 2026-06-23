@@ -1,5 +1,11 @@
-import { createRoot } from "react-dom/client";
+// Deploy trigger 2025-03-07
+import React from "react";
+import ReactDOM from "react-dom/client";
 import App from "./App";
-import "./index.css";
+import "./app.css";
 
-createRoot(document.getElementById("root")!).render(<App />);
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
