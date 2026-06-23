@@ -37,8 +37,6 @@ import {
   Github,
   FileText,
   Sparkles,
-  Layers,
-  GitBranch,
 } from "lucide-react"
 import { useState } from "react"
 import { IntegrateWiseLogo } from "@/components/integratewise-logo"
@@ -93,8 +91,6 @@ export function Sidebar({ onSearchClick, onAIClick }: SidebarProps) {
 
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto overscroll-contain touch-pan-y">
         {renderLink("/", <Home className="h-4.5 w-4.5 flex-shrink-0" />, "Home")}
-        {renderLink("/architecture", <Layers className="h-4.5 w-4.5 flex-shrink-0" />, "Architecture")}
-        {renderLink("/data-flow", <GitBranch className="h-4.5 w-4.5 flex-shrink-0" />, "Data Flow")}
         {renderLink("/strategy", <Compass className="h-4.5 w-4.5 flex-shrink-0" />, "Strategic Hub")}
         {renderLink("/metrics", <BarChart3 className="h-4.5 w-4.5 flex-shrink-0" />, "Metrics Dashboard")}
         {renderLink("/brainstorming", <Lightbulb className="h-4.5 w-4.5 flex-shrink-0" />, "Brainstorming")}
