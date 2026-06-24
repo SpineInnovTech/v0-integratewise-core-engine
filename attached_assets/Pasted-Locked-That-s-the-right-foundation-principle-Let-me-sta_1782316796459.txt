@@ -1,0 +1,47 @@
+Locked. That's the right foundation principle. Let me state it back precisely so we're fully aligned before anything else gets built:
+
+---
+
+**The Spine is not a database. It's the adaptive operating state of each user.**
+
+Every user starts with a base Spine — the 974 fields across 12 domains, mostly null. As they connect tools, the Spine hydrates. More connectors = deeper fields = richer intelligence. The system never breaks at shallow state — it just reasons with what's available and signals what's missing.
+
+---
+
+**What "Spine-first" means for every system component:**
+
+**Connectors** — exist only to hydrate Spine fields. They have no other purpose. A connector that doesn't map to a CANONICAL_FIELD doesn't belong in the system.
+
+**Loader / Normalizer** — transforms raw connector payloads into Spine rows. Nothing lands anywhere except the Spine. No connector-specific tables, no raw storage that bypasses normalization.
+
+**MCP** — reads from Spine, not from connectors directly. When an AI agent needs context, it gets a Spine projection, not a raw API call. This is what makes context coherent across tools.
+
+**AI / Cognitive Layer (L2)** — reasons exclusively over Spine objects. It doesn't know which connector provided a field. It only knows the field exists, its value, and its goal_refs[]. This is what makes intelligence portable across customers regardless of their tool stack.
+
+**Workspace (L1)** — renders Spine objects. If a field is null, the UI shows a "connect [tool type] to unlock this" prompt — not a broken widget. Shallow Spine = guided onboarding state, not degraded product.
+
+**Goals & Metrics** — formulas reference Spine columns. If a column is null, the metric shows "insufficient data" not a wrong number. As Spine hydrates, metrics activate automatically. No manual wiring per customer.
+
+---
+
+**The adaptive model in one rule:**
+
+```
+User connects Tool X
+→ Loader maps Tool X fields to CANONICAL_FIELDS
+→ Spine rows hydrate (nulls become values)
+→ Metrics that reference those fields activate
+→ Intelligence layer gains new reasoning surface
+→ Workspace renders new value automatically
+→ No code change. No config. Just depth.
+```
+
+---
+
+**What this means for what we build next:**
+
+The Loader's CANONICAL_FIELDS config becomes the most critical file in the entire system. It's the contract between the outside world and the Spine. Everything downstream — MCP context, AI reasoning, metric computation, workspace rendering — is a consequence of that one mapping layer being correct and complete.
+
+That's the next thing to build: the Loader config spec — per EntityType, per field, with null-handling rules, type definitions, and the connector-agnostic field names that make the Spine adaptive by design.
+
+Ready to start with Phase 1 EntityTypes (DEAL, ACCOUNT, INVOICE, REVENUE, ACCOUNT_HEALTH) since those unlock the highest revenue-impact intelligence first?
