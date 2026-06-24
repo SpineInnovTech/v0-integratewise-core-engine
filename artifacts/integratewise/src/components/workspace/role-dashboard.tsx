@@ -4,13 +4,14 @@ import {
   MessageSquare, Calendar, HeartPulse, AlertTriangle, CheckCircle2, TrendingUp,
   FileText, Users, Zap, BarChart3, Briefcase, Database, Activity, GitBranch,
   Plus, Clock, Shield, Brain, RotateCcw, User, Play, ChevronRight, ArrowUpRight,
-  ArrowDownRight, Compass, Plug, type LucideIcon,
+  ArrowDownRight, Compass, Plug, Mail, Star, type LucideIcon,
 } from "lucide-react";
 import { useSpine } from "@/spine/spine-context";
 import { usePlatform } from "@/platform/platform-context";
 import { CTX_CONFIG } from "@/spine/role-registry";
 import { SCHEMA_GROUP_LABEL } from "@/spine/schema-availability";
 import { groupSource, SOURCE_META, type DataSource } from "@/platform/data-source";
+import { useGmailInbox } from "@/platform/gateway-email";
 import type { RoleProfile, IndustryProfile } from "@/spine/types";
 
 const ICONS: Record<string, LucideIcon> = {
@@ -207,6 +208,9 @@ export function RoleDashboard() {
           </div>
         </div>
 
+        {/* Gmail inbox — live via google-mail connector */}
+        <GmailInboxSection />
+
         {/* What changed */}
         <SectionRow icon={RotateCcw} label="What changed" badge={`${profile.signals.length} signals`} source="demo" defaultOpen>
           <div className="space-y-1.5 pt-1">
@@ -273,6 +277,81 @@ export function RoleDashboard() {
         </SectionRow>
       </div>
     </div>
+  );
+}
+
+function GmailInboxSection() {
+  const emailResource = useGmailInbox();
+  const emails = emailResource.data ?? [];
+  const unread = emails.filter((e) => !e.is_read).length;
+
+  return (
+    <SectionRow
+      icon={Mail}
+      label="Inbox"
+      badge={unread > 0 ? `${unread} unread` : undefined}
+      badgeColor={unread > 0 ? "var(--iw-blue)" : undefined}
+      source={emailResource.source}
+    >
+      {emailResource.state === "loading" && (
+        <div className="space-y-1.5 pt-1">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="h-10 rounded-lg animate-pulse" style={{ background: "var(--secondary)" }} />
+          ))}
+        </div>
+      )}
+      {emailResource.state === "error" && (
+        <p className="pt-2 text-[11px]" style={{ color: "var(--muted-foreground)" }}>
+          {emailResource.error ?? "Gmail unavailable"}
+        </p>
+      )}
+      {emailResource.state === "empty" && (
+        <p className="pt-2 text-[11px]" style={{ color: "var(--muted-foreground)" }}>
+          Inbox is empty
+        </p>
+      )}
+      {emailResource.state === "ready" && (
+        <div className="space-y-1.5 pt-1">
+          {emails.slice(0, 5).map((email) => (
+            <div
+              key={email.id}
+              className="flex items-start gap-2.5 rounded-lg p-2"
+              style={{
+                background: email.is_read ? "var(--secondary)" : "var(--primary-foreground, var(--secondary))",
+                opacity: email.is_read ? 0.8 : 1,
+              }}
+            >
+              <Mail className="mt-0.5 h-3 w-3 shrink-0" style={{ color: "var(--iw-blue)" }} />
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-1.5">
+                  {email.is_starred && (
+                    <Star className="h-2.5 w-2.5 shrink-0 fill-amber-400 text-amber-400" />
+                  )}
+                  <span
+                    className="truncate text-[11px]"
+                    style={{ fontWeight: email.is_read ? 400 : 600, color: "var(--foreground)" }}
+                  >
+                    {email.sender_name || email.sender_email}
+                  </span>
+                  {!email.is_read && (
+                    <span
+                      className="h-1.5 w-1.5 shrink-0 rounded-full"
+                      style={{ background: "var(--iw-blue)" }}
+                    />
+                  )}
+                </div>
+                <p
+                  className="truncate text-[10px]"
+                  style={{ color: "var(--muted-foreground)", fontWeight: email.is_read ? 400 : 500 }}
+                >
+                  {email.subject}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </SectionRow>
   );
 }
 

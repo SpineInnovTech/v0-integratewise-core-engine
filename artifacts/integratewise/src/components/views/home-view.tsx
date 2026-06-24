@@ -29,7 +29,9 @@ import {
   Presentation,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { useTasks, useCalendarEvents, useEmails, useDriveFiles, useActivities, useMetrics } from "@/lib/hooks/use-data"
+import { useTasks, useCalendarEvents, useDriveFiles, useActivities, useMetrics } from "@/lib/hooks/use-data"
+import { useGmailInbox } from "@/platform/gateway-email"
+import { SOURCE_META } from "@/platform/data-source"
 import { createClient } from "@/lib/supabase/client"
 import { WebhookSchedulerWidget } from "@/components/widgets/webhook-scheduler-widget"
 
@@ -83,7 +85,8 @@ const aiInsights = ["Revenue on track", "Pipeline declining urgent", "DM respons
 export function HomeView() {
   const { data: tasks, mutate: mutateTasks } = useTasks()
   const { data: calendarEvents } = useCalendarEvents()
-  const { data: emails } = useEmails("inbox")
+  const emailResource = useGmailInbox()
+  const emails = emailResource.data
   const { data: driveFiles } = useDriveFiles()
   const { data: activities } = useActivities(5)
   const { data: metrics } = useMetrics()
@@ -356,9 +359,19 @@ export function HomeView() {
               <CardTitle className="text-base flex items-center gap-2">
                 <Mail className="h-4 w-4 text-primary" />
                 Email
+                <span
+                  className="text-xs font-normal px-1.5 py-0.5 rounded"
+                  style={{
+                    background: SOURCE_META[emailResource.source].bg,
+                    color: SOURCE_META[emailResource.source].fg,
+                  }}
+                  title={SOURCE_META[emailResource.source].description}
+                >
+                  {SOURCE_META[emailResource.source].label}
+                </span>
               </CardTitle>
               <Badge variant="secondary" className="bg-primary/10 text-primary">
-                {emails?.filter((e: any) => !e.is_read).length || 0} new
+                {emails?.filter((e) => !e.is_read).length || 0} new
               </Badge>
             </div>
             <div className="flex gap-1 mt-2">
@@ -381,33 +394,61 @@ export function HomeView() {
             </div>
           </CardHeader>
           <CardContent className="space-y-2">
-            {!emails
-              ? Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-20 w-full" />)
-              : emails.slice(0, 4).map((email: any) => (
-                  <div
-                    key={email.id}
-                    className={cn(
-                      "p-3 rounded-lg cursor-pointer transition-colors",
-                      !email.is_read ? "bg-primary/5 hover:bg-primary/10" : "bg-muted/30 hover:bg-muted/50",
-                    )}
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          {email.is_starred && <Star className="h-3 w-3 text-amber-500 fill-amber-500" />}
-                          <span className={cn("text-sm", !email.is_read && "font-semibold")}>{email.sender_name}</span>
-                        </div>
-                        <p className={cn("text-sm truncate", !email.is_read ? "font-medium" : "text-muted-foreground")}>
-                          {email.subject}
-                        </p>
-                        <p className="text-xs text-muted-foreground truncate">{email.preview}</p>
+            {emailResource.state === "loading" &&
+              Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className="h-20 w-full" />
+              ))}
+            {emailResource.state === "error" && (
+              <p className="text-xs text-muted-foreground py-4 text-center">
+                {emailResource.error ?? "Email unavailable"}
+              </p>
+            )}
+            {emailResource.state === "empty" && (
+              <p className="text-xs text-muted-foreground py-4 text-center">
+                Inbox is empty
+              </p>
+            )}
+            {emailResource.state === "ready" &&
+              emails!.slice(0, 4).map((email) => (
+                <div
+                  key={email.id}
+                  className={cn(
+                    "p-3 rounded-lg cursor-pointer transition-colors",
+                    !email.is_read
+                      ? "bg-primary/5 hover:bg-primary/10"
+                      : "bg-muted/30 hover:bg-muted/50",
+                  )}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        {email.is_starred && (
+                          <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
+                        )}
+                        <span
+                          className={cn("text-sm", !email.is_read && "font-semibold")}
+                        >
+                          {email.sender_name}
+                        </span>
                       </div>
-                      <span className="text-xs text-muted-foreground whitespace-nowrap">
-                        {formatTime(email.received_at)}
-                      </span>
+                      <p
+                        className={cn(
+                          "text-sm truncate",
+                          !email.is_read ? "font-medium" : "text-muted-foreground",
+                        )}
+                      >
+                        {email.subject}
+                      </p>
+                      <p className="text-xs text-muted-foreground truncate">
+                        {email.preview}
+                      </p>
                     </div>
+                    <span className="text-xs text-muted-foreground whitespace-nowrap">
+                      {formatTime(email.received_at)}
+                    </span>
                   </div>
-                ))}
+                </div>
+              ))}
           </CardContent>
         </Card>
       </div>

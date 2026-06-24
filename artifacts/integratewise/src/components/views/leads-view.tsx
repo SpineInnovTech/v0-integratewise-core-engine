@@ -2,7 +2,6 @@ import { useState } from "react"
 import { Link } from "wouter"
 import { useQueryClient } from "@tanstack/react-query"
 import {
-  useListLeads,
   useCreateLead,
   useUpdateLead,
   useQualifyLead,
@@ -11,6 +10,9 @@ import {
   type Lead,
   type LeadInput,
 } from "@workspace/api-client-react"
+import { useLeads, GATEWAY_LEADS_QUERY_KEY } from "@/platform/gateway-leads"
+import { SOURCE_META } from "@/platform/data-source"
+import { useGovernanceGate, GovernanceGate } from "@/platform/governance-gate"
 import { useToast } from "@/hooks/use-toast"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -91,15 +93,19 @@ const emptyForm: LeadInput = {
 export function LeadsView() {
   const { toast } = useToast()
   const queryClient = useQueryClient()
-  const invalidateLeads = () =>
-    queryClient.invalidateQueries({ queryKey: getListLeadsQueryKey() })
+  const invalidateLeads = () => {
+    void queryClient.invalidateQueries({ queryKey: getListLeadsQueryKey() });
+    void queryClient.invalidateQueries({ queryKey: GATEWAY_LEADS_QUERY_KEY });
+  }
 
-  const { data: leads, isLoading } = useListLeads()
+  const { data: leads, source, state: resourceState, error: resourceError } = useLeads()
+  const isLoading = resourceState === "loading"
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState<string | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [form, setForm] = useState<LeadInput>(emptyForm)
 
+  const gate = useGovernanceGate()
   const createLead = useCreateLead()
   const updateLead = useUpdateLead()
   const qualifyLead = useQualifyLead()
@@ -163,42 +169,73 @@ export function LeadsView() {
   }
 
   const handleQualify = (lead: Lead) => {
-    qualifyLead.mutate(
-      { id: lead.id, data: {} },
-      {
-        onSuccess: () => {
-          invalidateLeads()
-          toast({ title: "Lead qualified", description: `${lead.firstName} ${lead.lastName ?? ""}`.trim() })
-        },
-        onError: () => toast({ title: "Qualify failed", variant: "destructive" }),
-      },
-    )
+    const name = `${lead.firstName} ${lead.lastName ?? ""}`.trim()
+    gate.request({
+      operation: "Qualify lead",
+      entity: name,
+      impact:
+        "Marks this lead as sales-qualified. Their status changes to Qualified and they move forward in the pipeline.",
+      onConfirm: () =>
+        qualifyLead.mutate(
+          { id: lead.id, data: {} },
+          {
+            onSuccess: () => {
+              invalidateLeads()
+              toast({ title: "Lead qualified", description: name })
+            },
+            onError: () =>
+              toast({ title: "Qualify failed", variant: "destructive" }),
+          },
+        ),
+    })
   }
 
   const handleConvert = (lead: Lead) => {
-    convertLead.mutate(
-      { id: lead.id, data: {} },
-      {
-        onSuccess: (result) => {
-          invalidateLeads()
-          queryClient.invalidateQueries({ queryKey: ["/api/clients"] })
-          queryClient.invalidateQueries({ queryKey: ["/api/deals"] })
-          toast({
-            title: "Converted to client",
-            description: `${result.client.name} + open deal created`,
-          })
-        },
-        onError: () => toast({ title: "Convert failed", variant: "destructive" }),
-      },
-    )
+    const name = `${lead.firstName} ${lead.lastName ?? ""}`.trim()
+    gate.request({
+      operation: "Convert to client",
+      entity: name,
+      impact:
+        "Creates a new Client record and an open Deal linked to that client. The lead status changes to Converted. This cannot be automatically undone.",
+      danger: true,
+      onConfirm: () =>
+        convertLead.mutate(
+          { id: lead.id, data: {} },
+          {
+            onSuccess: (result) => {
+              invalidateLeads()
+              queryClient.invalidateQueries({ queryKey: ["/api/clients"] })
+              queryClient.invalidateQueries({ queryKey: ["/api/deals"] })
+              toast({
+                title: "Converted to client",
+                description: `${result.client.name} + open deal created`,
+              })
+            },
+            onError: () =>
+              toast({ title: "Convert failed", variant: "destructive" }),
+          },
+        ),
+    })
   }
 
   return (
     <div className="p-6 space-y-6">
+      {/* Governance gate — intercepts qualify/convert before mutation fires */}
+      <GovernanceGate gate={gate} />
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Leads</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-foreground">Leads</h1>
+            <span
+              className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[11px] font-semibold"
+              style={{ background: SOURCE_META[source].bg, color: SOURCE_META[source].fg }}
+              title={SOURCE_META[source].description}
+            >
+              {SOURCE_META[source].label}
+            </span>
+          </div>
           <p className="text-muted-foreground">Capture, qualify, and convert — your real pipeline</p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -365,7 +402,14 @@ export function LeadsView() {
       </div>
 
       {/* Leads List */}
-      {isLoading ? (
+      {resourceState === "error" ? (
+        <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+          <span className="font-semibold">Data unavailable</span>
+          {resourceError && (
+            <span className="ml-1 text-destructive/80">— {resourceError}</span>
+          )}
+        </div>
+      ) : isLoading ? (
         <div className="space-y-3">
           {Array.from({ length: 5 }).map((_, i) => (
             <Skeleton key={i} className="h-24 w-full" />

@@ -42,8 +42,8 @@ import { useState } from "react"
 import { IntegrateWiseLogo } from "@/components/integratewise-logo"
 
 interface SidebarProps {
-  onSearchClick: () => void
-  onAIClick: () => void
+  onSearchClick?: () => void
+  onAIClick?: () => void
 }
 
 export function Sidebar({ onSearchClick, onAIClick }: SidebarProps) {

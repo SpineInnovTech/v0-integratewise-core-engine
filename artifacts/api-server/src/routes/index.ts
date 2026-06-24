@@ -4,6 +4,8 @@ import leadsRouter from "./leads";
 import clientsRouter from "./clients";
 import dealsRouter from "./deals";
 import aiRouter from "./ai";
+import emailRouter from "./email";
+import connectorsRouter from "./connectors";
 
 const router: IRouter = Router();
 
@@ -12,5 +14,7 @@ router.use(leadsRouter);
 router.use(clientsRouter);
 router.use(dealsRouter);
 router.use(aiRouter);
+router.use(emailRouter);
+router.use(connectorsRouter);
 
 export default router;
