@@ -7,8 +7,10 @@ import {
   ArrowDownRight, Compass, Plug, type LucideIcon,
 } from "lucide-react";
 import { useSpine } from "@/spine/spine-context";
+import { usePlatform } from "@/platform/platform-context";
 import { CTX_CONFIG } from "@/spine/role-registry";
 import { SCHEMA_GROUP_LABEL } from "@/spine/schema-availability";
+import { groupSource, SOURCE_META, type DataSource } from "@/platform/data-source";
 import type { RoleProfile, IndustryProfile } from "@/spine/types";
 
 const ICONS: Record<string, LucideIcon> = {
@@ -24,11 +26,24 @@ const PRIORITY_CONFIG: Record<string, { dot: string; badge: string }> = {
   low: { dot: "var(--muted-foreground)", badge: "var(--muted-foreground)" },
 };
 
+function SourceBadge({ source }: { source: DataSource }) {
+  const m = SOURCE_META[source];
+  return (
+    <span
+      className="rounded px-1.5 py-0.5 text-[9px] font-bold"
+      style={{ background: m.bg, color: m.fg }}
+      title={m.description}
+    >
+      {m.label}
+    </span>
+  );
+}
+
 function SectionRow({
-  icon: Icon, label, badge, badgeColor, children, defaultOpen = false,
+  icon: Icon, label, badge, badgeColor, source, children, defaultOpen = false,
 }: {
   icon: LucideIcon; label: string; badge?: string; badgeColor?: string;
-  children: ReactNode; defaultOpen?: boolean;
+  source?: DataSource; children: ReactNode; defaultOpen?: boolean;
 }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
@@ -40,6 +55,7 @@ function SectionRow({
       >
         <Icon className="h-3.5 w-3.5 shrink-0" style={{ color: "var(--iw-blue)" }} />
         <span className="flex-1 text-xs" style={{ fontWeight: 600, color: "var(--foreground)" }}>{label}</span>
+        {source && <SourceBadge source={source} />}
         {badge && (
           <span
             className="rounded px-1.5 py-0.5 text-[9px] font-bold"
@@ -110,8 +126,13 @@ function IndustryLens({ industry }: { industry: IndustryProfile }) {
 export function RoleDashboard() {
   const { workspace } = useSpine();
   const { profile, industryProfile, role, schemaSummary } = useDashboardModel();
+  const { gateway } = usePlatform();
   const ctx = CTX_CONFIG[role];
   const criticalCount = profile.todayFocus.filter((t) => t.priority === "critical").length;
+  const connectorsTitle =
+    gateway.state === "connected"
+      ? "Integrations declared for this role. Live per-connector status loads from the platform."
+      : "Integrations declared for this role — not yet connected to the platform.";
 
   return (
     <div className="h-full overflow-auto">
@@ -126,9 +147,14 @@ export function RoleDashboard() {
               {ctx.label} workspace · {industryProfile.label} lens
             </p>
           </div>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5" title={connectorsTitle}>
             {profile.connectors.map((c) => (
-              <span key={c} className="rounded-md px-2 py-1 text-[10px] font-semibold" style={{ background: "var(--iw-blue-50)", color: "var(--iw-blue)" }}>
+              <span
+                key={c}
+                className="flex items-center gap-1 rounded-md px-2 py-1 text-[10px] font-semibold"
+                style={{ background: "var(--secondary)", color: "var(--muted-foreground)" }}
+              >
+                <Plug className="h-2.5 w-2.5" />
                 {c}
               </span>
             ))}
@@ -136,10 +162,18 @@ export function RoleDashboard() {
         </div>
 
         {/* KPIs */}
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-          {profile.kpis.map((kpi, i) => (
-            <KpiCard key={kpi.label} kpi={kpi} index={i} />
-          ))}
+        <div>
+          <div className="mb-2 flex items-center gap-2">
+            <span className="text-[10px] font-bold uppercase tracking-wide" style={{ color: "var(--muted-foreground)" }}>
+              Operational snapshot
+            </span>
+            <SourceBadge source="demo" />
+          </div>
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            {profile.kpis.map((kpi, i) => (
+              <KpiCard key={kpi.label} kpi={kpi} index={i} />
+            ))}
+          </div>
         </div>
 
         {/* Industry lens */}
@@ -147,29 +181,34 @@ export function RoleDashboard() {
 
         {/* Schema coverage — graceful, data-driven */}
         <div className="rounded-xl border p-4" style={{ borderColor: "var(--border)", background: "var(--card)" }}>
-          <div className="mb-3 flex items-center gap-2">
+          <div className="mb-1 flex items-center gap-2">
             <Database className="h-3.5 w-3.5" style={{ color: "var(--iw-blue)" }} />
             <span className="text-xs font-semibold" style={{ color: "var(--foreground)" }}>Data this role relies on</span>
           </div>
+          <p className="mb-3 text-[10px]" style={{ color: "var(--muted-foreground)" }}>
+            Each group shows its true source — platform, local relay, or demo.
+          </p>
           <div className="flex flex-wrap gap-1.5">
-            {schemaSummary.map((s) => (
-              <span
-                key={s.group}
-                className="flex items-center gap-1.5 rounded-lg px-2 py-1 text-[10px] font-medium"
-                style={{
-                  background: s.state === "live" ? "var(--iw-success-50)" : s.state === "seeded" ? "var(--iw-warning-50)" : "var(--secondary)",
-                  color: s.state === "live" ? "var(--iw-success)" : s.state === "seeded" ? "var(--iw-warning)" : "var(--muted-foreground)",
-                }}
-              >
-                <span className="h-1.5 w-1.5 rounded-full" style={{ background: "currentColor" }} />
-                {SCHEMA_GROUP_LABEL[s.group]} · {s.state}
-              </span>
-            ))}
+            {schemaSummary.map((s) => {
+              const source = groupSource(s.state);
+              const m = SOURCE_META[source];
+              return (
+                <span
+                  key={s.group}
+                  className="flex items-center gap-1.5 rounded-lg px-2 py-1 text-[10px] font-medium"
+                  style={{ background: m.bg, color: m.fg }}
+                  title={m.description}
+                >
+                  <span className="h-1.5 w-1.5 rounded-full" style={{ background: "currentColor" }} />
+                  {SCHEMA_GROUP_LABEL[s.group]} · {m.label}
+                </span>
+              );
+            })}
           </div>
         </div>
 
         {/* What changed */}
-        <SectionRow icon={RotateCcw} label="What changed" badge={`${profile.signals.length} signals`} defaultOpen>
+        <SectionRow icon={RotateCcw} label="What changed" badge={`${profile.signals.length} signals`} source="demo" defaultOpen>
           <div className="space-y-1.5 pt-1">
             {profile.signals.map((item, i) => (
               <div key={i} className="flex items-start gap-2.5 rounded-lg p-2" style={{ background: "var(--secondary)" }}>
@@ -187,7 +226,7 @@ export function RoleDashboard() {
         </SectionRow>
 
         {/* Needs you */}
-        <SectionRow icon={User} label="Needs you" badge={`${criticalCount} critical`} badgeColor="var(--iw-danger)" defaultOpen={criticalCount > 0}>
+        <SectionRow icon={User} label="Needs you" badge={`${criticalCount} critical`} badgeColor="var(--iw-danger)" source="demo" defaultOpen={criticalCount > 0}>
           <div className="space-y-1.5 pt-1">
             {profile.todayFocus.map((t, i) => {
               const pc = PRIORITY_CONFIG[t.priority];

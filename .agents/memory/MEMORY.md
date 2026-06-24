@@ -4,3 +4,6 @@
 - [Apollo as the real lead source](apollo-leads.md) — Leads come from the user's saved Apollo contacts, imported by dogfooding POST /api/leads; score = data-completeness heuristic; no synthetic seed
 - [L1 adaptive layer](l1-adaptive-layer.md) — surface derived from role × industry × schema via src/spine/* registries; persistent shell outside the route switch; ModuleHost gates on schema (live/seeded/off)
 - [Lead Intelligence gateway](lead-intelligence-gateway.md) — "Obtain It" panel reads live through a platform gateway; client keeps NO cache (RQ staleTime/gcTime 0, refetchOnMount always); honest gateway_unavailable fallback; no local scoring/DB
+- [Product reframe](product-reframe.md) — this repo now builds the WHOLE product UI over the live gateway, not just internal ops; supersedes replit.md framing (flag, don't rewrite)
+- [Gateway empirical facts](gateway-facts.md) — gateway.integratewise.ai live; /health 200 public+CORS-open; /api/v1/* behind RS256/Cf-Access JWT wall (401 no JWT); Clerk≠gateway; no token in env
+- [Platform boundary](platform-boundary.md) — src/platform/* is the seam: typed GatewayClient (no silent fallback), token modes, honest connection states; session path overridable; dev-gated JWT paste

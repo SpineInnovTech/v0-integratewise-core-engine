@@ -3,6 +3,7 @@ import { useSpine } from "@/spine/spine-context";
 import { CTX_CONFIG } from "@/spine/role-registry";
 import { INDUSTRIES } from "@/spine/industry-registry";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { ConnectionPill } from "@/platform/connection-pill";
 
 export function WorkspaceTopbar({
   onToggleSidebar,
@@ -46,6 +47,7 @@ export function WorkspaceTopbar({
         <span className="hidden rounded-md px-2 py-1 text-[11px] font-semibold lg:inline" style={{ background: "var(--iw-purple-50)", color: "var(--iw-purple)" }}>
           {ind.label}
         </span>
+        <ConnectionPill />
         <ThemeToggle />
       </div>
     </header>

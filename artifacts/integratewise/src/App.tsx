@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 
+import { PlatformProvider } from "@/platform/platform-context";
 import { SpineProvider } from "@/spine/spine-context";
 import { WorkspaceShell } from "@/components/workspace/workspace-shell";
 import { ModuleHost } from "@/components/workspace/module-host";
@@ -98,10 +99,12 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-          <Router />
-        </WouterRouter>
-        <Toaster />
+        <PlatformProvider>
+          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+            <Router />
+          </WouterRouter>
+          <Toaster />
+        </PlatformProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
