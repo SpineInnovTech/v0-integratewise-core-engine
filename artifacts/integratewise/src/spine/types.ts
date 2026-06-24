@@ -57,6 +57,7 @@ export type SchemaState = "live" | "seeded" | "off";
 /** Module identifiers — keys into the module registry. */
 export type ModuleId =
   | "home"
+  | "context"
   | "email"
   | "leads"
   | "pipeline"

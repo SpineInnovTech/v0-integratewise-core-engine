@@ -1,17 +1,84 @@
 import { Router, type IRouter } from "express";
 import { CUSTOMER_ZERO_IDENTITY } from "@workspace/spine-schema";
-import { listInbox } from "../connectors/gmail";
+import { listInbox, type NormalizedEmail } from "../connectors/gmail";
 import { generateGmailDeltas } from "../services/schema-ai-service";
 import { normalizeGmail } from "../services/normalizer-service";
 import { hydrateRecords } from "../services/spine-hydration-service";
 import { verifyRecords } from "../services/verification-service";
+import { remember } from "../services/memory-writer-service";
 
 const router: IRouter = Router();
+
+const TENANT = process.env["SPINE_TENANT_ID"] ?? "iw-customer-zero";
 
 function clampLimit(raw: unknown): number {
   const n = typeof raw === "string" ? parseInt(raw, 10) : NaN;
   if (!Number.isFinite(n)) return 20;
   return Math.max(1, Math.min(50, n));
+}
+
+/**
+ * Grow contextual memory from a Gmail pull. Each message becomes ONE interaction
+ * atom keyed to its sender (a contact subject). The idempotency key folds in the
+ * connector + message id + body hash, so re-ingesting the same inbox deepens
+ * coverage WITHOUT duplicating — memory compounds, it does not inflate. Per-atom
+ * failures are counted honestly rather than aborting the whole pull.
+ */
+async function rememberEmails(emails: NormalizedEmail[]): Promise<{
+  attempted: number;
+  created: number;
+  idempotent: number;
+  embedded: number;
+  failed: number;
+  lastError?: string;
+}> {
+  let created = 0;
+  let idempotent = 0;
+  let embedded = 0;
+  let failed = 0;
+  let lastError: string | undefined;
+
+  for (const e of emails) {
+    const emailLower = (e.sender_email ?? "").trim().toLowerCase();
+    if (!emailLower) continue;
+    const who = e.sender_name?.trim() || e.sender_email;
+    const body = `${who} — ${e.subject || "(no subject)"}\n\n${e.preview ?? ""}`.trim();
+    try {
+      const result = await remember({
+        subjectRef: {
+          tenant_id: TENANT,
+          entity_type: "contact",
+          entity_id: `gmail:contact:${emailLower}`,
+          source: "gmail",
+          external_id: emailLower,
+        },
+        kind: "interaction",
+        title: e.subject || "(no subject)",
+        body,
+        source: {
+          connector: "gmail",
+          source_id: e.id,
+          external_id: `gmail:engagement:${e.id}`,
+        },
+        salience: e.is_starred ? 0.7 : 0.5,
+      });
+      if (result.created) created += 1;
+      else idempotent += 1;
+      if (result.embedding.available) embedded += 1;
+    } catch (err) {
+      failed += 1;
+      lastError = err instanceof Error ? err.message : "remember failed";
+    }
+  }
+
+  return {
+    attempted: emails.length,
+    created,
+    idempotent,
+    embedded,
+    failed,
+    ...(lastError ? { lastError } : {}),
+  };
 }
 
 /**
@@ -40,6 +107,11 @@ router.post("/ingest/gmail", async (req, res): Promise<void> => {
     const normalized = await normalizeGmail(emails, CUSTOMER_ZERO_IDENTITY);
     const records = [...normalized.people, ...normalized.interactions];
 
+    // Grow the unified contextual memory from this pull. Memory atoms are local
+    // connective tissue (not Spine writes), so this runs in dry-run too and is
+    // idempotent — re-ingesting the same inbox deepens coverage, never duplicates.
+    const memory = await rememberEmails(emails);
+
     if (dryRun) {
       res.json({
         mode: "dry_run",
@@ -48,7 +120,8 @@ router.post("/ingest/gmail", async (req, res): Promise<void> => {
         schema,
         normalized,
         would_hydrate: records.length,
-        note: "dryRun=true — schema deltas were upserted (idempotent) but NO Spine writes occurred. Pass dryRun=false to propose; add approve=true for the full governed path.",
+        memory,
+        note: "dryRun=true — schema deltas + contextual memory atoms were upserted (idempotent) but NO Spine writes occurred. Pass dryRun=false to propose; add approve=true for the full governed path.",
       });
       return;
     }
@@ -65,6 +138,7 @@ router.post("/ingest/gmail", async (req, res): Promise<void> => {
       fetched: emails.length,
       schema,
       normalized,
+      memory,
       hydration,
       verification,
     });

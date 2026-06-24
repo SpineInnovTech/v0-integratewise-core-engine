@@ -9,6 +9,7 @@ import connectorsRouter from "./connectors";
 import spineRouter from "./spine";
 import schemaRouter from "./schema";
 import ingestRouter from "./ingest";
+import contextRouter from "./context";
 
 const router: IRouter = Router();
 
@@ -22,5 +23,6 @@ router.use(connectorsRouter);
 router.use(spineRouter);
 router.use(schemaRouter);
 router.use(ingestRouter);
+router.use(contextRouter);
 
 export default router;

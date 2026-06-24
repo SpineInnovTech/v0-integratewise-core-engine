@@ -457,3 +457,187 @@ export const TwinChatResponse = zod.object({
 })
 
 
+/**
+ * Composes structured CRM records, unified memory atoms, the goal/metric anchor, and a best-effort remote Spine reachability read into ONE provenance-tagged projection for a subject. Owns no truth; every store reports its own availability (live | empty | unavailable) and nothing is guessed. Coverage quantifies how deep the memory is for the subject.
+
+ * @summary Assemble a contextual-memory packet for a subject
+ */
+export const getContextPacketQueryLimitMax = 100;
+
+
+
+export const GetContextPacketQueryParams = zod.object({
+  "subjectType": zod.coerce.string(),
+  "subjectId": zod.coerce.string(),
+  "query": zod.coerce.string().optional(),
+  "limit": zod.coerce.number().min(1).max(getContextPacketQueryLimitMax).optional(),
+  "tenantId": zod.coerce.string().optional()
+})
+
+export const GetContextPacketResponse = zod.object({
+  "subject": zod.object({
+  "tenantId": zod.string(),
+  "subjectType": zod.string(),
+  "subjectId": zod.string(),
+  "label": zod.string(),
+  "ref": zod.record(zod.string(), zod.unknown())
+}),
+  "query": zod.string().nullable(),
+  "fragments": zod.array(zod.object({
+  "id": zod.string(),
+  "origin": zod.enum(['record', 'memory']),
+  "kind": zod.string(),
+  "title": zod.string(),
+  "body": zod.string(),
+  "source": zod.record(zod.string(), zod.unknown()),
+  "provenance": zod.record(zod.string(), zod.unknown()),
+  "salience": zod.number(),
+  "score": zod.number().nullable(),
+  "occurredAt": zod.coerce.date().nullable()
+})),
+  "goals": zod.array(zod.object({
+  "id": zod.string(),
+  "type": zod.string(),
+  "domain": zod.string(),
+  "name": zod.string(),
+  "description": zod.string().nullish(),
+  "status": zod.string(),
+  "cadence": zod.string().nullish()
+})),
+  "metrics": zod.array(zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "domain": zod.string(),
+  "unit": zod.string().nullish(),
+  "formula": zod.string().nullish(),
+  "status": zod.enum(['ok', 'insufficient_data']),
+  "statusReason": zod.string(),
+  "goal": zod.object({
+  "id": zod.string(),
+  "name": zod.string()
+}).nullable()
+})),
+  "spine": zod.object({
+  "availability": zod.enum(['live', 'empty', 'unavailable']),
+  "note": zod.string(),
+  "toolsCount": zod.number().nullable()
+}),
+  "coverage": zod.object({
+  "stores": zod.record(zod.string(), zod.number()),
+  "contributingStores": zod.number(),
+  "totalStores": zod.number(),
+  "depthScore": zod.number(),
+  "gaps": zod.array(zod.object({
+  "store": zod.string(),
+  "hint": zod.string()
+}))
+}),
+  "availability": zod.object({
+  "structured": zod.enum(['live', 'empty', 'unavailable']),
+  "memory": zod.enum(['live', 'empty', 'unavailable']),
+  "goals": zod.enum(['live', 'empty', 'unavailable']),
+  "metrics": zod.enum(['live', 'empty', 'unavailable']),
+  "spine": zod.enum(['live', 'empty', 'unavailable']),
+  "embedding": zod.enum(['live', 'empty', 'unavailable'])
+}),
+  "generatedAt": zod.coerce.date()
+})
+
+
+/**
+ * The single doorway through which contextual memory grows. Re-writing the same source fact matches idempotently (created=false) so memory compounds without duplicating.
+
+ * @summary Write a memory atom (idempotent) into the unified memory
+ */
+
+
+
+
+export const RememberContextBody = zod.object({
+  "tenantId": zod.string().optional(),
+  "subjectRef": zod.object({
+  "tenant_id": zod.string().optional(),
+  "entity_type": zod.string(),
+  "entity_id": zod.string(),
+  "source": zod.string().optional(),
+  "external_id": zod.string().optional()
+}),
+  "kind": zod.enum(['fact', 'interaction', 'decision', 'signal', 'preference']),
+  "title": zod.string().min(1),
+  "body": zod.string().min(1),
+  "source": zod.object({
+  "connector": zod.string().optional(),
+  "source_id": zod.string().optional(),
+  "entity_type": zod.string().optional(),
+  "external_id": zod.string().optional()
+}).optional(),
+  "goalRefs": zod.array(zod.string()).optional(),
+  "salience": zod.number().optional(),
+  "entityRef": zod.record(zod.string(), zod.unknown()).optional(),
+  "expiresAt": zod.string().nullish()
+})
+
+
+/**
+ * @summary List goals for the tenant
+ */
+export const ListContextGoalsQueryParams = zod.object({
+  "tenantId": zod.coerce.string().optional()
+})
+
+export const ListContextGoalsResponseItem = zod.object({
+  "id": zod.string(),
+  "type": zod.string(),
+  "domain": zod.string(),
+  "name": zod.string(),
+  "description": zod.string().nullish(),
+  "status": zod.string(),
+  "cadence": zod.string().nullish()
+})
+export const ListContextGoalsResponse = zod.array(ListContextGoalsResponseItem)
+
+
+/**
+ * @summary List metrics (each anchored to a goal) for the tenant
+ */
+export const ListContextMetricsQueryParams = zod.object({
+  "tenantId": zod.coerce.string().optional()
+})
+
+export const ListContextMetricsResponseItem = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "domain": zod.string(),
+  "unit": zod.string().nullish(),
+  "formula": zod.string().nullish(),
+  "status": zod.enum(['ok', 'insufficient_data']),
+  "statusReason": zod.string(),
+  "goal": zod.object({
+  "id": zod.string(),
+  "name": zod.string()
+}).nullable()
+})
+export const ListContextMetricsResponse = zod.array(ListContextMetricsResponseItem)
+
+
+/**
+ * @summary Coverage summary for a subject (how deep the memory is)
+ */
+export const GetContextCoverageQueryParams = zod.object({
+  "subjectType": zod.coerce.string(),
+  "subjectId": zod.coerce.string(),
+  "tenantId": zod.coerce.string().optional()
+})
+
+export const GetContextCoverageResponse = zod.object({
+  "stores": zod.record(zod.string(), zod.number()),
+  "contributingStores": zod.number(),
+  "totalStores": zod.number(),
+  "depthScore": zod.number(),
+  "gaps": zod.array(zod.object({
+  "store": zod.string(),
+  "hint": zod.string()
+}))
+})
+
+

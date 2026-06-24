@@ -10,6 +10,7 @@ import {
   buildEmailSuggestions,
   type EmailContext,
 } from "../services/twin-service";
+import { remember } from "../services/memory-writer-service";
 
 /**
  * The Email Twin is grounded in the message the user is reading. The client
@@ -33,6 +34,8 @@ function parseEmailContext(message: string): EmailContext {
 }
 
 const router: IRouter = Router();
+
+const TENANT = process.env["SPINE_TENANT_ID"] ?? "iw-customer-zero";
 
 // The Twin is a grounded companion: when given an entity it reads the real
 // record before replying, and it only ever returns suggestions (drafts). It
@@ -61,6 +64,22 @@ router.post("/ai/chat", async (req, res): Promise<void> => {
     const lead = await leads.findById(entityId);
     if (lead) {
       const recent = await activities.findByLeadId(lead.id);
+      // The consult itself is a grounded interaction — fold it into the lead's
+      // contextual memory so the Twin compounds context over time. Idempotent on
+      // the message body, so asking the same thing twice won't duplicate. Best
+      // effort: a memory-write hiccup must never break the draft the human asked for.
+      try {
+        await remember({
+          subjectRef: { tenant_id: TENANT, entity_type: "lead", entity_id: lead.id },
+          kind: "interaction",
+          title: "Twin consult",
+          body: message.slice(0, 2000),
+          source: { connector: "twin", source_id: lead.id },
+          salience: 0.4,
+        });
+      } catch (err) {
+        console.error("[twin] contextual memory write failed:", err);
+      }
       res.json(
         TwinChatResponse.parse({
           reply: buildLeadReply(lead, recent.length, message),

@@ -3,10 +3,12 @@ import {
   Home, Target, GitBranch, ShoppingCart, Building2, Megaphone, FileText,
   ShoppingBag, Package, FolderKanban, BookOpen, BarChart3, Compass, Lightbulb,
   Layers, Database, Globe, Webhook, Shield, Settings, Users, CalendarDays, Mail,
+  Brain,
   type LucideIcon,
 } from "lucide-react";
 import type { ModuleId, NavGroup, SchemaGroup } from "./types";
 
+import { ContextualMemoryView } from "@/components/views/contextual-memory-view";
 import { LeadsView } from "@/components/views/leads-view";
 import { PipelineView } from "@/components/views/pipeline-view";
 import { DealsView } from "@/components/views/deals-view";
@@ -58,6 +60,7 @@ export interface ModuleDef {
  */
 export const MODULE_REGISTRY: Record<ModuleId, ModuleDef> = {
   home: { id: "home", label: "Home", icon: Home, path: "/", group: "Workspace" },
+  context: { id: "context", label: "Contextual Memory", icon: Brain, path: "/context", group: "Workspace", Component: ContextualMemoryView },
   email: { id: "email", label: "Email", icon: Mail, path: "/email", group: "Workspace", requiredSchema: ["email"], Component: EmailView },
   leads: { id: "leads", label: "Leads", icon: Target, path: "/leads", group: "Revenue", requiredSchema: ["person"], Component: LeadsView },
   pipeline: { id: "pipeline", label: "Pipeline", icon: GitBranch, path: "/pipeline", group: "Revenue", requiredSchema: ["deal"], Component: PipelineView },

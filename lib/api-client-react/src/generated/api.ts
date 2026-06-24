@@ -23,17 +23,27 @@ import type {
   Activity,
   ActivityInput,
   Client,
+  ContextCoverage,
+  ContextGoal,
+  ContextMetric,
+  ContextPacket,
   ConvertLeadInput,
   ConvertResult,
   Deal,
   Error,
+  GetContextCoverageParams,
+  GetContextPacketParams,
   HealthStatus,
   Lead,
   LeadDetail,
   LeadInput,
   LeadIntelligence,
   LeadUpdate,
+  ListContextGoalsParams,
+  ListContextMetricsParams,
   QualifyLeadInput,
+  RememberInput,
+  RememberResult,
   TwinChatInput,
   TwinReply
 } from './api.schemas';
@@ -1021,4 +1031,415 @@ export const useTwinChat = <TError = ErrorType<Error>,
       > => {
       return useMutation(getTwinChatMutationOptions(options));
     }
+
+export const getGetContextPacketUrl = (params: GetContextPacketParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/context/packet?${stringifiedParams}` : `/api/context/packet`
+}
+
+/**
+ * Composes structured CRM records, unified memory atoms, the goal/metric anchor, and a best-effort remote Spine reachability read into ONE provenance-tagged projection for a subject. Owns no truth; every store reports its own availability (live | empty | unavailable) and nothing is guessed. Coverage quantifies how deep the memory is for the subject.
+
+ * @summary Assemble a contextual-memory packet for a subject
+ */
+export const getContextPacket = async (params: GetContextPacketParams, options?: RequestInit): Promise<ContextPacket> => {
+
+  return customFetch<ContextPacket>(getGetContextPacketUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetContextPacketQueryKey = (params?: GetContextPacketParams,) => {
+    return [
+    `/api/context/packet`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetContextPacketQueryOptions = <TData = Awaited<ReturnType<typeof getContextPacket>>, TError = ErrorType<unknown>>(params: GetContextPacketParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getContextPacket>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetContextPacketQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getContextPacket>>> = ({ signal }) => getContextPacket(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getContextPacket>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetContextPacketQueryResult = NonNullable<Awaited<ReturnType<typeof getContextPacket>>>
+export type GetContextPacketQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Assemble a contextual-memory packet for a subject
+ */
+
+export function useGetContextPacket<TData = Awaited<ReturnType<typeof getContextPacket>>, TError = ErrorType<unknown>>(
+ params: GetContextPacketParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getContextPacket>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetContextPacketQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getRememberContextUrl = () => {
+
+
+
+
+  return `/api/context/remember`
+}
+
+/**
+ * The single doorway through which contextual memory grows. Re-writing the same source fact matches idempotently (created=false) so memory compounds without duplicating.
+
+ * @summary Write a memory atom (idempotent) into the unified memory
+ */
+export const rememberContext = async (rememberInput: RememberInput, options?: RequestInit): Promise<RememberResult> => {
+
+  return customFetch<RememberResult>(getRememberContextUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      rememberInput,)
+  }
+);}
+
+
+
+
+export const getRememberContextMutationOptions = <TError = ErrorType<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof rememberContext>>, TError,{data: BodyType<RememberInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof rememberContext>>, TError,{data: BodyType<RememberInput>}, TContext> => {
+
+const mutationKey = ['rememberContext'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof rememberContext>>, {data: BodyType<RememberInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  rememberContext(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RememberContextMutationResult = NonNullable<Awaited<ReturnType<typeof rememberContext>>>
+    export type RememberContextMutationBody = BodyType<RememberInput>
+    export type RememberContextMutationError = ErrorType<Error>
+
+    /**
+ * @summary Write a memory atom (idempotent) into the unified memory
+ */
+export const useRememberContext = <TError = ErrorType<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof rememberContext>>, TError,{data: BodyType<RememberInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof rememberContext>>,
+        TError,
+        {data: BodyType<RememberInput>},
+        TContext
+      > => {
+      return useMutation(getRememberContextMutationOptions(options));
+    }
+
+export const getListContextGoalsUrl = (params?: ListContextGoalsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/context/goals?${stringifiedParams}` : `/api/context/goals`
+}
+
+/**
+ * @summary List goals for the tenant
+ */
+export const listContextGoals = async (params?: ListContextGoalsParams, options?: RequestInit): Promise<ContextGoal[]> => {
+
+  return customFetch<ContextGoal[]>(getListContextGoalsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListContextGoalsQueryKey = (params?: ListContextGoalsParams,) => {
+    return [
+    `/api/context/goals`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getListContextGoalsQueryOptions = <TData = Awaited<ReturnType<typeof listContextGoals>>, TError = ErrorType<unknown>>(params?: ListContextGoalsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listContextGoals>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListContextGoalsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listContextGoals>>> = ({ signal }) => listContextGoals(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listContextGoals>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListContextGoalsQueryResult = NonNullable<Awaited<ReturnType<typeof listContextGoals>>>
+export type ListContextGoalsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List goals for the tenant
+ */
+
+export function useListContextGoals<TData = Awaited<ReturnType<typeof listContextGoals>>, TError = ErrorType<unknown>>(
+ params?: ListContextGoalsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listContextGoals>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListContextGoalsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getListContextMetricsUrl = (params?: ListContextMetricsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/context/metrics?${stringifiedParams}` : `/api/context/metrics`
+}
+
+/**
+ * @summary List metrics (each anchored to a goal) for the tenant
+ */
+export const listContextMetrics = async (params?: ListContextMetricsParams, options?: RequestInit): Promise<ContextMetric[]> => {
+
+  return customFetch<ContextMetric[]>(getListContextMetricsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListContextMetricsQueryKey = (params?: ListContextMetricsParams,) => {
+    return [
+    `/api/context/metrics`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getListContextMetricsQueryOptions = <TData = Awaited<ReturnType<typeof listContextMetrics>>, TError = ErrorType<unknown>>(params?: ListContextMetricsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listContextMetrics>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListContextMetricsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listContextMetrics>>> = ({ signal }) => listContextMetrics(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listContextMetrics>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListContextMetricsQueryResult = NonNullable<Awaited<ReturnType<typeof listContextMetrics>>>
+export type ListContextMetricsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List metrics (each anchored to a goal) for the tenant
+ */
+
+export function useListContextMetrics<TData = Awaited<ReturnType<typeof listContextMetrics>>, TError = ErrorType<unknown>>(
+ params?: ListContextMetricsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listContextMetrics>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListContextMetricsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetContextCoverageUrl = (params: GetContextCoverageParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/context/coverage?${stringifiedParams}` : `/api/context/coverage`
+}
+
+/**
+ * @summary Coverage summary for a subject (how deep the memory is)
+ */
+export const getContextCoverage = async (params: GetContextCoverageParams, options?: RequestInit): Promise<ContextCoverage> => {
+
+  return customFetch<ContextCoverage>(getGetContextCoverageUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetContextCoverageQueryKey = (params?: GetContextCoverageParams,) => {
+    return [
+    `/api/context/coverage`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetContextCoverageQueryOptions = <TData = Awaited<ReturnType<typeof getContextCoverage>>, TError = ErrorType<unknown>>(params: GetContextCoverageParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getContextCoverage>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetContextCoverageQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getContextCoverage>>> = ({ signal }) => getContextCoverage(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getContextCoverage>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetContextCoverageQueryResult = NonNullable<Awaited<ReturnType<typeof getContextCoverage>>>
+export type GetContextCoverageQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Coverage summary for a subject (how deep the memory is)
+ */
+
+export function useGetContextCoverage<TData = Awaited<ReturnType<typeof getContextCoverage>>, TError = ErrorType<unknown>>(
+ params: GetContextCoverageParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getContextCoverage>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetContextCoverageQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
 

@@ -359,3 +359,224 @@ export interface LeadIntelligence {
   gateway: GatewayStatus;
 }
 
+export type ContextStoreStatus = typeof ContextStoreStatus[keyof typeof ContextStoreStatus];
+
+
+export const ContextStoreStatus = {
+  live: 'live',
+  empty: 'empty',
+  unavailable: 'unavailable',
+} as const;
+
+export type ContextFragmentOrigin = typeof ContextFragmentOrigin[keyof typeof ContextFragmentOrigin];
+
+
+export const ContextFragmentOrigin = {
+  record: 'record',
+  memory: 'memory',
+} as const;
+
+export type ContextFragmentSource = { [key: string]: unknown };
+
+export type ContextFragmentProvenance = { [key: string]: unknown };
+
+export interface ContextFragment {
+  id: string;
+  origin: ContextFragmentOrigin;
+  kind: string;
+  title: string;
+  body: string;
+  source: ContextFragmentSource;
+  provenance: ContextFragmentProvenance;
+  salience: number;
+  /** @nullable */
+  score: number | null;
+  /** @nullable */
+  occurredAt: string | null;
+}
+
+export interface ContextGoal {
+  id: string;
+  type: string;
+  domain: string;
+  name: string;
+  /** @nullable */
+  description?: string | null;
+  status: string;
+  /** @nullable */
+  cadence?: string | null;
+}
+
+/**
+ * @nullable
+ */
+export type ContextMetricGoal = {
+  id: string;
+  name: string;
+} | null;
+
+export type ContextMetricStatus = typeof ContextMetricStatus[keyof typeof ContextMetricStatus];
+
+
+export const ContextMetricStatus = {
+  ok: 'ok',
+  insufficient_data: 'insufficient_data',
+} as const;
+
+export interface ContextMetric {
+  id: string;
+  name: string;
+  domain: string;
+  /** @nullable */
+  unit?: string | null;
+  /** @nullable */
+  formula?: string | null;
+  status: ContextMetricStatus;
+  statusReason: string;
+  goal: ContextMetricGoal | null;
+}
+
+export interface ContextSpine {
+  availability: ContextStoreStatus;
+  note: string;
+  /** @nullable */
+  toolsCount: number | null;
+}
+
+export interface ContextCoverageGap {
+  store: string;
+  hint: string;
+}
+
+export type ContextCoverageStores = {[key: string]: number};
+
+export interface ContextCoverage {
+  stores: ContextCoverageStores;
+  contributingStores: number;
+  totalStores: number;
+  depthScore: number;
+  gaps: ContextCoverageGap[];
+}
+
+export interface ContextAvailability {
+  structured: ContextStoreStatus;
+  memory: ContextStoreStatus;
+  goals: ContextStoreStatus;
+  metrics: ContextStoreStatus;
+  spine: ContextStoreStatus;
+  embedding: ContextStoreStatus;
+}
+
+export type ContextSubjectRef = { [key: string]: unknown };
+
+export interface ContextSubject {
+  tenantId: string;
+  subjectType: string;
+  subjectId: string;
+  label: string;
+  ref: ContextSubjectRef;
+}
+
+export interface ContextPacket {
+  subject: ContextSubject;
+  /** @nullable */
+  query: string | null;
+  fragments: ContextFragment[];
+  goals: ContextGoal[];
+  metrics: ContextMetric[];
+  spine: ContextSpine;
+  coverage: ContextCoverage;
+  availability: ContextAvailability;
+  generatedAt: string;
+}
+
+export interface RememberSubjectRef {
+  tenant_id?: string;
+  entity_type: string;
+  entity_id: string;
+  source?: string;
+  external_id?: string;
+}
+
+export interface RememberSource {
+  connector?: string;
+  source_id?: string;
+  entity_type?: string;
+  external_id?: string;
+}
+
+export type RememberInputKind = typeof RememberInputKind[keyof typeof RememberInputKind];
+
+
+export const RememberInputKind = {
+  fact: 'fact',
+  interaction: 'interaction',
+  decision: 'decision',
+  signal: 'signal',
+  preference: 'preference',
+} as const;
+
+export type RememberInputEntityRef = { [key: string]: unknown };
+
+export interface RememberInput {
+  tenantId?: string;
+  subjectRef: RememberSubjectRef;
+  kind: RememberInputKind;
+  /** @minLength 1 */
+  title: string;
+  /** @minLength 1 */
+  body: string;
+  source?: RememberSource;
+  goalRefs?: string[];
+  salience?: number;
+  entityRef?: RememberInputEntityRef;
+  /** @nullable */
+  expiresAt?: string | null;
+}
+
+export interface MemoryAtomSummary {
+  id: string;
+  subjectType: string;
+  subjectId: string;
+  kind: string;
+  title: string;
+  createdAt: string;
+}
+
+export interface RememberEmbeddingStatus {
+  available: boolean;
+  reason: string;
+}
+
+export interface RememberResult {
+  atom: MemoryAtomSummary;
+  created: boolean;
+  embedding: RememberEmbeddingStatus;
+}
+
+export type GetContextPacketParams = {
+subjectType: string;
+subjectId: string;
+query?: string;
+/**
+ * @minimum 1
+ * @maximum 100
+ */
+limit?: number;
+tenantId?: string;
+};
+
+export type ListContextGoalsParams = {
+tenantId?: string;
+};
+
+export type ListContextMetricsParams = {
+tenantId?: string;
+};
+
+export type GetContextCoverageParams = {
+subjectType: string;
+subjectId: string;
+tenantId?: string;
+};
+

@@ -18,6 +18,8 @@ tags:
     description: Deal / pipeline operations
   - name: ai
     description: Twin assistant operations
+  - name: context
+    description: Contextual memory — unified context packets, memory writes, goals & metrics
 paths:
   /healthz:
     get:
@@ -296,6 +298,141 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+
+  /context/packet:
+    get:
+      operationId: getContextPacket
+      tags: [context]
+      summary: Assemble a contextual-memory packet for a subject
+      description: >
+        Composes structured CRM records, unified memory atoms, the goal/metric
+        anchor, and a best-effort remote Spine reachability read into ONE
+        provenance-tagged projection for a subject. Owns no truth; every store
+        reports its own availability (live | empty | unavailable) and nothing is
+        guessed. Coverage quantifies how deep the memory is for the subject.
+      parameters:
+        - name: subjectType
+          in: query
+          required: true
+          schema: { type: string }
+        - name: subjectId
+          in: query
+          required: true
+          schema: { type: string }
+        - name: query
+          in: query
+          required: false
+          schema: { type: string }
+        - name: limit
+          in: query
+          required: false
+          schema: { type: integer, minimum: 1, maximum: 100 }
+        - name: tenantId
+          in: query
+          required: false
+          schema: { type: string }
+      responses:
+        "200":
+          description: A contextual-memory packet
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContextPacket"
+
+  /context/remember:
+    post:
+      operationId: rememberContext
+      tags: [context]
+      summary: Write a memory atom (idempotent) into the unified memory
+      description: >
+        The single doorway through which contextual memory grows. Re-writing the
+        same source fact matches idempotently (created=false) so memory compounds
+        without duplicating.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RememberInput"
+      responses:
+        "201":
+          description: Memory atom written (or matched idempotently)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RememberResult"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /context/goals:
+    get:
+      operationId: listContextGoals
+      tags: [context]
+      summary: List goals for the tenant
+      parameters:
+        - name: tenantId
+          in: query
+          required: false
+          schema: { type: string }
+      responses:
+        "200":
+          description: Goals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ContextGoal"
+
+  /context/metrics:
+    get:
+      operationId: listContextMetrics
+      tags: [context]
+      summary: List metrics (each anchored to a goal) for the tenant
+      parameters:
+        - name: tenantId
+          in: query
+          required: false
+          schema: { type: string }
+      responses:
+        "200":
+          description: Metrics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ContextMetric"
+
+  /context/coverage:
+    get:
+      operationId: getContextCoverage
+      tags: [context]
+      summary: Coverage summary for a subject (how deep the memory is)
+      parameters:
+        - name: subjectType
+          in: query
+          required: true
+          schema: { type: string }
+        - name: subjectId
+          in: query
+          required: true
+          schema: { type: string }
+        - name: tenantId
+          in: query
+          required: false
+          schema: { type: string }
+      responses:
+        "200":
+          description: Coverage
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContextCoverage"
 
 components:
   parameters:
@@ -713,3 +850,261 @@ components:
           enum: [connected, unavailable]
         message: { type: ["string", "null"] }
         retryAfterSeconds: { type: ["integer", "null"] }
+
+    ContextStoreStatus:
+      type: string
+      enum: [live, empty, unavailable]
+
+    ContextFragment:
+      type: object
+      required:
+        - id
+        - origin
+        - kind
+        - title
+        - body
+        - source
+        - provenance
+        - salience
+        - score
+        - occurredAt
+      properties:
+        id: { type: string }
+        origin: { type: string, enum: [record, memory] }
+        kind: { type: string }
+        title: { type: string }
+        body: { type: string }
+        source: { type: object, additionalProperties: true }
+        provenance: { type: object, additionalProperties: true }
+        salience: { type: number }
+        score: { type: ["number", "null"] }
+        occurredAt: { type: ["string", "null"], format: date-time }
+
+    ContextGoal:
+      type: object
+      required:
+        - id
+        - type
+        - domain
+        - name
+        - status
+      properties:
+        id: { type: string }
+        type: { type: string }
+        domain: { type: string }
+        name: { type: string }
+        description: { type: ["string", "null"] }
+        status: { type: string }
+        cadence: { type: ["string", "null"] }
+
+    ContextMetricGoal:
+      type: ["object", "null"]
+      required:
+        - id
+        - name
+      properties:
+        id: { type: string }
+        name: { type: string }
+
+    ContextMetric:
+      type: object
+      required:
+        - id
+        - name
+        - domain
+        - status
+        - statusReason
+        - goal
+      properties:
+        id: { type: string }
+        name: { type: string }
+        domain: { type: string }
+        unit: { type: ["string", "null"] }
+        formula: { type: ["string", "null"] }
+        status: { type: string, enum: [ok, insufficient_data] }
+        statusReason: { type: string }
+        goal: { $ref: "#/components/schemas/ContextMetricGoal" }
+
+    ContextSpine:
+      type: object
+      required:
+        - availability
+        - note
+        - toolsCount
+      properties:
+        availability: { $ref: "#/components/schemas/ContextStoreStatus" }
+        note: { type: string }
+        toolsCount: { type: ["integer", "null"] }
+
+    ContextCoverageGap:
+      type: object
+      required:
+        - store
+        - hint
+      properties:
+        store: { type: string }
+        hint: { type: string }
+
+    ContextCoverage:
+      type: object
+      required:
+        - stores
+        - contributingStores
+        - totalStores
+        - depthScore
+        - gaps
+      properties:
+        stores:
+          type: object
+          additionalProperties: { type: integer }
+        contributingStores: { type: integer }
+        totalStores: { type: integer }
+        depthScore: { type: number }
+        gaps:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContextCoverageGap"
+
+    ContextAvailability:
+      type: object
+      required:
+        - structured
+        - memory
+        - goals
+        - metrics
+        - spine
+        - embedding
+      properties:
+        structured: { $ref: "#/components/schemas/ContextStoreStatus" }
+        memory: { $ref: "#/components/schemas/ContextStoreStatus" }
+        goals: { $ref: "#/components/schemas/ContextStoreStatus" }
+        metrics: { $ref: "#/components/schemas/ContextStoreStatus" }
+        spine: { $ref: "#/components/schemas/ContextStoreStatus" }
+        embedding: { $ref: "#/components/schemas/ContextStoreStatus" }
+
+    ContextSubject:
+      type: object
+      required:
+        - tenantId
+        - subjectType
+        - subjectId
+        - label
+        - ref
+      properties:
+        tenantId: { type: string }
+        subjectType: { type: string }
+        subjectId: { type: string }
+        label: { type: string }
+        ref: { type: object, additionalProperties: true }
+
+    ContextPacket:
+      type: object
+      required:
+        - subject
+        - query
+        - fragments
+        - goals
+        - metrics
+        - spine
+        - coverage
+        - availability
+        - generatedAt
+      properties:
+        subject: { $ref: "#/components/schemas/ContextSubject" }
+        query: { type: ["string", "null"] }
+        fragments:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContextFragment"
+        goals:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContextGoal"
+        metrics:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContextMetric"
+        spine: { $ref: "#/components/schemas/ContextSpine" }
+        coverage: { $ref: "#/components/schemas/ContextCoverage" }
+        availability: { $ref: "#/components/schemas/ContextAvailability" }
+        generatedAt: { type: string, format: date-time }
+
+    RememberSubjectRef:
+      type: object
+      required:
+        - entity_type
+        - entity_id
+      properties:
+        tenant_id: { type: string }
+        entity_type: { type: string }
+        entity_id: { type: string }
+        source: { type: string }
+        external_id: { type: string }
+
+    RememberSource:
+      type: object
+      properties:
+        connector: { type: string }
+        source_id: { type: string }
+        entity_type: { type: string }
+        external_id: { type: string }
+
+    RememberInput:
+      type: object
+      required:
+        - subjectRef
+        - kind
+        - title
+        - body
+      properties:
+        tenantId: { type: string }
+        subjectRef: { $ref: "#/components/schemas/RememberSubjectRef" }
+        kind:
+          type: string
+          enum: [fact, interaction, decision, signal, preference]
+        title: { type: string, minLength: 1 }
+        body: { type: string, minLength: 1 }
+        source: { $ref: "#/components/schemas/RememberSource" }
+        goalRefs:
+          type: array
+          items: { type: string }
+        salience: { type: number }
+        entityRef: { type: object, additionalProperties: true }
+        expiresAt: { type: ["string", "null"] }
+
+    MemoryAtomSummary:
+      type: object
+      required:
+        - id
+        - subjectType
+        - subjectId
+        - kind
+        - title
+        - createdAt
+      properties:
+        id: { type: string }
+        subjectType: { type: string }
+        subjectId: { type: string }
+        kind: { type: string }
+        title: { type: string }
+        createdAt: { type: string, format: date-time }
+
+    RememberEmbeddingStatus:
+      type: object
+      required:
+        - available
+        - reason
+      properties:
+        available: { type: boolean }
+        reason: { type: string }
+
+    RememberResult:
+      type: object
+      required:
+        - atom
+        - created
+        - embedding
+      properties:
+        atom: { $ref: "#/components/schemas/MemoryAtomSummary" }
+        created: { type: boolean }
+        embedding: { $ref: "#/components/schemas/RememberEmbeddingStatus" }
