@@ -1,0 +1,248 @@
+At this point, I agree with the conclusion.
+
+The evidence chain is now pretty strong:
+
+```text
+Tenant: iw-customer-zero     → fails
+Tenant: integratewise        → fails
+
+client_id: null             → fails
+client_id: kiro-iw          → fails
+
+Minimal payload             → fails
+Full payload                → fails
+
+proposal.list               → works
+memory.propose              → fails
+```
+
+That removes almost every caller-side variable.
+
+So the diagnosis has narrowed from:
+
+```text
+"Something is wrong with memory.propose"
+```
+
+to:
+
+```text
+"The live memory.propose implementation contains a static SQL binding mismatch."
+```
+
+Most likely something like:
+
+```ts
+await db.prepare(`
+  INSERT INTO proposals (
+    id,
+    tenant_id,
+    title,
+    content,
+    status
+  )
+  VALUES (?, ?, ?, ?, ?, ?)
+`)
+.bind(id, tenantId, title, content, status)
+.run()
+```
+
+or the reverse:
+
+```ts
+VALUES (?, ?, ?, ?, ?)
+.bind(id, tenantId, title, content, status, clientId)
+```
+
+Those produce exactly:
+
+```text
+D1_ERROR:
+Wrong number of parameter bindings
+```
+
+regardless of payload, tenant, or caller.
+
+---
+
+What I think is more important architecturally:
+
+### Don't point Customer Zero at `integratewise`
+
+I would not do this:
+
+```text
+Customer Zero
+↓
+integratewise tenant
+```
+
+long term.
+
+The platform tenant:
+
+```text
+integratewise
+```
+
+should become:
+
+```text
+Platform
+Registry
+Shared MCP
+Shared Skills
+Shared Models
+Shared Policies
+```
+
+while:
+
+```text
+iw-customer-zero
+```
+
+should remain:
+
+```text
+Customer Zero
+Memory
+Spine
+Research
+Tasks
+Signals
+```
+
+because eventually you'll have:
+
+```text
+customer-a
+customer-b
+customer-c
+iw-customer-zero
+```
+
+and Customer Zero should behave like a real tenant.
+
+Otherwise you're testing against a special tenant that customers will never use.
+
+---
+
+The only exception is during dogfooding.
+
+For example:
+
+```text
+integratewise
+```
+
+could be:
+
+```text
+Platform Org
+```
+
+and
+
+```text
+iw-customer-zero
+```
+
+could be:
+
+```text
+Operational Org
+```
+
+with:
+
+```text
+Apollo
+GitHub
+Coda
+Linear
+```
+
+connected there.
+
+That's actually closer to what you've been describing.
+
+---
+
+So if I were sequencing work:
+
+### First
+
+Fix:
+
+```text
+memory.propose
+```
+
+inside `integratewise-live`.
+
+### Second
+
+Verify:
+
+```text
+proposal.create
+proposal.list
+proposal.approve
+```
+
+work end-to-end.
+
+### Third
+
+Verify promotion:
+
+```text
+Proposal
+↓
+Triage
+↓
+Approved
+↓
+Memory
+```
+
+because that's the real Continuity Bridge path.
+
+### Fourth
+
+Keep Customer Zero isolated:
+
+```text
+tenant_id = iw-customer-zero
+```
+
+and make it pass there.
+
+Because if it only works in:
+
+```text
+tenant_id = integratewise
+```
+
+you've proven a platform tenant, not a customer tenant.
+
+And your entire onboarding flow:
+
+```text
+Clerk
+↓
+Tenant Created
+↓
+Schema AI
+↓
+Memory Space
+↓
+MCP Registration
+↓
+Spine Hydration
+```
+
+ultimately needs to produce a working **customer tenant**, not just a working platform tenant.
+
+So I would fix the SQL, keep Customer Zero separate, and use Customer Zero as the canonical proof that tenant provisioning, memory provisioning, and governance provisioning are all working correctly.
