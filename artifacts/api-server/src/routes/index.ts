@@ -6,6 +6,7 @@ import dealsRouter from "./deals";
 import aiRouter from "./ai";
 import emailRouter from "./email";
 import connectorsRouter from "./connectors";
+import spineRouter from "./spine";
 
 const router: IRouter = Router();
 
@@ -16,5 +17,6 @@ router.use(dealsRouter);
 router.use(aiRouter);
 router.use(emailRouter);
 router.use(connectorsRouter);
+router.use(spineRouter);
 
 export default router;

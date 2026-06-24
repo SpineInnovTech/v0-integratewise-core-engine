@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Zap, Bot, Cpu, Wrench, Search, Plus, ToggleLeft, ToggleRight,
   ChevronRight, Circle, CheckCircle2, AlertCircle, Clock, RefreshCw,
   Globe, Code2, Database, Shield, ExternalLink, MoreHorizontal,
-  Play, Pause, Settings, Star, ArrowRight, Hash, Sparkles } from "lucide-react";
+  Play, Pause, Settings, Star, ArrowRight, Hash, Sparkles, Loader2 } from "lucide-react";
+import { useSpineStatus } from "@/platform/use-spine";
 
 // ─── Shared ───────────────────────────────────────────────────────────────────
 
@@ -468,135 +469,203 @@ export function TwinModels() {
 
 // ─── Tools (MCP Registry) ─────────────────────────────────────────────────────
 
-interface MCPTool {
-  id: string; name: string; provider: string; description: string;
-  schema: string; category: string; enabled: boolean; calls: number;
-  transport: "stdio" | "http" | "sse";
-}
+// Honest, real Spine MCP tools — fetched through the relay (/api/spine/*), which
+// mints the platform credential server-side. No fabricated metrics: each tool
+// shows its real name, description, input schema, and whether it is read-only or
+// a governed (write) tool that must run through HITL.
 
-const MCP_TOOLS: MCPTool[] = [
-  { id: "t1", name: "hubspot.contacts.search", provider: "HubSpot", description: "Search and retrieve HubSpot contacts by email, name, or custom properties.", schema: "{ query: string, limit?: number }", category: "CRM", enabled: true, calls: 2341, transport: "http" },
-  { id: "t2", name: "salesforce.opportunity.update", provider: "Salesforce", description: "Update Salesforce opportunity fields including stage, amount, and close date.", schema: "{ id: string, fields: Record<string, any> }", category: "CRM", enabled: true, calls: 1102, transport: "http" },
-  { id: "t3", name: "slack.message.send", provider: "Slack", description: "Send a message to a Slack channel or DM a user.", schema: "{ channel: string, text: string, blocks?: any[] }", category: "Communication", enabled: true, calls: 843, transport: "http" },
-  { id: "t4", name: "stripe.invoice.retrieve", provider: "Stripe", description: "Retrieve invoice details including status, amount, and payment history.", schema: "{ invoice_id: string }", category: "Finance", enabled: true, calls: 156, transport: "http" },
-  { id: "t5", name: "jira.issue.create", provider: "Atlassian", description: "Create a new Jira issue with labels, priority, and description.", schema: "{ project: string, summary: string, priority: string, description?: string }", category: "Project", enabled: false, calls: 0, transport: "http" },
-  { id: "t6", name: "calendar.event.create", provider: "Google", description: "Create a Google Calendar event and invite attendees.", schema: "{ title: string, start: string, end: string, attendees: string[] }", category: "Calendar", enabled: true, calls: 67, transport: "sse" },
-  { id: "t7", name: "zendesk.ticket.escalate", provider: "Zendesk", description: "Escalate a Zendesk ticket to priority lane and assign to senior support.", schema: "{ ticket_id: string, reason: string }", category: "Support", enabled: true, calls: 23, transport: "http" },
-  { id: "t8", name: "spine.entity.upsert", provider: "IntegrateWise", description: "Upsert an entity record in the Spine SSOT store.", schema: "{ type: string, id: string, fields: Record<string, any> }", category: "Spine", enabled: true, calls: 5670, transport: "stdio" },
-];
-
-const TRANSPORT_CONFIG = {
-  stdio: { color: "text-[#4256AB]", bg: "bg-[#4256AB]/8" },
-  http:  { color: "text-[#10B981]", bg: "bg-[#10B981]/8" },
-  sse:   { color: "text-[#D46780]", bg: "bg-[#D46780]/8" },
+const TOOL_GROUPS: Record<string, { label: string; color: string }> = {
+  spine:    { label: "Spine Entities", color: "#4256AB" },
+  memory:   { label: "Memory",         color: "#7C3AED" },
+  kb:       { label: "Knowledge Bank", color: "#0EA5E9" },
+  signal:   { label: "Signals",        color: "#D46780" },
+  proposal: { label: "Governance",     color: "#D97706" },
+  search:   { label: "Search",         color: "#059669" },
 };
 
+function toolGroup(name: string): { label: string; color: string } {
+  const prefix = name.split(".")[0] ?? "";
+  return TOOL_GROUPS[prefix] ?? { label: "Spine", color: "#4256AB" };
+}
+
 export function TwinTools() {
-  const [tools, setTools] = useState(MCP_TOOLS);
-  const [selected, setSelected] = useState<string | null>("t1");
+  const { data, isLoading, error, refetch, isFetching } = useSpineStatus();
+  const [selected, setSelected] = useState<string | null>(null);
   const [search, setSearch] = useState("");
 
-  const toggle = (id: string) => setTools(prev => prev.map(t => t.id === id ? { ...t, enabled: !t.enabled } : t));
-  const filtered = tools.filter(t => !search || t.name.toLowerCase().includes(search.toLowerCase()) || t.provider.toLowerCase().includes(search.toLowerCase()));
-  const active = tools.find(t => t.id === selected);
+  const tools = data?.tools ?? [];
+  const filtered = tools.filter(
+    (t) =>
+      !search ||
+      t.name.toLowerCase().includes(search.toLowerCase()) ||
+      t.description.toLowerCase().includes(search.toLowerCase()),
+  );
+  const active = tools.find((t) => t.name === selected) ?? filtered[0] ?? null;
 
   return (
     <div className="flex h-full bg-white">
       {/* List */}
       <div className="w-80 shrink-0 flex flex-col border-r border-[#E5E7EB]">
-        <SectionHeader icon={Wrench} title="MCP Tool Registry" count={tools.filter(t => t.enabled).length} />
+        <SectionHeader
+          icon={Wrench}
+          title="MCP Tool Registry"
+          count={data?.connected ? tools.length : undefined}
+        />
+
+        {/* Honest connection banner */}
+        <div
+          className="mx-4 mt-3 mb-1 flex items-center gap-2 rounded-lg px-3 py-2 text-[10px] font-semibold"
+          style={{
+            background: data?.connected
+              ? "rgba(16,185,129,0.08)"
+              : !isLoading
+                ? "rgba(190,18,60,0.07)"
+                : "#f1f5f9",
+            color: data?.connected ? "#059669" : !isLoading ? "#be123c" : "#475569",
+          }}
+        >
+          <span className="h-1.5 w-1.5 rounded-full" style={{ background: "currentColor" }} />
+          {isLoading
+            ? "Connecting to Spine…"
+            : data?.connected
+              ? `Live · ${data.tenantId}`
+              : "Spine unavailable"}
+          <button
+            onClick={() => refetch()}
+            className="ml-auto opacity-70 hover:opacity-100"
+            title="Recheck"
+          >
+            <RefreshCw className={`w-3 h-3 ${isFetching ? "animate-spin" : ""}`} />
+          </button>
+        </div>
+
         <SearchBar value={search} onChange={setSearch} placeholder="Search tools..." />
         <div className="flex-1 overflow-y-auto px-3 pb-3 space-y-1.5">
-          {filtered.map(tool => {
-            const tc = TRANSPORT_CONFIG[tool.transport];
+          {filtered.map((tool) => {
+            const g = toolGroup(tool.name);
             return (
               <button
-                key={tool.id}
-                onClick={() => setSelected(tool.id)}
-                className={`w-full text-left p-3 rounded-xl border transition-all ${selected === tool.id ? "bg-[#3F5185]/5 border-[#3F5185]/20" : "bg-white border-[#E5E7EB] hover:shadow-sm"}`}
+                key={tool.name}
+                onClick={() => setSelected(tool.name)}
+                className={`w-full text-left p-3 rounded-xl border transition-all ${active?.name === tool.name ? "bg-[#3F5185]/5 border-[#3F5185]/20" : "bg-white border-[#E5E7EB] hover:shadow-sm"}`}
               >
                 <div className="flex items-center gap-2.5 mb-1.5">
-                  <div className="w-6 h-6 rounded-lg bg-[#F8F9FA] border border-[#E5E7EB] flex items-center justify-center text-[9px] font-bold text-[#3F5185] shrink-0">
-                    {tool.provider.slice(0, 2).toUpperCase()}
+                  <div
+                    className="w-6 h-6 rounded-lg flex items-center justify-center text-[8px] font-bold text-white shrink-0"
+                    style={{ background: g.color }}
+                  >
+                    {g.label.slice(0, 2).toUpperCase()}
                   </div>
                   <span className="text-[11px] font-semibold text-slate-700 truncate font-mono">{tool.name}</span>
-                  <div
-                    onClick={e => { e.stopPropagation(); toggle(tool.id); }}
-                    className="ml-auto shrink-0 cursor-pointer"
+                  <span
+                    className={`ml-auto shrink-0 text-[8px] font-bold px-1.5 py-0.5 rounded-full ${tool.access === "read" ? "bg-[#10B981]/10 text-[#059669]" : "bg-amber-100 text-amber-700"}`}
                   >
-                    {tool.enabled
-                      ? <ToggleRight className="w-5 h-5 text-[#10B981]" />
-                      : <ToggleLeft className="w-5 h-5 text-slate-300" />}
-                  </div>
+                    {tool.access === "read" ? "READ" : "GOVERNED"}
+                  </span>
                 </div>
                 <p className="text-[10px] text-slate-400 line-clamp-1">{tool.description}</p>
-                <div className="flex items-center gap-2 mt-1.5">
-                  <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${tc.bg} ${tc.color}`}>{tool.transport.toUpperCase()}</span>
-                  <span className="text-[9px] text-slate-400">{tool.calls.toLocaleString()} calls</span>
-                </div>
               </button>
             );
           })}
+
+          {!isLoading && filtered.length === 0 && (
+            <div className="px-3 py-10 text-center text-[11px] text-slate-400">
+              {data?.connected
+                ? "No tools match your search."
+                : error instanceof Error
+                  ? error.message
+                  : "Spine is not reachable right now."}
+            </div>
+          )}
         </div>
       </div>
 
       {/* Tool Detail */}
-      {active && (
+      {active ? (
         <div className="flex-1 overflow-y-auto p-6 space-y-5">
           <div className="flex items-start justify-between">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${TRANSPORT_CONFIG[active.transport].bg} ${TRANSPORT_CONFIG[active.transport].color}`}>
-                  {active.transport.toUpperCase()}
+                <span
+                  className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white"
+                  style={{ background: toolGroup(active.name).color }}
+                >
+                  {toolGroup(active.name).label}
                 </span>
-                <span className="text-[10px] text-slate-400">{active.provider}</span>
+                <span
+                  className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${active.access === "read" ? "bg-[#10B981]/10 text-[#059669]" : "bg-amber-100 text-amber-700"}`}
+                >
+                  {active.access === "read" ? "Read-only" : "Governed (HITL)"}
+                </span>
               </div>
               <h2 className="text-base font-bold text-slate-900 font-mono">{active.name}</h2>
             </div>
-            <button
-              onClick={() => toggle(active.id)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors border ${
-                active.enabled
-                  ? "bg-red-50 border-red-200 text-red-600 hover:bg-red-100"
-                  : "bg-[#10B981]/10 border-[#10B981]/20 text-[#059669] hover:bg-[#10B981]/20"
-              }`}
-            >
-              {active.enabled ? "Disable" : "Enable"}
-            </button>
           </div>
 
-          <p className="text-sm text-slate-600 leading-relaxed bg-[#F8F9FA] rounded-xl p-4 border border-[#E5E7EB]">{active.description}</p>
+          <p className="text-sm text-slate-600 leading-relaxed bg-[#F8F9FA] rounded-xl p-4 border border-[#E5E7EB]">
+            {active.description || "No description provided."}
+          </p>
 
           <div className="grid grid-cols-3 gap-3">
             <div className="p-3 rounded-xl border border-[#E5E7EB] bg-[#F8F9FA]">
-              <div className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">Total Calls</div>
-              <div className="text-xl font-bold text-[#3F5185]">{active.calls.toLocaleString()}</div>
+              <div className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">Access</div>
+              <div className={`text-sm font-bold ${active.access === "read" ? "text-[#10B981]" : "text-amber-600"}`}>
+                {active.access === "read" ? "Read-only" : "Governed"}
+              </div>
             </div>
             <div className="p-3 rounded-xl border border-[#E5E7EB] bg-[#F8F9FA]">
-              <div className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">Category</div>
-              <div className="text-sm font-bold text-slate-700">{active.category}</div>
+              <div className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">Group</div>
+              <div className="text-sm font-bold text-slate-700">{toolGroup(active.name).label}</div>
             </div>
             <div className="p-3 rounded-xl border border-[#E5E7EB] bg-[#F8F9FA]">
-              <div className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">Status</div>
-              <div className={`text-sm font-bold ${active.enabled ? "text-[#10B981]" : "text-slate-400"}`}>{active.enabled ? "Enabled" : "Disabled"}</div>
+              <div className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">Tenant</div>
+              <div className="text-sm font-bold text-slate-700">{data?.tenantId ?? "—"}</div>
             </div>
           </div>
 
-          <div>
-            <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Input Schema</h3>
-            <pre className="bg-[#1E2A4A] text-[#10B981] text-xs p-4 rounded-xl overflow-x-auto font-mono leading-relaxed">
-              {active.schema}
-            </pre>
-          </div>
+          {active.inputSchema != null && (
+            <div>
+              <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Input Schema</h3>
+              <pre className="bg-[#1E2A4A] text-[#10B981] text-xs p-4 rounded-xl overflow-x-auto font-mono leading-relaxed">
+                {JSON.stringify(active.inputSchema, null, 2)}
+              </pre>
+            </div>
+          )}
 
           <div className="p-4 rounded-xl bg-[#3F5185]/5 border border-[#3F5185]/15">
             <div className="flex items-center gap-2 mb-2">
               <Hash className="w-3.5 h-3.5 text-[#3F5185]" />
               <span className="text-xs font-bold text-[#3F5185]">MCP Endpoint</span>
             </div>
-            <code className="text-xs font-mono text-slate-600">
-              {`/make-server-e3b03387/mcp/tools/${active.name}`}
+            <code className="text-xs font-mono text-slate-600 break-all">
+              {`${data?.endpoint ?? "https://mcp.integratewise.ai"}/mcp · tools/call · ${active.name}`}
             </code>
+            <p className="mt-2 text-[10px] text-slate-400 leading-snug">
+              {active.access === "read"
+                ? "Callable read-only through the relay at /api/spine/call. The platform credential is minted server-side; it never reaches the browser."
+                : "This tool mutates platform state and is blocked from direct relay calls — it must run through governance (HITL approval)."}
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div className="flex-1 flex items-center justify-center" style={{ color: "var(--muted-foreground)" }}>
+          <div className="text-center">
+            {isLoading ? (
+              <>
+                <Loader2 className="w-10 h-10 mx-auto mb-3 opacity-30 animate-spin" />
+                <p className="text-sm">Connecting to the Spine…</p>
+              </>
+            ) : (
+              <>
+                <Wrench className="w-10 h-10 mx-auto mb-3 opacity-30" />
+                <p className="text-sm">{data?.connected ? "Select a tool" : "Spine is not reachable"}</p>
+                {!data?.connected && (
+                  <p className="mt-1 text-xs opacity-70">
+                    {data?.detail ?? (error instanceof Error ? error.message : "")}
+                  </p>
+                )}
+              </>
+            )}
           </div>
         </div>
       )}

@@ -11,4 +11,4 @@
 - [Product reframe](product-reframe.md) — this repo now builds the WHOLE product UI over the live gateway, not just internal ops; supersedes replit.md framing (flag, don't rewrite)
 - [Gateway empirical facts](gateway-facts.md) — gateway.integratewise.ai live; /health 200 public+CORS-open; /api/v1/* behind RS256/Cf-Access JWT wall (401 no JWT); Clerk≠gateway; no token in env
 - [Platform boundary](platform-boundary.md) — src/platform/* is the seam: typed GatewayClient (no silent fallback), token modes, honest connection states; session path overridable; dev-gated JWT paste
-- [MCP/Spine access from here](mcp-spine-access.md) — mint a no-secret client_credentials Bearer at mcp.integratewise.ai/oauth/token (x-tenant-id) → 19 live Spine MCP tools; gateway /api/v1 needs a different issuer/aud
+- [Spine MCP access (relay path)](mcp-spine-access.md) — Spine over MCP via api-server relay (no-secret client_credentials token minted server-side at mcp.integratewise.ai/oauth/token, never in browser); read-only scope still lists all 19 tools; fail-CLOSED read/write classifier; /spine/call off by default; MCP token ≠ gateway /api/v1 token

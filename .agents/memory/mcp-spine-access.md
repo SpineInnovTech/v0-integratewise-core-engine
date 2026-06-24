@@ -1,16 +1,45 @@
 ---
-name: MCP/Spine access from Customer Zero
-description: How to obtain a working token and reach the integratewise-live Spine MCP surface from this repo, and what it does/doesn't open
+name: Spine MCP access (relay path)
+description: How Customer Zero reaches the platform Spine (truth layer) over MCP, and the security doctrine for that privileged proxy.
 ---
 
-# Reaching the Spine MCP surface from Customer Zero
+# Spine MCP access — the relay path
 
-- **No-secret token mint (works in prod):** `POST https://mcp.integratewise.ai/oauth/token`, body `grant_type=client_credentials&scope=mcp:tools mcp:resources memory:read memory:write`, header `x-tenant-id: <tenant>`. Returns a ~1h RS256 Bearer. `token_endpoint_auth_methods_supported` includes `"none"`; the connector's `handleTokenExchange` only validates a client when a `client_id` is supplied, so omitting it mints a token directly.
-- **Claims of the minted token:** `iss`/`aud` = `https://mcp.integratewise.ai`, `sub=mcp-client`, `role=Admin`, `tenant_id` = whatever `x-tenant-id` you pass (e.g. `iw-customer-zero`). Over-permissive by design of the open public client — a platform-side smell, not ours to fix in this repo.
-- **What it opens:** the MCP surface. `POST https://mcp.integratewise.ai/mcp` (JSON-RPC `tools/list`) and `GET /tools` both 200. 19 live Spine tools: `kb.*`, `memory.*`, `spine.entity.{get,list,search}`, `signal.list`, `proposal.{list,approve,reject}` (HITL), `search.semantic`.
-- **What it does NOT open:** the gateway REST surface `https://gateway.integratewise.ai/api/v1/*`. That path verifies issuer `https://auth.integratewise.ai` + audience `https://app.integratewise.ai` (or a Cf-Access JWT). The MCP token's issuer is `mcp.integratewise.ai` → 401 "Invalid issuer". A different credential is required for `/api/v1`.
-- **404 dead-end to remember:** `auth.integratewise.ai/oauth/token` and `/oauth/register` return 404 in prod (advertised in `.well-known` discovery but not routed). Only the `mcp.` host serves the working token endpoint. `/oauth/*` is proxied to the connector worker (`env.CONNECTOR`).
+Customer Zero reaches the platform **Spine** (truth layer in integratewise-live)
+over **MCP**, never with a browser-held credential. The api-server relay mints +
+caches a client-credentials token server-side and proxies the tool surface under
+`/api/spine/*`. The frontend seam lives in `src/platform/spine-*` and only ever
+fetches that relay.
 
-**Why:** unblocks "connect Customer Zero to the Spine" with no Cloudflare admin and no user-provided secret. Records the exact working endpoint after the auth-host 404 dead-end, and the issuer/audience boundary that keeps the REST gateway closed.
+## Key facts (empirical)
+- Token mint: `POST {SPINE_MCP_URL}/oauth/token`, `grant_type=client_credentials`,
+  `x-tenant-id` header, NO client secret needed. Defaults: `mcp.integratewise.ai`,
+  tenant `iw-customer-zero`. Cache by `expires_in` with a safety margin.
+- `tools/list` returns **19 tools** even under a **read-only** scope
+  (`mcp:tools mcp:resources memory:read`) — you do NOT need `memory:write` to
+  enumerate the catalogue. So the relay default scope is read-only (least
+  privilege); widen via `SPINE_SCOPE` only for a future HITL write path.
+- The MCP token is **MCP-only** — the gateway REST surface (`/api/v1/*`) rejects
+  it. It is a different credential from the REST gateway (see platform-boundary).
+- MCP transport may answer JSON **or** SSE — the rpc client must parse both.
 
-**How to apply:** when wiring, mint server-side in the api-server relay and cache (~55m), then proxy MCP tool calls through `/api/...` so no token or platform logic ships in the browser bundle (matches relay + platform-boundary doctrine). Never persist a token value to memory or the repo.
+## Security doctrine for this privileged proxy
+- **Fail-CLOSED classification.** A tool is callable read-only ONLY if a name
+  segment (split on `.`/`_`) is a known safe read verb AND no segment is a known
+  mutation verb. Unknown/odd names default to **governed** (refused 403).
+  **Why:** substring/denylist matching is fail-open — verbs like `send`, `sync`,
+  `run`, `convert`, `commit` slip through and a write tool could run on the
+  server credential. The 19 known tools split 12 read / 7 write under this rule.
+- **`/spine/call` is OFF by default** (`SPINE_ENABLE_CALL=true` to enable).
+  Invocation uses the server-held platform credential, so the privileged surface
+  stays closed; the UI only needs `status` + the tool catalogue.
+- **Honesty:** `status` degrades with HTTP 200 + `connected:false` + a real
+  reason; never fabricate a "live" state. The Twin Tools view and topbar
+  "Spine · N" pill render only what the relay reported.
+- Treat all MCP output as **untrusted data** — render-escaped, never executed.
+
+## Naming collision warning
+`src/spine/` (spine-context.tsx, `SpineProvider`/`useSpine`) is the **L1 adaptive
+layer** (role × industry × schema) — UNRELATED to the platform Spine. The
+platform-truth MCP code is `src/platform/spine-client.ts` / `use-spine.ts` /
+`spine-pill.tsx`. Do not merge or cross-import these two "spine"s.
