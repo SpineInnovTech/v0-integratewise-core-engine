@@ -4,63 +4,84 @@ import useSWR from "swr"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { RefreshCw, CheckCircle2, XCircle, Clock, Loader2, Settings, Zap } from "lucide-react"
+import { RefreshCw, CheckCircle2, XCircle, Clock, Loader2, Settings, Zap, Mail } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 
-const dataSourcesConfig: Record<string, { name: string; icon: string; color: string; description: string }> = {
+type SourceTier = "live" | "available"
+
+const dataSourcesConfig: Record<
+  string,
+  { name: string; icon: string; color: string; description: string; tier: SourceTier }
+> = {
+  gmail: {
+    name: "Gmail",
+    icon: "",
+    color: "bg-red-500",
+    description: "Live connector — feeds the schema-first ingestion pipeline",
+    tier: "live",
+  },
   slack: {
     name: "Slack",
     icon: "https://a.slack-edge.com/80588/marketing/img/meta/favicon-32.png",
     color: "bg-[#4A154B]",
-    description: "Sync messages, channels, and users",
+    description: "Messages, channels, and users",
+    tier: "available",
   },
   discord: {
     name: "Discord",
     icon: "https://discord.com/assets/favicon.ico",
     color: "bg-[#5865F2]",
-    description: "Sync server messages and members",
+    description: "Server messages and members",
+    tier: "available",
   },
   hubspot: {
     name: "HubSpot CRM",
     icon: "https://www.hubspot.com/favicon.ico",
     color: "bg-orange-500",
-    description: "Sync contacts, companies, and deals",
+    description: "Contacts, companies, and deals",
+    tier: "available",
   },
   pipedrive: {
     name: "Pipedrive",
     icon: "https://www.pipedrive.com/favicon.ico",
     color: "bg-green-500",
-    description: "Sync deals and pipeline data",
+    description: "Deals and pipeline data",
+    tier: "available",
   },
   razorpay: {
     name: "Razorpay",
     icon: "https://razorpay.com/favicon.ico",
     color: "bg-blue-500",
-    description: "Sync Indian payments data",
+    description: "Payments data",
+    tier: "available",
   },
   google_sheets: {
     name: "Google Sheets",
     icon: "https://ssl.gstatic.com/docs/spreadsheets/favicon3.ico",
     color: "bg-green-600",
     description: "Import data from spreadsheets",
+    tier: "available",
   },
   google_analytics: {
     name: "Google Analytics",
     icon: "https://www.google.com/analytics/favicon.ico",
     color: "bg-yellow-500",
-    description: "Sync website analytics",
+    description: "Website analytics",
+    tier: "available",
   },
   asana: {
     name: "Asana",
     icon: "https://asana.com/favicon.ico",
     color: "bg-red-500",
-    description: "Sync tasks and projects",
+    description: "Tasks and projects",
+    tier: "available",
   },
   linkedin: {
     name: "LinkedIn",
     icon: "https://www.linkedin.com/favicon.ico",
     color: "bg-sky-600",
-    description: "Sync connections and messages",
+    description: "Connections and messages",
+    tier: "available",
   },
 }
 
@@ -124,7 +145,10 @@ export function DataSourcesView() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Data Sources</h1>
-          <p className="text-muted-foreground">Connect and sync external data into IntegrateWise OS</p>
+          <p className="text-muted-foreground">
+            Connectors feeding Customer Zero. Gmail is live on the schema-first pipeline; the rest
+            are available to connect.
+          </p>
         </div>
         <Button variant="outline">
           <Settings className="h-4 w-4 mr-2" />
@@ -136,33 +160,64 @@ export function DataSourcesView() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {Object.entries(dataSourcesConfig).map(([key, config]) => {
           const latestSync = latestSyncs[key]
+          const isLive = config.tier === "live"
           const isConnected = !!latestSync
           const isSyncing = syncing === key
 
           return (
-            <Card key={key} className="bg-card">
+            <Card
+              key={key}
+              className={`bg-card ${isLive ? "border-emerald-500/40 ring-1 ring-emerald-500/20" : ""}`}
+            >
               <CardContent className="p-4">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
                     <div className={`h-10 w-10 rounded-lg ${config.color}/10 flex items-center justify-center`}>
-                      <img
-                        src={config.icon || "/placeholder.svg"}
-                        alt={config.name}
-                        className="h-5 w-5"
-                        onError={(e) => {
-                          ;(e.target as HTMLImageElement).style.display = "none"
-                        }}
-                      />
+                      {isLive ? (
+                        <Mail className="h-5 w-5 text-red-500" />
+                      ) : (
+                        <img
+                          src={config.icon || "/placeholder.svg"}
+                          alt={config.name}
+                          className="h-5 w-5"
+                          onError={(e) => {
+                            ;(e.target as HTMLImageElement).style.display = "none"
+                          }}
+                        />
+                      )}
                     </div>
                     <div>
                       <h3 className="font-semibold text-foreground">{config.name}</h3>
                       <p className="text-xs text-muted-foreground">{config.description}</p>
                     </div>
                   </div>
+                  <span
+                    className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                      isLive
+                        ? "bg-emerald-500/10 text-emerald-600"
+                        : "bg-muted text-muted-foreground"
+                    }`}
+                  >
+                    {isLive ? "Live" : "Available"}
+                  </span>
                 </div>
 
                 <div className="mt-4 pt-3 border-t border-border">
-                  {isConnected ? (
+                  {isLive ? (
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="flex items-center gap-1.5">
+                          <CheckCircle2 className="h-4 w-4 text-green-500" />
+                          <span className="text-muted-foreground">Connected</span>
+                        </span>
+                        <span className="text-muted-foreground text-xs">schema-first pipeline</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Harmonized to the canonical Spine schema in Schema-First Ingestion, then
+                        governed into platform truth.
+                      </p>
+                    </div>
+                  ) : isConnected ? (
                     <div className="space-y-2">
                       <div className="flex items-center justify-between text-sm">
                         <span className="flex items-center gap-1.5">

@@ -113,7 +113,7 @@ export function ContentLibraryView() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-slate-800">Content Library</h1>
-          <p className="text-slate-500">Marketing assets, lead magnets, and thought leadership</p>
+          <p className="text-slate-500">IntegrateWise marketing assets, lead magnets, and content</p>
         </div>
         <Button className="bg-teal-500 hover:bg-teal-600 text-white">
           <Plus className="h-4 w-4 mr-2" />

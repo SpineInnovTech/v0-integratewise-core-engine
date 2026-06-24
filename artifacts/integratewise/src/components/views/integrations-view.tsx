@@ -1,5 +1,6 @@
 
 import { useState } from "react"
+import { cn } from "@/lib/utils"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -221,34 +222,35 @@ export function IntegrationsView() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="p-8 space-y-8 bg-background min-h-screen">
+      <div className="flex items-center justify-between border-b border-border/50 pb-6">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Connectors</h1>
-          <p className="text-muted-foreground">Connect your tools and services</p>
+          <h1 className="text-3xl font-light text-foreground tracking-tight">Ecosystem Connectors</h1>
+          <p className="text-muted-foreground mt-2 font-medium tracking-wide">Manage integrations and real-time event streams</p>
         </div>
         <Button
           variant="outline"
-          size="sm"
+          size="lg"
           onClick={() => {
             mutateConnectors()
             mutateWebhooks()
           }}
           disabled={connectorsLoading || webhooksLoading}
+          className="rounded-full shadow-sm font-semibold tracking-wide uppercase text-xs"
         >
           <RefreshCw className={`mr-2 h-4 w-4 ${connectorsLoading ? "animate-spin" : ""}`} />
-          Refresh
+          Refresh Sync
         </Button>
       </div>
 
-      <Tabs defaultValue="connectors" className="space-y-4">
-        <TabsList className="bg-muted/50">
-          <TabsTrigger value="connectors">Connectors</TabsTrigger>
-          <TabsTrigger value="activity">Activity</TabsTrigger>
+      <Tabs defaultValue="connectors" className="space-y-8">
+        <TabsList className="bg-secondary/50 p-1.5 rounded-xl border border-border/50 w-full sm:w-auto flex flex-col sm:flex-row h-auto">
+          <TabsTrigger value="connectors" className="rounded-lg text-sm font-semibold tracking-wide uppercase px-6 py-2.5 data-[state=active]:bg-background data-[state=active]:shadow-sm flex-1">Active Connectors</TabsTrigger>
+          <TabsTrigger value="activity" className="rounded-lg text-sm font-semibold tracking-wide uppercase px-6 py-2.5 data-[state=active]:bg-background data-[state=active]:shadow-sm flex-1">Event Streams</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="connectors" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <TabsContent value="connectors" className="space-y-4 focus-visible:outline-none">
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {CONNECTORS.map((connector) => {
               const status = getConnectorStatus(connector.id)
               const isConnected = status?.status === "connected"
@@ -260,59 +262,66 @@ export function IntegrationsView() {
               return (
                 <Card
                   key={connector.id}
-                  className={`border-border/50 transition-all ${isConnected ? "ring-2 ring-primary/20" : ""}`}
+                  className={cn(
+                    "border-border/50 transition-all rounded-2xl overflow-hidden hover:shadow-md",
+                    isConnected ? "ring-2 ring-primary/20 bg-primary/[0.02]" : "hover:border-primary/30"
+                  )}
                 >
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div className={`rounded-lg p-2 ${connector.color}`}>
-                        <Icon className="h-5 w-5 text-white" />
+                  <CardHeader className="p-6 border-b border-border/30 bg-card">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className={`rounded-xl p-3 shadow-inner ${connector.color}`}>
+                        <Icon className="h-6 w-6 text-white" strokeWidth={1.5} />
                       </div>
                       {isConnected ? (
-                        <Badge className="bg-green-500/10 text-green-600 border-green-500/20">
+                        <Badge className="bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 border-none font-bold uppercase tracking-wider text-[10px] px-3 py-1">
                           <Check className="mr-1 h-3 w-3" />
                           Connected
                         </Badge>
                       ) : (
-                        <Badge variant="outline" className="text-muted-foreground">
-                          Not connected
+                        <Badge variant="secondary" className="bg-secondary text-muted-foreground hover:bg-secondary border-none font-bold uppercase tracking-wider text-[10px] px-3 py-1">
+                          Available
                         </Badge>
                       )}
                     </div>
-                    <CardTitle className="text-lg">{connector.name}</CardTitle>
-                    <CardDescription>{connector.description}</CardDescription>
+                    <CardTitle className="text-xl font-bold tracking-tight">{connector.name}</CardTitle>
+                    <CardDescription className="text-sm font-medium mt-1 text-muted-foreground/80 leading-relaxed">{connector.description}</CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="p-6 space-y-6 bg-card/50">
                     {/* Features */}
-                    <div className="flex flex-wrap gap-1">
+                    <div className="flex flex-wrap gap-2">
                       {connector.features.map((feature) => (
-                        <Badge key={feature} variant="secondary" className="text-xs">
+                        <span key={feature} className="text-xs font-semibold text-foreground/70 bg-secondary/80 px-2.5 py-1 rounded-md border border-border/50">
                           {feature}
-                        </Badge>
+                        </span>
                       ))}
                     </div>
 
                     {/* Stats if connected */}
                     {isConnected && (
-                      <div className="text-sm text-muted-foreground">
-                        <span className="font-medium text-foreground">
-                          {status.provider_workspace_name || "Connected"}
-                        </span>
-                        {stats.total > 0 && (
-                          <span className="ml-2">
-                            {stats.total} events ({stats.recent} today)
+                      <div className="text-sm bg-background border border-border/50 p-4 rounded-xl">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                          <span className="font-bold text-foreground">
+                            {status.provider_workspace_name || "Active Connection"}
                           </span>
+                        </div>
+                        {stats.total > 0 ? (
+                          <p className="text-muted-foreground font-medium text-xs">
+                            Processed <span className="text-foreground font-bold">{stats.total}</span> events (<span className="text-foreground font-bold">{stats.recent}</span> today)
+                          </p>
+                        ) : (
+                          <p className="text-muted-foreground font-medium text-xs">Listening for events...</p>
                         )}
                       </div>
                     )}
 
                     {/* Action buttons */}
-                    <div className="flex gap-2">
+                    <div className="flex gap-3 pt-2">
                       {isConnected ? (
                         <>
                           <Button
                             variant="outline"
-                            size="sm"
-                            className="flex-1 bg-transparent"
+                            className="flex-1 bg-background border-destructive/20 text-destructive hover:bg-destructive hover:text-destructive-foreground font-semibold rounded-xl"
                             onClick={() => handleDisconnect(connector.id)}
                             disabled={isDisconnecting}
                           >
@@ -323,25 +332,24 @@ export function IntegrationsView() {
                             )}
                             Disconnect
                           </Button>
-                          <Button variant="ghost" size="sm">
-                            <ExternalLink className="h-4 w-4" />
+                          <Button variant="outline" size="icon" className="w-10 rounded-xl bg-background">
+                            <ExternalLink className="h-4 w-4 text-muted-foreground" />
                           </Button>
                         </>
                       ) : connector.hasOAuth ? (
                         <Button
-                          size="sm"
-                          className="w-full"
+                          className="w-full font-bold uppercase tracking-wider text-xs rounded-xl shadow-md"
                           onClick={() => handleConnect(connector.id)}
                           disabled={isConnecting}
                         >
                           {isConnecting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                          Connect {connector.name}
+                          Connect Account
                         </Button>
                       ) : (
-                        <Button variant="outline" size="sm" className="w-full bg-transparent" asChild>
+                        <Button variant="outline" className="w-full bg-background font-bold uppercase tracking-wider text-xs rounded-xl border-border/80 text-foreground/80 hover:text-foreground" asChild>
                           <a href={`https://${connector.id}.com`} target="_blank" rel="noopener noreferrer">
                             <ExternalLink className="mr-2 h-4 w-4" />
-                            Configure via Webhook
+                            Configure Manually
                           </a>
                         </Button>
                       )}
@@ -353,60 +361,75 @@ export function IntegrationsView() {
           </div>
         </TabsContent>
 
-        <TabsContent value="activity" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Webhook className="h-5 w-5 text-primary" />
-                Recent Activity
+        <TabsContent value="activity" className="focus-visible:outline-none">
+          <Card className="border-border/50 rounded-2xl shadow-sm overflow-hidden bg-card">
+            <CardHeader className="p-6 border-b border-border/50 bg-secondary/10">
+              <CardTitle className="text-lg font-bold flex items-center gap-3">
+                <div className="p-2 bg-primary/10 text-primary rounded-lg">
+                  <Activity className="h-5 w-5" />
+                </div>
+                Event Stream Log
               </CardTitle>
-              <CardDescription>Events received from connected services</CardDescription>
+              <CardDescription className="font-medium mt-1">Real-time webhook payloads across all active connectors</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-0">
               {webhooksLoading ? (
-                <div className="space-y-2">
+                <div className="divide-y divide-border/30">
                   {[...Array(5)].map((_, i) => (
-                    <div key={i} className="h-16 animate-pulse rounded-lg bg-muted/50" />
+                    <div key={i} className="p-6 flex items-center gap-4">
+                      <div className="h-10 w-10 rounded-lg bg-muted animate-pulse" />
+                      <div className="space-y-2 flex-1">
+                        <div className="h-4 w-32 bg-muted animate-pulse rounded" />
+                        <div className="h-3 w-48 bg-muted animate-pulse rounded" />
+                      </div>
+                    </div>
                   ))}
                 </div>
               ) : webhooks && webhooks.length > 0 ? (
-                <div className="space-y-2">
+                <div className="divide-y divide-border/30">
                   {webhooks.map((webhook: any) => {
                     const connector = CONNECTORS.find((c) => c.id === webhook.provider)
                     const Icon = connector?.icon || Webhook
 
                     return (
-                      <div key={webhook.id} className="flex items-center gap-4 rounded-lg border border-border/50 p-3">
-                        <div className={`rounded-lg p-2 ${connector?.color || "bg-gray-500"}`}>
-                          <Icon className="h-4 w-4 text-white" />
+                      <div key={webhook.id} className="flex items-center gap-5 p-5 hover:bg-secondary/20 transition-colors">
+                        <div className={`rounded-xl p-2.5 shadow-sm shrink-0 ${connector?.color || "bg-gray-500"}`}>
+                          <Icon className="h-5 w-5 text-white" strokeWidth={1.5} />
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium">{webhook.provider}</span>
-                            <Badge variant="outline" className="text-xs font-mono">
+                        <div className="flex-1 min-w-0 flex flex-col justify-center">
+                          <div className="flex items-center gap-3 mb-1">
+                            <span className="font-bold text-foreground text-sm tracking-wide capitalize">{webhook.provider}</span>
+                            <span className="px-2 py-0.5 rounded-md bg-secondary text-foreground text-[10px] font-mono font-bold border border-border/50">
                               {webhook.event_type}
-                            </Badge>
+                            </span>
                             {!webhook.signature_valid && (
-                              <Badge variant="destructive" className="text-xs">
-                                Invalid Signature
+                              <Badge variant="destructive" className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5">
+                                Invalid Sig
                               </Badge>
                             )}
                           </div>
-                          <p className="text-xs text-muted-foreground truncate">{webhook.event_id || "No event ID"}</p>
+                          <p className="text-xs text-muted-foreground font-mono truncate max-w-lg">ID: {webhook.event_id || "unknown"}</p>
                         </div>
-                        <div className="text-right text-xs text-muted-foreground">
-                          {new Date(webhook.created_at).toLocaleString()}
+                        <div className="text-right flex flex-col items-end shrink-0">
+                          <span className="text-sm font-semibold text-foreground">
+                            {new Date(webhook.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                          <span className="text-xs font-medium text-muted-foreground mt-0.5">
+                            {new Date(webhook.created_at).toLocaleDateString([], { month: 'short', day: 'numeric' })}
+                          </span>
                         </div>
                       </div>
                     )
                   })}
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <Webhook className="h-12 w-12 text-muted-foreground/50 mb-4" />
-                  <h3 className="font-medium">No activity yet</h3>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Connect your services above to start receiving events
+                <div className="flex flex-col items-center justify-center py-20 text-center px-4">
+                  <div className="h-24 w-24 rounded-full bg-secondary/50 flex items-center justify-center mb-6">
+                    <Activity className="h-10 w-10 text-muted-foreground/40" />
+                  </div>
+                  <h3 className="text-xl font-bold text-foreground mb-2">No event data</h3>
+                  <p className="text-muted-foreground font-medium max-w-md">
+                    Connect services in the Active Connectors tab to start receiving webhooks and events automatically.
                   </p>
                 </div>
               )}

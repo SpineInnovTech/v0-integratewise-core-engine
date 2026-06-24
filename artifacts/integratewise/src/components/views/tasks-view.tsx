@@ -151,76 +151,80 @@ export function TasksView() {
   )
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="p-8 space-y-8 bg-background min-h-screen">
+      <div className="flex items-center justify-between border-b border-border/50 pb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-foreground">Tasks & Actions</h1>
-          <p className="text-muted-foreground">Manage and track your team's work</p>
+          <h1 className="text-3xl font-light text-foreground tracking-tight">Tasks & Actions</h1>
+          <p className="text-muted-foreground mt-2 font-medium tracking-wide">Manage and track your team's work</p>
         </div>
         <Dialog open={newTaskOpen} onOpenChange={setNewTaskOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button className="rounded-full px-6 shadow-md font-semibold tracking-wide h-11 transition-all hover:shadow-lg">
               <Plus className="h-4 w-4 mr-2" />
               New Task
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="sm:max-w-[500px] rounded-2xl border-border">
             <DialogHeader>
-              <DialogTitle>Create New Task</DialogTitle>
+              <DialogTitle className="text-xl font-light tracking-tight">Create New Task</DialogTitle>
             </DialogHeader>
-            <div className="space-y-4 py-4">
+            <div className="space-y-5 py-6">
               <div className="space-y-2">
-                <Label htmlFor="title">Title</Label>
+                <Label htmlFor="title" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Title</Label>
                 <Input
                   id="title"
                   value={newTask.title}
                   onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-                  placeholder="Task title..."
+                  placeholder="What needs to be done?"
+                  className="bg-muted/30 focus:bg-background h-11"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Description</Label>
                 <Textarea
                   id="description"
                   value={newTask.description}
                   onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
-                  placeholder="Task description..."
+                  placeholder="Add details, links, or context..."
+                  className="bg-muted/30 focus:bg-background resize-none min-h-[100px]"
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-5">
                 <div className="space-y-2">
-                  <Label>Priority</Label>
+                  <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Priority</Label>
                   <Select value={newTask.priority} onValueChange={(v) => setNewTask({ ...newTask, priority: v })}>
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-muted/30 focus:bg-background h-11">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="low">Low</SelectItem>
-                      <SelectItem value="medium">Medium</SelectItem>
-                      <SelectItem value="high">High</SelectItem>
+                      <SelectItem value="low">Low Priority</SelectItem>
+                      <SelectItem value="medium">Medium Priority</SelectItem>
+                      <SelectItem value="high">High Priority</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="due_date">Due Date</Label>
+                  <Label htmlFor="due_date" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Due Date</Label>
                   <Input
                     id="due_date"
                     type="date"
                     value={newTask.due_date}
                     onChange={(e) => setNewTask({ ...newTask, due_date: e.target.value })}
+                    className="bg-muted/30 focus:bg-background h-11"
                   />
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="assignee">Assignee</Label>
+                <Label htmlFor="assignee" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Assignee</Label>
                 <Input
                   id="assignee"
                   value={newTask.assignee}
                   onChange={(e) => setNewTask({ ...newTask, assignee: e.target.value })}
-                  placeholder="Assignee name..."
+                  placeholder="Assign to someone..."
+                  className="bg-muted/30 focus:bg-background h-11"
                 />
               </div>
-              <Button onClick={createTask} className="w-full">
+              <Button onClick={createTask} className="w-full rounded-full h-12 font-bold tracking-wide mt-2">
                 Create Task
               </Button>
             </div>
@@ -228,89 +232,156 @@ export function TasksView() {
         </Dialog>
       </div>
 
-      <Tabs defaultValue="board" className="space-y-4">
-        <TabsList className="bg-muted">
-          <TabsTrigger value="board">Board</TabsTrigger>
-          <TabsTrigger value="list">List</TabsTrigger>
+      <Tabs defaultValue="board" className="space-y-8">
+        <TabsList className="bg-secondary/50 p-1.5 rounded-xl border border-border/50">
+          <TabsTrigger value="board" className="rounded-lg text-sm font-semibold tracking-wide uppercase px-6 py-2.5 data-[state=active]:bg-background data-[state=active]:shadow-sm">Kanban Board</TabsTrigger>
+          <TabsTrigger value="list" className="rounded-lg text-sm font-semibold tracking-wide uppercase px-6 py-2.5 data-[state=active]:bg-background data-[state=active]:shadow-sm">List View</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="board" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <TabsContent value="board" className="focus-visible:outline-none">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* To Do Column */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="font-medium text-foreground flex items-center gap-2">
-                  To Do
-                  <Badge variant="secondary" className="text-xs">
-                    {todoTasks.length}
-                  </Badge>
-                </h3>
-              </div>
-              {!tasks ? (
-                <LoadingSkeleton />
-              ) : (
-                <div className="space-y-3">
-                  {todoTasks.map((task: any) => (
-                    <TaskCard key={task.id} task={task} />
-                  ))}
+            <div className="flex flex-col h-[calc(100vh-280px)]">
+              <div className="flex items-center justify-between mb-4 bg-card border border-border/50 rounded-xl p-3 shadow-sm">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-slate-400"></div>
+                  <h3 className="font-bold text-foreground uppercase tracking-wider text-sm">To Do</h3>
                 </div>
-              )}
+                <Badge variant="secondary" className="font-mono px-2 py-0.5 rounded-md bg-secondary/80 text-foreground font-bold">
+                  {todoTasks.length}
+                </Badge>
+              </div>
+              <div className="flex-1 overflow-y-auto space-y-3 custom-scrollbar pr-2 pb-10">
+                {!tasks ? (
+                  <LoadingSkeleton />
+                ) : (
+                  todoTasks.map((task: any) => (
+                    <TaskCard key={task.id} task={task} />
+                  ))
+                )}
+              </div>
             </div>
 
             {/* In Progress Column */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="font-medium text-foreground flex items-center gap-2">
-                  In Progress
-                  <Badge variant="secondary" className="text-xs">
-                    {inProgressTasks.length}
-                  </Badge>
-                </h3>
-              </div>
-              {!tasks ? (
-                <LoadingSkeleton />
-              ) : (
-                <div className="space-y-3">
-                  {inProgressTasks.map((task: any) => (
-                    <TaskCard key={task.id} task={task} />
-                  ))}
+            <div className="flex flex-col h-[calc(100vh-280px)]">
+              <div className="flex items-center justify-between mb-4 bg-card border border-border/50 rounded-xl p-3 shadow-sm">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-amber-500"></div>
+                  <h3 className="font-bold text-foreground uppercase tracking-wider text-sm">In Progress</h3>
                 </div>
-              )}
+                <Badge variant="secondary" className="font-mono px-2 py-0.5 rounded-md bg-secondary/80 text-foreground font-bold">
+                  {inProgressTasks.length}
+                </Badge>
+              </div>
+              <div className="flex-1 overflow-y-auto space-y-3 custom-scrollbar pr-2 pb-10">
+                {!tasks ? (
+                  <LoadingSkeleton />
+                ) : (
+                  inProgressTasks.map((task: any) => (
+                    <TaskCard key={task.id} task={task} />
+                  ))
+                )}
+              </div>
             </div>
 
             {/* Done Column */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="font-medium text-foreground flex items-center gap-2">
-                  Done
-                  <Badge variant="secondary" className="text-xs">
-                    {doneTasks.length}
-                  </Badge>
-                </h3>
-              </div>
-              {!tasks ? (
-                <LoadingSkeleton />
-              ) : (
-                <div className="space-y-3">
-                  {doneTasks.map((task: any) => (
-                    <TaskCard key={task.id} task={task} />
-                  ))}
+            <div className="flex flex-col h-[calc(100vh-280px)]">
+              <div className="flex items-center justify-between mb-4 bg-card border border-border/50 rounded-xl p-3 shadow-sm">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+                  <h3 className="font-bold text-foreground uppercase tracking-wider text-sm">Done</h3>
                 </div>
-              )}
+                <Badge variant="secondary" className="font-mono px-2 py-0.5 rounded-md bg-secondary/80 text-foreground font-bold">
+                  {doneTasks.length}
+                </Badge>
+              </div>
+              <div className="flex-1 overflow-y-auto space-y-3 custom-scrollbar pr-2 pb-10">
+                {!tasks ? (
+                  <LoadingSkeleton />
+                ) : (
+                  doneTasks.map((task: any) => (
+                    <TaskCard key={task.id} task={task} />
+                  ))
+                )}
+              </div>
             </div>
           </div>
         </TabsContent>
 
-        <TabsContent value="list" className="space-y-4">
-          {!tasks ? (
-            <LoadingSkeleton />
-          ) : (
-            <div className="space-y-3">
-              {tasks.map((task: any) => (
-                <TaskCard key={task.id} task={task} />
-              ))}
-            </div>
-          )}
+        <TabsContent value="list" className="focus-visible:outline-none">
+          <div className="bg-card border border-border/50 rounded-2xl shadow-sm overflow-hidden">
+            {!tasks ? (
+              <div className="p-6">
+                <LoadingSkeleton />
+              </div>
+            ) : (
+              <div className="divide-y divide-border/50">
+                {tasks.map((task: any) => (
+                  <div key={task.id} className="p-4 hover:bg-secondary/30 transition-colors flex items-center justify-between group">
+                    <div className="flex items-center gap-4 flex-1 min-w-0">
+                      <Checkbox
+                        checked={task.status === "done"}
+                        onCheckedChange={() => toggleTask(task.id, task.status)}
+                        className="rounded h-5 w-5 border-border/80 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                      />
+                      <div className="min-w-0 flex-1 flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
+                        <p
+                          className={cn(
+                            "font-semibold text-[15px] truncate",
+                            task.status === "done" ? "line-through text-muted-foreground opacity-70" : "text-foreground group-hover:text-primary transition-colors",
+                          )}
+                        >
+                          {task.title}
+                        </p>
+                        
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <Badge
+                            variant="outline"
+                            className={cn("text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 border-none", priorityColors[task.priority as keyof typeof priorityColors])}
+                          >
+                            {task.priority}
+                          </Badge>
+                          {task.assignee && (
+                            <span className="text-xs font-medium text-foreground bg-secondary/80 px-2 py-1 rounded-md flex items-center gap-1.5">
+                              <User className="h-3.5 w-3.5 text-muted-foreground" />
+                              {task.assignee}
+                            </span>
+                          )}
+                          {task.due_date && (
+                            <span className="text-xs font-medium text-foreground bg-secondary/80 px-2 py-1 rounded-md flex items-center gap-1.5">
+                              <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+                              {formatDate(task.due_date)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="pl-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-40 rounded-xl shadow-lg">
+                          <DropdownMenuItem className="py-2 cursor-pointer font-medium">Edit Task</DropdownMenuItem>
+                          <DropdownMenuItem className="py-2 cursor-pointer font-medium text-destructive focus:bg-destructive focus:text-destructive-foreground" onClick={() => deleteTask(task.id)}>
+                            Delete Task
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </div>
+                ))}
+                {tasks.length === 0 && (
+                  <div className="p-12 text-center text-muted-foreground">
+                    No tasks found. Create one to get started.
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </TabsContent>
       </Tabs>
     </div>

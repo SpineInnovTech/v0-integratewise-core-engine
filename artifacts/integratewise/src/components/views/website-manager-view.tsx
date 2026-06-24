@@ -175,12 +175,14 @@ export function WebsiteManagerView() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-foreground">Website Manager</h1>
-          <p className="text-muted-foreground">Manage pages, forms, and track visitor analytics</p>
+          <p className="text-muted-foreground">
+            Customer Zero's view of IntegrateWise's own site — pages, forms, and visitor analytics
+          </p>
         </div>
         <div className="flex items-center gap-3">
           <Button variant="outline" onClick={triggerHubSpotSync} disabled={syncing}>
             <RefreshCw className={`h-4 w-4 mr-2 ${syncing ? "animate-spin" : ""}`} />
-            {syncing ? "Syncing..." : "Sync HubSpot"}
+            {syncing ? "Refreshing..." : "Refresh"}
           </Button>
           <Dialog open={isAddPageOpen} onOpenChange={setIsAddPageOpen}>
             <DialogTrigger asChild>
@@ -344,7 +346,7 @@ export function WebsiteManagerView() {
             </TabsTrigger>
             <TabsTrigger value="hubspot" className="gap-2">
               <RefreshCw className="h-4 w-4" />
-              HubSpot Sync
+              Sync Activity
             </TabsTrigger>
           </TabsList>
           <div className="relative">
@@ -518,8 +520,8 @@ export function WebsiteManagerView() {
           <div className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>HubSpot Integration Status</CardTitle>
-                <CardDescription>Real-time sync status between Website and HubSpot CRM</CardDescription>
+                <CardTitle>Connector Sync Status</CardTitle>
+                <CardDescription>Latest sync status for site contacts, deals, companies, and forms</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">

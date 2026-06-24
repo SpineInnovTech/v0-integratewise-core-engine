@@ -1,443 +1,553 @@
-
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
 import {
-  Globe,
-  Users,
-  PenTool,
-  Webhook,
-  Shield,
-  FileSearch,
-  Copy,
-  Sparkles,
-  Brain,
-  Database,
-  HardDrive,
-  Search,
-  BarChart3,
-  LayoutDashboard,
-  Lightbulb,
-  Bell,
-  FileText,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import {
+  Mail,
+  GitBranch,
+  Wand2,
+  ShieldCheck,
+  SearchCheck,
   ArrowRight,
-  ArrowDown,
-  Clock,
-  Zap,
-  Timer,
   CheckCircle2,
-  Activity,
+  AlertTriangle,
+  Loader2,
+  Layers,
+  Play,
+  Database,
 } from "lucide-react"
 
-const dataSources = [
-  {
-    id: "website",
-    name: "Website Visitors",
-    icon: Globe,
-    color: "bg-blue-500",
-    items: ["Form Submissions", "Page Views", "Click Events"],
-  },
-  {
-    id: "hubspot",
-    name: "HubSpot CRM",
-    icon: Users,
-    color: "bg-orange-500",
-    items: ["Leads", "Contacts", "Deals", "Companies"],
-  },
-  {
-    id: "manual",
-    name: "Manual Entry",
-    icon: PenTool,
-    color: "bg-green-500",
-    items: ["Client Data", "Session Notes", "Documents"],
-  },
-  {
-    id: "webhooks",
-    name: "API Webhooks",
-    icon: Webhook,
-    color: "bg-purple-500",
-    items: ["Slack", "Discord", "Asana", "Custom"],
-  },
-]
+const IDENTITY = { industry: "SAAS_TECH", department: "CUSTOMER_SUCCESS" }
 
-const ingestionSteps = [
-  {
-    id: "validation",
-    name: "Validation Layer",
-    icon: Shield,
-    description: "Schema validation, auth check, rate limiting",
-    timing: "< 50ms",
-  },
-  {
-    id: "parser",
-    name: "Data Parser",
-    icon: FileSearch,
-    description: "Normalize data format, extract fields",
-    timing: "< 100ms",
-  },
-  {
-    id: "dedup",
-    name: "Duplicate Detection",
-    icon: Copy,
-    description: "Check for existing records, merge logic",
-    timing: "< 200ms",
-  },
-  {
-    id: "enrichment",
-    name: "Data Enrichment",
-    icon: Sparkles,
-    description: "Add metadata, geo-location, timestamps",
-    timing: "< 150ms",
-  },
-  { id: "ai", name: "AI Analysis", icon: Brain, description: "Claude/DeepSeek semantic analysis", timing: "< 2s" },
-]
+interface ResolvedConfig {
+  base_version: string
+  industry: { input: string; canonical: string }
+  department: string
+  entity_types: string[]
+  priority_fields: Record<string, string[]>
+}
 
-const storageTargets = [
-  {
-    id: "supabase",
-    name: "Supabase DB",
-    icon: Database,
-    color: "bg-emerald-500",
-    description: "Primary data store with RLS",
-  },
-  { id: "redis", name: "Redis Cache", icon: HardDrive, color: "bg-red-500", description: "Session & real-time cache" },
-  {
-    id: "search",
-    name: "Search Index",
-    icon: Search,
-    color: "bg-amber-500",
-    description: "Full-text search with vectors",
-  },
-  {
-    id: "analytics",
-    name: "Analytics DW",
-    icon: BarChart3,
-    color: "bg-indigo-500",
-    description: "Aggregated metrics & reports",
-  },
-]
+interface AddedField {
+  type: string
+  description: string
+}
 
-const outputs = [
-  { id: "dashboard", name: "Dashboard Updates", icon: LayoutDashboard, timing: "Real-time" },
-  { id: "insights", name: "AI Insights", icon: Lightbulb, timing: "Hourly" },
-  { id: "notifications", name: "Webhook Alerts", icon: Bell, timing: "Instant" },
-  { id: "reports", name: "Report Generation", icon: FileText, timing: "Daily" },
-]
+interface DeltaRow {
+  entityType: string
+  schemaVersion: string
+  baseVersion: string
+  harmonizationGroup: string
+  lifecycleState: string
+  confidenceScore: number
+  canonicalMapping: Record<string, string>
+  schemaBody: {
+    role?: string
+    literals?: Record<string, unknown>
+    added_fields?: Record<string, AddedField>
+    person_entity_type?: string
+    description?: string
+  }
+}
+
+interface CanonicalRecord {
+  entity_type: string
+  priority_fields: Record<string, unknown>
+  schema_version: string
+  external_id: string
+  source: { connector: string; source_id: string }
+}
+
+interface HydrationItem {
+  entity_type: string
+  external_id: string
+  status: string
+  proposal_id: string | null
+  detail: string
+}
+
+interface VerificationItem {
+  entity_type: string
+  external_id: string
+  state: string
+  detail: string
+  spine_hit: boolean
+}
+
+interface IngestRun {
+  mode: string
+  fetched: number
+  would_hydrate?: number
+  normalized: {
+    applied_deltas: { role: string; entity_type: string; schema_version: string }[]
+    people: CanonicalRecord[]
+    interactions: CanonicalRecord[]
+    skipped: { role: string; reason: string }[]
+  }
+  hydration?: {
+    total: number
+    proposed: number
+    already: number
+    approved: number
+    errors: number
+    items: HydrationItem[]
+  }
+  verification?: {
+    spine_reachable: boolean
+    materialized: number
+    pending: number
+    not_proposed: number
+    items: VerificationItem[]
+  }
+}
+
+async function fetchJSON<T>(url: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(url, init)
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
+  return (await res.json()) as T
+}
+
+type StageState = "idle" | "active" | "done" | "error"
+
+const STAGES = [
+  { id: "connector", name: "Connector", icon: Mail, sub: "Gmail inbox" },
+  { id: "delta", name: "Schema Delta", icon: GitBranch, sub: "additive · versioned" },
+  { id: "normalize", name: "Normalize", icon: Wand2, sub: "→ canonical" },
+  { id: "govern", name: "Govern", icon: ShieldCheck, sub: "memory.propose (HITL)" },
+  { id: "verify", name: "Verify", icon: SearchCheck, sub: "read-back" },
+] as const
+
+function fieldEntries(rec: CanonicalRecord, keys: string[]): string {
+  for (const k of keys) {
+    const v = rec.priority_fields[k]
+    if (v !== undefined && v !== null && v !== "") return String(v)
+  }
+  return "—"
+}
 
 export function DataFlowView() {
-  const [activeSource, setActiveSource] = useState<string | null>(null)
-  const [activeStep, setActiveStep] = useState<string | null>(null)
+  const [config, setConfig] = useState<ResolvedConfig | null>(null)
+  const [deltas, setDeltas] = useState<DeltaRow[]>([])
+  const [run, setRun] = useState<IngestRun | null>(null)
+  const [running, setRunning] = useState<false | "dry" | "governed">(false)
+  const [error, setError] = useState<string | null>(null)
+
+  async function loadSchema() {
+    try {
+      const [cfg, dl] = await Promise.all([
+        fetchJSON<ResolvedConfig>(
+          `/api/schema/config?industry=${IDENTITY.industry}&department=${IDENTITY.department}`,
+        ),
+        fetchJSON<{ deltas: DeltaRow[] }>(`/api/schema/deltas?connector=gmail`),
+      ])
+      setConfig(cfg)
+      setDeltas(dl.deltas)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "failed to load schema")
+    }
+  }
+
+  useEffect(() => {
+    void loadSchema()
+  }, [])
+
+  async function runPipeline(mode: "dry" | "governed") {
+    setRunning(mode)
+    setError(null)
+    try {
+      const dryRun = mode === "dry"
+      const limit = dryRun ? 8 : 2
+      const result = await fetchJSON<IngestRun>(
+        `/api/ingest/gmail?limit=${limit}&dryRun=${dryRun}`,
+        { method: "POST" },
+      )
+      setRun(result)
+      await loadSchema()
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "pipeline run failed")
+    } finally {
+      setRunning(false)
+    }
+  }
+
+  const stageState: Record<string, StageState> = {
+    connector: run ? "done" : "idle",
+    delta: deltas.length ? "done" : "idle",
+    normalize: run ? "done" : "idle",
+    govern: run?.hydration
+      ? run.hydration.errors > 0 && run.hydration.proposed === 0 && run.hydration.approved === 0
+        ? "error"
+        : "done"
+      : "idle",
+    verify: run?.verification
+      ? run.verification.materialized > 0
+        ? "done"
+        : "error"
+      : "idle",
+  }
+
+  const personDelta = deltas.find((d) => d.schemaBody?.role === "person")
+  const interactionDelta = deltas.find((d) => d.schemaBody?.role === "interaction")
 
   return (
     <div className="p-6 space-y-8 max-w-7xl mx-auto">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">Data Ingestion Flow</h1>
-        <p className="text-muted-foreground mt-1">How data moves through IntegrateWise OS</p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Schema-First Ingestion</h1>
+          <p className="text-muted-foreground mt-1">
+            Live pipeline — Gmail harmonized to the canonical Spine schema, then governed
+            into platform truth. Nothing here is mocked.
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button onClick={() => runPipeline("dry")} disabled={running !== false}>
+            {running === "dry" ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Play className="w-4 h-4" />
+            )}
+            Run dry-run
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => runPipeline("governed")}
+            disabled={running !== false}
+          >
+            {running === "governed" ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <ShieldCheck className="w-4 h-4" />
+            )}
+            Attempt governed write
+          </Button>
+        </div>
       </div>
 
-      <Tabs defaultValue="diagram" className="w-full">
-        <TabsList>
-          <TabsTrigger value="diagram">Flow Diagram</TabsTrigger>
-          <TabsTrigger value="timing">Timing Details</TabsTrigger>
-          <TabsTrigger value="processing">Processing Modes</TabsTrigger>
-        </TabsList>
+      {error && (
+        <div className="flex items-center gap-2 rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">
+          <AlertTriangle className="w-4 h-4 shrink-0" />
+          {error}
+        </div>
+      )}
 
-        <TabsContent value="diagram" className="mt-6">
-          {/* Main Flow Diagram */}
-          <div className="space-y-8">
-            {/* Data Sources */}
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
-                  <span className="text-blue-500 font-bold text-sm">1</span>
-                </div>
-                <h2 className="text-lg font-semibold">Data Sources</h2>
-                <Badge variant="outline" className="ml-2">
-                  Input Layer
-                </Badge>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {dataSources.map((source) => (
-                  <Card
-                    key={source.id}
-                    className={`cursor-pointer transition-all hover:shadow-md ${activeSource === source.id ? "ring-2 ring-primary" : ""}`}
-                    onClick={() => setActiveSource(activeSource === source.id ? null : source.id)}
+      {/* Pipeline strip */}
+      <Card>
+        <CardContent className="p-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            {STAGES.map((stage, i) => {
+              const st = stageState[stage.id]
+              return (
+                <div key={stage.id} className="flex items-center gap-3">
+                  <div
+                    className={`flex flex-col items-center rounded-lg border p-4 min-w-[130px] transition-colors ${
+                      st === "done"
+                        ? "border-green-500/50 bg-green-500/10"
+                        : st === "error"
+                          ? "border-amber-500/50 bg-amber-500/10"
+                          : "border-border"
+                    }`}
                   >
-                    <CardContent className="p-4">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className={`w-10 h-10 rounded-lg ${source.color} flex items-center justify-center`}>
-                          <source.icon className="w-5 h-5 text-white" />
-                        </div>
-                        <span className="font-medium">{source.name}</span>
-                      </div>
-                      <div className="space-y-1">
-                        {source.items.map((item) => (
-                          <div key={item} className="text-xs text-muted-foreground flex items-center gap-1">
-                            <CheckCircle2 className="w-3 h-3 text-green-500" />
-                            {item}
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
-
-            {/* Flow Arrow */}
-            <div className="flex justify-center">
-              <div className="flex flex-col items-center text-muted-foreground">
-                <ArrowDown className="w-6 h-6" />
-                <span className="text-xs mt-1">Incoming Data</span>
-              </div>
-            </div>
-
-            {/* Ingestion Pipeline */}
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center">
-                  <span className="text-amber-500 font-bold text-sm">2</span>
-                </div>
-                <h2 className="text-lg font-semibold">Ingestion Pipeline</h2>
-                <Badge variant="outline" className="ml-2">
-                  Processing Layer
-                </Badge>
-              </div>
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex flex-wrap items-center justify-between gap-4">
-                    {ingestionSteps.map((step, index) => (
-                      <div key={step.id} className="flex items-center gap-2">
-                        <div
-                          className={`flex flex-col items-center p-4 rounded-lg border cursor-pointer transition-all hover:bg-accent ${activeStep === step.id ? "bg-accent border-primary" : ""}`}
-                          onClick={() => setActiveStep(activeStep === step.id ? null : step.id)}
-                        >
-                          <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-2">
-                            <step.icon className="w-6 h-6 text-foreground" />
-                          </div>
-                          <span className="text-sm font-medium text-center">{step.name}</span>
-                          <span className="text-xs text-muted-foreground mt-1">{step.timing}</span>
-                        </div>
-                        {index < ingestionSteps.length - 1 && (
-                          <ArrowRight className="w-5 h-5 text-muted-foreground hidden md:block" />
-                        )}
-                      </div>
-                    ))}
+                    <stage.icon
+                      className={`w-6 h-6 mb-2 ${
+                        st === "done"
+                          ? "text-green-600"
+                          : st === "error"
+                            ? "text-amber-600"
+                            : "text-muted-foreground"
+                      }`}
+                    />
+                    <span className="text-sm font-medium">{stage.name}</span>
+                    <span className="text-[11px] text-muted-foreground mt-0.5 text-center">
+                      {stage.sub}
+                    </span>
                   </div>
-                  {activeStep && (
-                    <div className="mt-4 p-3 bg-accent rounded-lg">
-                      <p className="text-sm">
-                        <strong>{ingestionSteps.find((s) => s.id === activeStep)?.name}:</strong>{" "}
-                        {ingestionSteps.find((s) => s.id === activeStep)?.description}
-                      </p>
-                    </div>
+                  {i < STAGES.length - 1 && (
+                    <ArrowRight className="w-5 h-5 text-muted-foreground hidden lg:block" />
                   )}
+                </div>
+              )
+            })}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Stage 1 — Canonical base */}
+      <section className="space-y-4">
+        <div className="flex items-center gap-2">
+          <Database className="w-5 h-5 text-muted-foreground" />
+          <h2 className="text-lg font-semibold">Canonical Base</h2>
+          <Badge variant="outline">Spine Schema = f(industry, department)</Badge>
+        </div>
+        <Card>
+          <CardContent className="p-5">
+            {config ? (
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <Stat label="Identity" value={`${config.industry.canonical} × ${config.department}`} />
+                <Stat label="Base version" value={config.base_version} />
+                <Stat label="Canonical entity types" value={String(config.entity_types.length)} />
+                <Stat
+                  label="Harmonization targets"
+                  value={`${personDelta?.entityType ?? "contact"} · ${interactionDelta?.entityType ?? "engagement"}`}
+                />
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">Loading canonical config…</p>
+            )}
+          </CardContent>
+        </Card>
+      </section>
+
+      {/* Stage 2 — Active deltas */}
+      <section className="space-y-4">
+        <div className="flex items-center gap-2">
+          <GitBranch className="w-5 h-5 text-muted-foreground" />
+          <h2 className="text-lg font-semibold">Active Schema Deltas</h2>
+          <Badge variant="outline">additive-only · on base {config?.base_version ?? "1.0.0"}</Badge>
+        </div>
+        {deltas.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            No active Gmail deltas yet — run the pipeline to generate them.
+          </p>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2">
+            {deltas.map((d) => (
+              <Card key={d.entityType}>
+                <CardHeader className="pb-2">
+                  <CardTitle className="flex items-center justify-between text-base">
+                    <span className="flex items-center gap-2">
+                      <Layers className="w-4 h-4 text-primary" />
+                      {d.entityType}
+                    </span>
+                    <span className="flex items-center gap-2">
+                      <Badge variant="secondary">{d.schemaBody?.role}</Badge>
+                      <Badge>v{d.schemaVersion}</Badge>
+                    </span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground mb-1">
+                      Canonical mapping (Gmail → canonical)
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {Object.entries(d.canonicalMapping).map(([from, to]) => (
+                        <code
+                          key={from}
+                          className="text-[11px] rounded bg-muted px-1.5 py-0.5"
+                        >
+                          {from}→{to}
+                        </code>
+                      ))}
+                    </div>
+                  </div>
+                  <Separator />
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground mb-1">
+                      Additive fields (new, never modify base)
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {Object.entries(d.schemaBody?.added_fields ?? {}).map(([name, f]) => (
+                        <Badge key={name} variant="outline" className="font-normal">
+                          {name}
+                          <span className="ml-1 text-muted-foreground">:{f.type}</span>
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
-            </div>
-
-            {/* Flow Arrow */}
-            <div className="flex justify-center">
-              <div className="flex flex-col items-center text-muted-foreground">
-                <ArrowDown className="w-6 h-6" />
-                <span className="text-xs mt-1">Processed Data</span>
-              </div>
-            </div>
-
-            {/* Storage Layer */}
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                  <span className="text-emerald-500 font-bold text-sm">3</span>
-                </div>
-                <h2 className="text-lg font-semibold">Storage Layer</h2>
-                <Badge variant="outline" className="ml-2">
-                  Persistence
-                </Badge>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {storageTargets.map((target) => (
-                  <Card key={target.id}>
-                    <CardContent className="p-4">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className={`w-10 h-10 rounded-lg ${target.color} flex items-center justify-center`}>
-                          <target.icon className="w-5 h-5 text-white" />
-                        </div>
-                        <span className="font-medium">{target.name}</span>
-                      </div>
-                      <p className="text-xs text-muted-foreground">{target.description}</p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
-
-            {/* Flow Arrow */}
-            <div className="flex justify-center">
-              <div className="flex flex-col items-center text-muted-foreground">
-                <ArrowDown className="w-6 h-6" />
-                <span className="text-xs mt-1">Query & Transform</span>
-              </div>
-            </div>
-
-            {/* Output Layer */}
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
-                  <span className="text-purple-500 font-bold text-sm">4</span>
-                </div>
-                <h2 className="text-lg font-semibold">Output Layer</h2>
-                <Badge variant="outline" className="ml-2">
-                  Delivery
-                </Badge>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {outputs.map((output) => (
-                  <Card key={output.id}>
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
-                            <output.icon className="w-5 h-5 text-foreground" />
-                          </div>
-                          <span className="font-medium">{output.name}</span>
-                        </div>
-                        <Badge variant="secondary" className="text-xs">
-                          {output.timing}
-                        </Badge>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
-        </TabsContent>
+        )}
+      </section>
 
-        <TabsContent value="timing" className="mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Clock className="w-5 h-5" />
-                End-to-End Timing Breakdown
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 bg-accent rounded-lg">
-                  <span className="font-medium">Total Pipeline Time (Real-time)</span>
-                  <Badge className="bg-green-500">~2.5s</Badge>
-                </div>
-                <div className="space-y-2">
-                  {ingestionSteps.map((step, index) => (
-                    <div key={step.id} className="flex items-center gap-4">
-                      <div className="w-8 text-center text-sm text-muted-foreground">{index + 1}</div>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-sm">{step.name}</span>
-                          <span className="text-xs text-muted-foreground">{step.timing}</span>
-                        </div>
-                        <div className="h-2 bg-muted rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-primary rounded-full transition-all"
-                            style={{
-                              width:
-                                step.id === "ai"
-                                  ? "80%"
-                                  : step.id === "dedup"
-                                    ? "20%"
-                                    : step.id === "enrichment"
-                                      ? "15%"
-                                      : step.id === "parser"
-                                        ? "10%"
-                                        : "5%",
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-6 p-4 border rounded-lg">
-                  <h4 className="font-medium mb-2">Timing Notes</h4>
-                  <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>- AI Analysis is the most time-consuming step (~2s)</li>
-                    <li>- Non-AI path completes in ~500ms for real-time needs</li>
-                    <li>- Batch processing runs hourly for non-critical data</li>
-                    <li>- Cache hits skip validation, reducing time to ~50ms</li>
-                  </ul>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+      {/* Stage 3 — Normalized records */}
+      {run && (
+        <section className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Wand2 className="w-5 h-5 text-muted-foreground" />
+            <h2 className="text-lg font-semibold">Normalized Canonical Records</h2>
+            <Badge variant="outline">{run.mode}</Badge>
+            <span className="text-sm text-muted-foreground">
+              {run.fetched} emails → {run.normalized.people.length} people ·{" "}
+              {run.normalized.interactions.length} interactions
+            </span>
+          </div>
 
-        <TabsContent value="processing" className="mt-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <RecordTable
+            title={`People (${personDelta?.entityType ?? "contact"})`}
+            records={run.normalized.people}
+            columns={[
+              { head: "Name", keys: ["full_name", "name"] },
+              { head: "Email", keys: ["email"] },
+              { head: "Last contacted", keys: ["last_contacted"] },
+            ]}
+          />
+          <RecordTable
+            title={`Interactions (${interactionDelta?.entityType ?? "engagement"})`}
+            records={run.normalized.interactions}
+            columns={[
+              { head: "Subject", keys: ["subject"] },
+              { head: "Occurred", keys: ["occurred_at"] },
+              { head: "Linked contact", keys: ["contact_external_id"] },
+            ]}
+          />
+        </section>
+      )}
+
+      {/* Stage 4/5 — Governance + verification */}
+      {run && (
+        <section className="space-y-4">
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="w-5 h-5 text-muted-foreground" />
+            <h2 className="text-lg font-semibold">Governance &amp; Verification</h2>
+          </div>
+
+          {run.mode === "dry_run" ? (
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Zap className="w-5 h-5 text-amber-500" />
-                  Real-time Processing
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Critical data that requires immediate processing and visibility.
-                </p>
-                <div className="space-y-2">
-                  {[
-                    "Form submissions from website",
-                    "New lead creation from HubSpot",
-                    "Deal stage changes",
-                    "Slack/Discord urgent messages",
-                    "Payment events",
-                  ].map((item) => (
-                    <div key={item} className="flex items-center gap-2 text-sm">
-                      <Activity className="w-4 h-4 text-green-500" />
-                      {item}
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-4 p-3 bg-green-500/10 rounded-lg">
-                  <span className="text-sm font-medium text-green-600">SLA: &lt; 5 seconds</span>
-                </div>
+              <CardContent className="p-5 text-sm text-muted-foreground flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 mt-0.5 text-green-600 shrink-0" />
+                <span>
+                  Dry run — <strong>{run.would_hydrate ?? 0}</strong> records are ready to
+                  propose to Spine via the governed path (<code>memory.propose</code> →{" "}
+                  <code>proposal.approve</code>). No writes were performed. Use{" "}
+                  <em>Attempt governed write</em> to exercise the live platform path.
+                </span>
               </CardContent>
             </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Timer className="w-5 h-5 text-blue-500" />
-                  Batch Processing
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">Non-critical data processed hourly for efficiency.</p>
-                <div className="space-y-2">
-                  {[
-                    "Analytics aggregation",
-                    "AI insight generation",
-                    "ROI calculations",
-                    "Report compilation",
-                    "Search index updates",
-                  ].map((item) => (
-                    <div key={item} className="flex items-center gap-2 text-sm">
-                      <Clock className="w-4 h-4 text-blue-500" />
-                      {item}
+          ) : (
+            <div className="grid gap-4 lg:grid-cols-2">
+              {run.hydration && (
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base">Hydration (governed propose)</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="flex flex-wrap gap-2 text-xs">
+                      <Badge variant="secondary">proposed {run.hydration.proposed}</Badge>
+                      <Badge variant="secondary">approved {run.hydration.approved}</Badge>
+                      <Badge variant="secondary">already {run.hydration.already}</Badge>
+                      {run.hydration.errors > 0 && (
+                        <Badge variant="destructive">errors {run.hydration.errors}</Badge>
+                      )}
                     </div>
-                  ))}
-                </div>
-                <div className="mt-4 p-3 bg-blue-500/10 rounded-lg">
-                  <span className="text-sm font-medium text-blue-600">Schedule: Every hour at :00</span>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-      </Tabs>
+                    {run.hydration.items.slice(0, 4).map((it, idx) => (
+                      <div key={idx} className="text-xs border-l-2 border-border pl-2">
+                        <span className="font-medium">{it.entity_type}</span> —{" "}
+                        <span
+                          className={
+                            it.status === "error" ? "text-destructive" : "text-green-600"
+                          }
+                        >
+                          {it.status}
+                        </span>
+                        <p className="text-muted-foreground break-words">{it.detail}</p>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              )}
+              {run.verification && (
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base">Verification (read-back)</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="flex flex-wrap gap-2 text-xs">
+                      <Badge variant="secondary">
+                        materialized {run.verification.materialized}
+                      </Badge>
+                      <Badge variant="secondary">pending {run.verification.pending}</Badge>
+                      <Badge variant="secondary">
+                        not proposed {run.verification.not_proposed}
+                      </Badge>
+                    </div>
+                    {run.verification.items.slice(0, 4).map((it, idx) => (
+                      <div key={idx} className="text-xs border-l-2 border-border pl-2">
+                        <span className="font-medium">{it.entity_type}</span> —{" "}
+                        <span className="text-muted-foreground">{it.state}</span>
+                        <p className="text-muted-foreground break-words">{it.detail}</p>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          )}
+        </section>
+      )}
     </div>
+  )
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <p className="text-xs text-muted-foreground">{label}</p>
+      <p className="text-sm font-semibold text-foreground mt-0.5 break-words">{value}</p>
+    </div>
+  )
+}
+
+function RecordTable({
+  title,
+  records,
+  columns,
+}: {
+  title: string
+  records: CanonicalRecord[]
+  columns: { head: string; keys: string[] }[]
+}) {
+  return (
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-base flex items-center gap-2">
+          {title}
+          <Badge variant="outline">{records.length}</Badge>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {records.length === 0 ? (
+          <p className="text-sm text-muted-foreground">No records.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  {columns.map((c) => (
+                    <TableHead key={c.head}>{c.head}</TableHead>
+                  ))}
+                  <TableHead>external_id</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {records.slice(0, 8).map((rec) => (
+                  <TableRow key={rec.external_id}>
+                    {columns.map((c) => (
+                      <TableCell key={c.head} className="text-sm">
+                        {fieldEntries(rec, c.keys)}
+                      </TableCell>
+                    ))}
+                    <TableCell>
+                      <code className="text-[11px] text-muted-foreground">
+                        {rec.external_id}
+                      </code>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   )
 }

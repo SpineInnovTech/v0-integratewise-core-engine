@@ -7,6 +7,8 @@ import aiRouter from "./ai";
 import emailRouter from "./email";
 import connectorsRouter from "./connectors";
 import spineRouter from "./spine";
+import schemaRouter from "./schema";
+import ingestRouter from "./ingest";
 
 const router: IRouter = Router();
 
@@ -18,5 +20,7 @@ router.use(aiRouter);
 router.use(emailRouter);
 router.use(connectorsRouter);
 router.use(spineRouter);
+router.use(schemaRouter);
+router.use(ingestRouter);
 
 export default router;

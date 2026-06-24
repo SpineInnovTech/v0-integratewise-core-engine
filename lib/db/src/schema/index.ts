@@ -7,3 +7,4 @@ export * from "./activities";
 export * from "./tasks";
 export * from "./projects";
 export * from "./sessions";
+export * from "./schema-pool";

@@ -130,92 +130,102 @@ export function MetricsView() {
   ]
 
   return (
-    <div className="p-6 space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">Business Metrics</h1>
-        <p className="text-muted-foreground">IntegrateWise LLP performance dashboard</p>
+    <div className="p-8 space-y-8 bg-background min-h-screen">
+      <div className="flex items-center justify-between border-b border-border/50 pb-6">
+        <div>
+          <h1 className="text-3xl font-light text-foreground tracking-tight">Business Metrics</h1>
+          <p className="text-muted-foreground mt-2 font-medium tracking-wide">Performance overview & intelligence dashboard</p>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {isLoading
-          ? Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-20 w-full" />)
+          ? Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-28 w-full rounded-2xl" />)
           : kpiCards.map((kpi) => (
-              <Card key={kpi.title} className="bg-primary text-primary-foreground overflow-hidden">
-                <CardContent className="p-4 flex items-center justify-between">
-                  <div>
-                    <p className="text-sm opacity-80">{kpi.title}</p>
-                    <p className="text-2xl font-bold mt-1">{kpi.value}</p>
+              <Card key={kpi.title} className="bg-primary text-primary-foreground overflow-hidden border-none shadow-md relative group transition-transform hover:-translate-y-1">
+                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <CardContent className="p-6 flex flex-col justify-between h-full relative z-10">
+                  <div className="flex items-start justify-between mb-4">
+                    <p className="text-xs font-bold uppercase tracking-wider text-primary-foreground/80">{kpi.title}</p>
+                    {kpi.hasChart && (
+                      <div className="w-16 h-8 opacity-70 group-hover:opacity-100 transition-opacity">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <AreaChart data={miniChartData}>
+                            <Area
+                              type="monotone"
+                              dataKey="value"
+                              stroke="rgba(255,255,255,1)"
+                              fill="rgba(255,255,255,0.3)"
+                              strokeWidth={2}
+                            />
+                          </AreaChart>
+                        </ResponsiveContainer>
+                      </div>
+                    )}
                   </div>
-                  {kpi.hasChart && (
-                    <div className="w-16 h-10">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={miniChartData}>
-                          <Area
-                            type="monotone"
-                            dataKey="value"
-                            stroke="rgba(255,255,255,0.8)"
-                            fill="rgba(255,255,255,0.2)"
-                            strokeWidth={2}
-                          />
-                        </AreaChart>
-                      </ResponsiveContainer>
-                    </div>
-                  )}
+                  <p className="text-4xl font-light tracking-tight">{kpi.value}</p>
                 </CardContent>
               </Card>
             ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-8">
           {/* Sales Pipeline */}
-          <Card className="bg-card">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Sales Pipeline by Stage</CardTitle>
+          <Card className="bg-card border shadow-sm rounded-2xl overflow-hidden">
+            <CardHeader className="p-6 border-b border-border/50 bg-secondary/20">
+              <CardTitle className="text-base font-semibold tracking-wide">Sales Pipeline Progression</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="p-6 space-y-5">
               {pipelineData.map((item) => (
-                <div key={item.stage} className="flex items-center gap-3">
-                  <span className="text-sm text-muted-foreground w-24">{item.stage}</span>
-                  <div className="flex-1 h-4 bg-muted rounded-full overflow-hidden">
-                    <div className="h-full bg-primary rounded-full" style={{ width: `${item.value}%` }} />
+                <div key={item.stage} className="flex flex-col sm:flex-row sm:items-center gap-3">
+                  <span className="text-sm font-semibold text-muted-foreground w-32 uppercase tracking-wider">{item.stage}</span>
+                  <div className="flex-1 h-5 bg-secondary rounded-full overflow-hidden shadow-inner">
+                    <div className="h-full rounded-full transition-all duration-1000 ease-out" style={{ width: `${item.value}%`, backgroundColor: item.color }} />
                   </div>
-                  <span className="text-sm text-muted-foreground w-10">{item.value}%</span>
+                  <span className="text-sm font-bold text-foreground w-12 text-right">{item.value}%</span>
                 </div>
               ))}
             </CardContent>
           </Card>
 
-          {/* Revenue Trend */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Card className="bg-card">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">Revenue Trend (6 Months)</CardTitle>
+          {/* Revenue Trend & Win Rate */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="bg-card border shadow-sm rounded-2xl overflow-hidden">
+              <CardHeader className="p-6 border-b border-border/50 bg-secondary/20">
+                <CardTitle className="text-base font-semibold tracking-wide">Revenue Trend (6M)</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="h-40">
+              <CardContent className="p-6">
+                <div className="h-48 w-full -ml-4">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={revenueData}>
                       <defs>
                         <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.3} />
-                          <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0} />
+                          <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
+                          <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
                         </linearGradient>
                       </defs>
-                      <XAxis dataKey="month" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                      <XAxis dataKey="month" tick={{ fontSize: 11, fontWeight: 600 }} tickLine={false} axisLine={false} dy={10} />
                       <YAxis
-                        tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }}
+                        tick={{ fontSize: 11, fontWeight: 600 }}
                         tickFormatter={(v: number) => `₹${v}L`}
+                        tickLine={false}
+                        axisLine={false}
+                        dx={-10}
                       />
-                      <Tooltip formatter={(value: number) => [`₹${value}L`, "Revenue"]} />
+                      <Tooltip 
+                        formatter={(value: number) => [`₹${value}L`, "Revenue"]}
+                        contentStyle={{ borderRadius: '12px', border: '1px solid hsl(var(--border))', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
+                        itemStyle={{ color: 'hsl(var(--foreground))', fontWeight: 'bold' }}
+                      />
                       <Area
                         type="monotone"
                         dataKey="value"
-                        stroke="hsl(var(--chart-1))"
+                        stroke="hsl(var(--primary))"
                         fillOpacity={1}
                         fill="url(#colorRevenue)"
-                        strokeWidth={2}
+                        strokeWidth={3}
                       />
                     </AreaChart>
                   </ResponsiveContainer>
@@ -224,121 +234,117 @@ export function MetricsView() {
             </Card>
 
             {/* Win Rate Donut */}
-            <Card className="bg-card">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">Deal Win Rate</CardTitle>
+            <Card className="bg-card border shadow-sm rounded-2xl overflow-hidden">
+              <CardHeader className="p-6 border-b border-border/50 bg-secondary/20">
+                <CardTitle className="text-base font-semibold tracking-wide">Deal Win Rate</CardTitle>
               </CardHeader>
-              <CardContent className="flex items-center justify-center">
-                <div className="relative">
-                  <svg className="w-28 h-28 -rotate-90">
-                    <circle cx="56" cy="56" r="48" fill="none" stroke="hsl(var(--muted))" strokeWidth="12" />
+              <CardContent className="p-6 flex flex-col items-center justify-center min-h-[220px]">
+                <div className="relative transform hover:scale-105 transition-transform duration-500">
+                  <svg className="w-36 h-36 -rotate-90">
+                    <circle cx="72" cy="72" r="60" fill="none" stroke="hsl(var(--secondary))" strokeWidth="16" />
                     <circle
-                      cx="56"
-                      cy="56"
-                      r="48"
+                      cx="72"
+                      cy="72"
+                      r="60"
                       fill="none"
-                      stroke="hsl(var(--chart-1))"
-                      strokeWidth="12"
-                      strokeDasharray={`${60 * 3.02} ${40 * 3.02}`}
+                      stroke="hsl(var(--primary))"
+                      strokeWidth="16"
+                      strokeDasharray={`${60 * 3.77} ${40 * 3.77}`}
                       strokeLinecap="round"
+                      className="drop-shadow-sm"
                     />
                   </svg>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-2xl font-bold text-foreground">60%</span>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-4xl font-light tracking-tight text-foreground">60<span className="text-2xl text-muted-foreground">%</span></span>
                   </div>
                 </div>
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mt-6">Above target by 5%</p>
               </CardContent>
             </Card>
           </div>
         </div>
 
         {/* Right Column */}
-        <div className="space-y-6">
+        <div className="space-y-8">
           {/* Quick Stats */}
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 gap-4">
             {quickStats.map((stat) => (
-              <div key={stat.label} className="text-center p-2 bg-card rounded-lg border border-border">
-                <p className="text-lg font-bold text-foreground">{stat.value}</p>
-                <p className="text-xs text-muted-foreground">{stat.label}</p>
+              <div key={stat.label} className="flex flex-col items-center justify-center p-5 bg-card rounded-2xl border border-border/60 shadow-sm hover:shadow-md transition-shadow">
+                <p className="text-3xl font-light text-foreground">{stat.value}</p>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mt-2 text-center">{stat.label}</p>
               </div>
             ))}
           </div>
 
           {/* Revenue by Tier */}
-          <Card className="bg-card">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Revenue by Service Tier</CardTitle>
+          <Card className="bg-card border shadow-sm rounded-2xl overflow-hidden">
+            <CardHeader className="p-5 border-b border-border/50 bg-secondary/20">
+              <CardTitle className="text-sm font-semibold tracking-wide">Revenue by Product Line</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="h-40">
+            <CardContent className="p-5">
+              <div className="h-48 mb-4">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
                       data={tierData}
                       cx="50%"
                       cy="50%"
-                      innerRadius={35}
-                      outerRadius={55}
-                      paddingAngle={2}
+                      innerRadius={50}
+                      outerRadius={80}
+                      paddingAngle={4}
                       dataKey="value"
+                      stroke="none"
                     >
                       {tierData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
+                    <Tooltip 
+                      contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
+                      itemStyle={{ fontWeight: 'bold' }}
+                    />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
-              <div className="flex flex-wrap gap-2 justify-center mt-2">
+              <div className="flex flex-col gap-3 px-2">
                 {tierData.map((item) => (
-                  <div key={item.name} className="flex items-center gap-1 text-xs">
-                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
-                    <span className="text-muted-foreground">{item.name}</span>
+                  <div key={item.name} className="flex items-center justify-between text-sm group cursor-default">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 rounded-sm shadow-sm" style={{ backgroundColor: item.color }} />
+                      <span className="font-medium text-muted-foreground group-hover:text-foreground transition-colors">{item.name}</span>
+                    </div>
+                    <span className="font-bold text-foreground">{item.value}%</span>
                   </div>
                 ))}
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Team Utilization */}
-          <Card className="bg-card">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Team Utilization</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {teamUtilization.map((item) => (
-                <div key={item.team}>
-                  <div className="flex justify-between text-xs mb-1">
-                    <span className="text-muted-foreground">{item.team}</span>
-                    <span className="text-foreground font-medium">{item.value}%</span>
-                  </div>
-                  <div className="h-2 bg-muted rounded-full overflow-hidden">
-                    <div className="h-full bg-primary rounded-full" style={{ width: `${item.value}%` }} />
-                  </div>
-                </div>
-              ))}
             </CardContent>
           </Card>
         </div>
       </div>
 
       {/* AI Insights */}
-      <Card className="bg-card">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <Bot className="h-4 w-4 text-primary" />
-            AI Business Insights
+      <Card className="bg-indigo-50/50 dark:bg-indigo-950/10 border-indigo-100 dark:border-indigo-900/30 shadow-sm rounded-2xl overflow-hidden">
+        <CardHeader className="p-6 pb-4">
+          <CardTitle className="text-base font-bold flex items-center gap-3 text-indigo-700 dark:text-indigo-400">
+            <div className="p-2 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400">
+              <Bot className="h-5 w-5" />
+            </div>
+            Executive Intelligence Summary
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <ul className="space-y-2">
+        <CardContent className="p-6 pt-0">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {aiInsights.map((insight, idx) => (
-              <li key={idx} className="flex items-center gap-2 text-sm text-muted-foreground">
-                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                {insight}
-              </li>
+              <div key={idx} className="flex items-start gap-3 p-4 bg-white/60 dark:bg-black/20 rounded-xl border border-indigo-100/50 dark:border-indigo-900/20">
+                <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center">
+                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-600 dark:bg-indigo-400" />
+                </div>
+                <p className="text-sm font-medium text-foreground/80 leading-relaxed">
+                  {insight}
+                </p>
+              </div>
             ))}
-          </ul>
+          </div>
         </CardContent>
       </Card>
     </div>

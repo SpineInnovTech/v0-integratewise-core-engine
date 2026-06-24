@@ -5,24 +5,22 @@ import { Badge } from "@/components/ui/badge"
 import {
   Home,
   Target,
-  Globe,
   Users,
   BarChart3,
-  Clock,
-  MessageSquare,
-  Webhook,
-  RefreshCw,
-  Brain,
+  Workflow,
   Database,
   ArrowRight,
   ArrowDown,
-  Zap,
-  TrendingUp,
   FileText,
   Layers,
   Server,
   Cloud,
   Monitor,
+  Mail,
+  GitBranch,
+  Wand2,
+  ShieldCheck,
+  SearchCheck,
 } from "lucide-react"
 
 export function ArchitectureView() {
@@ -33,50 +31,97 @@ export function ArchitectureView() {
       {/* Header */}
       <div className="text-center space-y-2">
         <h1 className="text-3xl font-bold">IntegrateWise OS Architecture</h1>
-        <p className="text-muted-foreground">Comprehensive system overview showing all layers, APIs, and data flows</p>
+        <p className="text-muted-foreground max-w-3xl mx-auto">
+          How Customer Zero — IntegrateWise's internal operations cockpit — runs on its own
+          platform: a privileged client that reads and writes through a governed relay, never the
+          database, with the Spine owning truth.
+        </p>
       </div>
 
-      {/* Architecture Layers */}
+      {/* Three-repo split */}
+      <Card className="border-2 border-slate-500/30">
+        <CardHeader className="pb-2">
+          <div className="flex items-center gap-2">
+            <Layers className="h-5 w-5 text-slate-500" />
+            <CardTitle className="text-lg">The Three Repositories</CardTitle>
+            <Badge variant="outline" className="ml-auto bg-slate-500/10 text-slate-600 border-slate-500/30">
+              One platform · two clients
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+              <div className="flex items-center gap-2 mb-1">
+                <Cloud className="h-4 w-4 text-emerald-600" />
+                <span className="text-sm font-semibold">integratewise-live</span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                The platform — the <strong>Spine</strong>. Owns truth on Cloudflare Workers + D1/KV.
+              </p>
+            </div>
+            <div className="p-3 rounded-lg bg-purple-500/10 border border-purple-500/20">
+              <div className="flex items-center gap-2 mb-1">
+                <Users className="h-4 w-4 text-purple-600" />
+                <span className="text-sm font-semibold">iwa-frontend</span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                The customer-facing product — another client of the Spine.
+              </p>
+            </div>
+            <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
+              <div className="flex items-center gap-2 mb-1">
+                <Monitor className="h-4 w-4 text-blue-600" />
+                <span className="text-sm font-semibold">iwa-customer-zero</span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                This repo — the internal ops surface. IntegrateWise dogfooding its own platform.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Runtime path */}
       <div className="space-y-6">
-        {/* Layer 1: Frontend */}
+        {/* Layer 1: Customer Zero client */}
         <Card
-          className={`border-2 transition-all cursor-pointer ${activeLayer === "frontend" ? "border-blue-500 bg-blue-500/5" : "border-blue-500/30 hover:border-blue-500/60"}`}
-          onClick={() => setActiveLayer(activeLayer === "frontend" ? null : "frontend")}
+          className={`border-2 transition-all cursor-pointer ${activeLayer === "client" ? "border-blue-500 bg-blue-500/5" : "border-blue-500/30 hover:border-blue-500/60"}`}
+          onClick={() => setActiveLayer(activeLayer === "client" ? null : "client")}
         >
           <CardHeader className="pb-2">
             <div className="flex items-center gap-2">
               <Monitor className="h-5 w-5 text-blue-500" />
-              <CardTitle className="text-lg">Frontend Layer</CardTitle>
+              <CardTitle className="text-lg">Customer Zero — Internal Ops Surface</CardTitle>
               <Badge variant="outline" className="ml-auto bg-blue-500/10 text-blue-600 border-blue-500/30">
-                Next.js App Router
+                iwa-customer-zero · React + Vite
               </Badge>
             </div>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
               {[
-                { icon: Home, name: "Home Dashboard", path: "/" },
-                { icon: Target, name: "Strategic Hub", path: "/strategy" },
-                { icon: Globe, name: "Website Manager", path: "/website" },
-                { icon: Users, name: "CRM & Sales Hub", path: "/sales" },
-                { icon: BarChart3, name: "Metrics Dashboard", path: "/metrics" },
+                { icon: Home, name: "Home Dashboard" },
+                { icon: Workflow, name: "Schema-First Ingestion" },
+                { icon: Target, name: "Strategic Hub" },
+                { icon: Users, name: "Sales Hub" },
+                { icon: BarChart3, name: "Business Metrics" },
               ].map((item, i) => (
                 <div
                   key={i}
                   className="flex items-center gap-2 p-3 rounded-lg bg-blue-500/10 border border-blue-500/20"
                 >
-                  <item.icon className="h-4 w-4 text-blue-600" />
-                  <div>
-                    <p className="text-sm font-medium">{item.name}</p>
-                    <p className="text-xs text-muted-foreground">{item.path}</p>
-                  </div>
+                  <item.icon className="h-4 w-4 text-blue-600 shrink-0" />
+                  <p className="text-sm font-medium">{item.name}</p>
                 </div>
               ))}
             </div>
-            {activeLayer === "frontend" && (
+            {activeLayer === "client" && (
               <div className="mt-4 p-3 bg-muted/50 rounded-lg text-sm text-muted-foreground">
-                <strong>Additional Views:</strong> Brainstorming, Knowledge Hub, Products, Services, Clients, Sessions,
-                Projects, Tasks, Leads, Campaigns, Pipeline, Integrations, Settings
+                A privileged client of the platform. It never touches a database directly — every
+                read and write goes through the owned <code>/api</code> relay. Additional surfaces
+                include Knowledge Hub, Clients, Projects, Tasks, Leads, Pipeline, Campaigns,
+                Integrations, and Settings.
               </div>
             )}
           </CardContent>
@@ -86,308 +131,141 @@ export function ArchitectureView() {
         <div className="flex justify-center">
           <div className="flex flex-col items-center gap-1 text-muted-foreground">
             <ArrowDown className="h-6 w-6" />
-            <span className="text-xs">REST / Server Actions</span>
+            <span className="text-xs">fetch /api — governed relay calls only</span>
           </div>
         </div>
 
-        {/* Layer 2: Backend APIs */}
+        {/* Layer 2: Owned api-server relay */}
         <Card
-          className={`border-2 transition-all cursor-pointer ${activeLayer === "backend" ? "border-green-500 bg-green-500/5" : "border-green-500/30 hover:border-green-500/60"}`}
-          onClick={() => setActiveLayer(activeLayer === "backend" ? null : "backend")}
+          className={`border-2 transition-all cursor-pointer ${activeLayer === "relay" ? "border-green-500 bg-green-500/5" : "border-green-500/30 hover:border-green-500/60"}`}
+          onClick={() => setActiveLayer(activeLayer === "relay" ? null : "relay")}
         >
           <CardHeader className="pb-2">
             <div className="flex items-center gap-2">
               <Server className="h-5 w-5 text-green-500" />
-              <CardTitle className="text-lg">Backend API Layer</CardTitle>
+              <CardTitle className="text-lg">Owned api-server Relay</CardTitle>
               <Badge variant="outline" className="ml-auto bg-green-500/10 text-green-600 border-green-500/30">
-                Route Handlers
+                Express + Drizzle · local Postgres
               </Badge>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Cron Jobs */}
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm font-medium text-green-600">
-                  <Clock className="h-4 w-4" />
-                  Scheduled Jobs
+            <p className="text-sm text-muted-foreground mb-3">
+              A governed relay we own, mounted at <code>/api</code>. It is the only thing Customer
+              Zero talks to, and it is swappable to <code>integratewise-live</code> later without
+              changing this surface.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              {[
+                { path: "/api/schema/config", desc: "Resolve canonical schema = f(industry, department)" },
+                { path: "/api/schema/deltas", desc: "Active additive, versioned schema deltas" },
+                { path: "/api/ingest/gmail", desc: "Run the schema-first Gmail pipeline" },
+                { path: "/api/leads", desc: "Operational reads served from the relay" },
+              ].map((item, i) => (
+                <div key={i} className="p-2 rounded bg-green-500/10 border border-green-500/20 text-xs">
+                  <code className="text-green-700">{item.path}</code>
+                  <p className="text-muted-foreground mt-0.5">{item.desc}</p>
                 </div>
-                <div className="space-y-1.5">
-                  {[
-                    { path: "/api/cron/hourly-insights", desc: "AI Webhook Reports" },
-                    { path: "/api/cron/daily-insights", desc: "Daily Summaries" },
-                  ].map((item, i) => (
-                    <div key={i} className="p-2 rounded bg-green-500/10 border border-green-500/20 text-xs">
-                      <code className="text-green-700">{item.path}</code>
-                      <p className="text-muted-foreground mt-0.5">{item.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Webhooks */}
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm font-medium text-green-600">
-                  <Webhook className="h-4 w-4" />
-                  Webhook Handlers
-                </div>
-                <div className="space-y-1.5">
-                  {[
-                    { path: "/api/webhooks/slack", desc: "Slack Events" },
-                    { path: "/api/webhooks/discord", desc: "Discord Events" },
-                    { path: "/api/webhooks/hubspot", desc: "HubSpot CRM" },
-                    { path: "/api/webhooks/brainstorm", desc: "Brainstorm Sync" },
-                  ].map((item, i) => (
-                    <div key={i} className="p-2 rounded bg-green-500/10 border border-green-500/20 text-xs">
-                      <code className="text-green-700">{item.path}</code>
-                      <p className="text-muted-foreground mt-0.5">{item.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Sync APIs */}
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm font-medium text-green-600">
-                  <RefreshCw className="h-4 w-4" />
-                  Sync & Analysis
-                </div>
-                <div className="space-y-1.5">
-                  {[
-                    { path: "/api/hubspot/sync", desc: "HubSpot Bidirectional" },
-                    { path: "/api/brainstorm/analyze", desc: "AI Analysis" },
-                    { path: "/api/brainstorm/execute", desc: "Action Execution" },
-                    { path: "/api/website/track", desc: "Visitor Tracking" },
-                  ].map((item, i) => (
-                    <div key={i} className="p-2 rounded bg-green-500/10 border border-green-500/20 text-xs">
-                      <code className="text-green-700">{item.path}</code>
-                      <p className="text-muted-foreground mt-0.5">{item.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              ))}
             </div>
+            {activeLayer === "relay" && (
+              <div className="mt-4 p-3 bg-muted/50 rounded-lg text-sm text-muted-foreground">
+                Writes to platform truth are never direct. The relay forwards them down the governed,
+                human-in-the-loop path (<code>memory.propose</code> → <code>proposal.approve</code>)
+                so the Spine remains the system of record.
+              </div>
+            )}
           </CardContent>
         </Card>
 
-        {/* Bidirectional Arrows */}
-        <div className="flex justify-center gap-12">
+        {/* Arrow Down */}
+        <div className="flex justify-center">
           <div className="flex flex-col items-center gap-1 text-muted-foreground">
             <ArrowDown className="h-6 w-6" />
-            <span className="text-xs">Supabase Client</span>
-          </div>
-          <div className="flex flex-col items-center gap-1 text-muted-foreground">
-            <ArrowDown className="h-6 w-6 rotate-180" />
-            <ArrowDown className="h-6 w-6" />
-            <span className="text-xs">External APIs</span>
+            <span className="text-xs">governed writes — memory.propose → proposal.approve (HITL)</span>
           </div>
         </div>
 
-        {/* Layer 3: External Integrations & Database (Side by Side) */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {/* External Integrations */}
-          <Card
-            className={`border-2 transition-all cursor-pointer ${activeLayer === "external" ? "border-purple-500 bg-purple-500/5" : "border-purple-500/30 hover:border-purple-500/60"}`}
-            onClick={() => setActiveLayer(activeLayer === "external" ? null : "external")}
-          >
-            <CardHeader className="pb-2">
-              <div className="flex items-center gap-2">
-                <Cloud className="h-5 w-5 text-purple-500" />
-                <CardTitle className="text-lg">External Integrations</CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {/* AI */}
-              <div className="p-3 rounded-lg bg-purple-500/10 border border-purple-500/20">
-                <div className="flex items-center gap-2 mb-2">
-                  <Brain className="h-4 w-4 text-purple-600" />
-                  <span className="text-sm font-medium">AI Intelligence</span>
-                </div>
-                <div className="flex gap-2">
-                  <Badge variant="outline" className="text-xs">
-                    Claude 3.5 Sonnet
-                  </Badge>
-                  <Badge variant="outline" className="text-xs">
-                    DeepSeek
-                  </Badge>
-                </div>
-              </div>
-
-              {/* CRM */}
-              <div className="p-3 rounded-lg bg-purple-500/10 border border-purple-500/20">
-                <div className="flex items-center gap-2 mb-2">
-                  <Users className="h-4 w-4 text-purple-600" />
-                  <span className="text-sm font-medium">CRM & Marketing</span>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <Badge variant="outline" className="text-xs">
-                    HubSpot
-                  </Badge>
-                  <Badge variant="outline" className="text-xs">
-                    Pipedrive
-                  </Badge>
-                  <Badge variant="outline" className="text-xs">
-                    LinkedIn
-                  </Badge>
-                </div>
-              </div>
-
-              {/* Communication */}
-              <div className="p-3 rounded-lg bg-purple-500/10 border border-purple-500/20">
-                <div className="flex items-center gap-2 mb-2">
-                  <MessageSquare className="h-4 w-4 text-purple-600" />
-                  <span className="text-sm font-medium">Communication</span>
-                </div>
-                <div className="flex gap-2">
-                  <Badge variant="outline" className="text-xs">
-                    Slack
-                  </Badge>
-                  <Badge variant="outline" className="text-xs">
-                    Discord
-                  </Badge>
-                </div>
-              </div>
-
-              {/* Productivity */}
-              <div className="p-3 rounded-lg bg-purple-500/10 border border-purple-500/20">
-                <div className="flex items-center gap-2 mb-2">
-                  <Zap className="h-4 w-4 text-purple-600" />
-                  <span className="text-sm font-medium">Productivity</span>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <Badge variant="outline" className="text-xs">
-                    Asana
-                  </Badge>
-                  <Badge variant="outline" className="text-xs">
-                    Google Sheets
-                  </Badge>
-                  <Badge variant="outline" className="text-xs">
-                    Notion
-                  </Badge>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Database */}
-          <Card
-            className={`border-2 transition-all cursor-pointer ${activeLayer === "database" ? "border-amber-500 bg-amber-500/5" : "border-amber-500/30 hover:border-amber-500/60"}`}
-            onClick={() => setActiveLayer(activeLayer === "database" ? null : "database")}
-          >
-            <CardHeader className="pb-2">
-              <div className="flex items-center gap-2">
-                <Database className="h-5 w-5 text-amber-500" />
-                <CardTitle className="text-lg">Database Layer</CardTitle>
-                <Badge variant="outline" className="ml-auto bg-amber-500/10 text-amber-600 border-amber-500/30">
-                  Supabase PostgreSQL
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {/* Strategic */}
-              <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
-                <div className="flex items-center gap-2 mb-2">
-                  <Target className="h-4 w-4 text-amber-600" />
-                  <span className="text-sm font-medium">Strategic</span>
-                </div>
-                <div className="flex flex-wrap gap-1.5 text-xs text-muted-foreground">
-                  <code className="px-1.5 py-0.5 bg-background rounded">business_goals</code>
-                  <code className="px-1.5 py-0.5 bg-background rounded">company_values</code>
-                  <code className="px-1.5 py-0.5 bg-background rounded">tools_registry</code>
-                  <code className="px-1.5 py-0.5 bg-background rounded">roi_tracking</code>
-                </div>
-              </div>
-
-              {/* CRM & Sales */}
-              <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
-                <div className="flex items-center gap-2 mb-2">
-                  <Users className="h-4 w-4 text-amber-600" />
-                  <span className="text-sm font-medium">CRM & Sales</span>
-                </div>
-                <div className="flex flex-wrap gap-1.5 text-xs text-muted-foreground">
-                  <code className="px-1.5 py-0.5 bg-background rounded">leads</code>
-                  <code className="px-1.5 py-0.5 bg-background rounded">deals</code>
-                  <code className="px-1.5 py-0.5 bg-background rounded">clients</code>
-                  <code className="px-1.5 py-0.5 bg-background rounded">client_engagements</code>
-                </div>
-              </div>
-
-              {/* Content & Knowledge */}
-              <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
-                <div className="flex items-center gap-2 mb-2">
-                  <FileText className="h-4 w-4 text-amber-600" />
-                  <span className="text-sm font-medium">Content & Knowledge</span>
-                </div>
-                <div className="flex flex-wrap gap-1.5 text-xs text-muted-foreground">
-                  <code className="px-1.5 py-0.5 bg-background rounded">documents</code>
-                  <code className="px-1.5 py-0.5 bg-background rounded">content_library</code>
-                  <code className="px-1.5 py-0.5 bg-background rounded">brainstorm_chats</code>
-                  <code className="px-1.5 py-0.5 bg-background rounded">brainstorm_insights</code>
-                </div>
-              </div>
-
-              {/* Website */}
-              <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
-                <div className="flex items-center gap-2 mb-2">
-                  <Globe className="h-4 w-4 text-amber-600" />
-                  <span className="text-sm font-medium">Website & Analytics</span>
-                </div>
-                <div className="flex flex-wrap gap-1.5 text-xs text-muted-foreground">
-                  <code className="px-1.5 py-0.5 bg-background rounded">website_pages</code>
-                  <code className="px-1.5 py-0.5 bg-background rounded">website_visitors</code>
-                  <code className="px-1.5 py-0.5 bg-background rounded">form_submissions</code>
-                  <code className="px-1.5 py-0.5 bg-background rounded">conversion_funnel</code>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Data Flow Diagram */}
-        <Card className="border-2 border-cyan-500/30">
+        {/* Layer 3: The Spine (platform truth) */}
+        <Card
+          className={`border-2 transition-all cursor-pointer ${activeLayer === "spine" ? "border-emerald-500 bg-emerald-500/5" : "border-emerald-500/30 hover:border-emerald-500/60"}`}
+          onClick={() => setActiveLayer(activeLayer === "spine" ? null : "spine")}
+        >
           <CardHeader className="pb-2">
             <div className="flex items-center gap-2">
-              <Layers className="h-5 w-5 text-cyan-500" />
-              <CardTitle className="text-lg">Data Flow Pipeline</CardTitle>
+              <Cloud className="h-5 w-5 text-emerald-500" />
+              <CardTitle className="text-lg">The Spine — Platform Truth</CardTitle>
+              <Badge variant="outline" className="ml-auto bg-emerald-500/10 text-emerald-600 border-emerald-500/30">
+                integratewise-live · Cloudflare Workers + D1/KV
+              </Badge>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="relative">
-              {/* Main Flow */}
-              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                {[
-                  { icon: Globe, label: "Website Visitors", color: "bg-blue-500" },
-                  { icon: Brain, label: "AI Analysis", color: "bg-purple-500" },
-                  { icon: Users, label: "CRM/Leads", color: "bg-green-500" },
-                  { icon: TrendingUp, label: "Sales Pipeline", color: "bg-amber-500" },
-                  { icon: BarChart3, label: "ROI Tracking", color: "bg-cyan-500" },
-                ].map((item, i, arr) => (
-                  <div key={i} className="flex items-center gap-3">
-                    <div className={`p-3 rounded-xl ${item.color} text-white`}>
-                      <item.icon className="h-5 w-5" />
-                    </div>
-                    <div className="text-sm font-medium">{item.label}</div>
-                    {i < arr.length - 1 && <ArrowRight className="h-5 w-5 text-muted-foreground hidden md:block" />}
-                  </div>
-                ))}
-              </div>
-
-              {/* Secondary Flow */}
-              <div className="mt-6 p-4 bg-muted/50 rounded-lg">
-                <p className="text-sm font-medium mb-3">Hourly AI Webhook Reports</p>
-                <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-                  <Badge variant="outline">Business Metrics</Badge>
-                  <ArrowRight className="h-4 w-4" />
-                  <Badge variant="outline">Claude/DeepSeek Analysis</Badge>
-                  <ArrowRight className="h-4 w-4" />
-                  <Badge variant="outline">Formatted Report</Badge>
-                  <ArrowRight className="h-4 w-4" />
-                  <div className="flex gap-2">
-                    <Badge className="bg-[#4A154B]">Slack</Badge>
-                    <Badge className="bg-[#5865F2]">Discord</Badge>
-                  </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {[
+                { icon: ShieldCheck, name: "Identity & Tenancy" },
+                { icon: Layers, name: "Canonical Schema" },
+                { icon: Database, name: "Memory" },
+                { icon: ShieldCheck, name: "Governance" },
+                { icon: Cloud, name: "Cloudflare Workers" },
+                { icon: Database, name: "D1 / KV Store" },
+              ].map((item, i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-2 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20"
+                >
+                  <item.icon className="h-4 w-4 text-emerald-600 shrink-0" />
+                  <p className="text-sm font-medium">{item.name}</p>
                 </div>
+              ))}
+            </div>
+            {activeLayer === "spine" && (
+              <div className="mt-4 p-3 bg-muted/50 rounded-lg text-sm text-muted-foreground">
+                The Spine owns truth — identity, tenancy, schema, memory, and governance. Both
+                <code> iwa-frontend</code> and Customer Zero are clients of it; neither is the source
+                of record.
               </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Schema-first Gmail pipeline */}
+        <Card className="border-2 border-cyan-500/30">
+          <CardHeader className="pb-2">
+            <div className="flex items-center gap-2">
+              <Workflow className="h-5 w-5 text-cyan-500" />
+              <CardTitle className="text-lg">Flagship Pipeline — Schema-First Gmail Ingestion</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col md:flex-row items-stretch justify-between gap-3">
+              {[
+                { icon: Mail, label: "Connector", sub: "Gmail inbox" },
+                { icon: GitBranch, label: "Schema Delta", sub: "additive · versioned" },
+                { icon: Wand2, label: "Normalize", sub: "→ canonical" },
+                { icon: ShieldCheck, label: "Govern", sub: "memory.propose (HITL)" },
+                { icon: SearchCheck, label: "Verify", sub: "read-back" },
+              ].map((item, i, arr) => (
+                <div key={i} className="flex items-center gap-3 flex-1">
+                  <div className="flex flex-col items-center text-center rounded-lg border border-cyan-500/20 bg-cyan-500/10 p-3 w-full">
+                    <item.icon className="h-5 w-5 text-cyan-600 mb-1.5" />
+                    <span className="text-sm font-medium">{item.label}</span>
+                    <span className="text-[11px] text-muted-foreground mt-0.5">{item.sub}</span>
+                  </div>
+                  {i < arr.length - 1 && (
+                    <ArrowRight className="h-5 w-5 text-muted-foreground hidden md:block shrink-0" />
+                  )}
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 p-3 bg-muted/50 rounded-lg text-sm text-muted-foreground flex items-start gap-2">
+              <FileText className="h-4 w-4 mt-0.5 shrink-0" />
+              <span>
+                Gmail is the live connector. Each source maps onto an additive, versioned schema
+                delta (the base canonical schema is never modified), is normalized into canonical
+                records, then proposed to the Spine through the governed path and verified by reading
+                truth back.
+              </span>
             </div>
           </CardContent>
         </Card>
@@ -396,23 +274,23 @@ export function ArchitectureView() {
         <div className="flex flex-wrap justify-center gap-4 text-sm">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded bg-blue-500"></div>
-            <span>Frontend</span>
+            <span>Customer Zero (client)</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded bg-green-500"></div>
-            <span>Backend APIs</span>
+            <span>Owned /api relay</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded bg-emerald-500"></div>
+            <span>Spine (platform truth)</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded bg-purple-500"></div>
-            <span>External Services</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded bg-amber-500"></div>
-            <span>Database</span>
+            <span>iwa-frontend (sibling client)</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded bg-cyan-500"></div>
-            <span>Data Flow</span>
+            <span>Schema-first pipeline</span>
           </div>
         </div>
       </div>

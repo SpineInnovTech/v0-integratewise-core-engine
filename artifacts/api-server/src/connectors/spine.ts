@@ -53,7 +53,16 @@ interface CachedToken {
   token: string;
   expiresAtMs: number;
 }
-let cached: CachedToken | null = null;
+// Two token slots, each cached independently:
+//  - READ: least-privilege scope for the relay's read surface.
+//  - WRITE: an elevated scope used ONLY by the server-side governed hydration
+//    path (memory.propose / proposal.approve). It never backs the read relay
+//    and never reaches the browser.
+const SPINE_WRITE_SCOPE =
+  process.env["SPINE_WRITE_SCOPE"] ??
+  "mcp:tools mcp:resources memory:read memory:write";
+let cachedRead: CachedToken | null = null;
+let cachedWrite: CachedToken | null = null;
 
 async function fetchWithTimeout(url: string, init: RequestInit): Promise<Response> {
   const controller = new AbortController();
@@ -65,10 +74,8 @@ async function fetchWithTimeout(url: string, init: RequestInit): Promise<Respons
   }
 }
 
-async function mintToken(): Promise<string> {
+async function requestToken(scope: string): Promise<CachedToken> {
   const now = Date.now();
-  if (cached && cached.expiresAtMs - TOKEN_SAFETY_MS > now) return cached.token;
-
   let resp: Response;
   try {
     resp = await fetchWithTimeout(`${SPINE_MCP_URL}/oauth/token`, {
@@ -79,7 +86,7 @@ async function mintToken(): Promise<string> {
       },
       body: new URLSearchParams({
         grant_type: "client_credentials",
-        scope: SPINE_SCOPE,
+        scope,
       }).toString(),
     });
   } catch (err) {
@@ -109,9 +116,25 @@ async function mintToken(): Promise<string> {
     );
   }
 
-  const ttlMs = (typeof data.expires_in === "number" ? data.expires_in : 3600) * 1000;
-  cached = { token: data.access_token, expiresAtMs: now + ttlMs };
-  return cached.token;
+  const ttlMs =
+    (typeof data.expires_in === "number" ? data.expires_in : 3600) * 1000;
+  return { token: data.access_token, expiresAtMs: now + ttlMs };
+}
+
+async function mintReadToken(): Promise<string> {
+  const now = Date.now();
+  if (cachedRead && cachedRead.expiresAtMs - TOKEN_SAFETY_MS > now)
+    return cachedRead.token;
+  cachedRead = await requestToken(SPINE_SCOPE);
+  return cachedRead.token;
+}
+
+async function mintWriteToken(): Promise<string> {
+  const now = Date.now();
+  if (cachedWrite && cachedWrite.expiresAtMs - TOKEN_SAFETY_MS > now)
+    return cachedWrite.token;
+  cachedWrite = await requestToken(SPINE_WRITE_SCOPE);
+  return cachedWrite.token;
 }
 
 /** The MCP Streamable HTTP transport may answer as text/event-stream. */
@@ -135,12 +158,12 @@ function parseMaybeSse(text: string): unknown {
 
 let rpcId = 0;
 
-export async function spineRpc<T = unknown>(
+async function rpcWithToken<T>(
+  token: string,
   method: string,
-  params: Record<string, unknown> = {},
+  params: Record<string, unknown>,
+  onAuthFail: () => void,
 ): Promise<T> {
-  const token = await mintToken();
-
   let resp: Response;
   try {
     resp = await fetchWithTimeout(`${SPINE_MCP_URL}/mcp`, {
@@ -164,8 +187,11 @@ export async function spineRpc<T = unknown>(
   }
 
   if (resp.status === 401 || resp.status === 403) {
-    cached = null; // force a fresh mint next time
-    throw new SpineError("unauthorized", `Spine rejected the credential (${resp.status}).`);
+    onAuthFail(); // force a fresh mint next time
+    throw new SpineError(
+      "unauthorized",
+      `Spine rejected the credential (${resp.status}).`,
+    );
   }
   if (!resp.ok) {
     throw new SpineError("http_error", `Spine responded ${resp.status}.`);
@@ -184,14 +210,81 @@ export async function spineRpc<T = unknown>(
   return payload.result as T;
 }
 
+export async function spineRpc<T = unknown>(
+  method: string,
+  params: Record<string, unknown> = {},
+): Promise<T> {
+  const token = await mintReadToken();
+  return rpcWithToken<T>(token, method, params, () => {
+    cachedRead = null;
+  });
+}
+
+// Governed RPC: minted with the elevated WRITE scope. Used ONLY by the
+// server-side hydration path for memory.propose / proposal.approve.
+async function spineRpcGoverned<T = unknown>(
+  method: string,
+  params: Record<string, unknown> = {},
+): Promise<T> {
+  const token = await mintWriteToken();
+  return rpcWithToken<T>(token, method, params, () => {
+    cachedWrite = null;
+  });
+}
+
 export async function listSpineTools(): Promise<SpineTool[]> {
   const result = await spineRpc<{ tools?: SpineTool[] }>("tools/list", {});
   return Array.isArray(result?.tools) ? result.tools : [];
+}
+
+/**
+ * MCP distinguishes PROTOCOL errors (jsonrpc `error`, handled in rpcWithToken)
+ * from TOOL-EXECUTION errors (`result.isError: true` with the failure in
+ * `content`). The latter must NOT be treated as success — surface it as a
+ * SpineError so callers record an honest failure (no silent success).
+ */
+function unwrapToolResult(result: unknown): unknown {
+  if (result && typeof result === "object") {
+    const r = result as Record<string, unknown>;
+    if (r["isError"] === true) {
+      let message = "Spine tool returned an error.";
+      const content = r["content"];
+      if (Array.isArray(content)) {
+        const text = content
+          .map((p) =>
+            p && typeof p === "object"
+              ? (p as Record<string, unknown>)["text"]
+              : undefined,
+          )
+          .filter((t): t is string => typeof t === "string")
+          .join(" ")
+          .trim();
+        if (text) message = text;
+      }
+      throw new SpineError("tool_error", message);
+    }
+  }
+  return result;
 }
 
 export async function callSpineTool(
   name: string,
   args: Record<string, unknown>,
 ): Promise<unknown> {
-  return spineRpc("tools/call", { name, arguments: args });
+  return unwrapToolResult(await spineRpc("tools/call", { name, arguments: args }));
+}
+
+/**
+ * Invoke a GOVERNED (write) Spine tool with the elevated write-scope credential.
+ * This is the only sanctioned write path to platform truth and must stay
+ * server-side — it backs memory.propose / proposal.approve in the hydration
+ * service. The token is never exposed to the browser.
+ */
+export async function callSpineToolGoverned(
+  name: string,
+  args: Record<string, unknown>,
+): Promise<unknown> {
+  return unwrapToolResult(
+    await spineRpcGoverned("tools/call", { name, arguments: args }),
+  );
 }
