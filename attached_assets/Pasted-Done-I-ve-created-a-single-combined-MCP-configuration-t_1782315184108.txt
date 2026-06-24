@@ -1,0 +1,49 @@
+Done. I've created a single combined MCP configuration that collates 21 servers into one pool:
+
+File: /Users/nirmal/Github/integratewise-live/mcp-pool.json
+
+Structure
+• Uses the standard mcpServers format (works with Cursor, Kiro, VS Code, Codex, etc.).
+• The two IntegrateWise entries are explicitly tied to the integratewise tenant via the bridge (using existing client IDs kiro-iw / cursor-iw that are already registered in your D1).
+• All the high-value external MCP tools discovered across your configs (Kiro powers, Cursor global, VS Code Insiders, project overrides, etc.) are included as additional tools in the same pool.
+• mcpflare (your local aggregator) is also in the list so you can optionally route many of them through a single connection if desired.
+
+Servers in the pool
+• integratewise — IW platform (KB + memory + spine + signals + proposals + books) for tenant integratewise
+• integratewise-full — IW governed writes (memory.propose, kb.write_article, proposal.approve)
+• github + github-copilot
+• playwright
+• context7
+• notion
+• huggingface
+• Cloudflare family (cloudflare, -docs, -bindings, -builds, -observability)
+• figma
+• supabase
+• stripe
+• firebase
+• aws-knowledge + aws-dynamodb
+• fetch
+• mcpflare
+
+How to use it
+
+As a master / global config:
+
+# Cursor
+cp /Users/nirmal/Github/integratewise-live/mcp-pool.json ~/.cursor/mcp.json
+
+# Or for Kiro (merge or replace the mcpServers section)
+cp /Users/nirmal/Github/integratewise-live/mcp-pool.json ~/.kiro/settings/mcp.json
+
+Project-local (in integratewise-live): The existing .cursor/mcp.json and .vscode/mcp.json can be replaced or symlinked to this file (adjust the bridge args to relative scripts/... if you prefer that style inside the repo).
+
+For other tenants (e.g. customers): Duplicate the two integratewise* entries, change INTEGRATEWISE_TENANT_ID + INTEGRATEWISE_CLIENT_ID, and register the client (see scripts/register-oauth-client.ts or the SQL in your D1).
+
+Would you like any of these adjustments?
+• A version with all relative paths for the project directory
+• A "customer-zero" variant section
+• More/less servers (e.g. drop the powers, add Linear/others)
+• A version optimized for mcpflare as the single entry point
+• Server-side changes in mcp-connector to proxy some of these externals directly into your tenant's tool pool
+
+Just say the word.
