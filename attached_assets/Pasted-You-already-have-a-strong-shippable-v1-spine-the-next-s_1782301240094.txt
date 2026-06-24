@@ -1,0 +1,206 @@
+You already have a strong, shippable v1 spine; the next step is to turn this into concrete assets (site, marketplace entries, and a “source of truth” doc) and wire them into your actual flows. Below is a more detailed, implementation‑ready breakdown that keeps your canon intact but makes it easier to build, design, and ship without more copy iteration. [flow-agency](https://www.flow-agency.com/blog/b2b-saas-landing-page-best-practices/)
+
+***
+
+## 1. Canon pack → “Source of truth” spec
+
+Turn what you wrote into a single internal “Positioning & Messaging v1” doc with explicit status:
+
+- Title: IntegrateWise – Continuity Layer v1 Messaging (Canon).
+- Status: Locked for v1. Changes require “user signal” (e.g., discovery notes, win/loss, support feedback) – not vibes.
+- Sections in order:
+  - Core promise (headline + support line).
+  - Website IA (nav, hero, sections, pricing, closing CTA).
+  - Marketplace master listing (name, tagline, short + full description, CTA line).
+  - Per‑platform CTAs (ChatGPT, Claude, Replit, Vercel/dev tools).
+  - Short pitch paragraph.
+
+For implementation, assign IDs to each piece so design/engineering doesn’t free‑style text:
+
+- `core.headline`, `core.support`.
+- `web.hero.headline`, `web.hero.sub`, `web.pain.body[]`, `web.resolution.headline`, etc.
+- `mp.master.name`, `mp.master.tagline`, `mp.master.short`, `mp.master.full`, `mp.master.cta`.
+- `mp.chatgpt.ctaLabel`, `mp.chatgpt.ctaBody`, etc.
+- `pitch.short`.
+
+You can literally drop your current copy into that doc as‑is; the value is in making it **canonical** and addressable, not in changing the words.
+
+***
+
+## 2. Website: structure, states, and content map
+
+You’re functionally ready to ship a thin but “real” marketing site. To make it directly buildable, add:
+
+### 2.1. Page structure (single page v1)
+
+Sections (one scrolling page):
+
+1. Hero
+2. Pain
+3. Resolution (The Fix)
+4. How it works (Three Steps)
+5. Magic moment
+6. Why it’s different
+7. Pricing
+8. Closing CTA
+
+Each section already has copy; you just need minor UX decisions:
+
+- Hero:
+  - Pre‑line (eyebrow): `integratewise-continuity-bridge`
+  - H1: “Your tools change. Your continuity doesn’t.”
+  - Sub: as you wrote.
+  - Primary CTA: “Get Early Access”.
+  - Secondary CTA (ghost): “See How It Works”.
+  - Optional tiny trust element below CTAs: “Built for teams running HubSpot, Salesforce, Linear, and Slack first.”
+
+- Pain:
+  - Treat this visually as a “truth wall.”
+  - Left: single section label in UI like “The reality today” (small, subtle, not copy canon).
+  - Right: your lines stacked, with light visual rhythm:
+    - Group the “tool/AI changed, context lost” lines together.
+    - Group “someone left / migrated data” together.
+  - End the section with the “This isn’t an AI problem… continuity problem” paragraph as a slightly emphasized block.
+
+- Resolution / Three things that stay:
+  - Resolution: 1–2 paragraphs, then 3 bullet cards:
+    - Truth (unified source).
+    - Memory (decisions, signals, outcomes).
+    - Context (AI answering from what’s already known).
+  - Each becomes a feature card you can later click through to docs or product screens.
+
+- How it works:
+  - Three columns or a vertical stepper:
+    - Step label, 1–2 sentence body, then short bullet “micro‑steps”.
+  - Add a small “time to value” line under Step 1: “Time to first connected AI: under 5 minutes.”
+
+- Magic moment:
+  - Treat this as the “demo in words” section.
+  - Consider adding 1 visual: a fake chat transcript where ChatGPT answers about “Acme Corp – renewal risk: High” without a direct HubSpot connection.
+
+- Why it’s different:
+  - Use a 3‑column comparison mini‑grid:
+    - Column 1: “Connector platforms”.
+    - Column 2: “Point AI integrations”.
+    - Column 3: “IntegrateWise”.
+  - Each row: “Connect tools”, “Share context”, “Survive change”.
+
+- Pricing:
+  - Make the free tier visually obvious as “Start here”.
+  - Clarify “10 Bridge queries” in tooltips or micro‑copy: e.g., “A Bridge query = one AI call that hits the continuity layer.”
+
+- Closing CTA:
+  - Repeat the core promise headline variant you already wrote.
+  - Dual CTA: “Get Early Access” (primary), “Book a Demo” (secondary), anchored.
+
+From an implementation standpoint, this is a single Next.js page with static content pulled from a config/JSON that maps directly to the IDs described above, so you can evolve wording without touching layout.
+
+***
+
+## 3. Marketplace: master listing → field‑safe variants
+
+Your master listing is good; now, think in terms of constrained fields each marketplace will ask for. [developers.openai](https://developers.openai.com/apps-sdk/deploy/submission)
+
+General “field set” you should assume:
+
+- App name (40–60 chars safe).
+- Short tagline (80–100 chars).
+- One‑line short description (max ~120 chars).
+- Long description (markdown or plain, often 400–800 chars; some allow more).
+- “What it does” bullet list.
+- “Best for / use cases” bullets.
+- CTA or “how to get started” line.
+- Logo + optional banner.
+- Privacy policy URL, docs URL, support URL.
+
+Your master text already covers each:
+
+- Name → “IntegrateWise Continuity Bridge”.
+- Tagline → “One connection. Shared context everywhere.”
+- Short description → you already have a good one.
+- Full description → your existing “IntegrateWise Continuity Bridge is the continuity layer…” block.
+- What it does → your “What it does” section is plug‑and‑play as bullets.
+- Use it when → your “Use it when you want to:” bullets.
+
+What I’d add at this stage:
+
+- A single “Getting started” triple:
+
+  - “Add IntegrateWise Continuity Bridge.”
+  - “Connect HubSpot, Slack, Gmail, Linear via OAuth.”
+  - “Ask any AI connected to the Bridge about an account, deal, or ticket.”
+
+- One “Data & privacy” line (you’ll need this for review):
+
+  - “IntegrateWise accesses only the data you authorise per tool and uses it solely to provide continuity across your AIs and workflows; you can revoke access at any time.”
+
+Once you pick a first marketplace (ChatGPT or Claude), we can:
+
+- Translate master listing into specific character‑safe fields.
+- Add any required boilerplate like “This app is built by IntegrateWise, not by OpenAI/Anthropic.”
+- Make sure your “continuity” value prop doesn’t trip data‑minimisation rules (e.g., explicitly saying you don’t pull whole conversation histories unless user opts in). [developers.openai](https://developers.openai.com/apps-sdk/app-submission-guidelines)
+
+***
+
+## 4. Per‑platform CTAs: wire into product flows
+
+Treat each CTA line not just as copy but as a mini onboarding promise.
+
+You already have:
+
+- ChatGPT:
+  - Label: “Add to ChatGPT”
+  - Line: “Add to ChatGPT, then connect Continuity Bridge to your tools once. Every chat can start warm instead of from zero.”
+- Claude:
+  - Label: “Enable in Claude”
+  - Line: “Enable in Claude and connect your systems once. All Claude workflows can read from the same continuity layer.”
+- Replit:
+  - Label: “Install on Replit”
+  - Line: “Install on Replit and connect your workspace once. Every Repl and agent can call the same shared Spine.”
+- Vercel/dev tools:
+  - Label: “Add to project”
+  - Line: “Add to project and route all your app’s tool connections through Continuity Bridge.”
+
+Implementation details I’d fix now:
+
+- For each platform, define:
+  - `cta.label`
+  - `cta.subcopy`
+  - `cta.targetUrl` (even if placeholder).
+  - Optional `cta.badge` (e.g., “Coming soon” flag).
+
+- Map these into:
+  - Website footer “Coming soon on” strip.
+  - In‑product settings “Connect to ChatGPT / Claude / Replit” area.
+  - Marketplace submission copy (reusing the same phrasing where allowed).
+
+This creates a single source of truth for platform CTAs across UI, docs, and listings.
+
+***
+
+## 5. Short pitch paragraph: variants + usage
+
+Your short pitch paragraph is already strong and consistent with the canon. To make it deployable:
+
+Original:
+
+> IntegrateWise gives you a continuity layer beneath your tools and AIs. Connect your stack once with IntegrateWise Continuity Bridge, and every AI you use can answer from the same shared context. Your tools change. Your continuity doesn’t. Sessions start warm. Work doesn’t get lost when tools, models, or people change.
+
+Define three variants without changing the core message:
+
+- “Deck” version (exact as above, 3–4 lines stacked).
+- “Email” version (single paragraph; merge the last two sentences).
+- “Directory” version (strip the brand repetition to save characters if needed).
+
+Usage map:
+
+- Email intros / outbound.
+- First paragraph of any marketplace “About” section.
+- First paragraph in docs home (“What is IntegrateWise?”).
+- LinkedIn/Twitter bio or pinned post for launch.
+
+This keeps your *continuity layer beneath everything* story unified across all touchpoints.
+
+***
+
+If you’d like, next step I can take is: choose one marketplace (say, ChatGPT), I’ll translate your master listing into a field‑by‑field draft using typical limits (name, tagline, short description, long description, bullets, getting started, safety/privacy) so you can paste it directly into their form and only tweak for length.

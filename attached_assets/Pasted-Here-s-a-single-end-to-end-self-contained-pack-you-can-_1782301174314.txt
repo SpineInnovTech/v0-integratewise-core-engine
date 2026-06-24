@@ -1,0 +1,237 @@
+Here’s a **single, end‑to‑end, self‑contained pack** you can actually ship with. It covers:
+
+- Core promise  
+- Website hero + key sections  
+- Marketplace master listing  
+- Marketplace‑specific CTAs  
+- One short pitch paragraph  
+
+You can treat this as v1 canon and stop iterating unless real users push back.
+
+***
+
+## 1. Core promise (canon)
+
+**Headline (external, everywhere):**  
+**Your tools change. Your continuity doesn’t.**
+
+**Support line:**  
+Connect your tools once. Every AI you use gets the same context. Every session starts where the last one ended.
+
+***
+
+## 2. Website: minimal but complete
+
+### Nav
+
+Logo: **IntegrateWise**  
+Links: Product · Solutions · Pricing · Company  
+CTA: **Get Early Access**
+
+### Hero
+
+Pre‑line (small, gold): `integratewise-continuity-bridge`  
+
+**Headline**  
+**Your tools change. Your continuity doesn’t.**
+
+**Sub**  
+Connect your tools once. Every AI you use gets the same context. Every session starts where the last one ended. No re‑explaining. No starting over.
+
+**CTAs**  
+- Get Early Access  
+- See How It Works
+
+***
+
+### Pain
+
+_No headline — just the truth._
+
+You explained the client last week. You’re explaining them again today.  
+The tool changed. The context disappeared.  
+Someone left. Everything they knew left with them.  
+You connected the AI. It forgot by morning.  
+You migrated the data. The history didn’t make it.
+
+This isn’t an AI problem.  
+This isn’t a tool problem.  
+This is a **continuity** problem.  
+And every organization is paying for it — every single day.
+
+***
+
+### Resolution
+
+Eyebrow: **The Fix**  
+
+**Headline**  
+**Change is inevitable. Starting over shouldn’t be.**
+
+**Body**  
+IntegrateWise is the continuity layer beneath all your tools and AIs. Connect once. Every platform you use gets the same truth. Every session builds on the last. When your tools change, your context stays. When your AI changes, your memory stays. When your team changes, your knowledge stays.
+
+**Three things that stay**
+
+- **Your truth** — one unified source, across every tool you connect.  
+- **Your memory** — every decision, signal, and outcome remembered.  
+- **Your context** — every AI you use answering from what you already know.
+
+***
+
+### How it works
+
+Eyebrow: **Three Steps**  
+
+**Headline**  
+**Connect once. Use everywhere.**
+
+**Step 1 — Connect**  
+Install `integratewise-continuity-bridge` in Claude, ChatGPT, or any AI you use.  
+Sign in at integratewise.ai.  
+Connect your tools — HubSpot, Slack, Gmail, Linear, whatever you run — once, via secure OAuth.  
+That’s it.
+
+**Step 2 — Everything unifies**  
+IntegrateWise ingests, normalises, and unifies your tool data into one continuity layer.  
+Your Spine hydrates. Signals emerge.  
+Your AI now has full context — without you explaining anything.
+
+**Step 3 — Every session starts warm**  
+Ask Claude about an account. It knows.  
+Ask ChatGPT about a deal. It knows.  
+Start a new session. The context is there.  
+Change your AI next year. The memory stays.  
+Change your tools. The continuity remains.
+
+***
+
+### The magic moment
+
+Eyebrow: **What You’ll Experience**  
+
+**Headline**  
+**You connected HubSpot once. Now every AI you use can answer from it.**
+
+**Body**  
+ChatGPT was never directly connected to HubSpot. But it just answered your question about Acme Corp’s renewal risk.  
+That’s because IntegrateWise holds the context.  
+Your tools write to it.  
+Your AIs read from it.  
+You never have to explain it again.
+
+***
+
+### Why it’s different
+
+Eyebrow: **The Difference**  
+
+**Headline**  
+**Everyone connects tools. Nobody keeps context.**
+
+**Connect Once**  
+Other platforms give you connectors. IntegrateWise gives you continuity. Connect your tools once — not once per AI, not once per session. Once.
+
+**Remember Everything**  
+Every decision. Every signal. Every outcome. Remembered and available to every AI you use — without you carrying it manually between sessions and tools.
+
+**Change Freely**  
+Switch your AI tomorrow. Replace a tool next year. Your context stays. Your memory stays. Your continuity doesn’t depend on any single platform.
+
+***
+
+### Pricing (simple)
+
+Eyebrow: **Pricing**  
+
+**Headline**  
+**Free until you feel it. Pay to keep it running.**
+
+**Body**  
+Use the Bridge free up to your realization moment — when an AI answers a question from a tool it was never directly connected to, from context you never had to explain. That’s when you’ll know. That’s when the counter starts.  
+
+No trial clock. No feature gates on day one. Payment comes after the value is real.
+
+- **Free** – 10 Bridge queries, unlimited tools, no time limit.  
+- **Teams** – Keep it running. Continuity compounds. Starts at ₹42,000/month.  
+- **Enterprise** – Custom — contact us.
+
+***
+
+### Closing CTA
+
+**Headline**  
+**Your tools change. Your continuity doesn’t have to.**
+
+**Sub**  
+Connect once. Brief it once. Let it remember — so you don’t have to start over every time something changes.
+
+**CTAs**  
+- Get Early Access  
+- Book a Demo
+
+***
+
+## 3. Marketplace master listing
+
+Use this as the base everywhere and adapt length as needed.
+
+**Name**  
+IntegrateWise Continuity Bridge
+
+**Tagline**  
+One connection. Shared context everywhere.
+
+**Short description**  
+Connect your tools once and give every AI, agent, and workflow the same context, so sessions start warm instead of from zero.
+
+**Full description**
+
+IntegrateWise Continuity Bridge is the continuity layer beneath your tools and AIs.
+
+Connect your stack once. The Bridge hydrates a shared Spine of truth across your tools and systems, so every AI you use can answer from the same context instead of starting from scratch.
+
+Use it when you want to:
+- Stop re‑explaining accounts, deals, and tickets to every assistant.  
+- Let tools and agents share memory instead of living in silos.  
+- Change AIs or tools without losing what you’ve already learned.  
+- Keep humans focused on work, not stitching systems together.
+
+What it does:
+- Connects your tools once (CRM, support, docs, comms, projects).  
+- Normalises and unifies data into a single continuity layer.  
+- Exposes that shared context to every AI and agent that supports the Bridge.  
+- Keeps every new session warm: it starts where the last one ended.
+
+**CTA line in description**  
+Add IntegrateWise Continuity Bridge, connect your tools once, and let every AI start with the context you already have.
+
+***
+
+## 4. Marketplace CTAs (per platform)
+
+You can standardize CTAs like this:
+
+- **ChatGPT:** “Add to ChatGPT”  
+  - Line: _Add to ChatGPT, then connect Continuity Bridge to your tools once. Every chat can start warm instead of from zero._
+
+- **Claude Marketplace:** “Enable in Claude”  
+  - Line: _Enable in Claude and connect your systems once. All Claude workflows can read from the same continuity layer._
+
+- **Replit:** “Install on Replit”  
+  - Line: _Install on Replit and connect your workspace once. Every Repl and agent can call the same shared Spine._
+
+- **Vercel / dev tools:** “Add to project”  
+  - Line: _Add to project and route all your app’s tool connections through Continuity Bridge._
+
+***
+
+## 5. One short pitch paragraph
+
+Use this in outbound, intros, and descriptions:
+
+> IntegrateWise gives you a continuity layer beneath your tools and AIs. Connect your stack once with IntegrateWise Continuity Bridge, and every AI you use can answer from the same shared context. Your tools change. Your continuity doesn’t. Sessions start warm. Work doesn’t get lost when tools, models, or people change.
+
+***
+
+This is the self‑contained v1 you can implement now: site, listings, and pitch all share the same spine. If you want, the next concrete step is: pick **one** marketplace (ChatGPT or Claude), and I’ll turn the master listing into the exact, character‑safe fields for their form.
