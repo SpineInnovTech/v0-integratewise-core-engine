@@ -1,37 +1,41 @@
 ---
-name: Spine memory.propose write blocker (D1) + repo reality
-description: Why the only governed write path fails, that it's payload-independent, and why it can't be fixed from this workspace.
+name: Spine memory.propose D1 write blocker — ROOT CAUSE FOUND
+description: The D1 "Wrong number of parameter bindings" error on memory.propose is a real, located bug in the integratewise-live platform repo (not unfixable). Exact file/line and fix recorded.
 ---
 
-# memory.propose fails with a payload-independent D1 binding error
+# memory.propose D1 binding bug — root cause located
 
-The only governed write path, `memory.propose` on the live Spine (`mcp.integratewise.ai`),
-fails with `D1_ERROR: Wrong number of parameter bindings for SQL query.`
+`memory.propose` is the ONLY Spine tool that writes the D1 `proposals` table (no
+`proposal.create` exists). It fails for EVERY arg shape with
+`D1_ERROR: Wrong number of parameter bindings` — payload-independent (fails on a
+minimal 4-field call too), while `proposal.list` / `tools/list` / `memory.write_conversational`
+(Supabase) / `kb.write_article` (Knowledge Bank) all SUCCEED on the same token. So the
+write plane is healthy; only this one INSERT is broken.
 
-**Proven payload-INDEPENDENT (live-tested, not assumed):** a minimal, schema-exact call
-sending ONLY the 4 required fields (`tenant_id`, `content_type`, `title`, `body`) fails
-identically to the full 11-field call. On the SAME minted token + transport,
-`proposal.list` and `tools/list` SUCCEED. So the token, the `memory:write` scope, the
-tenant, the SSE transport, and the argument shape are all correct — only this one tool's
-INSERT is broken. The defect is the platform's SQL (its `?` placeholders vs. bound values),
-not anything the relay sends.
+**Root cause (CONFIRMED via GitHub read of the platform repo):**
+- Repo: `NirmalPrinceJ/integratewise-live` (private). Reachable read/write through the
+  workspace's GitHub connection (authed as the owner).
+- File: `services/mcp-connector/src/handlers/tools.ts`, function `proposeMemory`.
+- The `INSERT INTO proposals (... 19 cols ...) VALUES (...)` clause has **11 `?`
+  placeholders** because `evidence_count` is hardcoded as the literal `0`.
+- But `.bind(...)` passes **12 values**, including `input.evidence_chain?.length || 0`
+  intended for `evidence_count`. 11 placeholders vs 12 binds → the D1 error.
+- The sibling `spine-mcp-server.ts` INSERT is balanced (9/9) and is NOT the live path.
 
-**Why it is NOT fixable from this repo:** the SQL that throws runs on the remote platform
-server (`integratewise-live`). That server's source is NOT in this workspace. Despite the
-"three-repo architecture" doctrine in replit.md, this Replit workspace is physically ONE
-pnpm monorepo containing only: the Customer Zero frontend + the api-server RELAY (a *client*
-of the platform) + shared lib packages — plus leftover imported copies of old apps
-(`FRONTEND` = `@figma/my-make-file`; `temp_apps_web` = `@integratewise/web`;
-`.migration-backup` = `my-v0-project`). There is no Cloudflare Worker, no `wrangler`/D1
-config, and no MCP-server / `memory.propose` handler in-repo. The relay reaches the platform
-purely by `fetch()` to `mcp.integratewise.ai/mcp`.
+**Live path verified:** `index.ts` mounts the MCP server at `POST /` and `/mcp` →
+`createMcpServer` (`mcp-server.ts`) whose `case "memory.propose"` calls `proposeMemory`
+in `tools.ts`. So the deployed `mcp.integratewise.ai` endpoint runs the buggy function.
 
-**How to apply:**
-- Do NOT keep re-firing `memory.propose` hoping a different arg shape clears it — it won't.
-  The relay already handles it honestly: records the error, no faked success, verification
-  reports `not_proposed`, and the local proposal ledger still persists the intent.
-- The real fix belongs in the `integratewise-live` repo (align the INSERT's placeholder
-  count with its bound values). Re-test occasionally since the remote service evolves, but
-  treat a repeated identical D1 error as the platform's bug, not a local one.
-- I (the agent) CAN test the wire behavior here (token mint + live network), but I CANNOT
-  edit the remote SQL — that distinction matters when reporting status.
+**Fix (one change, intent-preserving):** in the `proposeMemory` VALUES clause, change the
+`evidence_count` literal `0` to a `?`. That makes 12 placeholders = 12 binds and stores
+the real evidence count. (Alternative: drop the `evidence_chain?.length` bind arg — keeps
+evidence_count always 0.)
+
+**Deploy caveat:** the live endpoint is a Cloudflare Worker (`wrangler.toml`,
+`mcp.integratewise.ai`). A repo fix only takes effect after THEIR Cloudflare deploy — this
+workspace has no Cloudflare deploy credential, so we can land the fix (PR) but cannot
+deploy it.
+
+**Status:** as of this session, NO change was pushed to the platform repo (user said
+"stop there"). The relay already handles the failure honestly (verification reports
+not_proposed; no faked success), so nothing in THIS repo needs to change for correctness.
