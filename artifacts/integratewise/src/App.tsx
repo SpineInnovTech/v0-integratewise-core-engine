@@ -8,6 +8,7 @@ import { SpineProvider } from "@/spine/spine-context";
 import { WorkspaceShell } from "@/components/workspace/workspace-shell";
 import { ModuleHost } from "@/components/workspace/module-host";
 import { RoleDashboard } from "@/components/workspace/role-dashboard";
+import { TwinPage } from "@/components/twin-ui/twin-page";
 
 import { LeadDetailView } from "@/components/views/lead-detail-view";
 import { ClientDetailView } from "@/components/views/client-detail-view";
@@ -41,6 +42,7 @@ function WorkspaceRoutes() {
   return (
     <Switch>
       <Route path="/" component={RoleDashboard} />
+      <Route path="/twin" component={TwinPage} />
       <Route path="/leads/:id" component={LeadDetailRoute} />
       <Route path="/leads" component={() => <ModuleHost id="leads" />} />
       <Route path="/pipeline" component={() => <ModuleHost id="pipeline" />} />

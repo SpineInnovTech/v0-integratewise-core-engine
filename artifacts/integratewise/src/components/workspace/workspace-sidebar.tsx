@@ -1,4 +1,5 @@
 import { Link, useLocation } from "wouter";
+import { Bot } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { IntegrateWiseLogo } from "@/components/integratewise-logo";
 import { useSpine } from "@/spine/spine-context";
@@ -62,6 +63,22 @@ export function WorkspaceSidebar({ onNavigate }: { onNavigate?: () => void }) {
 
       {/* Derived nav */}
       <nav className="touch-pan-y flex-1 space-y-4 overflow-y-auto overscroll-contain px-3 py-4">
+        {/* Twin — the AI collaboration surface */}
+        <Link
+          href="/twin"
+          onClick={onNavigate}
+          className={cn(
+            "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-150",
+            isActive("/twin")
+              ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
+              : "text-sidebar-foreground/80 hover:bg-sidebar-muted hover:text-sidebar-foreground",
+          )}
+        >
+          <Bot className="h-4 w-4 flex-shrink-0" />
+          <span className="flex-1 truncate">Twin</span>
+          {isActive("/twin") && <div className="h-5 w-1 rounded-full" style={{ background: "var(--iw-blue)" }} />}
+        </Link>
+
         {groups.map(({ group, items }) => (
           <div key={group}>
             <p className="mb-1 px-3 text-[10px] font-bold uppercase tracking-wide text-sidebar-foreground/40">{group}</p>

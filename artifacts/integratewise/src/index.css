@@ -71,6 +71,10 @@
   --iw-blue-100: #dde3f3;
   --iw-blue-500: #4256AB;
   --iw-blue-900: #2a3870;
+  --iw-blue-dark: #354890;
+  --iw-blue-light: #5A6FC0;
+  --iw-purple-light: #F1EEF8;
+  --iw-success-light: #E8F5F0;
   --iw-pink: #D46780;
   --iw-pink-50: #fbeef1;
   --iw-success: #3D8B6E;
@@ -139,6 +143,10 @@
   --iw-blue-100: #233060;
   --iw-blue-500: #6678c9;
   --iw-blue-900: #3a4a8f;
+  --iw-blue-dark: #233060;
+  --iw-blue-light: #8a9ad8;
+  --iw-purple-light: #2c2440;
+  --iw-success-light: #1c3329;
   --iw-pink: #e088a0;
   --iw-pink-50: #3a2630;
   --iw-success: #57a98a;
