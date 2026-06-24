@@ -48,7 +48,8 @@ export type SchemaGroup =
   | "service"
   | "project"
   | "metric"
-  | "platform";
+  | "platform"
+  | "email";
 
 /** Readiness of a schema group for this org. */
 export type SchemaState = "live" | "seeded" | "off";
@@ -56,6 +57,7 @@ export type SchemaState = "live" | "seeded" | "off";
 /** Module identifiers — keys into the module registry. */
 export type ModuleId =
   | "home"
+  | "email"
   | "leads"
   | "pipeline"
   | "deals"

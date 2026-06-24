@@ -2,7 +2,7 @@ import type { ComponentType } from "react";
 import {
   Home, Target, GitBranch, ShoppingCart, Building2, Megaphone, FileText,
   ShoppingBag, Package, FolderKanban, BookOpen, BarChart3, Compass, Lightbulb,
-  Layers, Database, Globe, Webhook, Shield, Settings, Users, CalendarDays,
+  Layers, Database, Globe, Webhook, Shield, Settings, Users, CalendarDays, Mail,
   type LucideIcon,
 } from "lucide-react";
 import type { ModuleId, NavGroup, SchemaGroup } from "./types";
@@ -30,6 +30,7 @@ import { WebsiteManagerView } from "@/components/views/website-manager-view";
 import { IntegrationsView } from "@/components/views/integrations-view";
 import { AdminDashboardView } from "@/components/views/admin-dashboard-view";
 import { SettingsView } from "@/components/views/settings-view";
+import { EmailView } from "@/components/views/email-view";
 import { MOCK_USER } from "@/lib/mock-auth";
 
 function AdminModule() {
@@ -57,6 +58,7 @@ export interface ModuleDef {
  */
 export const MODULE_REGISTRY: Record<ModuleId, ModuleDef> = {
   home: { id: "home", label: "Home", icon: Home, path: "/", group: "Workspace" },
+  email: { id: "email", label: "Email", icon: Mail, path: "/email", group: "Workspace", requiredSchema: ["email"], Component: EmailView },
   leads: { id: "leads", label: "Leads", icon: Target, path: "/leads", group: "Revenue", requiredSchema: ["person"], Component: LeadsView },
   pipeline: { id: "pipeline", label: "Pipeline", icon: GitBranch, path: "/pipeline", group: "Revenue", requiredSchema: ["deal"], Component: PipelineView },
   deals: { id: "deals", label: "Deals", icon: ShoppingCart, path: "/deals", group: "Revenue", requiredSchema: ["deal"], Component: DealsView },

@@ -38,6 +38,7 @@ import {
   UserCheck,
 } from "lucide-react"
 import { LeadIntelligencePanel } from "@/components/views/lead-intelligence-panel"
+import { LeadRecentEmails } from "@/components/views/lead-recent-emails"
 
 const statusConfig: Record<string, { label: string; color: string }> = {
   new: { label: "New", color: "bg-blue-500" },
@@ -374,6 +375,7 @@ export function LeadDetailView({ leadId }: { leadId: string }) {
         {/* Right: proactive intelligence + grounded Twin */}
         <div className="space-y-6">
           <LeadIntelligencePanel leadId={lead.id} />
+          <LeadRecentEmails email={lead.email} />
           <Card className="border-primary/30">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm flex items-center gap-2">

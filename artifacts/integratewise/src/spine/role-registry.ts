@@ -11,7 +11,7 @@ import type { CTXEnum, RoleProfile } from "./types";
 export const DEPT_PROFILE: Record<CTXEnum, RoleProfile> = {
   CTX_CS: {
     role: "Customer Success Manager",
-    modules: ["home", "clients", "sessions", "projects", "deals", "tasks", "knowledge", "integrations", "settings"],
+    modules: ["home", "email", "clients", "sessions", "projects", "deals", "tasks", "knowledge", "integrations", "settings"],
     quickActions: [
       { label: "Log Activity", icon: "MessageSquare" }, { label: "Schedule QBR", icon: "Calendar" },
       { label: "Update Health", icon: "HeartPulse" }, { label: "Escalate Risk", icon: "AlertTriangle" },
@@ -39,7 +39,7 @@ export const DEPT_PROFILE: Record<CTXEnum, RoleProfile> = {
   },
   CTX_SALES: {
     role: "Sales Representative",
-    modules: ["home", "leads", "pipeline", "deals", "sales", "clients", "campaigns", "tasks", "knowledge", "integrations", "settings"],
+    modules: ["home", "email", "leads", "pipeline", "deals", "sales", "clients", "campaigns", "tasks", "knowledge", "integrations", "settings"],
     quickActions: [
       { label: "Log Call", icon: "MessageSquare" }, { label: "Update Stage", icon: "TrendingUp" },
       { label: "Create Proposal", icon: "FileText" }, { label: "Schedule Demo", icon: "Calendar" },
@@ -67,7 +67,7 @@ export const DEPT_PROFILE: Record<CTXEnum, RoleProfile> = {
   },
   CTX_MARKETING: {
     role: "Marketing Manager",
-    modules: ["home", "campaigns", "content", "leads", "metrics", "tasks", "knowledge", "integrations", "settings"],
+    modules: ["home", "email", "campaigns", "content", "leads", "metrics", "tasks", "knowledge", "integrations", "settings"],
     quickActions: [
       { label: "Launch Campaign", icon: "Zap" }, { label: "Review Performance", icon: "BarChart3" },
       { label: "Route MQLs", icon: "Users" }, { label: "Schedule Post", icon: "Calendar" },
@@ -95,7 +95,7 @@ export const DEPT_PROFILE: Record<CTXEnum, RoleProfile> = {
   },
   CTX_BIZOPS: {
     role: "Business Operations Lead",
-    modules: ["home", "metrics", "strategy", "architecture", "data-flow", "data-sources", "projects", "tasks", "admin", "integrations", "settings"],
+    modules: ["home", "email", "metrics", "strategy", "architecture", "data-flow", "data-sources", "projects", "tasks", "admin", "integrations", "settings"],
     quickActions: [
       { label: "Review Metrics", icon: "BarChart3" }, { label: "Create Project", icon: "Briefcase" },
       { label: "Approve Proposal", icon: "CheckCircle2" }, { label: "Run Report", icon: "FileText" },
@@ -123,7 +123,7 @@ export const DEPT_PROFILE: Record<CTXEnum, RoleProfile> = {
   },
   CTX_SUPPORT: {
     role: "Support Team Lead",
-    modules: ["home", "clients", "sessions", "tasks", "knowledge", "integrations", "settings"],
+    modules: ["home", "email", "clients", "sessions", "tasks", "knowledge", "integrations", "settings"],
     quickActions: [
       { label: "Open Ticket", icon: "Plus" }, { label: "Assign Agent", icon: "Users" },
       { label: "Check SLA", icon: "Clock" }, { label: "Escalate P1", icon: "AlertTriangle" },

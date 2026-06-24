@@ -43,6 +43,7 @@ function WorkspaceRoutes() {
     <Switch>
       <Route path="/" component={RoleDashboard} />
       <Route path="/twin" component={TwinPage} />
+      <Route path="/email" component={() => <ModuleHost id="email" />} />
       <Route path="/leads/:id" component={LeadDetailRoute} />
       <Route path="/leads" component={() => <ModuleHost id="leads" />} />
       <Route path="/pipeline" component={() => <ModuleHost id="pipeline" />} />

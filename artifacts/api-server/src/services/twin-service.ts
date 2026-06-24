@@ -88,3 +88,59 @@ export function buildLeadSuggestions(lead: Lead): Suggestion[] {
 
   return suggestions.slice(0, 3);
 }
+
+// ── Email Twin ─────────────────────────────────────────────────────────────
+// Grounded in the real message the caller is reading. The Twin only drafts —
+// the human edits and approves every send through the GovernanceGate.
+
+export interface EmailContext {
+  senderName: string;
+  senderEmail: string;
+  subject: string;
+  excerpt: string;
+}
+
+function firstName(name: string): string {
+  const trimmed = name.trim();
+  if (!trimmed || trimmed.includes("@")) return "there";
+  return trimmed.split(/\s+/)[0];
+}
+
+/** A professional reply skeleton grounded in the message being read. */
+export function buildEmailReplyDraft(ctx: EmailContext): string {
+  const greeting = `Hi ${firstName(ctx.senderName)},`;
+  const ack = ctx.subject
+    ? `Thanks for your note on "${ctx.subject.replace(/^(re:\s*)+/i, "")}".`
+    : "Thanks for reaching out.";
+  return [
+    greeting,
+    "",
+    ack,
+    "",
+    "[Add your specific response here — confirm next steps, answer their question, or propose a time to talk.]",
+    "",
+    "Best,",
+  ].join("\n");
+}
+
+export function buildEmailReply(ctx: EmailContext): string {
+  const name = ctx.senderName || ctx.senderEmail || "this sender";
+  const subj = ctx.subject ? ` re: "${ctx.subject}"` : "";
+  return `Reading the message from ${name}${subj}. I've drafted a reply you can edit — every send goes through your approval, and I never send on your behalf.`;
+}
+
+export function buildEmailSuggestions(ctx: EmailContext): Suggestion[] {
+  return [
+    {
+      title: "Use this draft reply",
+      detail:
+        "A grounded starting point based on the message you're reading. Edit it, then send through the approval gate.",
+      kind: "draft",
+    },
+    {
+      title: "Link the sender to CRM",
+      detail: `If ${ctx.senderEmail || "this sender"} matches a lead or client, open their record to keep the conversation in context.`,
+      kind: "link",
+    },
+  ];
+}

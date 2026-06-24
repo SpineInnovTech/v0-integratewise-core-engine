@@ -24,6 +24,7 @@ export const DEFAULT_SCHEMA_AVAILABILITY: Record<SchemaGroup, SchemaState> = {
   project: "seeded",
   metric: "seeded",
   platform: "seeded",
+  email: "live",
 };
 
 export const SCHEMA_GROUP_LABEL: Record<SchemaGroup, string> = {
@@ -38,6 +39,7 @@ export const SCHEMA_GROUP_LABEL: Record<SchemaGroup, string> = {
   project: "Projects",
   metric: "Metrics",
   platform: "Platform",
+  email: "Email",
 };
 
 export type SchemaMap = Record<SchemaGroup, SchemaState>;
