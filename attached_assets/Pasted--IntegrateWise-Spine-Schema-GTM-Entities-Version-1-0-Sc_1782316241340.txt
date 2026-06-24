@@ -1,0 +1,383 @@
+# IntegrateWise Spine Schema — GTM Entities
+**Version:** 1.0  
+**Scope:** Lead · Campaign · Pipeline · Deal  
+**Layer:** Canonical Spine (post-ingestion, tool-agnostic)
+
+---
+
+## Design Rules
+
+- Every entity is **tool-agnostic** at the Spine layer. Apollo `person` and HubSpot `contact` both collapse into `Lead`.
+- `_spine` block is **mandatory** on every entity — this is what makes it a Spine record, not just a DB row.
+- `_sources[]` tracks provenance per field. The Spine does not overwrite — it merges with confidence scoring.
+- No agent writes directly to Spine. All writes go through `memory.propose` → Governance → approval.
+- Foreign keys reference Spine entity IDs, not tool-native IDs.
+
+---
+
+## 1. Lead
+
+The canonical representation of a person showing intent or in active qualification.
+
+```json
+{
+  "id": "uuid",
+  "entity_type": "lead",
+
+  // Identity
+  "full_name": "string",
+  "email": "string",
+  "phone": "string | null",
+  "linkedin_url": "string | null",
+  "title": "string | null",
+
+  // Company linkage
+  "company_name": "string",
+  "company_id": "ref → Company",
+
+  // Qualification
+  "status": "enum: new | contacted | qualified | disqualified | converted",
+  "score": "int 0–100",
+  "icp_fit": "enum: strong | moderate | weak | unknown",
+
+  // Attribution
+  "source": "enum: organic | paid | referral | outbound | event | partner | import",
+  "source_tool": "enum: apollo | hubspot | salesforce | manual | linkedin",
+  "campaign_id": "ref → Campaign | null",
+
+  // Ownership & routing
+  "owner_id": "ref → User",
+  "pipeline_id": "ref → Pipeline | null",
+  "deal_id": "ref → Deal | null",
+
+  // Engagement
+  "last_activity_at": "datetime | null",
+  "last_contacted_at": "datetime | null",
+  "converted_at": "datetime | null",
+  "disqualified_reason": "string | null",
+
+  // Metadata
+  "tags": "string[]",
+  "notes": "text | null",
+  "created_at": "datetime",
+  "updated_at": "datetime",
+
+  // IW Spine Block
+  "_spine": {
+    "confidence_score": "float 0.0–1.0",
+    "approval_state": "enum: auto_approved | pending_review | rejected",
+    "memory_refs": "string[]",
+    "last_proposed_by": "agent_id | user_id",
+    "sources": [
+      {
+        "tool": "apollo | hubspot | salesforce | manual",
+        "external_id": "string",
+        "last_synced": "datetime",
+        "fields_owned": "string[]"
+      }
+    ]
+  }
+}
+```
+
+**Source Mappings**
+
+| Spine Field       | Apollo          | HubSpot          | Salesforce       |
+|-------------------|-----------------|------------------|------------------|
+| `full_name`       | `first_name` + `last_name` | `firstname` + `lastname` | `Name`  |
+| `email`           | `email`         | `email`          | `Email`          |
+| `title`           | `title`         | `jobtitle`       | `Title`          |
+| `company_name`    | `organization.name` | `company`    | `Company`        |
+| `status`          | `contact_stage` | `lifecyclestage` | `LeadStatus`     |
+| `score`           | `contact_score` | `hubspotscore`   | `Lead_Score__c`  |
+| `source`          | `source`        | `hs_lead_source` | `LeadSource`     |
+
+---
+
+## 2. Campaign
+
+The canonical representation of a coordinated outreach or marketing effort.
+
+```json
+{
+  "id": "uuid",
+  "entity_type": "campaign",
+
+  // Core identity
+  "name": "string",
+  "type": "enum: email_sequence | linkedin | paid_ads | event | content | webinar | outbound | partner",
+  "status": "enum: draft | active | paused | completed | archived",
+
+  // Strategy
+  "goal": "string",
+  "target_segment": "string | null",
+  "icp_filter": "object | null",
+
+  // Timeline
+  "start_date": "date | null",
+  "end_date": "date | null",
+
+  // Ownership
+  "owner_id": "ref → User",
+  "pipeline_id": "ref → Pipeline | null",
+
+  // Lead association
+  "lead_ids": "ref[] → Lead",
+  "total_leads": "int",
+  "qualified_leads": "int",
+  "converted_leads": "int",
+
+  // Performance metrics
+  "metrics": {
+    "sent": "int",
+    "delivered": "int",
+    "opened": "int",
+    "clicked": "int",
+    "replied": "int",
+    "open_rate": "float",
+    "reply_rate": "float",
+    "conversion_rate": "float"
+  },
+
+  // Attribution
+  "source_tool": "enum: apollo | hubspot | mailchimp | instantly | manual",
+  "external_campaign_id": "string | null",
+
+  // Metadata
+  "tags": "string[]",
+  "notes": "text | null",
+  "created_at": "datetime",
+  "updated_at": "datetime",
+
+  // IW Spine Block
+  "_spine": {
+    "confidence_score": "float 0.0–1.0",
+    "approval_state": "enum: auto_approved | pending_review | rejected",
+    "memory_refs": "string[]",
+    "last_proposed_by": "agent_id | user_id",
+    "sources": [
+      {
+        "tool": "apollo | hubspot | mailchimp | manual",
+        "external_id": "string",
+        "last_synced": "datetime",
+        "fields_owned": "string[]"
+      }
+    ]
+  }
+}
+```
+
+**Source Mappings**
+
+| Spine Field       | Apollo Sequences | HubSpot Campaigns | Mailchimp      |
+|-------------------|-----------------|-------------------|----------------|
+| `name`            | `name`          | `name`            | `campaign_title` |
+| `type`            | `type`          | `type`            | `type`         |
+| `status`          | `active`        | `hs_campaign_status` | `status`    |
+| `metrics.sent`    | `num_sent_emails` | `hs_num_sent`   | `emails_sent`  |
+| `metrics.open_rate` | `open_rate`  | `hs_open_rate`    | `open_rate`    |
+| `metrics.reply_rate` | `reply_rate` | —               | —              |
+
+---
+
+## 3. Pipeline
+
+The canonical representation of a sales or business development funnel with defined stages.
+
+```json
+{
+  "id": "uuid",
+  "entity_type": "pipeline",
+
+  // Core identity
+  "name": "string",
+  "type": "enum: sales | partnership | investor | customer_success | renewal",
+  "status": "enum: active | archived",
+
+  // Stage definition
+  "stages": [
+    {
+      "id": "uuid",
+      "name": "string",
+      "order": "int",
+      "probability": "float 0.0–1.0",
+      "is_won": "boolean",
+      "is_lost": "boolean",
+      "required_actions": "string[]",
+      "avg_days_in_stage": "float | null"
+    }
+  ],
+
+  // Financial
+  "currency": "string default: INR",
+  "total_value": "decimal",
+  "weighted_value": "decimal",
+
+  // Deal summary
+  "deal_ids": "ref[] → Deal",
+  "open_deals": "int",
+  "won_deals": "int",
+  "lost_deals": "int",
+
+  // Ownership
+  "owner_id": "ref → User",
+  "team_ids": "ref[] → User",
+
+  // Attribution
+  "source_tool": "enum: hubspot | salesforce | linear | manual",
+  "external_pipeline_id": "string | null",
+
+  // Metadata
+  "tags": "string[]",
+  "created_at": "datetime",
+  "updated_at": "datetime",
+
+  // IW Spine Block
+  "_spine": {
+    "confidence_score": "float 0.0–1.0",
+    "approval_state": "enum: auto_approved | pending_review | rejected",
+    "memory_refs": "string[]",
+    "last_proposed_by": "agent_id | user_id",
+    "sources": [
+      {
+        "tool": "hubspot | salesforce | manual",
+        "external_id": "string",
+        "last_synced": "datetime",
+        "fields_owned": "string[]"
+      }
+    ]
+  }
+}
+```
+
+**Default Stage Templates**
+
+| Pipeline Type     | Stages                                                           |
+|-------------------|------------------------------------------------------------------|
+| `sales`           | New Lead → Qualified → Demo → Proposal → Negotiation → Won/Lost |
+| `partnership`     | Identified → Outreach → Intro → Evaluation → Agreement → Active |
+| `investor`        | Identified → Warm → Intro → DD → Term Sheet → Closed            |
+| `customer_success`| Onboarding → Adoption → Expansion → Renewal → Churned           |
+
+---
+
+## 4. Deal
+
+The canonical representation of a specific revenue opportunity moving through a Pipeline.
+
+```json
+{
+  "id": "uuid",
+  "entity_type": "deal",
+
+  // Core identity
+  "name": "string",
+  "description": "string | null",
+
+  // Linkage
+  "pipeline_id": "ref → Pipeline",
+  "stage_id": "string (ref → Pipeline.stages[].id)",
+  "lead_id": "ref → Lead | null",
+  "company_id": "ref → Company",
+  "contact_ids": "ref[] → Lead",
+
+  // Financials
+  "amount": "decimal | null",
+  "currency": "string default: INR",
+  "probability": "float 0.0–1.0",
+  "weighted_amount": "decimal (computed: amount × probability)",
+  "arr": "decimal | null",
+  "mrr": "decimal | null",
+
+  // Timeline
+  "close_date": "date | null",
+  "opened_at": "datetime",
+  "stage_entered_at": "datetime",
+  "closed_at": "datetime | null",
+
+  // Status
+  "status": "enum: open | won | lost | stalled | on_hold",
+  "loss_reason": "string | null",
+  "win_reason": "string | null",
+
+  // Ownership
+  "owner_id": "ref → User",
+  "campaign_id": "ref → Campaign | null",
+
+  // Attribution
+  "source": "enum: organic | outbound | referral | partner | event | inbound",
+  "source_tool": "enum: hubspot | salesforce | manual",
+  "external_deal_id": "string | null",
+
+  // Activity
+  "next_action": "string | null",
+  "next_action_date": "date | null",
+  "last_activity_at": "datetime | null",
+
+  // Metadata
+  "tags": "string[]",
+  "notes": "text | null",
+  "created_at": "datetime",
+  "updated_at": "datetime",
+
+  // IW Spine Block
+  "_spine": {
+    "confidence_score": "float 0.0–1.0",
+    "approval_state": "enum: auto_approved | pending_review | rejected",
+    "memory_refs": "string[]",
+    "last_proposed_by": "agent_id | user_id",
+    "sources": [
+      {
+        "tool": "hubspot | salesforce | manual",
+        "external_id": "string",
+        "last_synced": "datetime",
+        "fields_owned": "string[]"
+      }
+    ]
+  }
+}
+```
+
+---
+
+## Entity Relationship Map
+
+```
+Campaign ──────────── generates ──────────── Lead
+    │                                          │
+    │                                          ▼
+    └──────────── feeds ──────────────────── Deal
+                                               │
+                                               ▼
+                                           Pipeline
+                                          (Stage →)
+                                               │
+                                               ▼
+                                     Company (Entity360)
+```
+
+---
+
+## Governance Thresholds (inherited from Spine)
+
+| Score Range | Action              | Example Trigger                        |
+|-------------|---------------------|----------------------------------------|
+| ≥ 0.85      | Auto-approve        | Apollo enrichment of known company     |
+| 0.60–0.84   | HITL review         | Score change, stage move, new lead     |
+| < 0.60      | Reject / flag       | Conflicting source data, low confidence|
+
+---
+
+## IW-Ops Usage Notes
+
+For Customer Zero (IW-Ops), the tool-to-entity mappings are:
+
+| Business Intent       | Source Tool  | Spine Entity |
+|-----------------------|--------------|--------------|
+| Find a prospect       | Apollo       | Lead         |
+| Run an outreach       | Apollo Seq   | Campaign     |
+| Track a deal          | HubSpot/Manual | Deal       |
+| Monitor the funnel    | —            | Pipeline     |
+| Enrich company data   | Apollo       | Company      |
+
+ADK never calls Apollo directly. It calls `find_lead`, `get_deal`, `check_pipeline` — and routes through the MCP pool to the right source.

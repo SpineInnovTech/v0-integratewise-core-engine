@@ -1,0 +1,77 @@
+See, I'll tell you one thing that I observed. Every tool cannot ask any information to Spine. Okay? That is a real difference over here. Spine is not going to be a data dumping tool or data load or a data store. Okay? It is going to be the user's SSOT. Okay? Or whatever I need. See, we have run the leads, right? We have run with the Apollo. So when you are copying itself, I have noticed that you have copied everything that is available in Apollo to leads over here. Then there is no difference between the Apollo and this tool. Right? Here, what it should go is whatever is the schema that is there for me, okay, that is what it should be there. Okay? So I'llYour message got cut off — but the intent is clear enough. Let me answer what's obviously implied.
+The schema I gave you has a generic score int and generic status enum. That's wrong for your GTM doctrine. Here's what needs to change:
+1. Replace score with the CONTINUITY score model
+Not a single integer. Ten weighted dimensions, computed to a total.
+
+"continuity_score": {
+  "complexity":            { "score": 0–10, "weight": 0.15 },
+  "ownership":             { "score": 0–10, "weight": 0.15 },
+  "narrative":             { "score": 0–10, "weight": 0.15 },
+  "tool_fragmentation":    { "score": 0–10, "weight": 0.10 },
+  "intelligence_readiness":{ "score": 0–10, "weight": 0.05 },
+  "need_urgency":          { "score": 0–10, "weight": 0.10 },
+  "user_count":            { "score": 0–10, "weight": 0.10 },
+  "integration_density":   { "score": 0–10, "weight": 0.10 },
+  "trust_requirements":    { "score": 0–10, "weight": 0.05 },
+  "yield_potential":       { "score": 0–10, "weight": 0.05 },
+  "total": "float (computed)",
+  "band": "enum: hot | warm | cold | disqualified"
+}
+
+band is computed from total — ≥80 hot, 60–79 warm, 40–59 cold, <40 disqualified. No outreach fires until this block is populated.
+2. Replace generic status with Continuity Funnel stages
+Your funnel is not Lead → Demo → Proposal → Close. It's:
+
+"funnel_stage": "enum: scored | audit_offered | audit_completed | 
+                        map_created | twin_demonstrated | 
+                        pilot_active | foundation | continuity | disqualified"
+
+And add a hard gate:
+
+"gates": {
+  "continuity_map_exists":     "boolean default: false",
+  "severity_qualifies":        "boolean default: false",
+  "c1_count":                  "int default: 0",
+  "c2_count":                  "int default: 0",
+  "proposal_unlocked":         "boolean (computed: c1_count >= 1 OR c2_count >= 2)"
+}
+
+proposal_unlocked is a computed field. If it's false, the Deal entity cannot move to proposal stage. The Spine enforces this — not a human remembering a rule.
+3. Add the Continuity Map as a first-class sub-entity on Deal
+
+"continuity_map": {
+  "id": "uuid",
+  "deal_id": "ref → Deal",
+  "systems": "string[]",
+  "data_flows": "object[]",
+  "memory_gaps": "object[]",
+  "approval_flows": "object[]",
+  "findings": [
+    {
+      "id": "uuid",
+      "severity": "enum: C1 | C2 | C3 | C4",
+      "description": "string",
+      "resolution_tied_to_pilot": "boolean"
+    }
+  ],
+  "created_at": "datetime",
+  "completed_at": "datetime | null"
+}
+
+4. Add campaign attribution to Lead
+Your four campaigns are distinct motion types, not just source tags:
+
+"campaign_type": "enum: cost_of_context_switching | crm_is_not_memory | 
+                         ai_forgets_memory_compounds | every_team_different_truth"
+
+This lets you track which message is qualifying leads, not just which channel.
+Net result:
+The Lead schema becomes a qualification instrument, not a CRM record. A lead with band: disqualified never enters the pipeline. A deal without proposal_unlocked: true cannot move forward. The Spine enforces the doctrine — it doesn't rely on a salesperson's discipline.
+Finish your question and I'll go deeper on whichever part you were heading toward. Four entities, all Spine-native. Here's what's in it:
+Lead — collapses Apollo person, HubSpot contact, Salesforce Lead into one canonical record. Includes ICP fit scoring, source attribution, and linkage to Campaign + Pipeline.
+Campaign — absorbs Apollo Sequences, HubSpot Campaigns, Mailchimp. Carries performance metrics (open_rate, reply_rate, conversion_rate) normalized across tools. Linked to Pipeline.
+Pipeline — stage-defined funnel with four default templates (sales, partnership, investor, customer success). Financial roll-up (total + weighted value) computed at the Spine layer.
+Deal — the revenue unit. Carries weighted_amount as a computed field (amount × probability), links back to Lead, Company, Campaign, and Pipeline. Full win/loss tracking.
+Every entity carries the _spine block — confidence_score, approval_state, memory_refs, and sources[] with field-level provenance. The governance thresholds (≥0.85 auto, 0.60–0.84 HITL, <0.60 reject) apply across all four.
+The ER map at the bottom shows the flow: Campaign → Lead → Deal → Pipeline → Company (Entity360).
+One thing to note: Deal is the missing entity most people skip when they think "leads and pipelines." You need it — because a Lead converts into a Deal, and the Pipeline tracks Deals, not Leads. The Lead→Deal boundary is where the conversion event lives.

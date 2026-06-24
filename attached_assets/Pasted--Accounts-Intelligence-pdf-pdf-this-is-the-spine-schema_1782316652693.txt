@@ -1,0 +1,1151 @@
+
+Accounts Intelligence.pdf
+pdf
+
+this is the spine schema for csm and tam of mulesoft, if this is the detailed and intricate details that i needed, how the spine will be for 12 domains, create the spine as sql itself + plus everything maps to goals and metrics also Context from docs, mails and conversations flows via spine (gets the extract or needed info and then linked are stored in the spine ) + Loader & 8 stages Normalizer also needs to be aligned here, right from onboarding then connectors then fields at workspace everything based on adaptive spine
+
+Mar 11
+
+Architected comprehensive SQL spine schema integrating domains, metrics, and normalization stages
+Architected comprehensive SQL spine schema integrating domains, metrics, and normalization stages
+Here's what's in the schema and how the architecture maps:
+
+10 parts, fully wired:
+
+Part	What it covers
+0	All enums: ctx_type, goal_type, pipeline_stage (B0–B7), approval_status, all domain enums
+1	Identity & Onboarding — iw_orgs, iw_vendor_client_links (dual-context anchor), iw_users, iw_connectors, iw_field_mappings (adaptive, AI-confidence scored), iw_onboarding_sessions (L0 → L1 bridge, 4 stages)
+2	Spine Core — spine_goals, spine_metrics (DB-enforced goal_refs[] NOT NULL), spine_outcomes, spine_interventions (HITL-gated, PENDING → APPROVED → EXECUTED)
+3	12 Domains — accounts · contacts · deals · initiatives · tasks · engagements · knowledge · risks · insights · capabilities + value streams · team assignments · success plans. Every row carries vendor_org_id, client_org_id, ctx, goal_refs[], external_ids JSONB, embedding vector(1536)
+4	Loop A pipeline — ctx_ingest_raw (B0), ctx_ingest_normalized (B1–B4, all entity extraction), ctx_chunks (B5 RAG), ctx_spine_links (B6 — what doc/mail/transcript maps to in spine)
+5	Loader + 8-stage Normalizer — pipeline_jobs, pipeline_stage_log (per-record, per-stage), pipeline_normalizer_rules (adaptive per org/connector), pipeline_truth_commits (B7 SSOT write with HITL gate)
+6	Audit log + agent configs (L2 cognitive layer)
+7	All indexes including GIN on every UUID[] array, ivfflat on all vector(1536) columns
+8	6 pre-built views: v_account_360, v_metric_health, v_pending_approvals, v_pipeline_health, v_risk_board, v_insight_feed
+9	6 triggers: updated_at, metric-goal rule enforcement, auto-insight on critical risk, health rollup (metrics → account), HITL audit capture, onboarding auto-complete
+4 rules enforced at DB level — not just app logic:
+
+CONSTRAINT metric_requires_goal + trigger → metric without goal literally cannot be inserted
+risk_level auto-classifies via generated column (impact × probability)
+Health rolls up from metrics → account automatically
+Every HITL approve/reject writes to iw_audit_log
+Drop this directly into Supabase. RLS policies are stubbed — extend the vendor_isolation pattern to remaining tables using auth.jwt() ->> 'vendor_org_id'.
+
+
+Iw spine schema
+Code · SQL 
+
+The Spine is the foundation — everything flows through   
+  it:                                                                          
+
+  Connectors → Loader (8 stages) → Normalizer → SPINE → Intelligence Layer →   
+  Workspace UI                                                                 
+                                                    ↑       
+                                          Docs/Mails/Chats                     
+                                          Goals & Metrics                      
+                                          Context & Relationships              
+
+  The Spine is the single source of truth. If the Spine has rich,              
+  domain-specific fields, then:                                                
+
+Intelligence Layer can generate smart insights (not generic ones)
+Workspace loads with value in 60s (real data, not empty dashboards)
+Goals & Metrics have actual data to measure against
+Cross-domain connections work (a deal links to a contract links to an invoice)
+AI/Cognitive layer has context to reason over If the Spine is shallow, intelligence is shallow. That's the point of the MuleSoft CSM example — it has 15 tables with 200+ fields because CSM intelligence needs that depth (account health, stakeholder outcomes, risk registers, platform health, etc.). Every domain needs the same depth:
+Finance needs invoice line items, aging buckets, rev rec schedules — not just "amount"
+Engineering needs sprint velocity, incident RCA, deploy frequency — not just "status"
+HR needs comp bands, engagement scores, attrition risk — not just "employee name" We've built migrations 033 (CSM), 045 (RevOps/SalesOps), 046 (Marketing/Support), and 047 (Finance/Legal/HR/Engineering/Personal/BizOps) — ~120 tables across all 12 domains. The Loader's CANONICAL_FIELDS and the Normalizer's EntityType are already expanded to match. The chain is: Onboarding picks domain → Connectors pull raw data → Loader normalizes fields → Spine stores with full depth → Intelligence reads and reasons → Workspace renders value. What do you want to focus on next — hardening the field depth in specific domains, wiring the Loader field maps tighter, or the goals/metrics linkage?
+Show more
+Mar 11
+
+Synthesized architecture status and deferred decision to user input
+Synthesized architecture status and deferred decision to user input
+The chain is clean. Shallow spine = shallow intelligence — that's the non-negotiable architectural truth you've locked in.
+
+Given you have 033/045/046/047 already seeded (~120 tables), the highest-leverage next move depends on where the weakest link in the chain actually is right now.
+
+Once you point me at the weak link, I'll produce the artifact directly — whether that's the Loader CANONICAL_FIELDS expansion, the goal/metric seeding logic across all 12 domains, or domain-specific DDL additions with the full field depth that makes intelligence non-generic.
+
+
+Q: Where's the weakest link right now?
+A: Yes, exactly right. The Spine is the foundation — everything flows through      it:                                                                                                                                                             Connectors → Loader (8 stages) → Normalizer → SPINE → Intelligence Layer →      Workspace UI                                                                                                                      ↑                                                  Docs/Mails/Chats                                                                Goals & Metrics                                                                 Context & Relationships                                                                                                 The Spine is the single source of truth. If the Spine has rich,                 domain-specific fields, then:                                                                                                                                   1. Intelligence Layer can generate smart insights (not generic ones)            2. Workspace loads with value in 60s (real data, not empty dashboards)          3. Goals & Metrics have actual data to measure against                          4. Cross-domain connections work (a deal links to a contract links to an        invoice)                                                                        5. AI/Cognitive layer has context to reason over                                                                                                                If the Spine is shallow, intelligence is shallow. That's the point of the       MuleSoft CSM example — it has 15 tables with 200+ fields because CSM            intelligence needs that depth (account health, stakeholder outcomes, risk       registers, platform health, etc.).                                                                                                                              Every domain needs the same depth:                                              - Finance needs invoice line items, aging buckets, rev rec schedules — not      just "amount"                                                                   - Engineering needs sprint velocity, incident RCA, deploy frequency — not   just "status"   - HR needs comp bands, engagement scores, attrition risk — not just "employee    name"    We've built migrations 033 (CSM), 045 (RevOps/SalesOps), 046   (Marketing/Support), and 047 (Finance/Legal/HR/Engineering/Personal/BizOps) —    ~120 tables across all 12 domains.    The Loader's CANONICAL_FIELDS and the Normalizer's EntityType are already   expanded to match. The chain is: Onboarding picks domain → Connectors pull   raw data → Loader normalizes fields → Spine stores with full depth →   Intelligence reads and reasons → Workspace renders value.
+
+Q: If domain depth, which domains are under-specced? (Select all that apply)
+A: | Domain                        | Complexity | Revenue Impact | Implementation Phase | | ----------------------------- | ---------- | -------------- | -------------------- | | **Sales/RevOps**              | High       | Critical       | Phase 1 (Week 1-2)   | | **Finance**                   | High       | Critical       | Phase 1 (Week 3-4)   | | **CSM** (Your MuleSoft model) | Medium     | High           | Phase 1 (Week 1-4)   | | **Engineering**               | Medium     | Medium         | Phase 2 (Week 5-6)   | | **Marketing**                 | Medium     | High           | Phase 2 (Week 5-6)   | | **Legal**                     | Low        | Medium         | Phase 2 (Week 7-8)   | | **HR/People**                 | High       | Medium         | Phase 3 (Week 9-10)  | | **Supply Chain**              | High       | Variable       | Phase 3 (Week 9-12)  | | **Support**                   | Low        | High           | Phase 3 (Week 11-12) | | **Freelancers**               | Low        | Entry Market   | Phase 4 (Week 13-14) | | **Healthcare**                | Very High  | Vertical       | Phase 4 (Week 13-16) | | **Education**                 | Medium     | Vertical       | Phase 4 (Week 15-16) | | **Automotive**                | High       | Vertical       | Phase 5 (Week 17-20) |
+
+Show more
+Mar 11
+
+Architected comprehensive SQL schema for canonical goals and metrics
+Architected comprehensive SQL schema for canonical goals and metrics
+The answer is clear: Goals/Metrics linkage is the broken chain. You have 120 tables of spine depth but if goal_refs[] isn't seeded correctly at onboarding for each domain, every metric is an orphan and intelligence has nothing to reason against. Let me build the canonical template system + seeder.
+
+
+Ran 2 commands, created a file, read a file
+Ran 2 commands, created a file, read a file
+1,580 lines. Here's what closed the gap:
+
+The broken chain was this: 120 spine tables, goal_refs[] column exists everywhere — but nothing populates it at onboarding. Every org starts with empty metrics, empty goals. Intelligence has nothing to reason against.
+
+What this file fixes:
+
+spine_goal_templates + spine_metric_templates — the canonical library. Every metric template has goal_template_id FK NOT NULL, enforced at schema level, before any seeder runs.
+
+fn_seed_domain_for_org() — called once per domain at onboarding. It:
+
+Instantiates spine_goals from templates (vendor + client typed, dual-context)
+Resolves template_id → live goal_id via in-memory map
+Inserts spine_metrics with goal_refs[ARRAY[live_goal_id]] already populated
+Updates iw_onboarding_sessions.goals_seeded + metrics_seeded
+tg_auto_seed_domains — fires the moment selected_domains changes during onboarding. Zero manual trigger needed.
+
+Coverage seeded:
+
+Phase	Domains	Goal Templates	Metric Templates
+1	CSM · Sales · Finance	18	~75
+2	Engineering · Marketing · Legal	9	~44
+3	HR · Supply Chain · Support	8	~42
+4	Personal	3	~8
+v_goal_metric_chain — single view the Intelligence Layer reads. One query gives: goal status + metric attainment % + pending interventions + high-risk count + context richness score.
+
+v_template_coverage — audit view. Surfaces orphan metrics (always 0 if rule holds), metrics-per-goal ratio, and connector dependencies per domain.
+
+Next step from here — wire fn_seed_domain_for_org into the Loader's post-B7_TRUTH_COMMIT callback, so the first sync doesn't just load raw data but also seeds goals against what the connectors actually pulled.
+
+
+Iw goals metrics canonical
+Code · SQL 
+
+❯ We need to get aligned with the complete system only based on the spine,     
+even ai contexts mcp and connector and so, this is the base
+
+Mar 11
+
+Architected unified system map anchoring all components to Spine
+Architected unified system map anchoring all components to Spine
+This is the canonical system reference — 5 tabs, everything anchored to the Spine:
+
+System Architecture — full data flow diagram, both loops, every layer stacked in order from L0 onboarding through connectors → pipeline → Spine → intelligence → workspace
+
+Spine Core — the 4 SSOT objects (Goals · Metrics · Outcomes · Interventions), dual-context model, CTX enum routing, and the domain template seeding chain
+
+Pipeline & Context — L3 8-stage Loader, Loop A context pipeline (B0→B6→Spine), MCP layer, normalizer field chain from raw connector field → CANONICAL_FIELDS → spine_link
+
+AI & Intelligence — 6 agents by loop type, AI context rules (what every agent receives from Spine before reasoning), the full HITL approval cycle
+
+Rules & Enforcement — all 8 architecture rules with enforcement mechanism, infrastructure contracts, and go-live scope (Flow A + B only, deferred items explicit)
+
+Use this as the grounding document for every AI session, every dev context, every MCP prompt. Pin this + the spine SQL as the two files any agent reads first before touching anything.
+
+
+Iw system architecture
+Code · JSX 
+
+Flow A and Flow B is covered along with flow C, As you have mentioned only Loop A and Loop B
+
+Mar 11
+
+Reconciled architectural terminology between flows and loops
+Reconciled architectural terminology between flows and loops
+Correct. The naming got crossed. To be precise:
+
+Flows (execution paths — all three exist):
+
+Flow A — Onboarding stages 1–4
+Flow B — Connector sync → Loader → Normalizer → Spine → write-back
+Flow C — Channel → Brainstorm → Truth (context-originated path)
+Loops (processing cycles — both run continuously):
+
+Loop A — Context → Truth (human-governed: docs/mails/chats/files → extract → link → Spine)
+Loop B — Tool → Truth (system-governed: connector pull → Loader → Normalizer → Spine → Think → Act)
+The go-live scope I had wrong in the architecture panel. It should read:
+
+Go-live scope: Flow A + Flow B + Flow C all in scope. MCP Layer and Triage Bot deferred post-wedge. Loop A and Loop B both running from day one.
+
+Want me to update the architecture artifact with the corrected terminology throughout — Flow A/B/C vs Loop A/B separated cleanly — and also update the SQL schema comments where I used the same mixed naming?
+
+
+Loop A and Loop B replace it with Initial Loading & Delta Load - that will be the right one , Flow A, B and C be Structutred, UnStructured and AI Chats or Brainstroming or Knowledge
+
+Mar 11
+
+Reorganized terminology to clarify loops and data flows
+Reorganized terminology to clarify loops and data flows
+Clean. That's the right taxonomy:
+
+Pipeline Cycles:
+
+Initial Loading — full hydration on first connect. All historical data pulled, normalized, spine seeded.
+Delta Load — incremental. Only changed/new records since last sync. Triggered by webhook, schedule, or manual.
+Data Flows by type:
+
+Flow A — Structured — connector-sourced data (CRM, ERP, calendar, task systems). Field-mapped, typed, normalized via CANONICAL_FIELDS.
+Flow B — Unstructured — docs, emails, meeting transcripts, file uploads. NLP extraction → entity resolution → spine links.
+Flow C — AI Chats / Brainstorming / Knowledge — AI conversation output, brainstorm sessions, knowledge base entries. Intent-rich, semi-structured, directly spine-linkable.
+This also clarifies the Triage function — incoming data hits the triage layer first, gets classified into Flow A, B, or C, then routes to the appropriate normalizer pipeline.
+
+Want me to:
+
+Update the architecture artifact with this corrected terminology throughout
+Update the SQL schema comments and the context_source_type enum + pipeline_normalizer_rules to reflect Flow A/B/C and Initial Loading/Delta Load as first-class values
+Both files in one pass?
+
+
+For Triage i prefer we can use Cloudflare AI
+
+Mar 11
+
+Validated Cloudflare AI architecture for edge-based triage classification
+Validated Cloudflare AI architecture for edge-based triage classification
+Smart call. Cloudflare AI sits right at the edge, co-located with the pipeline Workers — zero additional hop for classification.
+
+What Cloudflare AI handles in Triage:
+
+Flow classification — incoming payload → @cf/meta/llama-3-8b-instruct classifies as Flow A / B / C before it touches the normalizer
+Embedding generation — @cf/baai/bge-base-en-v1.5 generates the vector at the edge, written directly into the Spine row — no separate embedding job
+Sentiment + intent signals — quick inference at B4 (Classify/Tag stage) without leaving the Cloudflare network
+Entity extraction (B2) — lightweight NER on unstructured payloads before routing to the heavier normalizer
+The chain becomes:
+
+Source payload
+  → Cloudflare AI Triage Worker
+      → classify: Flow A / B / C
+      → embed: vector(1536)
+      → extract: entities, sentiment, intent
+  → Route to Flow-specific Normalizer Worker
+  → B0 → B7 → Spine
+Why this is architecturally clean:
+
+Triage is stateless — pure inference, no DB touch
+Classification happens before any storage write
+Embedding is free at the edge, not a separate pipeline cost
+Cloudflare AI models are in the same network as Workers — latency is sub-10ms
+Want me to update the full architecture artifact + schema with this — Cloudflare AI Triage as a named layer between the source and B0, with the specific model assignments per triage function?
+
+
+Trigage happens only for AI Chats and not for Truth and context as it processs through our 8 stage pipeline
+
+Mar 11
+
+Recalibrated triage scope to AI chats only
+Recalibrated triage scope to AI chats only
+Correct. The precise picture:
+
+Flow A (Structured) — straight into B0→B7. Field-mapped, typed. No triage needed.
+
+Flow B (Unstructured) — straight into B0→B7. NLP handles extraction within the pipeline stages themselves.
+
+Flow C (AI Chats / Brainstorming / Knowledge) — hits Cloudflare AI Triage first, because the content is ambiguous by nature. The triage worker decides:
+
+Is this a goal candidate?
+Is this a risk signal?
+Is this a knowledge entry?
+Does it link to an existing Spine object or create a new one?
+Which B-stage does it enter at?
+Only after triage classification does Flow C enter the 8-stage pipeline.
+
+Corrected chain:
+
+Flow A → B0 → B1 → B2 → B3 → B4 → B5 → B6 → B7 → Spine
+Flow B → B0 → B1 → B2 → B3 → B4 → B5 → B6 → B7 → Spine
+Flow C → CF AI Triage → B0 → B1 → B2 → B3 → B4 → B5 → B6 → B7 → Spine
+Triage is a pre-pipeline gate, not a pipeline stage. It doesn't replace any B-stage — it routes and annotates before B0 ingestion.
+
+Should I update the architecture artifact and schema with this corrected model now?
+
+
+B0 to B7 Hyderation buckets are totally wrong here, check the flow properly
+
+Mar 11
+
+Reconsidered hydration bucket architecture and acknowledged misunderstanding
+Reconsidered hydration bucket architecture and acknowledged misunderstanding
+You're right to flag this. I've been misrepresenting B0–B7 as sequential processing stages that each record "passes through" — that's wrong.
+
+Before I rebuild anything, let me ask directly rather than get it wrong again:
+
+What are B0–B7 actually? Are they:
+
+Hydration states of a Spine object (how complete/enriched it is over time — B0 = bare identity, B7 = fully hydrated truth)?
+So a Spine object accumulates across buckets as more data arrives, rather than a record flowing through all 8 linearly?
+And for the three flows — does each flow fill different buckets on the Spine object rather than going through the same sequence?
+
+Tell me the correct model and I'll rebuild the architecture, schema comments, and the artifact cleanly from scratch — no carry-over from the wrong framing.
+
+
+
+IntegrateWise OS — Connector → Data Flow Pipeline Audit 1. Connector Service (services/connector/src/index.ts) Architecture: Consolidated worker that merges loader, mcp-connector, and store. Routing: Path Pattern Handler /health Health check /mcp/*, /tools/*, /sessions/* mcp-connector /files/*, /u
+
+pasted
+
+Here’s the canonical pipeline flow expressed clearly with your steps aligned to IntegrateWise OS layers:
+IntegrateWise Operational Loop (End-to-End)
+1. Load (Ingress / Edge Gateway)
+   * Capture events, documents, AI chats, and external signals
+   * Apply:
+      * Tenant resolution
+      * Signature verification
+      * Idempotency & rate limiting
+2. Normalize (Normalizer Service)
+   * Transform ingested items into canonical format
+   * Schema mapping, enum harmonization, deduplication
+   * Time, currency, and identity normalization
+   * Output: canonical mutation events
+3. Store (Spine / Context / Knowledge Bank)
+   * Spine (Truth Store): SSOT entities, relations, timelines
+   * Context / Knowledge Bank: Documents, chunked embeddings, metadata
+   * Evidence Store: Immutable references for audit & lineage
+4. Think (Cognitive Layer)
+   * Read-only analysis across flows A/B/C
+   * Generate:
+      * Insights
+      * Risk/Opportunity detection
+      * Proposals for actions
+   * Builds structured context bundles:
+      * Entity focus, deltas, summaries, signals, anomalies
+5. Act (Execution Layer)
+   * Execute approved actions from Think proposals
+   * Includes:
+      * Tool calls (connectors)
+      * Workflow triggers
+      * Workspace updates
+   * All writes governed via Act → Govern → Audit
+6. Govern (Policy & Audit Layer)
+   * RBAC enforcement
+   * Approval gating
+   * Audit trail linking back to Spine & Evidence
+   * Permission checks and immutable logging
+7. Repeat / Adjust (Self-Healing)
+   * Capture:
+      * Overrides, rejections, corrections
+   * Update:
+      * Proposal ranking
+      * Retrieval weighting
+      * Agent confidence calibration
+      * Memory consolidation
+   * Feedback loops into Think and Act for continuous learning
+Flow Summary (Linear Form)
+
+Load → Normalize → Store → Think → Act → Govern → Repeat / Adjust → Think …
+Key Properties:
+* Fully evidence-driven; all steps traceable
+* Memory + Docs influence Think but never mutate Spine directly
+* Human-in-the-loop ensures safe execution
+* Adjust layer creates self-healing intelligence without reasoning drift
+* The loop is continuous, forming the core of IntegrateWise OS intelligence
+I can also draw this as a layered flowchart showing L1/L2/L3 boundaries, Think/Act/Govern separation, and memory/document loops for documentation or presentations.
+Do you want me to create that visual?
+
+Show more
+Mar 11
+
+Architected interactive React diagram showcasing IntegrateWise operational pipeline layers
+Architected interactive React diagram showcasing IntegrateWise operational pipeline layers
+jsx
+import { useState, useEffect } from "react";
+
+const C = {
+  bg: "#05080C",
+  surface: "#0A0F16",
+  surfaceUp: "#0F1823",
+  border: "#1A2535",
+  borderBright: "#243448",
+  spine: "#10B981",
+  spineGlow: "#34D399",
+  spineDim: "#059669",
+  text: "#E8EDF3",
+  muted: "#8899AA",
+  dim: "#4A5568",
+  flowA: "#3B82F6",
+  flowB: "#F59E0B",
+  flowC: "#A78BFA",
+  cfai: "#F97316",
+  load: "#06B6D4",
+  norm: "#8B5CF6",
+  store: "#10B981",
+  think: "#3B82F6",
+  act: "#EF4444",
+  govern: "#F59E0B",
+  repeat: "#EC4899",
+  l0: "#6366F1",
+  l1: "#3B82F6",
+  l2: "#F59E0B",
+  l3: "#EF4444",
+};
+
+const STEPS = [
+  {
+    id: "load", num: "01", label: "LOAD", color: C.load,
+    sub: "Ingress / Edge Gateway",
+    infra: "Cloudflare Workers",
+    items: ["Tenant resolution", "Signature verification", "Idempotency & rate limiting", "Initial Loading / Delta Load routing"],
+    flows: ["Flow A", "Flow B", "Flow C*"],
+    note: "* Flow C passes through CF AI Triage before Load"
+  },
+  {
+    id: "norm", num: "02", label: "NORMALIZE", color: C.norm,
+    sub: "Normalizer Service",
+    infra: "Cloudflare Workers",
+    items: ["Schema mapping & enum harmonization", "Deduplication", "Time, currency, identity normalization", "CANONICAL_FIELDS mapping", "Output: canonical mutation events"],
+    flows: ["Flow A", "Flow B", "Flow C"],
+  },
+  {
+    id: "store", num: "03", label: "STORE", color: C.store,
+    sub: "Spine · Context · Knowledge · Evidence",
+    infra: "Supabase · pgvector · R2",
+    items: ["Spine (Truth Store) — SSOT entities, relations, timelines", "Context / Knowledge Bank — docs, chunks, embeddings", "Evidence Store — immutable audit & lineage", "No direct write without Govern gate"],
+    flows: ["All Flows"],
+    highlight: true,
+  },
+  {
+    id: "think", num: "04", label: "THINK", color: C.think,
+    sub: "Cognitive Layer",
+    infra: "AI Agents · OpenRouter · MCP",
+    items: ["Read-only across all flows", "Insight + Risk + Opportunity detection", "Builds context bundles: entity focus, deltas, signals, anomalies", "Generates structured action proposals"],
+    flows: ["Read: A+B+C"],
+  },
+  {
+    id: "act", num: "05", label: "ACT", color: C.act,
+    sub: "Execution Layer",
+    infra: "Connector Service · n8n",
+    items: ["Executes approved proposals only", "Tool calls via connector bindings", "Workflow triggers", "Workspace updates", "All writes → Govern → Audit"],
+    flows: ["Write: A+B+C"],
+  },
+  {
+    id: "govern", num: "06", label: "GOVERN", color: C.govern,
+    sub: "Policy & Audit Layer",
+    infra: "Supabase · HITL Queue",
+    items: ["RBAC enforcement", "HITL approval gating", "Immutable audit trail → Spine + Evidence", "canExecute policy check before every Act"],
+    flows: ["All writes"],
+  },
+  {
+    id: "repeat", num: "07", label: "REPEAT / ADJUST", color: C.repeat,
+    sub: "Self-Healing Intelligence",
+    infra: "decision_memory · pipeline write-back",
+    items: ["Capture: overrides, rejections, corrections", "Update: proposal ranking, retrieval weighting", "Agent confidence calibration", "Memory consolidation → feeds back into Think"],
+    flows: ["Feedback loop"],
+  },
+];
+
+const FLOWS = [
+  { id: "A", label: "FLOW A", sub: "Structured", color: C.flowA, sources: ["HubSpot", "Salesforce", "Stripe", "GitHub", "Linear", "Asana", "Jira", "QuickBooks"], desc: "Connector-sourced data. Field-mapped, typed, normalized via CANONICAL_FIELDS. Enters Load directly.", triage: false },
+  { id: "B", label: "FLOW B", sub: "Unstructured", color: C.flowB, sources: ["Gmail", "Outlook", "Docs", "Notion", "Files", "Transcripts", "Slack"], desc: "Docs, emails, meeting transcripts, file uploads. NLP extraction within pipeline stages.", triage: false },
+  { id: "C", label: "FLOW C", sub: "AI Chats · Brainstorming · Knowledge", color: C.flowC, sources: ["AI Chats", "Brainstorm Sessions", "Knowledge Entries", "Scribblings", "AI Relay"], desc: "Intent-rich, ambiguous content. Requires CF AI Triage to classify before entering pipeline.", triage: true },
+];
+
+const LOAD_TYPES = [
+  { label: "Initial Loading", color: C.spine, desc: "Full hydration on first connect. All historical data pulled, normalized, Spine seeded with Goals + Metrics via fn_seed_domain_for_org()." },
+  { label: "Delta Load", color: C.muted, desc: "Incremental. Only changed/new records since last sync. Triggered by webhook, schedule, or manual." },
+];
+
+const LAYERS = [
+  { id: "L0", label: "L0 — ONBOARDING", color: C.l0, desc: "4 stages. ORG_SETUP → CONNECTOR_AUTH → FIELD_MAPPING → SPINE_HYDRATION. Seeds domain Goals + Metrics." },
+  { id: "L1", label: "L1 — WORKSPACE", color: C.l1, desc: "15 modules. Reads Spine only. CTX-aware. L2 slides up from here." },
+  { id: "L2", label: "L2 — COGNITIVE", color: C.l2, desc: "14 components. Think · Act · HITL · Govern · Adjust. No write without approval." },
+  { id: "L3", label: "L3 — BACKEND", color: C.l3, desc: "Load → Normalize → Store pipeline. Cloudflare Workers. Supabase truth commits." },
+];
+
+const BROKEN = [
+  { link: "Webhooks → Pipeline", issue: "webhook-ingress broadcasts but never sends to PIPELINE_QUEUE", fix: "Route /webhooks/* to connector/loader OR have webhook-ingress forward to PIPELINE_QUEUE" },
+  { link: "OAuth (Frontend → Backend)", issue: "Frontend hits loader OAuth (stub). Tenants has full OAuth but is unrouted in gateway.", fix: "Route /api/v1/connectors/* to tenants service" },
+  { link: "Onboarding → Connectors", issue: "Onboarding records selection only. No OAuth trigger, no API call.", fix: "Wire connector selection to connector.authorize() → OAuth redirect" },
+  { link: "IntegrationsHub", issue: "Mock data only. Connect/disconnect/sync are no-ops.", fix: "Replace mock with connector.list(), status(), disconnect() API calls" },
+  { link: "Manual Sync", issue: "Gateway returns 501 for /api/v1/connector/sync/:provider", fix: "Implement sync endpoint in connector service" },
+];
+
+// ── Components
+
+function Chip({ children, color, small }) {
+  return (
+    <span style={{
+      display: "inline-block",
+      padding: small ? "1px 6px" : "2px 8px",
+      borderRadius: 3,
+      fontSize: small ? 9 : 10,
+      fontFamily: "monospace",
+      fontWeight: 600,
+      letterSpacing: "0.04em",
+      background: color + "18",
+      color: color,
+      border: `1px solid ${color}35`,
+    }}>{children}</span>
+  );
+}
+
+function Pulse({ color }) {
+  return (
+    <span style={{
+      display: "inline-block",
+      width: 7, height: 7,
+      borderRadius: "50%",
+      background: color,
+      boxShadow: `0 0 8px ${color}`,
+      flexShrink: 0,
+    }} />
+  );
+}
+
+function StepCard({ step, active, onClick }) {
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        padding: "14px 16px",
+        borderRadius: 8,
+        background: active ? step.color + "12" : C.surface,
+        border: `1px solid ${active ? step.color + "55" : C.border}`,
+        cursor: "pointer",
+        transition: "all 0.2s",
+        position: "relative",
+        overflow: "hidden",
+        boxShadow: active ? `0 0 24px ${step.color}18` : "none",
+      }}
+    >
+      {step.highlight && (
+        <div style={{
+          position: "absolute", inset: 0,
+          background: `radial-gradient(ellipse at 50% 0%, ${step.color}08 0%, transparent 70%)`,
+          pointerEvents: "none",
+        }} />
+      )}
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+        <span style={{ color: step.color + "66", fontSize: 11, fontFamily: "monospace", fontWeight: 700 }}>{step.num}</span>
+        <Pulse color={active ? step.color : step.color + "44"} />
+        <span style={{ color: active ? step.color : C.muted, fontFamily: "monospace", fontWeight: 700, fontSize: 12, letterSpacing: "0.1em" }}>
+          {step.label}
+        </span>
+      </div>
+      <div style={{ color: C.dim, fontSize: 9, marginBottom: 6, fontFamily: "monospace" }}>{step.sub}</div>
+      <Chip color={step.color} small>{step.infra}</Chip>
+
+      {active && (
+        <div style={{ marginTop: 12 }}>
+          {step.items.map((item, i) => (
+            <div key={i} style={{ display: "flex", gap: 8, marginBottom: 5, alignItems: "flex-start" }}>
+              <span style={{ color: step.color, fontSize: 10, marginTop: 1, flexShrink: 0 }}>→</span>
+              <span style={{ color: C.muted, fontSize: 10, lineHeight: 1.5 }}>{item}</span>
+            </div>
+          ))}
+          <div style={{ marginTop: 8, display: "flex", gap: 5, flexWrap: "wrap" }}>
+            {step.flows.map(f => <Chip key={f} color={step.color} small>{f}</Chip>)}
+          </div>
+          {step.note && (
+            <div style={{ marginTop: 8, fontSize: 9, color: C.flowC, fontFamily: "monospace", lineHeight: 1.5 }}>{step.note}</div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function FlowIngress() {
+  const [hover, setHover] = useState(null);
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      {FLOWS.map(f => (
+        <div
+          key={f.id}
+          onMouseEnter={() => setHover(f.id)}
+          onMouseLeave={() => setHover(null)}
+          style={{
+            padding: "14px 16px",
+            borderRadius: 8,
+            background: hover === f.id ? f.color + "0E" : C.surface,
+            border: `1px solid ${hover === f.id ? f.color + "44" : C.border}`,
+            transition: "all 0.2s",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8, flexWrap: "wrap" }}>
+            <Pulse color={f.color} />
+            <span style={{ color: f.color, fontFamily: "monospace", fontWeight: 800, fontSize: 13 }}>{f.label}</span>
+            <span style={{ color: C.dim, fontSize: 11 }}>—</span>
+            <span style={{ color: C.muted, fontSize: 11 }}>{f.sub}</span>
+            {f.triage && (
+              <div style={{
+                padding: "2px 8px", borderRadius: 3,
+                background: C.cfai + "20", color: C.cfai,
+                fontSize: 9, fontFamily: "monospace", fontWeight: 700,
+                border: `1px solid ${C.cfai}44`,
+              }}>CF AI TRIAGE →</div>
+            )}
+          </div>
+          <div style={{ color: C.dim, fontSize: 10, marginBottom: 10, lineHeight: 1.6 }}>{f.desc}</div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+            {f.sources.map(s => (
+              <span key={s} style={{
+                padding: "2px 8px", borderRadius: 3,
+                background: C.surfaceUp,
+                border: `1px solid ${C.border}`,
+                color: C.muted, fontSize: 9, fontFamily: "monospace",
+              }}>{s}</span>
+            ))}
+          </div>
+        </div>
+      ))}
+
+      {/* CF AI Triage callout */}
+      <div style={{
+        padding: "12px 16px",
+        borderRadius: 8,
+        background: C.cfai + "0A",
+        border: `1px solid ${C.cfai}33`,
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+          <Pulse color={C.cfai} />
+          <span style={{ color: C.cfai, fontFamily: "monospace", fontWeight: 700, fontSize: 11, letterSpacing: "0.08em" }}>
+            CLOUDFLARE AI TRIAGE
+          </span>
+          <Chip color={C.cfai} small>Flow C only</Chip>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+          {[
+            { model: "@cf/meta/llama-3-8b-instruct", role: "Classify: goal candidate / risk signal / knowledge entry / Spine link" },
+            { model: "@cf/baai/bge-base-en-v1.5", role: "Generate embedding at edge — written directly into Spine row" },
+            { model: "Inference", role: "Sentiment + intent signals at B4 without leaving CF network" },
+            { model: "NER", role: "Lightweight entity extraction before routing to normalizer" },
+          ].map((m, i) => (
+            <div key={i} style={{ fontSize: 9, lineHeight: 1.5 }}>
+              <span style={{ color: C.cfai, fontFamily: "monospace" }}>{m.model}</span>
+              <span style={{ color: C.dim }}> — {m.role}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Load types */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+        {LOAD_TYPES.map(lt => (
+          <div key={lt.label} style={{
+            padding: "12px 14px",
+            borderRadius: 8,
+            background: C.surface,
+            border: `1px solid ${lt.color}33`,
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 6 }}>
+              <Pulse color={lt.color} />
+              <span style={{ color: lt.color, fontFamily: "monospace", fontWeight: 700, fontSize: 10 }}>{lt.label}</span>
+            </div>
+            <div style={{ color: C.dim, fontSize: 9, lineHeight: 1.6 }}>{lt.desc}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SpineStore() {
+  return (
+    <div style={{
+      padding: "20px",
+      borderRadius: 10,
+      background: C.spine + "08",
+      border: `2px solid ${C.spine}`,
+      boxShadow: `0 0 40px ${C.spine}15`,
+    }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+        <div style={{
+          width: 10, height: 10, borderRadius: "50%",
+          background: C.spine,
+          boxShadow: `0 0 12px ${C.spine}`,
+          animation: "glow 2s infinite",
+        }} />
+        <span style={{ color: C.spine, fontFamily: "monospace", fontWeight: 800, fontSize: 13, letterSpacing: "0.12em" }}>
+          SPINE — SINGLE SOURCE OF TRUTH
+        </span>
+        <Chip color={C.spine}>03 — STORE</Chip>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8, marginBottom: 12 }}>
+        {[
+          { name: "Truth Store", desc: "SSOT entities, relations, timelines. Goals · Metrics · Outcomes · Interventions.", color: C.spine },
+          { name: "Context / Knowledge", desc: "Documents, chunked embeddings, metadata. Feeds Think read-only.", color: C.spineGlow },
+          { name: "Evidence Store", desc: "Immutable audit + lineage. Every step traceable back here.", color: C.spineDim },
+        ].map(s => (
+          <div key={s.name} style={{
+            padding: "10px 12px",
+            borderRadius: 6,
+            background: C.bg,
+            border: `1px solid ${s.color}33`,
+          }}>
+            <div style={{ color: s.color, fontSize: 11, fontWeight: 700, marginBottom: 5 }}>{s.name}</div>
+            <div style={{ color: C.dim, fontSize: 9, lineHeight: 1.5 }}>{s.desc}</div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+        {[
+          "No direct write without Govern gate",
+          "No metric without goal_refs[]",
+          "Dual-Context on every signal",
+          "pgvector on all embedding cols",
+          "RLS: vendor isolation",
+        ].map(r => (
+          <div key={r} style={{
+            padding: "3px 9px",
+            borderRadius: 3,
+            background: C.spine + "12",
+            border: `1px solid ${C.spine}33`,
+            fontSize: 9,
+            color: C.spineGlow,
+            fontFamily: "monospace",
+          }}>⚑ {r}</div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function BrokenLinks() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <div style={{ color: C.muted, fontSize: 10, fontFamily: "monospace", marginBottom: 4, letterSpacing: "0.08em" }}>
+        BROKEN LINKS — FROM CODEBASE AUDIT — FIX BEFORE GO-LIVE
+      </div>
+      {BROKEN.map((b, i) => (
+        <div key={i} style={{
+          padding: "12px 14px",
+          borderRadius: 7,
+          background: C.surface,
+          border: `1px solid #EF444422`,
+        }}>
+          <div style={{ display: "flex", gap: 8, alignItems: "flex-start", marginBottom: 6 }}>
+            <span style={{ color: "#EF4444", fontSize: 11, flexShrink: 0 }}>✗</span>
+            <span style={{ color: C.text, fontSize: 11, fontFamily: "monospace", fontWeight: 600 }}>{b.link}</span>
+          </div>
+          <div style={{ color: C.dim, fontSize: 9, marginBottom: 6, marginLeft: 19, lineHeight: 1.5 }}>{b.issue}</div>
+          <div style={{ display: "flex", gap: 8, alignItems: "flex-start", marginLeft: 19 }}>
+            <span style={{ color: C.spine, fontSize: 10, flexShrink: 0 }}>→</span>
+            <span style={{ color: C.muted, fontSize: 9, lineHeight: 1.5 }}>{b.fix}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function LayerBoundaries() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      {LAYERS.map(l => (
+        <div key={l.id} style={{
+          padding: "14px 16px",
+          borderRadius: 8,
+          background: C.surface,
+          border: `1px solid ${l.color}33`,
+          display: "flex",
+          gap: 14,
+          alignItems: "flex-start",
+        }}>
+          <div style={{
+            padding: "4px 10px",
+            borderRadius: 4,
+            background: l.color + "18",
+            border: `1px solid ${l.color}44`,
+            color: l.color,
+            fontFamily: "monospace",
+            fontWeight: 800,
+            fontSize: 12,
+            flexShrink: 0,
+            letterSpacing: "0.05em",
+          }}>{l.id}</div>
+          <div>
+            <div style={{ color: l.color, fontSize: 11, fontWeight: 700, marginBottom: 5, fontFamily: "monospace" }}>{l.label}</div>
+            <div style={{ color: C.dim, fontSize: 10, lineHeight: 1.6 }}>{l.desc}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function LinearFlow() {
+  return (
+    <div style={{ overflowX: "auto", paddingBottom: 8 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 4, minWidth: 900 }}>
+        {STEPS.map((s, i) => (
+          <div key={s.id} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+            <div style={{
+              padding: "10px 14px",
+              borderRadius: 7,
+              background: s.highlight ? s.color + "18" : C.surfaceUp,
+              border: `1px solid ${s.highlight ? s.color : s.color + "44"}`,
+              textAlign: "center",
+              minWidth: s.id === "repeat" ? 110 : 88,
+              boxShadow: s.highlight ? `0 0 20px ${s.color}22` : "none",
+            }}>
+              <div style={{ color: s.color, fontSize: 9, fontFamily: "monospace", marginBottom: 3, opacity: 0.6 }}>{s.num}</div>
+              <div style={{ color: s.color, fontSize: 10, fontFamily: "monospace", fontWeight: 700, letterSpacing: "0.06em" }}>{s.label}</div>
+              <div style={{ color: C.dim, fontSize: 8, marginTop: 3 }}>{s.sub.split(" / ")[0]}</div>
+            </div>
+            {i < STEPS.length - 1 && (
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
+                <span style={{ color: C.dim, fontSize: 14 }}>→</span>
+              </div>
+            )}
+          </div>
+        ))}
+        {/* Loop back arrow indicator */}
+        <div style={{ marginLeft: 4, fontSize: 9, color: C.repeat, fontFamily: "monospace", whiteSpace: "nowrap" }}>
+          ↺ → Think
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Main
+
+export default function IWArchitecture() {
+  const [tab, setTab] = useState("loop");
+  const [activeStep, setActiveStep] = useState("load");
+
+  const tabs = [
+    { id: "loop", label: "Operational Loop" },
+    { id: "flows", label: "Flow A · B · C" },
+    { id: "spine", label: "Spine & Store" },
+    { id: "layers", label: "L0 · L1 · L2 · L3" },
+    { id: "audit", label: "Broken Links" },
+  ];
+
+  return (
+    <div style={{
+      background: C.bg,
+      minHeight: "100vh",
+      color: C.text,
+      fontFamily: "'IBM Plex Mono', 'JetBrains Mono', 'Fira Code', monospace",
+    }}>
+      <style>{`
+        @keyframes glow {
+          0%,100% { box-shadow: 0 0 12px ${C.spine}; }
+          50% { box-shadow: 0 0 22px ${C.spine}, 0 0 40px ${C.spine}44; }
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: ${C.bg}; }
+        ::-webkit-scrollbar-thumb { background: ${C.border}; border-radius: 3px; }
+      `}</style>
+
+      {/* Header */}
+      <div style={{
+        padding: "16px 24px",
+        borderBottom: `1px solid ${C.border}`,
+        background: C.surface,
+        position: "sticky", top: 0, zIndex: 10,
+      }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10, marginBottom: 14 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ width: 8, height: 8, borderRadius: "50%", background: C.spine, animation: "glow 2s infinite" }} />
+            <span style={{ color: C.spine, fontWeight: 800, fontSize: 14, letterSpacing: "0.12em" }}>INTEGRATEWISE OS</span>
+            <span style={{ color: C.dim, fontSize: 11 }}>/ SYSTEM ARCHITECTURE</span>
+          </div>
+          <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
+            {[["Spine v1.0", C.spine], ["Supabase", "#3ECF8E"], ["CF Workers", "#F97316"], ["n8n", "#EA4B71"]].map(([l, c]) => (
+              <Chip key={l} color={c}>{l}</Chip>
+            ))}
+          </div>
+        </div>
+
+        {/* Axiom */}
+        <div style={{
+          padding: "8px 14px",
+          borderRadius: 6,
+          background: C.spine + "0A",
+          border: `1px solid ${C.spine}22`,
+          marginBottom: 12,
+          fontSize: 10,
+          color: C.muted,
+          lineHeight: 1.6,
+        }}>
+          <span style={{ color: C.spine, fontWeight: 700 }}>AXIOM: </span>
+          Load → Normalize → Store → Think → Act → Govern → Repeat/Adjust → Think …
+          <span style={{ color: C.dim }}>   |   Spine is the base. Everything flows through it. Shallow Spine = Shallow Intelligence.</span>
+        </div>
+
+        {/* Tabs */}
+        <div style={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+          {tabs.map(t => (
+            <button key={t.id} onClick={() => setTab(t.id)} style={{
+              padding: "5px 14px",
+              borderRadius: 4,
+              border: "none",
+              background: tab === t.id ? C.spine + "18" : "transparent",
+              color: tab === t.id ? C.spine : C.dim,
+              fontSize: 10,
+              fontFamily: "inherit",
+              fontWeight: tab === t.id ? 700 : 400,
+              cursor: "pointer",
+              letterSpacing: "0.05em",
+              borderBottom: tab === t.id ? `2px solid ${C.spine}` : "2px solid transparent",
+            }}>{t.label}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div style={{ padding: 20, maxWidth: 1280, margin: "0 auto" }}>
+
+        {tab === "loop" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            {/* Linear flow bar */}
+            <div style={{
+              padding: "16px 20px",
+              borderRadius: 8,
+              background: C.surface,
+              border: `1px solid ${C.border}`,
+            }}>
+              <div style={{ color: C.dim, fontSize: 9, fontFamily: "monospace", letterSpacing: "0.1em", marginBottom: 12 }}>
+                LINEAR FLOW — CLICK A STEP BELOW FOR DETAIL
+              </div>
+              <LinearFlow />
+            </div>
+
+            {/* Step grid */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 10 }}>
+              {STEPS.slice(0, 4).map(s => (
+                <StepCard key={s.id} step={s} active={activeStep === s.id} onClick={() => setActiveStep(activeStep === s.id ? null : s.id)} />
+              ))}
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10 }}>
+              {STEPS.slice(4).map(s => (
+                <StepCard key={s.id} step={s} active={activeStep === s.id} onClick={() => setActiveStep(activeStep === s.id ? null : s.id)} />
+              ))}
+            </div>
+
+            {/* Key properties */}
+            <div style={{
+              padding: "16px 20px",
+              borderRadius: 8,
+              background: C.surface,
+              border: `1px solid ${C.border}`,
+            }}>
+              <div style={{ color: C.dim, fontSize: 9, fontFamily: "monospace", letterSpacing: "0.1em", marginBottom: 12 }}>KEY PROPERTIES</div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 8 }}>
+                {[
+                  ["Fully evidence-driven", "All steps traceable via Evidence Store + audit log"],
+                  ["Memory + Docs influence Think", "Never mutate Spine directly — read-only to cognitive layer"],
+                  ["Human-in-the-loop", "Govern gate before every Act execution — no AI write without approval"],
+                  ["Self-healing intelligence", "Adjust captures rejections → updates proposal ranking + agent confidence"],
+                  ["Continuous loop", "Repeat/Adjust feeds back into Think — each cycle is more informed than the last"],
+                  ["Dual-context always", "vendor_org_id + client_org_id on every signal, recommendation, and intervention"],
+                ].map(([title, desc]) => (
+                  <div key={title} style={{
+                    padding: "10px 12px",
+                    borderRadius: 6,
+                    background: C.surfaceUp,
+                    border: `1px solid ${C.border}`,
+                    display: "flex", gap: 10,
+                  }}>
+                    <span style={{ color: C.spine, fontSize: 12, flexShrink: 0, marginTop: 1 }}>⚑</span>
+                    <div>
+                      <div style={{ color: C.muted, fontSize: 10, fontWeight: 700, marginBottom: 3 }}>{title}</div>
+                      <div style={{ color: C.dim, fontSize: 9, lineHeight: 1.5 }}>{desc}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {tab === "flows" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            <div style={{
+              padding: "12px 16px",
+              borderRadius: 7,
+              background: C.surfaceUp,
+              border: `1px solid ${C.border}`,
+              fontSize: 10,
+              color: C.muted,
+              lineHeight: 1.7,
+            }}>
+              <span style={{ color: C.text, fontWeight: 700 }}>Three flows. All enter the same 7-step loop. Only classification and pre-processing differ.</span>
+              <br />
+              Flow A and Flow B enter Load directly. Flow C is the only flow that passes through CF AI Triage before Load — because AI chat content is ambiguous by nature and needs classification before the normalizer can process it.
+            </div>
+            <FlowIngress />
+          </div>
+        )}
+
+        {tab === "spine" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            <SpineStore />
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <div style={{ padding: 16, borderRadius: 8, background: C.surface, border: `1px solid ${C.border}` }}>
+                <div style={{ color: C.muted, fontSize: 10, fontFamily: "monospace", letterSpacing: "0.08em", marginBottom: 10 }}>SPINE OBJECTS — 4 CORE</div>
+                {[
+                  { name: "Goals", rule: "VENDOR · CLIENT · PERSONAL typed. Hierarchical.", color: C.spine, icon: "◎" },
+                  { name: "Metrics", rule: "goal_refs[] NOT NULL — DB constraint enforced.", color: C.spineGlow, icon: "◈" },
+                  { name: "Outcomes", rule: "goal_refs[] required · stakeholder-typed.", color: C.spineDim, icon: "◇" },
+                  { name: "Interventions", rule: "HITL-gated · PENDING → APPROVED → EXECUTED.", color: "#6EE7B7", icon: "◆" },
+                ].map(o => (
+                  <div key={o.name} style={{ display: "flex", gap: 10, padding: "8px 0", borderBottom: `1px solid ${C.border}` }}>
+                    <span style={{ color: o.color, fontSize: 16, flexShrink: 0 }}>{o.icon}</span>
+                    <div>
+                      <div style={{ color: o.color, fontSize: 11, fontWeight: 700 }}>{o.name}</div>
+                      <div style={{ color: C.dim, fontSize: 9, marginTop: 2 }}>{o.rule}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ padding: 16, borderRadius: 8, background: C.surface, border: `1px solid ${C.border}` }}>
+                <div style={{ color: C.muted, fontSize: 10, fontFamily: "monospace", letterSpacing: "0.08em", marginBottom: 10 }}>INFRA STACK</div>
+                {[
+                  ["Primary DB", "Supabase — PostgreSQL + Auth + Realtime + Storage + pgvector", "#3ECF8E"],
+                  ["Compute", "Cloudflare Workers — one per pipeline stage", "#F97316"],
+                  ["Edge Cache", "Cloudflare KV + D1", "#F97316"],
+                  ["Object Store", "Cloudflare R2 — binary/file refs", "#F97316"],
+                  ["Queue", "Cloudflare Queues — PIPELINE_QUEUE dispatch", "#F97316"],
+                  ["Automation", "n8n — n8n.integratewise.online", "#EA4B71"],
+                  ["AI Gateway", "OpenRouter — unified model routing", "#A78BFA"],
+                  ["MCP", "n8n MCP server — wedge connector", C.flowC],
+                  ["Triage AI", "Cloudflare AI — Flow C only", C.cfai],
+                ].map(([k, v, c]) => (
+                  <div key={k} style={{ display: "flex", gap: 8, padding: "5px 0", borderBottom: `1px solid ${C.border}11`, alignItems: "flex-start" }}>
+                    <span style={{ color: c, fontSize: 9, fontFamily: "monospace", minWidth: 90, flexShrink: 0, fontWeight: 600 }}>{k}</span>
+                    <span style={{ color: C.dim, fontSize: 9, lineHeight: 1.5 }}>{v}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {tab === "layers" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            <LayerBoundaries />
+            <div style={{
+              padding: "16px 20px",
+              borderRadius: 8,
+              background: C.surface,
+              border: `1px solid ${C.border}`,
+            }}>
+              <div style={{ color: C.dim, fontSize: 9, fontFamily: "monospace", letterSpacing: "0.1em", marginBottom: 12 }}>STEP → LAYER MAPPING</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {[
+                  { step: "Load + Normalize", layer: "L3 — Universal Backend", color: C.l3, desc: "Cloudflare Workers handle ingress, triage, normalization, pipeline stages" },
+                  { step: "Store (Spine)", layer: "L3 → L1 boundary", color: C.spine, desc: "L3 writes truth. L1 reads it. L2 reasons over it. No layer writes Spine except through Govern." },
+                  { step: "Think + Act + Govern", layer: "L2 — Cognitive Layer", color: C.l2, desc: "14 components. Slides up from L1. HITL gate lives here. All agent execution here." },
+                  { step: "Workspace", layer: "L1 — Workspace UI", color: C.l1, desc: "15 modules. CTX-aware rendering. Reads Spine. Never writes. L2 slides up from bottom." },
+                  { step: "Onboarding", layer: "L0 — 4 stages", color: C.l0, desc: "Before L1 activates. SPINE_HYDRATION triggers fn_seed_domain_for_org → Goals + Metrics seeded." },
+                  { step: "Repeat / Adjust", layer: "L2 feedback → L3 re-ingest", color: C.repeat, desc: "decision_memory in L2. Act writes result to PIPELINE (L3) → Spine updates → Think picks up new signals." },
+                ].map(r => (
+                  <div key={r.step} style={{
+                    display: "grid", gridTemplateColumns: "150px 180px 1fr",
+                    gap: 12, padding: "8px 12px",
+                    borderRadius: 5, background: C.surfaceUp,
+                    border: `1px solid ${C.border}`,
+                    alignItems: "center",
+                  }}>
+                    <Chip color={r.color}>{r.step}</Chip>
+                    <span style={{ color: r.color, fontSize: 10, fontFamily: "monospace" }}>{r.layer}</span>
+                    <span style={{ color: C.dim, fontSize: 9, lineHeight: 1.5 }}>{r.desc}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {tab === "audit" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            <div style={{
+              padding: "10px 14px",
+              borderRadius: 6,
+              background: "#EF444408",
+              border: `1px solid #EF444433`,
+              fontSize: 10,
+              color: C.muted,
+              lineHeight: 1.7,
+            }}>
+              <span style={{ color: "#EF4444", fontWeight: 700 }}>AUDIT FINDINGS — </span>
+              5 broken links between frontend and backend. All 5 must be resolved before go-live. The Spine is ready. The pipeline Workers are ready. These are the wiring gaps.
+            </div>
+            <BrokenLinks />
+            <div style={{
+              padding: "14px 16px",
+              borderRadius: 8,
+              background: C.surface,
+              border: `1px solid ${C.spine}22`,
+            }}>
+              <div style={{ color: C.spine, fontSize: 10, fontFamily: "monospace", fontWeight: 700, marginBottom: 10 }}>FIX PRIORITY ORDER</div>
+              {[
+                ["1", "OAuth", "Route /api/v1/connectors/* → tenants service. Token exchange must work before anything else.", C.spine],
+                ["2", "Webhooks → Pipeline", "webhook-ingress must forward to PIPELINE_QUEUE, not just broadcast.", C.spineGlow],
+                ["3", "Onboarding → OAuth", "Connector selection must trigger connector.authorize() and OAuth redirect.", C.flowA],
+                ["4", "IntegrationsHub", "Replace mock data with real connector.list() / status() / disconnect() calls.", C.flowB],
+                ["5", "Manual Sync", "Implement sync endpoint. Remove 501.", C.flowC],
+              ].map(([n, title, desc, c]) => (
+                <div key={n} style={{
+                  display: "flex", gap: 12, padding: "8px 0",
+                  borderBottom: `1px solid ${C.border}`, alignItems: "flex-start",
+                }}>
+                  <span style={{ color: c, fontFamily: "monospace", fontWeight: 800, fontSize: 12, minWidth: 20 }}>{n}.</span>
+                  <div>
+                    <span style={{ color: c, fontSize: 10, fontWeight: 700 }}>{title} </span>
+                    <span style={{ color: C.dim, fontSize: 9 }}>{desc}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+5 tabs. Everything grounded to the Spine as base:
+
+Operational Loop — all 7 steps clickable with full detail. Linear flow bar at top. Key properties at bottom.
+
+Flow A · B · C — correct taxonomy: Structured / Unstructured / AI Chats. Flow C is the only one that hits CF AI Triage (with exact model assignments) before entering Load. Initial Loading vs Delta Load explained.
+
+Spine & Store — the 3-part store (Truth · Knowledge · Evidence), 4 core Spine objects with enforcement rules, full infra stack.
+
+L0 · L1 · L2 · L3 — layer boundaries with step-to-layer mapping table showing exactly where each operational step lives architecturally.
+
+Broken Links — all 5 audit findings from the codebase with fix priority order. These are the exact gaps between where the Spine says data should flow and where it's actually going right now.
+
+
+connectors ?
+
+Mar 11
+
+Deciphered request to expand architecture with connector layer details
+Deciphered request to expand architecture with connector layer details
+You want the Connectors tab added to the architecture — showing the full catalog, status matrix, connector service routing, and how each connector maps to Flow A/B/C and the pipeline.
+
+
+Created a file, read a file
+Created a file, read a file
+29 connectors. 3 views:
+
+Status Matrix — filterable by category and flow. Every connector row shows OAuth / Sync / Pipeline / Workspace status color-coded: green = working, cyan = via MCP/partial, amber = stub/unrouted, red = broken/not started. Priority P1/P2/P3 tagged.
+
+Full Catalog — card view per connector with source objects it pulls (Contacts, Deals, Invoices, Sprints etc.), file path, and all 4 status fields.
+
+Service Routing — the exact broken wiring from the audit. Gateway routing table annotated with what's actually happening vs what should happen. Two callout panels: webhook-ingress (receives events, never sends to PIPELINE_QUEUE) and tenants service (full OAuth implemented, not in gateway ROUTES). Fix sequence numbered 1–6 in execution order.
+
+The two root causes everything else flows from:
+
+Route /api/v1/connectors/* → tenants — fixes OAuth for 6 providers immediately
+webhook-ingress sends to PIPELINE_QUEUE — Flow A events enter the pipeline
+Fix those two and HubSpot, Salesforce, Stripe, GitHub go from "no real data" to live in the Spine.
+
+
+Iw connectors
+Code · JSX 
+
+
+
+
+
+
+
+
+Claude is AI and can make mistakes. Please double-check responses.
+
+
+
+
