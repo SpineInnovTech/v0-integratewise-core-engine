@@ -1,4 +1,5 @@
-- [Three-repo architecture](three-repo-arch.md) — integratewise-live (Cloudflare platform), iwa-frontend (customer product), iwa-customer-zero (internal ops = this repo)
+- [Three-repo architecture](three-repo-arch.md) — DOCTRINE only: integratewise-live (platform), iwa-frontend (customer product), iwa-customer-zero (this). PHYSICALLY this workspace is ONE pnpm monorepo (relay+frontend+libs); platform is remote (mcp.integratewise.ai), NOT in-repo — see spine-write-blocker
+- [Spine write blocker (D1)](spine-write-blocker.md) — memory.propose fails payload-INDEPENDENTLY with D1 "Wrong number of parameter bindings"; reads (proposal.list/tools/list) work on same token; platform SQL bug, NOT fixable here; stop re-hammering
 - [Supabase stub is tech debt](supabase-stub.md) — no Supabase exists; most views still have migration artifacts; stub must chain fully; replace with generated api-client-react hooks (see data-stack-relay)
 - [Local Postgres relay doctrine](data-stack-relay.md) — dev backend is an owned Express+Drizzle relay over local Postgres, contract-first via OpenAPI codegen; swappable to integratewise-live; not Supabase
 - [Apollo as the real lead source](apollo-leads.md) — Leads come from the user's saved Apollo contacts, imported by dogfooding POST /api/leads; score = data-completeness heuristic; no synthetic seed
