@@ -1,0 +1,155 @@
+
+feat: implement Universal Connection Pool Architecture (tenant-centric)
+Ready
+27s
+Preview
+7842f0b
+v0/integratewi-c66664b6
+59m ago
+github/v0agent
+feat: implement Spine Connection Pool (shared connector pattern)
+Ready
+28s
+Preview
+00dc2fb
+v0/integratewi-c66664b6
+1h ago
+github/v0agent
+docs: add Continuity Bridge complete implementation summary
+Ready
+24s
+Preview
+10c1268
+v0/integratewi-c66664b6
+1h ago
+github/v0agent
+feat: add new architecture document for One Connector system
+Ready
+38s
+Preview
+1117506
+v0/integratewi-c66664b6
+1h ago
+github/v0agent
+feat: add new project status and deployment overview document
+Ready
+25s
+Preview
+92f49ac
+v0/integratewi-c66664b6
+1h ago
+github/v0agent
+feat: implement complete provider-agnostic architecture
+Ready
+34s
+Production
+ab4532a
+main
+1h ago
+github/NirmalPrinceJ
+test: add comprehensive provider configuration tests and validation
+Ready
+26s
+Preview
+10045ea
+v0/integratewi-addf5148
+1h ago
+github/v0agent
+feat: implement provider-agnostic auth and database architecture
+Ready
+26s
+Preview
+19521e4
+v0/integratewi-addf5148
+1h ago
+github/v0agent
+feat: migrate to Clerk auth, remove Supabase and other integrations
+Ready
+32s
+Preview
+615b5ac
+v0/integratewi-addf5148
+2h ago
+github/v0agent
+doc: complete architecture visualization mapping package (3,245 lines total)
+Ready
+27s
+Preview
+b5a35f3
+v0/integratewi-addf5148
+2h ago
+github/v0agent
+doc: add MCP + ADK + Spine Cache universal communication architecture
+Ready
+24s
+Preview
+1f66ce0
+v0/integratewi-addf5148
+3h ago
+github/v0agent
+doc: add architecture documentation index
+Ready
+28s
+Preview
+4b1488a
+v0/integratewi-addf5148
+3h ago
+github/v0agent
+doc: add Vercel deployment status and troubleshooting guide
+Ready
+30s
+Preview
+355ebde
+v0/integratewi-addf5148
+3h ago
+github/v0agent
+doc: add comprehensive deployment summary
+Ready
+32s
+Preview
+961ca21
+v0/integratewi-addf5148
+3h ago
+github/v0agent
+feat: add LayerSwitcher component and integrate into Sidebar
+Error
+Preview
+ee5048f
+v0/integratewi-addf5148
+4h ago
+github/v0agent
+doc: add Customer Zero launch summary
+Error
+Preview
+cd22b87
+v0/integratewi-addf5148
+4h ago
+github/v0agent
+fix: restore deployed integrationwise-os app and fix build errors
+Error
+Preview
+7c93fc3
+v0/integratewi-addf5148
+5h ago
+github/v0agent
+refactor: streamline CSAccountsPage and remove mock data from ContactsPage
+Error
+Preview
+a038622
+v0/integratewi-addf5148
+5h ago
+github/v0agent
+docs: add complete deployment analysis (Dec 14 - Jan 31, 2026)
+Error
+Preview
+db1b33d
+v0/integratewi-addf5148
+5h ago
+github/v0agent
+restore: recovered deployed integrationwise-os app to apps/web
+Error
+Preview
+e838312
+v0/integratewi-addf5148
+5h ago
+github/v0agent
