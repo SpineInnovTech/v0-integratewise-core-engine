@@ -19,6 +19,7 @@ import AuthSignUpPage from "@/pages/auth/sign-up/index";
 import AuthSignUpSuccessPage from "@/pages/auth/sign-up-success/index";
 import AuthErrorPage from "@/pages/auth/error/index";
 import NotFound from "@/pages/not-found";
+import LandingPage from "@/pages/landing/index";
 
 const queryClient = new QueryClient();
 
@@ -79,22 +80,28 @@ function WorkspaceRoutes() {
 function Router() {
   return (
     <Switch>
+      {/* Marketing landing page — bare, no shell */}
+      <Route path="/" component={LandingPage} />
+
       {/* Auth surfaces — bare, no shell */}
       <Route path="/auth/login" component={AuthLoginPage} />
       <Route path="/auth/sign-up" component={AuthSignUpPage} />
       <Route path="/auth/sign-up-success" component={AuthSignUpSuccessPage} />
       <Route path="/auth/error" component={AuthErrorPage} />
 
-      {/* Everything else lives inside the persistent shell. This catch-all
-          Route stays mounted across module navigation, so the shell (sidebar
-          + topbar) never unmounts — only the inner content swaps. */}
-      <Route>
-        <SpineProvider>
-          <WorkspaceShell>
-            <WorkspaceRoutes />
-          </WorkspaceShell>
-        </SpineProvider>
+      {/* Workspace app lives under /app — shell stays mounted across navigation */}
+      <Route path="/app/:rest*">
+        <WouterRouter base={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/app`}>
+          <SpineProvider>
+            <WorkspaceShell>
+              <WorkspaceRoutes />
+            </WorkspaceShell>
+          </SpineProvider>
+        </WouterRouter>
       </Route>
+
+      {/* Fallback */}
+      <Route component={NotFound} />
     </Switch>
   );
 }
