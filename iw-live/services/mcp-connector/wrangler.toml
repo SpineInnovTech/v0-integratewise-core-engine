@@ -1,0 +1,189 @@
+name = "integratewise-mcp-connector"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+routes = [{ pattern = "mcp.integratewise.ai", custom_domain = true }]
+
+# Local dev: optional vars (secrets from .dev.vars or Secrets Store)
+[vars]
+ENVIRONMENT = "development"
+# Cloudflare Access OAuth for MCP
+CF_ACCESS_TEAM_DOMAIN = "integratewise.cloudflareaccess.com"
+# OAuth issuer is the shared auth server; resource is the MCP endpoint.
+OAUTH_ISSUER = "https://auth.integratewise.ai"
+OAUTH_RESOURCE = "https://mcp.integratewise.ai"
+MCP_OAUTH_REQUIRED = "true"
+
+# Secrets from Cloudflare Secrets Store — replace 1fd83fc5881e4cd296ae3c2fbe80693c (see docs/SECRETS_STORE_SETUP.md)
+
+
+
+
+
+
+
+
+# Triage bot write access — add TRIAGE_BOT_API_KEY via: wrangler secret put TRIAGE_BOT_API_KEY
+
+# MCP sessions -> knowledge queue
+
+
+
+
+[[secrets_store_secrets]]
+binding = "SUPABASE_URL"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SUPABASE_URL"
+
+[[secrets_store_secrets]]
+binding = "SUPABASE_SERVICE_ROLE_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SUPABASE_SERVICE_ROLE_KEY"
+
+[[secrets_store_secrets]]
+binding = "OPENROUTER_API_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "OPENROUTER_API_KEY"
+
+[[queues.producers]]
+queue = "knowledge-ingest"
+binding = "KNOWLEDGE_QUEUE"
+
+# MCP actions -> pipeline queue
+[[queues.producers]]
+queue = "pipeline-process"
+binding = "PIPELINE_QUEUE"
+
+# KV for MCP idempotency
+[[kv_namespaces]]
+binding = "MCP_IDEMPOTENCY"
+id = "16510bf2287a45d8b24163ddafd3d302"
+
+# Service bindings (required for KB operations - artifiact upload via Knowledge service)
+[[services]]
+binding = "KNOWLEDGE"
+service = "integratewise-knowledge"
+
+[[services]]
+binding = "CONTINUITY"
+service = "continuity"
+
+[[services]]
+binding = "PIPELINE"
+service = "integratewise-pipeline"
+
+# D1 for Flow C sessions / entity linking
+# NOTE: MCP-Connector is embedded in the Connector worker (v3.6). The Connector passes
+# env.EDGE_DB as env.DB at runtime. This standalone D1 binding is for dev/testing only.
+[[d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+[env.test]
+name = "mcp-connector-test"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+[[env.test.kv_namespaces]]
+binding = "MCP_IDEMPOTENCY"
+id = "16510bf2287a45d8b24163ddafd3d302"
+
+[[env.test.queues.producers]]
+queue = "knowledge-ingest"
+binding = "KNOWLEDGE_QUEUE"
+
+[[env.test.queues.producers]]
+queue = "pipeline-process"
+binding = "PIPELINE_QUEUE"
+
+[[env.test.secrets_store_secrets]]
+
+[[env.test.secrets_store_secrets]]
+
+[[env.test.d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+[[env.test.services]]
+binding = "KNOWLEDGE"
+service = "knowledge-test"
+
+[[env.test.services]]
+binding = "CONTINUITY"
+service = "continuity-test"
+
+[[env.test.services]]
+binding = "PIPELINE"
+service = "pipeline-test"
+
+[env.test.vars]
+ENVIRONMENT = "test"
+CF_ACCESS_TEAM_DOMAIN = "integratewise.cloudflareaccess.com"
+
+[[env.test.secrets_store_secrets]]
+
+[[env.test.secrets_store_secrets]]
+
+[env.prod]
+name = "mcp-connector-prod"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+[[env.prod.kv_namespaces]]
+binding = "MCP_IDEMPOTENCY"
+id = "16510bf2287a45d8b24163ddafd3d302"
+
+[[env.prod.queues.producers]]
+queue = "knowledge-ingest"
+binding = "KNOWLEDGE_QUEUE"
+
+[[env.prod.queues.producers]]
+queue = "pipeline-process"
+binding = "PIPELINE_QUEUE"
+
+[[env.prod.secrets_store_secrets]]
+
+[[env.prod.secrets_store_secrets]]
+
+[[env.prod.d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+[[env.prod.services]]
+binding = "KNOWLEDGE"
+service = "knowledge-prod"
+
+[[env.prod.services]]
+binding = "CONTINUITY"
+service = "continuity-prod"
+
+[[env.prod.services]]
+binding = "PIPELINE"
+service = "pipeline-prod"
+
+[env.prod.vars]
+ENVIRONMENT = "prod"
+CF_ACCESS_TEAM_DOMAIN = "integratewise.cloudflareaccess.com"
+OAUTH_ISSUER = "https://auth.integratewise.ai"
+OAUTH_RESOURCE = "https://mcp.integratewise.ai"
+MCP_OAUTH_REQUIRED = "true"
+
+[[env.prod.secrets_store_secrets]]
+
+[[env.prod.secrets_store_secrets]]
+
+[dev]
+inspector_port = 9252
+port = 8792
+
+
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+[observability.logs]
+enabled = true
+invocation_logs = true
+head_sampling_rate = 1

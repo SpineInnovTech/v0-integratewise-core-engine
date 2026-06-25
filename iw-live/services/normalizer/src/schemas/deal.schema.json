@@ -1,0 +1,127 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://integratewise.io/schemas/deal.json",
+  "title": "Deal/Opportunity Schema",
+  "description": "Canonical schema for deal/opportunity entities",
+  "type": "object",
+  "required": ["tenant_id", "name", "stage"],
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Tenant/workspace identifier"
+    },
+    "external_id": {
+      "type": "string",
+      "description": "External system identifier"
+    },
+    "source_system": {
+      "type": "string",
+      "description": "Source system (e.g., salesforce, hubspot, pipedrive)"
+    },
+    "organization_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Associated organization/account ID"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255,
+      "description": "Deal name"
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "discovery",
+        "qualification",
+        "proposal",
+        "negotiation",
+        "closed_won",
+        "closed_lost"
+      ],
+      "description": "Deal stage"
+    },
+    "amount": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Deal amount/value"
+    },
+    "currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "default": "USD",
+      "description": "ISO 4217 currency code"
+    },
+    "probability": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Win probability percentage"
+    },
+    "expected_close_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Expected close date"
+    },
+    "actual_close_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Actual close date (when closed)"
+    },
+    "owner_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Deal owner identifier"
+    },
+    "deal_type": {
+      "type": "string",
+      "enum": ["new_business", "expansion", "renewal", "upsell", "cross_sell"],
+      "description": "Type of deal"
+    },
+    "pipeline_id": {
+      "type": "string",
+      "description": "Pipeline identifier"
+    },
+    "forecast_category": {
+      "type": "string",
+      "enum": ["omitted", "pipeline", "best_case", "commit", "closed"],
+      "description": "Forecast category"
+    },
+    "primary_contact_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Primary contact person ID"
+    },
+    "competitors": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Competitor names"
+    },
+    "loss_reason": {
+      "type": "string",
+      "maxLength": 500,
+      "description": "Reason for loss (if closed_lost)"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Deal notes"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Tags for categorization"
+    },
+    "custom_fields": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Custom fields for extensibility"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Additional metadata"
+    }
+  },
+  "additionalProperties": false
+}

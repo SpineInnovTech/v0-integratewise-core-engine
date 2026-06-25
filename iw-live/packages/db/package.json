@@ -1,0 +1,16 @@
+{
+  "name": "@integratewise/db",
+  "version": "1.0.0",
+  "description": "Shared Supabase database connector for all IntegrateWise services",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.47.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

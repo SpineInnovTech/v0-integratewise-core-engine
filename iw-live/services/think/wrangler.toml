@@ -1,0 +1,65 @@
+# ⚠️  DEPRECATED — Standalone Think worker.
+# v3.6 consolidated this into integratewise-intelligence (see services/intelligence/).
+# If you must deploy this standalone worker for local dev, these bindings now
+# point to the consolidated workers so they don't create split-brain.
+name = "integratewise-think"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Observability (see docs/WORKERS_OBSERVABILITY_OTLP.md)
+[observability]
+enabled = true
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+[observability.traces]
+enabled = true
+head_sampling_rate = 0.1
+
+# Secrets from Cloudflare Secrets Store — replace 1fd83fc5881e4cd296ae3c2fbe80693c (see docs/SECRETS_STORE_SETUP.md)
+[[secrets_store_secrets]]
+binding = "SUPABASE_URL"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SUPABASE_URL"
+
+[[secrets_store_secrets]]
+binding = "SUPABASE_SERVICE_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SUPABASE_SERVICE_KEY"
+
+[[secrets_store_secrets]]
+binding = "OPENROUTER_API_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "OPENROUTER_API_KEY"
+
+# REMOVED: queue consumer for "intelligence-events" — consolidated worker
+# (integratewise-intelligence) is the sole consumer. Deploying this standalone
+# worker with the consumer caused competing consumers (split-brain).
+# See: services/intelligence/wrangler.toml
+
+# Cross-bindings to intelligence peers (v3.6: all point to consolidated worker)
+[[services]]
+binding = "ACT"
+service = "integratewise-intelligence"
+
+[[services]]
+binding = "GOVERN"
+service = "integratewise-intelligence"
+
+[[services]]
+binding = "AGENTS"
+service = "integratewise-intelligence"
+
+[env.staging]
+name = "integratewise-think-staging"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+[env.production]
+name = "integratewise-think"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+[dev]
+inspector_port = 9258
+port = 8798

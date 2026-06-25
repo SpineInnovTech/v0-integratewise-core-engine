@@ -1,0 +1,20 @@
+# CODEOWNERS — IntegrateWise Live
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+#
+# All changes require review from the founder.
+# AI Guardian (OpenCode/OpenClaw) reviews are enforced via CI workflow,
+# not CODEOWNERS (AI agents cannot be GitHub users).
+# See .github/REPO_GUARDIAN.md for the AI guardian policy.
+
+# Default: Founder reviews everything
+* @NirmalPrinceJ
+
+# Critical paths: Founder is mandatory reviewer (L3 triage)
+/services/gateway/        @NirmalPrinceJ
+/services/tenants/        @NirmalPrinceJ
+/packages/lib/src/crypto* @NirmalPrinceJ
+/supabase/migrations/     @NirmalPrinceJ
+/.github/workflows/       @NirmalPrinceJ
+/AGENTS.md                @NirmalPrinceJ
+/.github/CODEOWNERS       @NirmalPrinceJ
+/.github/REPO_GUARDIAN.md @NirmalPrinceJ

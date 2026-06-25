@@ -1,0 +1,109 @@
+name: Deploy Frontend — Preview Only (Cloudflare Pages)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# RULE: This workflow ALWAYS deploys to a preview URL only.
+# Production promotion (app.integratewise.ai) is done manually by Nirmal
+# via the Cloudflare dashboard. Never deploy to branch=main or branch=production
+# from automation.
+# ─────────────────────────────────────────────────────────────────────────────
+
+on:
+  push:
+    branches: [main, staging, "feat/**", "fix/**"]
+    paths:
+      - "apps/web/**"
+      - "packages/**"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/deploy-frontend.yml"
+  workflow_dispatch:
+    inputs:
+      branch_label:
+        description: "Preview branch label (e.g. feat-my-feature). Never use main or production."
+        required: false
+        default: "preview"
+        type: string
+
+concurrency:
+  group: deploy-frontend-preview-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: "22"
+
+jobs:
+  build-and-deploy-preview:
+    name: Build & Deploy to Preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build frontend
+        run: pnpm --filter @integratewise/web build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          VITE_STREAM_URL: ${{ secrets.VITE_STREAM_URL }}
+          VITE_POSTHOG_KEY: ${{ secrets.VITE_POSTHOG_KEY }}
+          VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+          VITE_LANDING_URL: ${{ secrets.VITE_LANDING_URL }}
+
+      # Derive a safe preview branch label from the git ref.
+      # Strips refs/heads/, replaces / with -, truncates to 28 chars.
+      # NEVER resolves to "main" or "production" — those are blocked.
+      - name: Compute preview branch label
+        id: label
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            RAW="${{ inputs.branch_label }}"
+          else
+            RAW="${GITHUB_REF#refs/heads/}"
+          fi
+          # Sanitise: lowercase, replace non-alphanumeric with dash, truncate
+          SAFE=$(echo "$RAW" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | cut -c1-28)
+          # Hard block: never allow main or production as branch label
+          if [ "$SAFE" = "main" ] || [ "$SAFE" = "production" ]; then
+            SAFE="preview-$(echo ${{ github.sha }} | cut -c1-7)"
+          fi
+          echo "branch=$SAFE" >> $GITHUB_OUTPUT
+          echo "Preview branch label: $SAFE"
+
+      - name: Deploy to Cloudflare Pages (preview only)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pnpm dlx wrangler@4 pages deploy apps/web/dist \
+            --project-name=integratewise \
+            --branch="${{ steps.label.outputs.branch }}" \
+            --commit-dirty=true
+
+      - name: Deployment Summary
+        run: |
+          echo "## ✅ Preview Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Preview label | \`${{ steps.label.outputs.branch }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Triggered by | ${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "> ⚠️ **Production promotion is manual.** Nirmal promotes to \`app.integratewise.ai\` via the Cloudflare dashboard." >> $GITHUB_STEP_SUMMARY

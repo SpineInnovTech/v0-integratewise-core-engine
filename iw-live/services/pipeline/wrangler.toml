@@ -1,0 +1,348 @@
+# Consolidated Pipeline Worker (v3.6 Architecture)
+# Merges: normalizer + spine-v2
+# SECURITY: This is the ONLY service with Spine write credentials
+name = "integratewise-pipeline"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat_v2"]
+find_additional_modules = true
+
+# Custom domain for dev
+routes = [{ pattern = "pipeline.dev.integratewise.ai", custom_domain = true }]
+
+# Resolve cross-service imports (normalizer uses hono/zod from outside pipeline dir)
+[alias]
+hono = "./node_modules/hono"
+zod = "./node_modules/zod"
+
+# Observability (see docs/WORKERS_OBSERVABILITY_OTLP.md)
+[observability]
+enabled = true
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+[observability.traces]
+enabled = true
+head_sampling_rate = 0.1
+
+# ═══════════════════════════════════════════════
+# DEFAULT = DEV
+# Deploy: wrangler deploy (no flags needed)
+# ═══════════════════════════════════════════════
+
+[vars]
+ENVIRONMENT = "dev"
+DB_NAME = "spine-dev"
+LOG_LEVEL = "debug"
+ENABLE_SIGNALS = "true"
+
+# --- Queue Consumers (dev) — Option A: the default worker is the consumer plane ---
+# (Consolidated off the broken `-prod` chain. New code consumes the live queues.)
+[[queues.consumers]]
+queue = "pipeline-process"
+max_batch_size = 10
+max_batch_timeout = 30
+
+[[queues.consumers]]
+queue = "accelerator-trigger"
+max_batch_size = 10
+max_batch_timeout = 30
+
+[[queues.consumers]]
+queue = "memory-promote"
+max_batch_size = 10
+max_batch_timeout = 30
+
+# --- Queue Producers (dev) ---
+[[queues.producers]]
+queue = "pipeline-process"
+binding = "PIPELINE_QUEUE"
+
+[[queues.producers]]
+queue = "knowledge-ingest"
+binding = "KNOWLEDGE_QUEUE"
+
+[[queues.producers]]
+queue = "accelerator-trigger"
+binding = "ACCELERATOR_QUEUE"
+
+[[queues.producers]]
+queue = "intelligence-events"
+binding = "INTELLIGENCE_QUEUE"
+
+[[queues.producers]]
+queue = "ops-dlq"
+binding = "DLQ_QUEUE"
+
+[[queues.producers]]
+queue = "signals"
+binding = "SIGNAL_QUEUE"
+
+[[queues.producers]]
+queue = "memory-promote"
+binding = "MEMORY_PROMOTE"
+
+# --- Service Bindings (dev) ---
+[[services]]
+binding = "KNOWLEDGE"
+service = "integratewise-knowledge"
+
+[[services]]
+binding = "MCP"
+service = "integratewise-mcp-connector"
+
+[[services]]
+binding = "INTELLIGENCE"
+service = "integratewise-intelligence"
+
+# --- D1 edge cache (dev) ---
+[[d1_databases]]
+binding = "CACHE_DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+migrations_dir = "migrations"
+
+# --- KV hot entity cache (dev) ---
+[[kv_namespaces]]
+binding = "CACHE"
+id = "18aa20dfeb304f0ba592d9070964dd31"
+
+[[kv_namespaces]]
+binding = "KV_CACHE"
+id = "18aa20dfeb304f0ba592d9070964dd31"
+
+[[kv_namespaces]]
+binding = "SIGNAL_CACHE"
+id = "747166a3165444d1a9c9c8c54abbd93a"
+
+[[kv_namespaces]]
+binding = "METRICS"
+id = "e80ee409f5be4bf8a9556c0917c113e2"
+
+[[kv_namespaces]]
+binding = "SCHEMA_CACHE"
+id = "18aa20dfeb304f0ba592d9070964dd31"
+
+# AI Search Namespace Binding — REMOVED (unsupported in wrangler 4.76)
+# Configure via dashboard if needed. Using Workers AI directly for embeddings.
+# [[ai_search_namespaces]]
+# binding = "AI_SEARCH"
+# namespace = "default"
+
+# Workers AI binding
+[ai]
+binding = "AI"
+
+# Custom domain for dev
+
+# Dev environment
+[dev]
+inspector_port = 9254
+port = 8794
+
+# ═══════════════════════════════════════════════
+# TEST ENVIRONMENT
+# Deploy: wrangler deploy --env=test
+# ═══════════════════════════════════════════════
+
+[env.test]
+name = "pipeline-test"
+routes = [{ pattern = "pipeline.test.integratewise.ai", custom_domain = true }]
+
+[env.test.vars]
+ENVIRONMENT = "test"
+DB_NAME = "spine-test"
+LOG_LEVEL = "info"
+ENABLE_SIGNALS = "true"
+
+[[env.test.queues.consumers]]
+queue = "pipeline-process"
+max_batch_size = 10
+max_batch_timeout = 30
+
+[[env.test.queues.consumers]]
+queue = "accelerator-trigger"
+max_batch_size = 10
+max_batch_timeout = 30
+
+[[env.test.queues.consumers]]
+queue = "memory-promote"
+max_batch_size = 10
+max_batch_timeout = 30
+
+[[env.test.queues.producers]]
+queue = "pipeline-process"
+binding = "PIPELINE_QUEUE"
+
+[[env.test.queues.producers]]
+queue = "knowledge-ingest"
+binding = "KNOWLEDGE_QUEUE"
+
+[[env.test.queues.producers]]
+queue = "accelerator-trigger"
+binding = "ACCELERATOR_QUEUE"
+
+[[env.test.queues.producers]]
+queue = "intelligence-events"
+binding = "INTELLIGENCE_QUEUE"
+
+[[env.test.queues.producers]]
+queue = "ops-dlq"
+binding = "DLQ_QUEUE"
+
+[[env.test.queues.producers]]
+queue = "signals"
+binding = "SIGNAL_QUEUE"
+
+[[env.test.queues.producers]]
+queue = "memory-promote"
+binding = "MEMORY_PROMOTE"
+
+[[env.test.services]]
+binding = "SPINE"
+service = "pipeline-test"
+
+[[env.test.services]]
+binding = "BFF"
+service = "workflow-test"
+
+[[env.test.services]]
+binding = "KNOWLEDGE"
+service = "knowledge-test"
+
+[[env.test.services]]
+binding = "MCP"
+service = "mcp-connector-test"
+
+[[env.test.services]]
+binding = "INTELLIGENCE"
+service = "intelligence-test"
+
+[[env.test.d1_databases]]
+binding = "CACHE_DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+[[env.test.kv_namespaces]]
+binding = "CACHE"
+id = "18aa20dfeb304f0ba592d9070964dd31"
+
+[[env.test.kv_namespaces]]
+binding = "SIGNAL_CACHE"
+id = "747166a3165444d1a9c9c8c54abbd93a"
+
+[[env.test.kv_namespaces]]
+binding = "METRICS"
+id = "e80ee409f5be4bf8a9556c0917c113e2"
+
+[[env.test.kv_namespaces]]
+binding = "SCHEMA_CACHE"
+id = "18aa20dfeb304f0ba592d9070964dd31"
+
+# [[env.test.ai_search_namespaces]]
+# binding = "AI_SEARCH"
+# namespace = "default"
+
+# ═══════════════════════════════════════════════
+# PROD ENVIRONMENT
+# Deploy: wrangler deploy --env=prod
+# ═══════════════════════════════════════════════
+
+[env.prod]
+name = "pipeline-prod"
+routes = [{ pattern = "pipeline.integratewise.ai", custom_domain = true }]
+
+[env.prod.vars]
+ENVIRONMENT = "prod"
+DB_NAME = "spine-prod"
+LOG_LEVEL = "warn"
+ENABLE_SIGNALS = "true"
+
+[[env.prod.queues.consumers]]
+queue = "pipeline-process"
+max_batch_size = 10
+max_batch_timeout = 30
+
+[[env.prod.queues.consumers]]
+queue = "accelerator-trigger"
+max_batch_size = 10
+max_batch_timeout = 30
+
+[[env.prod.queues.consumers]]
+queue = "memory-promote"
+max_batch_size = 10
+max_batch_timeout = 30
+
+[[env.prod.queues.producers]]
+queue = "pipeline-process"
+binding = "PIPELINE_QUEUE"
+
+[[env.prod.queues.producers]]
+queue = "knowledge-ingest"
+binding = "KNOWLEDGE_QUEUE"
+
+[[env.prod.queues.producers]]
+queue = "accelerator-trigger"
+binding = "ACCELERATOR_QUEUE"
+
+[[env.prod.queues.producers]]
+queue = "intelligence-events"
+binding = "INTELLIGENCE_QUEUE"
+
+[[env.prod.queues.producers]]
+queue = "ops-dlq"
+binding = "DLQ_QUEUE"
+
+[[env.prod.queues.producers]]
+queue = "signals"
+binding = "SIGNAL_QUEUE"
+
+[[env.prod.queues.producers]]
+queue = "memory-promote"
+binding = "MEMORY_PROMOTE"
+
+[[env.prod.services]]
+binding = "SPINE"
+service = "pipeline-prod"
+
+[[env.prod.services]]
+binding = "BFF"
+service = "workflow-prod"
+
+[[env.prod.services]]
+binding = "KNOWLEDGE"
+service = "knowledge-prod"
+
+[[env.prod.services]]
+binding = "MCP"
+service = "mcp-connector-prod"
+
+[[env.prod.services]]
+binding = "INTELLIGENCE"
+service = "intelligence-prod"
+
+[[env.prod.d1_databases]]
+binding = "CACHE_DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+[[env.prod.kv_namespaces]]
+binding = "CACHE"
+id = "18aa20dfeb304f0ba592d9070964dd31"
+
+[[env.prod.kv_namespaces]]
+binding = "SIGNAL_CACHE"
+id = "747166a3165444d1a9c9c8c54abbd93a"
+
+[[env.prod.kv_namespaces]]
+binding = "METRICS"
+id = "e80ee409f5be4bf8a9556c0917c113e2"
+
+[[env.prod.kv_namespaces]]
+binding = "SCHEMA_CACHE"
+id = "18aa20dfeb304f0ba592d9070964dd31"
+
+# [[env.prod.ai_search_namespaces]]
+# binding = "AI_SEARCH"
+# namespace = "default"

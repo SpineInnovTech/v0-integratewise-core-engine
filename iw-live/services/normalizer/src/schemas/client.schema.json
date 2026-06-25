@@ -1,0 +1,152 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://integratewise.io/schemas/client.json",
+  "title": "Client/Account Schema",
+  "description": "Canonical schema for client/account entities",
+  "type": "object",
+  "required": ["tenant_id", "name"],
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Tenant/workspace identifier"
+    },
+    "external_id": {
+      "type": "string",
+      "description": "External system identifier"
+    },
+    "source_system": {
+      "type": "string",
+      "description": "Source system (e.g., salesforce, hubspot)"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255,
+      "description": "Organization/client name"
+    },
+    "domain": {
+      "type": "string",
+      "format": "hostname",
+      "description": "Primary domain"
+    },
+    "legal_name": {
+      "type": "string",
+      "maxLength": 255,
+      "description": "Legal entity name"
+    },
+    "industry": {
+      "type": "string",
+      "maxLength": 100,
+      "description": "Industry classification"
+    },
+    "segment": {
+      "type": "string",
+      "enum": ["enterprise", "mid_market", "smb", "startup"],
+      "description": "Customer segment"
+    },
+    "region": {
+      "type": "string",
+      "maxLength": 50,
+      "description": "Geographic region"
+    },
+    "arr": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Annual Recurring Revenue"
+    },
+    "mrr": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Monthly Recurring Revenue"
+    },
+    "contract_value": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Total contract value"
+    },
+    "currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "default": "USD",
+      "description": "ISO 4217 currency code"
+    },
+    "employee_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of employees"
+    },
+    "license_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of licenses"
+    },
+    "active_users": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of active users"
+    },
+    "health_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Account health score (0-100)"
+    },
+    "health_status": {
+      "type": "string",
+      "enum": ["champion", "healthy", "at_risk", "critical"],
+      "description": "Health status classification"
+    },
+    "lifecycle_stage": {
+      "type": "string",
+      "enum": ["prospect", "onboarding", "active", "at_risk", "churned"],
+      "description": "Customer lifecycle stage"
+    },
+    "customer_since": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date when became a customer"
+    },
+    "renewal_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Next renewal date"
+    },
+    "churn_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date of churn (if applicable)"
+    },
+    "primary_csm_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Primary CSM identifier"
+    },
+    "primary_tam_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Primary TAM identifier"
+    },
+    "sales_owner_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Sales owner identifier"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Tags for categorization"
+    },
+    "custom_fields": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Custom fields for extensibility"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Additional metadata"
+    }
+  },
+  "additionalProperties": false
+}

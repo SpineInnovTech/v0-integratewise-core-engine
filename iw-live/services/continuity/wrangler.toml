@@ -1,0 +1,99 @@
+name = "continuity"
+main = "src/index.ts"
+compatibility_date = "2024-12-30"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+DEFAULT_TTL_DAYS = "7"
+MAX_EVENTS_PER_SESSION = "1000"
+CHECKPOINT_INTERVAL = "50"
+
+# Secrets (set via wrangler secret put):
+# TRIAGE_BOT_API_KEY = "..."
+# NOTE: SUPABASE_* secrets removed — service uses env.DB (D1) exclusively (DECISION 22)
+
+# Service bindings
+[[services]]
+binding = "KNOWLEDGE"
+service = "integratewise-knowledge"
+
+# NOTE: MCP_CONNECTOR binding removed — mcp-connector was merged into connector service
+
+[[services]]
+binding = "PIPELINE"
+service = "integratewise-pipeline"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+# Queue for async triage promotion
+[[queues.producers]]
+binding = "TASKS_QUEUE"
+queue = "continuity-triage"
+
+# Queue consumer for continuity-triage
+# [[queues.consumers]]
+# queue = "continuity-triage"
+# max_batch_size = 10
+# max_batch_timeout = 30
+
+# Cron triggers for L0.5 Operating Layer
+# [triggers]
+# crons = [
+#   "0 7 * * *",      # Morning brief at 7am (MorningBriefWorkflow)
+#   "0 0 * * *",      # Daily reindex + backup at midnight
+#   "0 */6 * * *"     # TTL cleanup every 6 hours
+# ]
+
+# ═══════════════════════════════════════════════
+# TEST ENVIRONMENT
+# Deploy: wrangler deploy --env=test
+# ═══════════════════════════════════════════════
+[env.test]
+name = "continuity-test"
+
+[[env.test.services]]
+binding = "KNOWLEDGE"
+service = "knowledge-test"
+
+# NOTE: MCP_CONNECTOR binding removed — mcp-connector was merged into connector service
+
+[[env.test.services]]
+binding = "PIPELINE"
+service = "pipeline-test"
+
+[[env.test.d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+# ═══════════════════════════════════════════════
+# PROD ENVIRONMENT
+# Deploy: wrangler deploy --env=prod
+# ═══════════════════════════════════════════════
+[env.prod]
+name = "continuity-prod"
+
+[[env.prod.services]]
+binding = "KNOWLEDGE"
+service = "knowledge-prod"
+
+# [[env.prod.services]]
+# binding = "MCP_CONNECTOR"
+# service = "mcp-connector-prod"
+
+[[env.prod.services]]
+binding = "PIPELINE"
+service = "pipeline-prod"
+
+[[env.prod.d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+
+[dev]
+port = 8806
+inspector_port = 9266

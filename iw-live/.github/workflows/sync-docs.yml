@@ -1,0 +1,62 @@
+name: Sync Internal Docs to VitePress Site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - "scripts/sync-docs.sh"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Force full re-sync (ignores content hashing)"
+        required: false
+        default: "false"
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout live repo
+        uses: actions/checkout@v4
+
+      - name: Checkout docs repo
+        uses: actions/checkout@v4
+        with:
+          repository: NirmalPrinceJ/integratewise-docs
+          token: ${{ secrets.DOCS_REPO_TOKEN }}
+          path: integratewise-docs
+
+      - name: Run sync script
+        run: |
+          chmod +x ./scripts/sync-docs.sh
+          ./scripts/sync-docs.sh integratewise-docs
+
+      - name: Check for changes
+        id: changes
+        working-directory: integratewise-docs
+        run: |
+          git add docs/internal/
+          if git diff --staged --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "No changes to sync"
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "Changes detected:"
+            git diff --staged --stat
+          fi
+
+      - name: Push to docs repo
+        if: steps.changes.outputs.changed == 'true'
+        working-directory: integratewise-docs
+        run: |
+          git config user.name "IntegrateWise Bot"
+          git config user.email "bot@integratewise.ai"
+          git commit -m "sync: internal docs from integratewise-live (auto)
+
+          Triggered by: ${{ github.event.head_commit.message || 'manual dispatch' }}
+          Source commit: ${{ github.sha }}"
+          git push

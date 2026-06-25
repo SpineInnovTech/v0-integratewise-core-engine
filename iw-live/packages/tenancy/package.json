@@ -1,0 +1,14 @@
+{
+  "name": "@integratewise/tenancy",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "dependencies": {
+    "stripe": "^14.0.0",
+    "razorpay": "^2.9.2",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

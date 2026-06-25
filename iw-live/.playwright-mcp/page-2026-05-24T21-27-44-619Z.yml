@@ -1,0 +1,96 @@
+- generic [ref=e2]:
+    - complementary [ref=e3]:
+        - generic [ref=e4]:
+            - generic [ref=e5]:
+                - generic [ref=e6]: IW
+                - generic [ref=e7]: IntegrateWise
+            - generic [ref=e8]: operations.integratewise.ai
+        - generic [ref=e9]:
+            - generic [ref=e10]: Product
+            - button "Account Success" [ref=e11] [cursor=pointer]
+            - button "Business Ops" [ref=e12] [cursor=pointer]
+        - generic [ref=e13]:
+            - generic [ref=e14]: Workbenches
+            - button "👤 User Workbench" [ref=e15] [cursor=pointer]
+            - button "✦ Twin Workbench" [ref=e16] [cursor=pointer]
+            - button "🧠 Cognitive Workbench" [active] [ref=e17] [cursor=pointer]
+            - button "🛡️ Governance Workbench" [ref=e18] [cursor=pointer]
+        - generic [ref=e19]:
+            - generic [ref=e20]: Memory
+            - button "💬 Conversational" [ref=e21] [cursor=pointer]
+            - button "🔒 Personal" [ref=e22] [cursor=pointer]
+            - button "🏢 Organizational" [ref=e23] [cursor=pointer]
+        - generic [ref=e24]:
+            - generic [ref=e25]: Hermes v0.14.0 — 116 skills
+            - generic [ref=e27]: 32 skill gap pending
+    - generic [ref=e29]:
+        - generic [ref=e30]:
+            - generic [ref=e31]:
+                - generic [ref=e32]: IntegrateWise
+                - generic [ref=e33]: ›
+                - generic [ref=e34]: Account Success
+                - generic [ref=e35]: ›
+                - generic [ref=e36]: Cognitive Workbench
+            - generic [ref=e37]:
+                - img [ref=e38]
+                - textbox "Search everything..." [ref=e41]
+                - generic [ref=e42]: ⌘K
+            - generic [ref=e43]:
+                - button "Notifications" [ref=e44] [cursor=pointer]:
+                    - img [ref=e45]
+                - button "Toggle L2" [ref=e49] [cursor=pointer]:
+                    - img [ref=e50]
+                - generic [ref=e52]: "N"
+        - generic [ref=e347]:
+            - generic [ref=e348]: Cognitive Workbench
+            - generic [ref=e349]: Live signals, AI insights, predictions, and cross-domain correlations
+            - generic [ref=e350]:
+                - generic [ref=e351]:
+                    - generic [ref=e352]: Active Signals
+                    - generic [ref=e353]: "24"
+                    - generic [ref=e354]: 6 high priority
+                - generic [ref=e355]:
+                    - generic [ref=e356]: AI Insight Accuracy
+                    - generic [ref=e357]: 87%
+                    - generic [ref=e358]: Last 30 days
+                - generic [ref=e359]:
+                    - generic [ref=e360]: Spine Health
+                    - generic [ref=e361]: 98.4%
+                    - generic [ref=e362]: All systems operational
+                - generic [ref=e363]:
+                    - generic [ref=e364]: Projection Coverage
+                    - generic [ref=e365]: 94%
+                    - generic [ref=e366]: 16 of 17 entities mapped
+            - generic [ref=e367]:
+                - generic [ref=e368]:
+                    - generic [ref=e369]: High Priority Signals
+                    - generic [ref=e371]:
+                        - generic [ref=e372]:
+                            - generic [ref=e373]:
+                                - generic [ref=e374]: 🔴 HIGH
+                                - generic [ref=e375]: Acme Corp — API error rate spike
+                            - generic [ref=e376]: Payment API breaching SLA. Error rate exceeded threshold.
+                        - generic [ref=e377]:
+                            - generic [ref=e378]:
+                                - generic [ref=e379]: 🟡 MED
+                                - generic [ref=e380]: TechFlow — Search latency degradation
+                            - generic [ref=e381]: Latency >300ms for 15min. Auto-scaling triggered.
+                        - generic [ref=e382]:
+                            - generic [ref=e383]:
+                                - generic [ref=e384]: 🔴 HIGH
+                                - generic [ref=e385]: Marketing ↔ Sales lead quality mismatch
+                            - generic [ref=e386]: MQL volume up 18% but SQL conversion dropped to 41%.
+                - generic [ref=e387]:
+                    - generic [ref=e388]: AI Insights
+                    - generic [ref=e389]:
+                        - generic [ref=e392]: Renewal Risk Alert
+                        - generic [ref=e393]: Vantage Telecom renewal in 11 days. NPS dropped from 42 to 14. Recommend health check immediately.
+                        - generic [ref=e394]: → Schedule QBR
+                    - generic [ref=e395]:
+                        - generic [ref=e398]: Expansion Opportunity
+                        - generic [ref=e399]: "Axiom Financial expansion potential: $180K. New use case detected in API usage patterns."
+                        - generic [ref=e400]: → Send proposal
+                    - generic [ref=e401]:
+                        - generic [ref=e404]: Engagement Trend
+                        - generic [ref=e405]: Portfolio engagement down 12% MoM. Customer Success team should prioritize outreach.
+                        - generic [ref=e406]: → View insights

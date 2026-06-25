@@ -1,0 +1,54 @@
+<!-- Title: Admin -->
+<!-- Icon: 📋 -->
+<!-- CoverImage: https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80 -->
+
+<div>
+  <h2 style="color: #111827; margin-top: 0">Administration & Governance</h2>
+  <p style="color: #4b5563; line-height: 1.6">
+    Manage system configuration, view active pipeline secrets, audit logs, and monitor Triage Bot
+    state.
+  </p>
+
+  <hr />
+
+  <h3 style="color: #1f2937; margin-top: 24px">🔑 Local Secrets & Credentials Status</h3>
+  <p style="color: #6b7280; font-size: 13px; margin-bottom: 12px">
+    These keys are loaded locally from your gitignored <code>.iw/secrets.json</code> file or
+    <code>.env</code> file. Plaintext values are never written to Coda or logged.
+  </p>
+
+  <!-- Secrets Table -->
+  <table
+    style="
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 32px;
+      font-family: sans-serif;
+      font-size: 14px;
+    "
+  >
+    <thead>
+      <tr style="background-color: #f3f4f6; text-align: left; border-bottom: 2px solid #e5e7eb">
+        <th style="padding: 12px 8px; font-weight: 600; color: #374151">Secret Key</th>
+        <th style="padding: 12px 8px; font-weight: 600; color: #374151">Status</th>
+        <th style="padding: 12px 8px; font-weight: 600; color: #374151">Masked Value</th>
+        <th style="padding: 12px 8px; font-weight: 600; color: #374151">Source</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{SECRETS_TABLE_ROWS}}
+    </tbody>
+  </table>
+
+  <h3
+    style="color: #1f2937; margin-top: 24px; border-bottom: 1px solid #e5e7eb; padding-bottom: 6px"
+  >
+    Pipeline & Triage Logs
+  </h3>
+  <ul style="line-height: 1.8; color: #4b5563; padding-left: 20px">
+    <li>
+      <strong>Triage Bot Mode</strong>: Governance Active (HITL required for org_memory writes).
+    </li>
+    <li><strong>Spine Dual-Write</strong>: Enabled (Relational Supabase + Offline Vault Sync).</li>
+  </ul>
+</div>

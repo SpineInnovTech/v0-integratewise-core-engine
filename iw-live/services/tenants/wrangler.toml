@@ -1,0 +1,217 @@
+name = "integratewise-tenants"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# ─── D1 Database (tenants, tenant_users, workspaces) ───
+[[d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+migrations_dir = "migrations"
+
+# ─── Secrets from Cloudflare Secrets Store ───
+# Store ID: 1fd83fc5881e4cd296ae3c2fbe80693c (see docs/SECRETS_STORE_SETUP.md)
+# NOTE: Tenants is embedded in Gateway (v3.6). These bindings are needed for
+#       standalone dev/deploy. Production uses Gateway's bindings.
+
+# --- Core infrastructure (Supabase for connectors table only) ---
+[[secrets_store_secrets]]
+binding = "SUPABASE_URL"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SUPABASE_URL"
+
+[[secrets_store_secrets]]
+binding = "SUPABASE_SERVICE_ROLE_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SUPABASE_SERVICE_ROLE_KEY"
+
+[[secrets_store_secrets]]
+binding = "TOKEN_ENCRYPTION_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "TOKEN_ENCRYPTION_KEY"
+
+# --- OAuth Provider Credentials (Tier 1 — required for demo) ---
+# CRM
+[[secrets_store_secrets]]
+binding = "HUBSPOT_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "HUBSPOT_CLIENT_ID"
+
+[[secrets_store_secrets]]
+binding = "HUBSPOT_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "HUBSPOT_CLIENT_SECRET"
+
+[[secrets_store_secrets]]
+binding = "SALESFORCE_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SALESFORCE_CLIENT_ID"
+
+[[secrets_store_secrets]]
+binding = "SALESFORCE_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SALESFORCE_CLIENT_SECRET"
+
+# Google (covers Gmail, Drive, Sheets, Calendar)
+[[secrets_store_secrets]]
+binding = "GOOGLE_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "GOOGLE_CLIENT_ID"
+
+[[secrets_store_secrets]]
+binding = "GOOGLE_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "GOOGLE_CLIENT_SECRET"
+
+# Communication
+[[secrets_store_secrets]]
+binding = "SLACK_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SLACK_CLIENT_ID"
+
+[[secrets_store_secrets]]
+binding = "SLACK_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SLACK_CLIENT_SECRET"
+
+# Dev Tools
+[[secrets_store_secrets]]
+binding = "GITHUB_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "GITHUB_CLIENT_ID"
+
+[[secrets_store_secrets]]
+binding = "GITHUB_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "GITHUB_CLIENT_SECRET"
+
+# Productivity
+[[secrets_store_secrets]]
+binding = "NOTION_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "NOTION_CLIENT_ID"
+
+[[secrets_store_secrets]]
+binding = "NOTION_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "NOTION_CLIENT_SECRET"
+
+# --- OAuth Provider Credentials (Tier 2 — nice to have) ---
+[[secrets_store_secrets]]
+binding = "ASANA_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "ASANA_CLIENT_ID"
+
+[[secrets_store_secrets]]
+binding = "ASANA_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "ASANA_CLIENT_SECRET"
+
+[[secrets_store_secrets]]
+binding = "LINEAR_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "LINEAR_CLIENT_ID"
+
+[[secrets_store_secrets]]
+binding = "LINEAR_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "LINEAR_CLIENT_SECRET"
+
+[[secrets_store_secrets]]
+binding = "JIRA_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "JIRA_CLIENT_ID"
+
+[[secrets_store_secrets]]
+binding = "JIRA_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "JIRA_CLIENT_SECRET"
+
+[[secrets_store_secrets]]
+binding = "STRIPE_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "STRIPE_CLIENT_ID"
+
+[[secrets_store_secrets]]
+binding = "STRIPE_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "STRIPE_CLIENT_SECRET"
+
+[[secrets_store_secrets]]
+binding = "ZENDESK_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "ZENDESK_CLIENT_ID"
+
+[[secrets_store_secrets]]
+binding = "ZENDESK_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "ZENDESK_CLIENT_SECRET"
+
+[[secrets_store_secrets]]
+binding = "INTERCOM_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "INTERCOM_CLIENT_ID"
+
+[[secrets_store_secrets]]
+binding = "INTERCOM_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "INTERCOM_CLIENT_SECRET"
+
+[[secrets_store_secrets]]
+binding = "ZOHO_CRM_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "ZOHO_CRM_CLIENT_ID"
+
+[[secrets_store_secrets]]
+binding = "ZOHO_CRM_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "ZOHO_CRM_CLIENT_SECRET"
+
+# --- KV Namespaces ---
+[[kv_namespaces]]
+binding = "OAUTH_STATE_KV"
+id = "d610b2da55bf437ba90444f93077e1c6"
+
+[[kv_namespaces]]
+binding = "CONNECTOR_STATUS"
+id = "f7a3d773ff2841f7954d3cfeae82594f"
+
+# --- Service Bindings ---
+[[services]]
+binding = "CONNECTOR_SYNC"
+service = "integratewise-connector-sync"
+
+[env.staging]
+name = "integratewise-tenants-staging"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+migrations_dir = "migrations"
+
+[env.production]
+name = "integratewise-tenants"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+migrations_dir = "migrations"
+
+[dev]
+inspector_port = 9257
+port = 8797
+
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+[observability.logs]
+enabled = true
+invocation_logs = true
+head_sampling_rate = 1

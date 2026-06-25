@@ -1,0 +1,12 @@
+{
+  "updated": "2026-06-24T10:44:27.823Z",
+  "counts": {
+    "supabase": 2891,
+    "openwebui": 19,
+    "dual_write": 52,
+    "couchdb": 128,
+    "n8n_infra": 282,
+    "etl_insert_select": 45,
+    "etl_bulk_copy": 2
+  }
+}

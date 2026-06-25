@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Account Master (SSOT)",
+  "type": "object",
+  "required": ["account_id", "account_name", "tenant_id"],
+  "properties": {
+    "account_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "tenant_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "account_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "csm_narrative": {
+      "type": "string"
+    },
+    "industry_vertical": {
+      "type": "string"
+    },
+    "contract_type": {
+      "type": "string"
+    },
+    "arr": {
+      "type": "number",
+      "minimum": 0
+    },
+    "health_score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "product_id": {
+      "type": "string"
+    },
+    "stream_id": {
+      "type": "string"
+    },
+    "data_source": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

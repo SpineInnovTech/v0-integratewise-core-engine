@@ -1,0 +1,468 @@
+/* IntegrateWise Design System v5.0 - MailerLite/Webflow Inspired
+   Zero hardcoded colors. All configurable via CSS variables.
+   
+   Core Philosophy:
+   - Blue & White primary palette (Webflow/MailerLite inspired)
+   - View-based theming (Personal/Business/CS lens variants)
+   - Consistent spacing, typography, and components
+   - WCAG AA compliant, accessible by default
+*/
+
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* === Surfaces === */
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+
+  /* === Brand Primary (Webflow/MailerLite Blue) === */
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --primary-hover: #1d4ed8;
+
+  /* === Secondary === */
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+
+  /* === Muted === */
+  --muted: #f8fafc;
+  --muted-foreground: #64748b;
+
+  /* === Accent === */
+  --accent: #3b82f6;
+  --accent-foreground: #ffffff;
+
+  /* === Status Colors === */
+  --success: #10b981;
+  --success-foreground: #ffffff;
+  --success-muted: #d1fae5;
+  --success-muted-foreground: #065f46;
+
+  --warning: #f59e0b;
+  --warning-foreground: #ffffff;
+  --warning-muted: #fef3c7;
+  --warning-muted-foreground: #92400e;
+
+  --danger: #ef4444;
+  --danger-foreground: #ffffff;
+  --danger-muted: #fee2e2;
+  --danger-muted-foreground: #991b1b;
+
+  --info: #3b82f6;
+  --info-foreground: #ffffff;
+  --info-muted: #dbeafe;
+  --info-muted-foreground: #1e40af;
+
+  /* === Semantic Health States === */
+  --health-excellent: #10b981;
+  --health-excellent-bg: #d1fae5;
+  --health-excellent-fg: #065f46;
+
+  --health-good: #84cc16;
+  --health-good-bg: #ecfccb;
+  --health-good-fg: #365314;
+
+  --health-fair: #f59e0b;
+  --health-fair-bg: #fef3c7;
+  --health-fair-fg: #92400e;
+
+  --health-poor: #f97316;
+  --health-poor-bg: #ffedd5;
+  --health-poor-fg: #9a3412;
+
+  --health-critical: #ef4444;
+  --health-critical-bg: #fee2e2;
+  --health-critical-fg: #991b1b;
+
+  /* === Lines & Borders === */
+  --border: #e2e8f0;
+  --input: #f1f5f9;
+  --ring: #2563eb;
+
+  /* === Charts === */
+  --chart-1: #2563eb;
+  --chart-2: #3b82f6;
+  --chart-3: #10b981;
+  --chart-4: #f59e0b;
+  --chart-5: #8b5cf6;
+
+  /* === Radius === */
+  --radius: 0.5rem;
+
+  /* === Sidebar === */
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0f172a;
+  --sidebar-primary: #2563eb;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f8fafc;
+  --sidebar-accent-foreground: #0f172a;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #2563eb;
+
+  /* === View-Based Brand Color (dynamically set by layout) === */
+  --brand: #2563eb;
+  --brand-foreground: #ffffff;
+  --brand-hover: #1d4ed8;
+  --brand-muted: #dbeafe;
+  --brand-muted-foreground: #1e40af;
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+  --card: #1e293b;
+  --card-foreground: #f1f5f9;
+  --popover: #1e293b;
+  --popover-foreground: #f1f5f9;
+
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  --primary-hover: #2563eb;
+
+  --secondary: #1e293b;
+  --secondary-foreground: #f1f5f9;
+
+  --muted: #334155;
+  --muted-foreground: #94a3b8;
+
+  --accent: #3b82f6;
+  --accent-foreground: #0f172a;
+
+  --success: #10b981;
+  --success-foreground: #ffffff;
+  --success-muted: #064e3b;
+  --success-muted-foreground: #d1fae5;
+
+  --warning: #f59e0b;
+  --warning-foreground: #ffffff;
+  --warning-muted: #78350f;
+  --warning-muted-foreground: #fef3c7;
+
+  --danger: #ef4444;
+  --danger-foreground: #ffffff;
+  --danger-muted: #7f1d1d;
+  --danger-muted-foreground: #fee2e2;
+
+  --info: #3b82f6;
+  --info-foreground: #ffffff;
+  --info-muted: #1e3a8a;
+  --info-muted-foreground: #dbeafe;
+
+  --health-excellent: #10b981;
+  --health-excellent-bg: #064e3b;
+  --health-excellent-fg: #d1fae5;
+
+  --health-good: #84cc16;
+  --health-good-bg: #1a2e05;
+  --health-good-fg: #ecfccb;
+
+  --health-fair: #f59e0b;
+  --health-fair-bg: #78350f;
+  --health-fair-fg: #fef3c7;
+
+  --health-poor: #f97316;
+  --health-poor-bg: #7c2d12;
+  --health-poor-fg: #ffedd5;
+
+  --health-critical: #ef4444;
+  --health-critical-bg: #7f1d1d;
+  --health-critical-fg: #fee2e2;
+
+  --border: #334155;
+  --input: #1e293b;
+  --ring: #3b82f6;
+
+  --chart-1: #3b82f6;
+  --chart-2: #60a5fa;
+  --chart-3: #10b981;
+  --chart-4: #f59e0b;
+  --chart-5: #a78bfa;
+
+  --sidebar: #1e293b;
+  --sidebar-foreground: #f1f5f9;
+  --sidebar-primary: #3b82f6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #334155;
+  --sidebar-accent-foreground: #f1f5f9;
+  --sidebar-border: #334155;
+  --sidebar-ring: #3b82f6;
+
+  --brand: #3b82f6;
+  --brand-foreground: #ffffff;
+  --brand-hover: #2563eb;
+  --brand-muted: #1e3a8a;
+  --brand-muted-foreground: #dbeafe;
+}
+
+/* === View Themes === */
+.view-personal {
+  --brand: #2563eb;
+  --brand-foreground: #ffffff;
+  --brand-hover: #1d4ed8;
+  --brand-muted: #dbeafe;
+  --brand-muted-foreground: #1e40af;
+}
+
+.view-business {
+  --brand: #10b981;
+  --brand-foreground: #ffffff;
+  --brand-hover: #059669;
+  --brand-muted: #d1fae5;
+  --brand-muted-foreground: #065f46;
+}
+
+.view-cs {
+  --brand: #8b5cf6;
+  --brand-foreground: #ffffff;
+  --brand-hover: #7c3aed;
+  --brand-muted: #ede9fe;
+  --brand-muted-foreground: #5b21b6;
+}
+
+.view-admin {
+  --brand: #f59e0b;
+  --brand-foreground: #ffffff;
+  --brand-hover: #d97706;
+  --brand-muted: #fef3c7;
+  --brand-muted-foreground: #92400e;
+}
+
+/* Dark mode view variants */
+.dark .view-personal {
+  --brand: #3b82f6;
+  --brand-foreground: #ffffff;
+  --brand-hover: #2563eb;
+  --brand-muted: #1e3a8a;
+  --brand-muted-foreground: #dbeafe;
+}
+
+.dark .view-business {
+  --brand: #10b981;
+  --brand-foreground: #ffffff;
+  --brand-hover: #059669;
+  --brand-muted: #064e3b;
+  --brand-muted-foreground: #d1fae5;
+}
+
+.dark .view-cs {
+  --brand: #a78bfa;
+  --brand-foreground: #ffffff;
+  --brand-hover: #8b5cf6;
+  --brand-muted: #4c1d95;
+  --brand-muted-foreground: #ede9fe;
+}
+
+.dark .view-admin {
+  --brand: #fbbf24;
+  --brand-foreground: #ffffff;
+  --brand-hover: #f59e0b;
+  --brand-muted: #78350f;
+  --brand-muted-foreground: #fef3c7;
+}
+
+/* === Tailwind Theme Mapping === */
+@theme inline {
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--danger);
+  --color-destructive-foreground: var(--danger-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* Status colors */
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/* === Base Layer === */
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* === Component Classes === */
+@layer components {
+  /* Standard page layout */
+  .page-container {
+    @apply space-y-6 p-6;
+  }
+
+  .page-header {
+    @apply flex items-center justify-between;
+  }
+
+  .page-title {
+    @apply text-3xl font-bold text-foreground;
+  }
+
+  .page-description {
+    @apply text-foreground/60 mt-2;
+  }
+
+  /* Health badge variants */
+  .health-excellent {
+    background-color: var(--health-excellent-bg);
+    color: var(--health-excellent-fg);
+    @apply px-2 py-1 rounded text-xs font-semibold;
+  }
+
+  .health-good {
+    background-color: var(--health-good-bg);
+    color: var(--health-good-fg);
+    @apply px-2 py-1 rounded text-xs font-semibold;
+  }
+
+  .health-fair {
+    background-color: var(--health-fair-bg);
+    color: var(--health-fair-fg);
+    @apply px-2 py-1 rounded text-xs font-semibold;
+  }
+
+  .health-poor {
+    background-color: var(--health-poor-bg);
+    color: var(--health-poor-fg);
+    @apply px-2 py-1 rounded text-xs font-semibold;
+  }
+
+  .health-critical {
+    background-color: var(--health-critical-bg);
+    color: var(--health-critical-fg);
+    @apply px-2 py-1 rounded text-xs font-semibold;
+  }
+
+  /* Status badges */
+  .badge-success {
+    background-color: var(--success-muted);
+    color: var(--success-muted-foreground);
+    @apply px-2 py-1 rounded text-xs font-semibold;
+  }
+
+  .badge-warning {
+    background-color: var(--warning-muted);
+    color: var(--warning-muted-foreground);
+    @apply px-2 py-1 rounded text-xs font-semibold;
+  }
+
+  .badge-danger {
+    background-color: var(--danger-muted);
+    color: var(--danger-muted-foreground);
+    @apply px-2 py-1 rounded text-xs font-semibold;
+  }
+
+  .badge-info {
+    background-color: var(--info-muted);
+    color: var(--info-muted-foreground);
+    @apply px-2 py-1 rounded text-xs font-semibold;
+  }
+
+  .badge-brand {
+    background-color: var(--brand-muted);
+    color: var(--brand-muted-foreground);
+    @apply px-2 py-1 rounded text-xs font-semibold;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-lg px-5 py-2.5 font-semibold;
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    @apply hover:opacity-90 transition-opacity;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+  }
+
+  .btn-brand {
+    @apply inline-flex items-center justify-center rounded-lg px-5 py-2.5 font-semibold;
+    background-color: var(--brand);
+    color: var(--brand-foreground);
+    @apply hover:opacity-90 transition-opacity;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+  }
+
+  /* Brand utilities */
+  .text-brand {
+    color: var(--brand);
+  }
+  .bg-brand {
+    background-color: var(--brand);
+  }
+  .bg-brand-muted {
+    background-color: var(--brand-muted);
+  }
+  .border-brand {
+    border-color: var(--brand);
+  }
+}
+
+/* === Selection === */
+::selection {
+  background-color: rgba(37, 99, 235, 0.2);
+}
+
+/* === Scrollbar === */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--muted);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+}

@@ -1,0 +1,141 @@
+# Twin Orchestrator — Cognitive Orchestration Layer
+# NOT an AI infrastructure worker — this is the reasoning/coordination layer
+
+name = "twin-orchestrator"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+main = "src/index.ts"
+compatibility_date = "2026-06-09"
+compatibility_flags = ["nodejs_compat"]
+
+# Custom domain
+route = { pattern = "twin.dev.integratewise.ai", custom_domain = true }
+
+# Scheduled orchestration loop (every 5 minutes)
+[triggers]
+crons = ["*/5 * * * *"]  # Every 5 minutes: observe → reason → propose → coordinate
+
+[vars]
+ENVIRONMENT = "dev"
+LOG_LEVEL = "debug"
+OBSERVE_INTERVAL_MINUTES = "5"
+
+# Service bindings — Twin orchestrates via these
+[[services]]
+binding = "MCP_CONNECTOR"
+service = "integratewise-mcp-connector"
+
+[[services]]
+binding = "INTELLIGENCE"
+service = "intelligence"
+
+[[services]]
+binding = "PIPELINE"
+service = "integratewise-pipeline"
+
+[[services]]
+binding = "KNOWLEDGE"
+service = "integratewise-knowledge"
+
+[[services]]
+binding = "CONTINUITY"
+service = "continuity"
+
+# D1 for Twin state + proposals
+[[d1_databases]]
+binding = "D1"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+# KV for Twin context cache
+[[kv_namespaces]]
+binding = "CACHE"
+id = "18aa20dfeb304f0ba592d9070964dd31"
+
+# Workflows — Phase 4 (placeholders, not yet implemented)
+# [[workflows]]
+# name = "morning-brief-workflow"
+# binding = "MORNING_BRIEF"
+# class_name = "MorningBriefWorkflow"
+#
+# [[workflows]]
+# name = "signal-workflow"
+# binding = "SIGNAL_WORKFLOW"
+# class_name = "SignalWorkflow"
+#
+# [[workflows]]
+# name = "act-workflow"
+# binding = "ACT_WORKFLOW"
+# class_name = "ActWorkflow"
+
+# Test environment
+[env.test]
+name = "twin-orchestrator-test"
+route = { pattern = "twin.test.integratewise.ai", custom_domain = true }
+
+[env.test.vars]
+ENVIRONMENT = "test"
+LOG_LEVEL = "info"
+
+[[env.test.services]]
+binding = "MCP_CONNECTOR"
+service = "mcp-connector-test"
+
+[[env.test.services]]
+binding = "INTELLIGENCE"
+service = "intelligence-test"
+
+[[env.test.services]]
+binding = "PIPELINE"
+service = "pipeline-test"
+
+[[env.test.services]]
+binding = "KNOWLEDGE"
+service = "knowledge-test"
+
+[[env.test.services]]
+binding = "CONTINUITY"
+service = "continuity-test"
+
+[[env.test.d1_databases]]
+binding = "D1"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+# Production environment
+[env.prod]
+name = "twin-orchestrator-prod"
+route = { pattern = "twin.integratewise.ai", custom_domain = true }
+
+[env.prod.vars]
+ENVIRONMENT = "prod"
+LOG_LEVEL = "warn"
+
+[[env.prod.services]]
+binding = "MCP_CONNECTOR"
+service = "mcp-connector-prod"
+
+[[env.prod.services]]
+binding = "INTELLIGENCE"
+service = "intelligence-prod"
+
+[[env.prod.services]]
+binding = "PIPELINE"
+service = "pipeline-prod"
+
+[[env.prod.services]]
+binding = "KNOWLEDGE"
+service = "knowledge-prod"
+
+[[env.prod.services]]
+binding = "CONTINUITY"
+service = "continuity-prod"
+
+[[env.prod.d1_databases]]
+binding = "D1"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+
+[dev]
+port = 8810
+inspector_port = 9274

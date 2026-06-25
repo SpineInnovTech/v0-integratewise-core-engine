@@ -1,0 +1,51 @@
+- generic [ref=e2]:
+    - heading "Ops Command Center" [level=1] [ref=e3]
+    - paragraph [ref=e4]: Cross-functional view across pipeline, churn, incidents, and workflows. One spine, one place.
+    - generic [ref=e5]:
+        - generic [ref=e6]:
+            - generic [ref=e7]:
+                - img [ref=e8]
+                - text: Pipeline → Churn
+            - generic [ref=e10]: 12.4%
+            - generic [ref=e11]: on-track
+        - generic [ref=e12]:
+            - generic [ref=e13]:
+                - img [ref=e14]
+                - text: Open Incidents
+            - generic [ref=e16]: "3"
+            - generic [ref=e17]: attention
+        - generic [ref=e18]:
+            - generic [ref=e19]:
+                - img [ref=e20]
+                - text: Workflows Running
+            - generic [ref=e23]: "14"
+            - generic [ref=e24]: ok
+        - generic [ref=e25]:
+            - generic [ref=e26]:
+                - img [ref=e27]
+                - text: Cost vs Plan
+            - generic [ref=e30]: $24.1K
+            - generic [ref=e31]: on-track
+    - generic [ref=e32]:
+        - generic [ref=e33]: Cross-domain Signals
+        - generic [ref=e34]:
+            - generic [ref=e35]:
+                - generic [ref=e36]: cs
+                - generic [ref=e37]:
+                    - generic [ref=e38]: "Renewal risk: FinanceFlow Solutions"
+                    - generic [ref=e39]: Champion silent for 12 days, payment failed twice. Renewal in 29 days.
+            - generic [ref=e40]:
+                - generic [ref=e41]: sales
+                - generic [ref=e42]:
+                    - generic [ref=e43]: 3 deals stalled in negotiation
+                    - generic [ref=e44]: Pipeline velocity down 18% vs last week. Consider escalation.
+            - generic [ref=e45]:
+                - generic [ref=e46]: pe
+                - generic [ref=e47]:
+                    - generic [ref=e48]: Stripe schema drift auto-corrected
+                    - generic [ref=e49]: Field mapping updated, 47 records re-normalized. No action needed.
+            - generic [ref=e50]:
+                - generic [ref=e51]: cross
+                - generic [ref=e52]:
+                    - generic [ref=e53]: "Expansion signal: TechServe India"
+                    - generic [ref=e54]: Usage up 34%, new team added. Co-sell opportunity with partner.

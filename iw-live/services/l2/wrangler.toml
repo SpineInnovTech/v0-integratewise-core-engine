@@ -1,0 +1,22 @@
+name = "l2"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# KV for persistence (IntegrateWise L2_INSIGHTS namespace)
+[[kv_namespaces]]
+binding = "L2_INSIGHTS"
+id = "7a963c65b18941839f832c8fd7c4866a"
+
+[env.test]
+name = "l2-test"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+[env.prod]
+name = "l2-prod"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+[dev]
+inspector_port = 9250
+port = 8790

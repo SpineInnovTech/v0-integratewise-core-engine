@@ -1,0 +1,5 @@
+# Test artifacts
+login-page.png
+playwright-report/
+test-results/
+.vercel

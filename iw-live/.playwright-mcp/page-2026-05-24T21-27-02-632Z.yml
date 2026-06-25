@@ -1,0 +1,116 @@
+- generic [ref=e2]:
+    - complementary [ref=e3]:
+        - generic [ref=e4]:
+            - generic [ref=e5]:
+                - generic [ref=e6]: IW
+                - generic [ref=e7]: IntegrateWise
+            - generic [ref=e8]: operations.integratewise.ai
+        - generic [ref=e9]:
+            - generic [ref=e10]: Product
+            - button "Account Success" [ref=e11] [cursor=pointer]
+            - button "Business Ops" [ref=e12] [cursor=pointer]
+        - generic [ref=e13]:
+            - generic [ref=e14]: Workbenches
+            - button "👤 User Workbench" [ref=e15] [cursor=pointer]
+            - button "✦ Twin Workbench" [active] [ref=e16] [cursor=pointer]
+            - button "🧠 Cognitive Workbench" [ref=e17] [cursor=pointer]
+            - button "🛡️ Governance Workbench" [ref=e18] [cursor=pointer]
+        - generic [ref=e19]:
+            - generic [ref=e20]: Memory
+            - button "💬 Conversational" [ref=e21] [cursor=pointer]
+            - button "🔒 Personal" [ref=e22] [cursor=pointer]
+            - button "🏢 Organizational" [ref=e23] [cursor=pointer]
+        - generic [ref=e24]:
+            - generic [ref=e25]: Hermes v0.14.0 — 116 skills
+            - generic [ref=e27]: 32 skill gap pending
+    - generic [ref=e29]:
+        - generic [ref=e30]:
+            - generic [ref=e31]:
+                - generic [ref=e32]: IntegrateWise
+                - generic [ref=e33]: ›
+                - generic [ref=e34]: Account Success
+                - generic [ref=e35]: ›
+                - generic [ref=e36]: Twin Workbench
+            - generic [ref=e37]:
+                - img [ref=e38]
+                - textbox "Search everything..." [ref=e41]
+                - generic [ref=e42]: ⌘K
+            - generic [ref=e43]:
+                - button "Notifications" [ref=e44] [cursor=pointer]:
+                    - img [ref=e45]
+                - button "Toggle L2" [ref=e49] [cursor=pointer]:
+                    - img [ref=e50]
+                - generic [ref=e52]: "N"
+        - generic [ref=e287]:
+            - generic [ref=e288]:
+                - generic [ref=e289]:
+                    - generic [ref=e290]:
+                        - generic [ref=e291]: Digital Twin
+                        - generic [ref=e292]: Conversational · Personal · Organizational Memory
+                    - generic [ref=e295]: Online · Multi-model active
+                - generic [ref=e296]:
+                    - generic [ref=e297]:
+                        - generic [ref=e298]: CTX_ACCOUNT_SUCCESS · Portfolio view
+                        - text: Good morning. I'm your Digital Twin. I've analyzed today's signals across all connected domains. There are 3 items requiring your attention.
+                    - generic [ref=e299]: Show me the at-risk accounts and what the system recommends.
+                    - generic [ref=e300]:
+                        - generic [ref=e301]: CTX_ACCOUNT_SUCCESS · Cross-layer analysis
+                        - text: "Based on full spine context (15 layers per account, cross-department signals, and historical patterns):"
+                        - strong [ref=e302]: 1. Vantage Telecom
+                        - text: — Health score 31, renewal in 11 days, champion departed. 89% churn probability without intervention.
+                        - strong [ref=e303]: 2. MedCore Health
+                        - text: — API error rate elevated 3 weeks, NPS dropped to 38. Expansion pipeline at risk.
+                        - strong [ref=e304]: 3. TechFlow Inc
+                        - text: — Usage declined 18%, support tickets up 34%. Early churn pattern detected.
+                - generic [ref=e305]:
+                    - generic [ref=e306]:
+                        - button "Summarize portfolio" [ref=e307] [cursor=pointer]
+                        - button "Health check all" [ref=e308] [cursor=pointer]
+                        - button "Draft QBR prep" [ref=e309] [cursor=pointer]
+                        - button "Churn forecast" [ref=e310] [cursor=pointer]
+                        - button "Next actions" [ref=e311] [cursor=pointer]
+                    - generic [ref=e312]:
+                        - textbox "Ask your Twin anything..." [ref=e313]
+                        - button "Send" [ref=e314] [cursor=pointer]
+            - generic [ref=e315]:
+                - generic [ref=e316]: ✦ Active Capabilities
+                - generic [ref=e317]:
+                    - generic [ref=e318]: Memory Layers
+                    - generic [ref=e319]:
+                        - generic [ref=e320]: Conversational
+                        - generic [ref=e321]: 6 active sessions
+                    - generic [ref=e322]:
+                        - generic [ref=e323]: Personal
+                        - generic [ref=e324]: 23 private notes
+                    - generic [ref=e325]:
+                        - generic [ref=e326]: Organizational
+                        - generic [ref=e327]: 142 promoted insights
+                - generic [ref=e328]:
+                    - generic [ref=e329]: System Features
+                    - generic [ref=e330]:
+                        - generic [ref=e331]:
+                            - generic [ref=e332]: ✦
+                            - text: No Tool-Locked AI
+                        - generic [ref=e333]:
+                            - generic [ref=e334]: ✦
+                            - text: Self-Evolving System
+                        - generic [ref=e335]:
+                            - generic [ref=e336]: ✦
+                            - text: Folder Watcher
+                        - generic [ref=e337]:
+                            - generic [ref=e338]: ✦
+                            - text: Journey Notes
+                        - generic [ref=e339]:
+                            - generic [ref=e340]: ✦
+                            - text: Learn + Drift Protection
+                        - generic [ref=e341]:
+                            - generic [ref=e342]: ✦
+                            - text: Continuity Substrate
+                - generic [ref=e343]:
+                    - generic [ref=e344]: Active Models
+                    - generic [ref=e345]:
+                        - text: Hermes Core v0.14.0
+                        - text: Claude Sonnet 4 · Anthropic
+                        - text: GPT-4o · OpenAI
+                        - text: Gemini 2.5 Pro · Google
+                        - text: Llama 4 Scout · Meta/Local

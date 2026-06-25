@@ -1,0 +1,23 @@
+{
+  "name": "integratewise-mcp-tool-connector",
+  "version": "1.0.0",
+  "description": "MCP server for direct AI access to IntegrateWise D1 database",
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc -w"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.4.1",
+    "@neondatabase/serverless": "^0.10.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260317.1",
+    "@types/node": "^22.10.10",
+    "typescript": "^5.7.3",
+    "wrangler": "^4.76.0"
+  }
+}

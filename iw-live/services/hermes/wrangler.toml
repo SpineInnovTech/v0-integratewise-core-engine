@@ -1,0 +1,86 @@
+name = "integratewise-hermes"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Observability
+[observability]
+enabled = true
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+[observability.traces]
+enabled = true
+head_sampling_rate = 0.1
+
+# Service bindings — execution layer talks to the mesh
+[[services]]
+binding = "SPINE"
+service = "integratewise-pipeline"
+
+[[services]]
+binding = "KNOWLEDGE"
+service = "integratewise-knowledge"
+
+[[services]]
+binding = "THINK"
+service = "integratewise-intelligence"
+
+[[services]]
+binding = "ACT"
+service = "integratewise-intelligence"
+
+[[services]]
+binding = "CONTINUITY"
+service = "integratewise-continuity"
+
+[[services]]
+binding = "WORKFLOW"
+service = "integratewise-bff"
+
+# Durable Objects — execution state machine
+[durable_objects]
+bindings = [
+  { name = "EXECUTION_ENGINE", class_name = "ExecutionEngineDO" },
+  { name = "STREAM_HUB", class_name = "StreamHubDO" }
+]
+
+[[migrations]]
+tag = "v1-execution-engine"
+new_sqlite_classes = ["ExecutionEngineDO", "StreamHubDO"]
+
+# KV for execution metadata and rate limiting
+[[kv_namespaces]]
+binding = "EXECUTION_META"
+id = "194227e14a9844b896cebe6564af3ec1"
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "8f61d841d2574061ac1d547187d72a58"
+
+# Queue for async execution outcomes
+[[queues.producers]]
+queue = "execution-outcomes"
+binding = "OUTCOMES_QUEUE"
+
+[[queues.consumers]]
+queue = "execution-outcomes"
+
+# n8n configuration (Hostinger VPS — see docs/n8n-integration.md)
+[vars]
+N8N_BASE_URL = "http://187.127.166.105:5678"
+N8N_API_VERSION = "v1"
+N8N_FALLBACK_MODE = "durable_object"
+
+[env.staging]
+name = "integratewise-hermes-staging"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+[env.production]
+name = "integratewise-hermes"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+[dev]
+inspector_port = 9273
+port = 8802

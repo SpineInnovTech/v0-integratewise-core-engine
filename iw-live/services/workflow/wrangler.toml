@@ -1,0 +1,239 @@
+name = "workflow"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Observability (see docs/WORKERS_OBSERVABILITY_OTLP.md)
+[observability]
+enabled = true
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+[observability.traces]
+enabled = true
+head_sampling_rate = 0.1
+
+# Secrets from Cloudflare Secrets Store — replace 1fd83fc5881e4cd296ae3c2fbe80693c (see docs/SECRETS_STORE_SETUP.md)
+[[secrets_store_secrets]]
+binding = "SUPABASE_URL"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SUPABASE_URL"
+
+[[secrets_store_secrets]]
+binding = "SUPABASE_SERVICE_ROLE_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SUPABASE_SERVICE_ROLE_KEY"
+
+# HITL approvals → act queue
+[[queues.producers]]
+queue = "intelligence-act"
+binding = "ACT_QUEUE"
+
+# Service bindings for view aggregation (v3.6 consolidated names)
+[[services]]
+binding = "SPINE"
+service = "pipeline"
+
+[[services]]
+binding = "CONNECTOR"
+service = "connector"
+
+[[services]]
+binding = "KNOWLEDGE"
+service = "knowledge"
+
+[[services]]
+binding = "THINK"
+service = "intelligence"
+
+[[services]]
+binding = "ACT"
+service = "intelligence"
+
+# D1 analytics database
+[[d1_databases]]
+binding = "ANALYTICS_DB"
+database_name = "integratewise-analytics"
+database_id = "b829f7b0-7889-43d5-ba65-5ff31a2be8d6"
+migrations_dir = "d1_migrations"
+
+# D1 Spine Cache Database
+[[d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+# Durable Objects for real-time streaming (Hot Memory)
+[durable_objects]
+bindings = [
+  { name = "HITL_GATE", class_name = "HITLGate" },
+  { name = "SIGNAL_STREAM", class_name = "SignalStreamDO" },
+  { name = "PRESENCE", class_name = "PresenceDO" },
+  { name = "ROOM", class_name = "RoomDO" }
+]
+
+# KV for connection metadata and rate limiting
+[[kv_namespaces]]
+binding = "CONNECTION_META"
+id = "39608aa63c5340bf953575dec34416ed"
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "8f61d841d2574061ac1d547187d72a58"
+
+[[migrations]]
+tag = "v1-hitl-gate"
+new_sqlite_classes = ["HITLGate"]
+
+[[migrations]]
+tag = "v2-stream-gateway"
+new_sqlite_classes = ["SignalStreamDO", "PresenceDO", "RoomDO"]
+
+# Daily analytics aggregation (midnight UTC)
+# [triggers]
+# crons = ["0 0 * * *"]
+
+# No-Hallucination Library base URL for AI grounding (llm.txt, context.json).
+[vars]
+LIBRARY_BASE_URL = "https://integratewise.ai"
+
+[env.test]
+name = "workflow-test"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+[env.test.vars]
+LIBRARY_BASE_URL = "https://integratewise.ai"
+
+[[env.test.secrets_store_secrets]]
+binding = "SUPABASE_URL"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SUPABASE_URL"
+
+[[env.test.secrets_store_secrets]]
+binding = "SUPABASE_SERVICE_ROLE_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SUPABASE_SERVICE_ROLE_KEY"
+
+[[env.test.queues.producers]]
+queue = "intelligence-act"
+binding = "ACT_QUEUE"
+
+[[env.test.d1_databases]]
+binding = "ANALYTICS_DB"
+database_name = "integratewise-analytics"
+database_id = "b829f7b0-7889-43d5-ba65-5ff31a2be8d6"
+migrations_dir = "d1_migrations"
+
+[[env.test.d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+[env.test.durable_objects]
+bindings = [
+  { name = "HITL_GATE", class_name = "HITLGate" },
+  { name = "SIGNAL_STREAM", class_name = "SignalStreamDO" },
+  { name = "PRESENCE", class_name = "PresenceDO" },
+  { name = "ROOM", class_name = "RoomDO" }
+]
+
+[[env.test.kv_namespaces]]
+binding = "CONNECTION_META"
+id = "39608aa63c5340bf953575dec34416ed"
+
+[[env.test.kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "8f61d841d2574061ac1d547187d72a58"
+
+[[env.test.services]]
+binding = "SPINE"
+service = "pipeline-test"
+
+[[env.test.services]]
+binding = "CONNECTOR"
+service = "connector-test"
+
+[[env.test.services]]
+binding = "KNOWLEDGE"
+service = "knowledge-test"
+
+[[env.test.services]]
+binding = "THINK"
+service = "intelligence-test"
+
+[[env.test.services]]
+binding = "ACT"
+service = "intelligence-test"
+
+[env.prod]
+name = "workflow-prod"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+[env.prod.vars]
+LIBRARY_BASE_URL = "https://integratewise.ai"
+
+[[env.prod.secrets_store_secrets]]
+binding = "SUPABASE_URL"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SUPABASE_URL"
+
+[[env.prod.secrets_store_secrets]]
+binding = "SUPABASE_SERVICE_ROLE_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SUPABASE_SERVICE_ROLE_KEY"
+
+[[env.prod.queues.producers]]
+queue = "intelligence-act"
+binding = "ACT_QUEUE"
+
+[[env.prod.d1_databases]]
+binding = "ANALYTICS_DB"
+database_name = "integratewise-analytics"
+database_id = "b829f7b0-7889-43d5-ba65-5ff31a2be8d6"
+
+[[env.prod.d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+[env.prod.durable_objects]
+bindings = [
+  { name = "HITL_GATE", class_name = "HITLGate" },
+  { name = "SIGNAL_STREAM", class_name = "SignalStreamDO" },
+  { name = "PRESENCE", class_name = "PresenceDO" },
+  { name = "ROOM", class_name = "RoomDO" }
+]
+
+[[env.prod.kv_namespaces]]
+binding = "CONNECTION_META"
+id = "39608aa63c5340bf953575dec34416ed"
+
+[[env.prod.kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "8f61d841d2574061ac1d547187d72a58"
+
+[[env.prod.services]]
+binding = "SPINE"
+service = "pipeline-prod"
+
+[[env.prod.services]]
+binding = "CONNECTOR"
+service = "connector-prod"
+
+[[env.prod.services]]
+binding = "KNOWLEDGE"
+service = "knowledge-prod"
+
+[[env.prod.services]]
+binding = "THINK"
+service = "intelligence-prod"
+
+[[env.prod.services]]
+binding = "ACT"
+service = "intelligence-prod"
+
+[dev]
+inspector_port = 9271
+port = 8800
+

@@ -1,0 +1,188 @@
+/* IntegrateWise Theme Variables */
+
+:root {
+  /* Updated brand colors to match official logo spec */
+  /* Brand Colors - Official Palette */
+  --color-brand-primary: #3f51b5;
+  --color-brand-dark: #1e2a4a;
+  --color-brand-accent: #5c6bc0;
+  --color-brand-accent-light: #e0e7ff;
+
+  /* Typography */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  /* Accessibility */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --focus-ring-color: var(--color-brand-primary);
+
+  /* Default semantic tokens (OS theme - uses brand primary) */
+  --semantic-surface-DEFAULT: #f8fafc;
+  --semantic-surface-muted: #f1f5f9;
+  --semantic-surface-raised: #ffffff;
+  --semantic-text-primary: #1e2a4a;
+  --semantic-text-muted: #64748b;
+  --semantic-text-inverse: #ffffff;
+  --semantic-primary: #3f51b5;
+  --semantic-primary-hover: #3949ab;
+  --semantic-success: #10b981;
+  --semantic-border: #e2e8f0;
+}
+
+/* OS Theme - Brand Primary Blue */
+body[data-theme="os"],
+[data-theme="os"] {
+  /* Updated to official brand primary #3F51B5 */
+  --iw-color-primary: #3f51b5;
+  --iw-color-primary-700: #3949ab;
+  --iw-color-primary-800: #303f9f;
+  --iw-color-primary-50: #e8eaf6;
+  --iw-color-primary-100: #c5cae9;
+  --iw-color-text-primary: #1e2a4a;
+  --iw-color-accent: #5c6bc0;
+  --iw-color-accent-700: #3f51b5;
+  --iw-gradient-start: #e8eaf6;
+  --iw-gradient-end: #c5cae9;
+
+  /* Semantic overrides for OS */
+  --semantic-surface-DEFAULT: #f8fafc;
+  --semantic-surface-muted: #e8eaf6;
+  --semantic-surface-raised: #ffffff;
+  --semantic-text-primary: #1e2a4a;
+  --semantic-text-muted: #64748b;
+  --semantic-text-inverse: #ffffff;
+  --semantic-primary: #3f51b5;
+  --semantic-primary-hover: #3949ab;
+  --semantic-success: #10b981;
+  --semantic-border: #c5cae9;
+}
+
+/* CS Theme - Fresh green (Customer Success) */
+body[data-theme="cs"],
+[data-theme="cs"] {
+  --iw-color-primary: #10b981;
+  --iw-color-primary-700: #059669;
+  --iw-color-primary-800: #047857;
+  --iw-color-primary-50: #ecfdf5;
+  --iw-color-primary-100: #d1fae5;
+  --iw-color-text-primary: #064e3b;
+  --iw-color-accent: #34d399;
+  --iw-color-accent-700: #10b981;
+  --iw-gradient-start: #ecfdf5;
+  --iw-gradient-end: #d1fae5;
+
+  /* Semantic overrides for CS */
+  --semantic-surface-DEFAULT: #f0fdf4;
+  --semantic-surface-muted: #ecfdf5;
+  --semantic-surface-raised: #ffffff;
+  --semantic-text-primary: #064e3b;
+  --semantic-text-muted: #4b5563;
+  --semantic-text-inverse: #ffffff;
+  --semantic-primary: #10b981;
+  --semantic-primary-hover: #059669;
+  --semantic-success: #10b981;
+  --semantic-border: #d1fae5;
+}
+
+/* Theme Utilities */
+.text-theme-primary {
+  color: var(--iw-color-text-primary);
+}
+.bg-theme-primary {
+  background-color: var(--iw-color-primary);
+}
+.bg-theme-primary-50 {
+  background-color: var(--iw-color-primary-50);
+}
+.bg-theme-primary-100 {
+  background-color: var(--iw-color-primary-100);
+}
+.border-theme-primary {
+  border-color: var(--iw-color-primary);
+}
+.border-theme-primary-100 {
+  border-color: var(--iw-color-primary-100);
+}
+
+/* Updated gradient with smoother transitions */
+.gradient-theme-hero {
+  background: linear-gradient(145deg, var(--iw-gradient-start) 0%, #ffffff 50%, var(--iw-gradient-end) 100%);
+}
+
+.gradient-theme-card {
+  background: linear-gradient(135deg, #ffffff 0%, var(--iw-color-primary-50) 100%);
+}
+
+.btn-theme-primary {
+  background-color: var(--iw-color-primary);
+  color: #ffffff;
+  transition: background-color 0.2s ease;
+}
+.btn-theme-primary:hover {
+  background-color: var(--iw-color-primary-700);
+}
+.btn-theme-primary:active {
+  background-color: var(--iw-color-primary-800);
+}
+
+.btn-theme-outline {
+  border: 1.5px solid var(--iw-color-primary);
+  color: var(--iw-color-primary);
+  background: transparent;
+  transition: all 0.2s ease;
+}
+.btn-theme-outline:hover {
+  background-color: var(--iw-color-primary-50);
+  color: var(--iw-color-primary-700);
+}
+
+.ring-theme-primary {
+  --tw-ring-color: var(--iw-color-primary);
+}
+
+.text-theme-accent {
+  color: var(--iw-color-accent);
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Enhanced Focus Rings for Accessibility */
+:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* Skip Link Accessibility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sr-only:focus,
+.sr-only:active {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 1rem;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}

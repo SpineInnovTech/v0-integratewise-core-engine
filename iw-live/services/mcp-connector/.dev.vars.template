@@ -1,0 +1,12 @@
+# MCP Connector - Local Development Configuration
+# Copy this file to .dev.vars and fill in your values
+
+# Required: MCP API key for tool authentication
+MCP_CONNECTOR_API_KEY=your-mcp-connector-key
+
+# Optional: Supabase config (for JWT verification and Flow C features)
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+# Note: D1 DB and KNOWLEDGE service binding must be configured in wrangler.toml
+# or use `wrangler dev --service KNOWLEDGE=integratewise-knowledge --env production`

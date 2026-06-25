@@ -1,0 +1,21 @@
+name = "integratewise-agent-registry"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+[vars]
+ENVIRONMENT = "production"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+[[services]]
+binding = "PIPELINE"
+service = "integratewise-pipeline"
+
+
+[dev]
+port = 8805
+inspector_port = 9265

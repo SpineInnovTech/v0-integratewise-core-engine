@@ -1,0 +1,47 @@
+# ⚠️  DEPRECATED — Standalone Govern worker.
+# v3.6 consolidated this into integratewise-intelligence (see services/intelligence/).
+# If you must deploy this standalone worker for local dev, these bindings now
+# point to the consolidated workers so they don't create split-brain.
+name = "integratewise-govern"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Secrets from Cloudflare Secrets Store — replace 1fd83fc5881e4cd296ae3c2fbe80693c (see docs/SECRETS_STORE_SETUP.md)
+[[secrets_store_secrets]]
+binding = "SUPABASE_URL"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SUPABASE_URL"
+
+[[secrets_store_secrets]]
+binding = "SUPABASE_SERVICE_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SUPABASE_SERVICE_KEY"
+
+[[secrets_store_secrets]]
+binding = "DATABASE_URL"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "DATABASE_URL"
+
+# D1: Edge-local governance queue (proposals, audit log)
+# Canonical memory remains in Supabase. D1 is for fast edge reads/writes.
+[[d1_databases]]
+binding = "D1"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+# REMOVED: queue consumer for "ops-dlq" — consolidated worker
+# (integratewise-intelligence) is the sole consumer. See: services/intelligence/wrangler.toml
+
+[env.staging]
+name = "integratewise-govern-staging"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+[env.production]
+name = "integratewise-govern"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+[dev]
+inspector_port = 9247
+port = 8787

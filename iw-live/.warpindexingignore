@@ -1,0 +1,23 @@
+# Exclude iteration artifacts and archives from agent indexing.
+# Agents should read docs/architecture/, docs/playbooks/, docs/runbooks/, docs/reference/ only.
+
+# Archive — all historical/superseded documents
+docs/archive/
+
+# Cursor workspace plans and troubleshooting
+.cursor/
+
+# Build outputs and lock files
+dist/
+.wrangler/
+*.tsbuildinfo
+pnpm-lock.yaml
+*.lock
+
+# Test results and snapshots
+test-results/
+playwright-report/
+
+# Generated assets
+public/dist/
+apps/web/dist/

@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Strategic Objective (SSOT)",
+  "type": "object",
+  "required": ["objective_id", "account_id", "objective_name", "tenant_id"],
+  "properties": {
+    "objective_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "account_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "tenant_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "objective_name": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["planned", "active", "completed", "on-hold"]
+    },
+    "business_value_usd": {
+      "type": "number"
+    },
+    "product_id": {
+      "type": "string"
+    },
+    "stream_id": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

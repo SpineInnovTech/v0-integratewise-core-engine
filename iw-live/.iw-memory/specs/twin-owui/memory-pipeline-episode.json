@@ -1,0 +1,248 @@
+{
+  "episode": {
+    "id": "ep-2026-06-09-memory-pipeline-triage",
+    "date": "2026-06-09",
+    "label": "Memory Pipeline — Triage Bot, Book of Records Format, Governance Promotion",
+    "pillar": "memory",
+    "type": "architecture-decision",
+    "status": "approved",
+    "tenant": "iw-customer-zero"
+  },
+  "what": "IntegrateWise memory is not written directly by agents, Twins, or session-log utilities. It flows through a worker chain that ends in a Triage Bot, which is the only writer that may shape conversational memory into Book of Records format. Raw AI chats are inputs. Structured institutional knowledge is the output — but only after triage, search indexing, governance review, and human promotion. Twin (Open WebUI) is a read and propose surface, not a canonical writer.",
+  "pipeline": {
+    "stages": [
+      {
+        "stage": 1,
+        "actor": "AI Worker → AI Worker",
+        "writes": "No canonical memory",
+        "format": "Internal handoff"
+      },
+      {
+        "stage": 2,
+        "actor": "Triage Bot",
+        "writes": "Yes — conversational memory only",
+        "format": "Book of Records primitives"
+      },
+      {
+        "stage": 3,
+        "actor": "Search index",
+        "writes": "Auto-index from conversational memory",
+        "format": "Searchable chunks"
+      },
+      {
+        "stage": 4,
+        "actor": "Governance / Promotion queues",
+        "writes": "Triage routes candidates",
+        "format": "Queue items with lineage"
+      },
+      {
+        "stage": 5,
+        "actor": "Human reviewer",
+        "writes": "Approves promotion",
+        "format": "—"
+      },
+      {
+        "stage": 6,
+        "actor": "Org memory",
+        "writes": "Human-promoted only",
+        "format": "episode, decision, learning, commitment, fact, doctrine"
+      },
+      {
+        "stage": 7,
+        "actor": "Surface projection",
+        "writes": "Publication worker",
+        "format": "OWUI Knowledge collections, Book of Projects / Evolution"
+      },
+      {
+        "stage": 8,
+        "actor": "Twin / AI Worker",
+        "writes": "Read + propose",
+        "format": "RAG, tools, chat UI"
+      }
+    ]
+  },
+  "primitives": {
+    "book_of_records_types": [
+      {
+        "type": "episode",
+        "description": "time-bounded chapter"
+      },
+      {
+        "type": "decision",
+        "description": "explicit choice + rationale"
+      },
+      {
+        "type": "learning",
+        "description": "takeaway for future work"
+      },
+      {
+        "type": "commitment",
+        "description": "what we agreed to do"
+      },
+      {
+        "type": "fact",
+        "description": "verifiable institutional fact"
+      },
+      {
+        "type": "action_item",
+        "description": "triage: what needs addressing"
+      }
+    ],
+    "triage_flags": [
+      "scope: user | work | org (per MEMORY_MODEL)",
+      "promotion_candidate: true/false",
+      "governance_state: candidate → later staging on promotion"
+    ]
+  },
+  "decisions": [
+    {
+      "id": 1,
+      "decision": "No direct writes",
+      "rationale": "Agents, Ops write-session-log, and Twin must not write session logs or conversational memory directly. All canonical shaping goes through Triage Bot."
+    },
+    {
+      "id": 2,
+      "decision": "Conversational memory is the staging book",
+      "rationale": "Triage writes Book of Records format into conversational memory. It is structured institutional draft, not disposable chat — until aged."
+    },
+    {
+      "id": 3,
+      "decision": "Search is parallel, not a gate",
+      "rationale": "Conversational memory is indexed for search immediately. Promotion to org memory is a separate human-governed path."
+    },
+    {
+      "id": 4,
+      "decision": "Promotion is human-only",
+      "rationale": "Triage Bot may queue. Humans approve. Org memory is never auto-promoted."
+    },
+    {
+      "id": 5,
+      "decision": "Org memory projects to surfaces",
+      "rationale": "Approved org memory becomes files/collections on Twin knowledge surfaces (functional collections, Book of Projects, Evolution). AI workers fetch from those surfaces + search."
+    },
+    {
+      "id": 6,
+      "decision": "Decision TTL in conversational memory",
+      "rationale": "Decisions in conversational memory that are not referenced or used for 30 days are aged or deleted. (Refinement of the general 90-day conversational archive rule — decisions age faster.)"
+    },
+    {
+      "id": 7,
+      "decision": "Twin wiring is read-heavy",
+      "rationale": "Open WebUI gets: knowledge surfaces (org projection), session logs rendered as chats, conversational memory threads, tool servers, and skill definitions mapped to tools. Write path stays in the worker pipeline."
+    }
+  ],
+  "learnings": [
+    "Book of Records is a write format and a read projection — not a separate memory store. One org_memory table; conversational memory holds triage-shaped drafts.",
+    "Authoring order remains last → first when backfilling episodes; pipeline order is always present → governed → permanent.",
+    "Current ops code (write-session-log.ts, direct spine POST) is pre-pipeline and must be rerouted to emit triage inputs, not canonical memory."
+  ],
+  "commitments": [
+    {
+      "id": 1,
+      "owner": "Pipeline",
+      "action": "AI Worker → AI Worker → Triage Bot chain as sole memory writer"
+    },
+    {
+      "id": 2,
+      "owner": "Triage Bot",
+      "action": "Emit Book of Records primitives into conversational memory"
+    },
+    {
+      "id": 3,
+      "owner": "Search worker",
+      "action": "Index conversational memory on write"
+    },
+    {
+      "id": 4,
+      "owner": "Governance UI (L2)",
+      "action": "Promotion queue with human approve → org memory"
+    },
+    {
+      "id": 5,
+      "owner": "Publication worker",
+      "action": "Org memory → OWUI Knowledge + Book of Projects surface"
+    },
+    {
+      "id": 6,
+      "owner": "Twin",
+      "action": "Surface reads: knowledge, session-as-chat, tools, skills"
+    },
+    {
+      "id": 7,
+      "owner": "TTL job",
+      "action": "Age/delete conversational decisions unused 30 days"
+    }
+  ],
+  "twin_wiring": {
+    "surfaces": [
+      {
+        "surface": "Knowledge collections",
+        "source": "Org memory projection",
+        "write_path": "None — read only"
+      },
+      {
+        "surface": "Chats that are session logs",
+        "source": "Conversational memory threads",
+        "write_path": "None — imported/rendered"
+      },
+      {
+        "surface": "Book of Projects / Evolution",
+        "source": "Org memory episode projection",
+        "write_path": "None — read only"
+      },
+      {
+        "surface": "Tools (continuity, agent-zero, MCP, book.*)",
+        "source": "Tool servers",
+        "write_path": "Propose only; triage captures outcomes"
+      },
+      {
+        "surface": "Skills (per tool)",
+        "source": "Skill manifests → system prompt / tool metadata",
+        "write_path": "Defined in ops; not memory writes"
+      },
+      {
+        "surface": "Live chat",
+        "source": "User ↔ Twin",
+        "write_path": "Input to pipeline; triage shapes output"
+      }
+    ]
+  },
+  "gaps": [
+    {
+      "today": "write-session-log.ts posts directly to spine",
+      "target": "Emit triage input event only"
+    },
+    {
+      "today": "Continuity tool reads spine",
+      "target": "Keep — query-time read is correct"
+    },
+    {
+      "today": "OWUI filters inject context",
+      "target": "Keep — but label as browse, spine wins"
+    },
+    {
+      "today": "No session-log → chat import",
+      "target": "Need worker to render conversational memory as OWUI chat threads"
+    },
+    {
+      "today": "No promotion queue in OWUI",
+      "target": "L2 governance queue (ops or live)"
+    },
+    {
+      "today": "MEMORY_MODEL: 90-day archive all conv",
+      "target": "Add: decisions unused 30d → age/delete"
+    }
+  ],
+  "links": {
+    "systems": [
+      "conversational_memory — triage staging book",
+      "org_memory — canonical institutional memory",
+      "Triage Bot — classifier + Book of Records writer",
+      "Promotion queue — human gate",
+      "AI Search (integratewise-knowledge) — search layer",
+      "Twin / Open WebUI — knowledge surfaces + chat UI",
+      "continuity-tool-server — query-time spine read (not write path)"
+    ]
+  },
+  "contract": "This episode is the contract. When we implement Twin wiring, every write path goes through AI Worker → Triage Bot → conversational memory (Book of Records format) — never around it."
+}

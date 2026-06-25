@@ -1,0 +1,50 @@
+# Doppler Configuration for IntegrateWise
+# https://docs.doppler.com/docs/cli
+
+# Project setup
+setup:
+  project: integratewise
+  # Config is set per-service via CLI flags or DOPPLER_CONFIG env var
+
+# Environments:
+#   - dev (Development)
+#   - stg (Staging)
+#   - prd (Production)
+
+# Services with Doppler configs:
+#   web-unified         - Vite frontend (Cloudflare Pages) ← ACTIVE
+#   spine-v2            - Spine service
+#   loader              - 8-stage pipeline loader
+#   normalizer          - Data normalizer
+#   connector           - Tool connectors
+#   workflow            - n8n workflow engine
+#   agents              - AI agents
+#
+# REMOVED (April 2026):
+#   web                 - Next.js frontend (replaced by web-unified)
+#   cognitive-brain     - Removed (empty service dir)
+#   stream-gateway      - Removed (empty service dir)
+#   memory-consolidator - Removed (empty service dir)
+
+# ─── Frontend (web-unified) ──────────────────────────────────────────────────
+# Secrets (VITE_* prefix — exposed to client-side code):
+#   VITE_SUPABASE_URL       - Supabase project URL
+#   VITE_SUPABASE_ANON_KEY  - Supabase public anon key
+#   VITE_API_BASE_URL       - Gateway Worker URL (empty = mock mode)
+#   VITE_POSTHOG_KEY        - PostHog analytics (optional)
+#   VITE_SENTRY_DSN         - Sentry error tracking (optional)
+
+# Usage:
+#   doppler secrets --config prd_web-unified              # View secrets
+#   doppler secrets set KEY value --config prd_web-unified # Set secret
+#   doppler run --config dev_web-unified -- npm run dev    # Local dev
+#   doppler run --config prd_web-unified -- npm run build  # Production build
+#   doppler run --config prd_spine-v2 -- wrangler deploy   # Deploy worker
+
+# Deploy:
+#   ./scripts/deploy-with-doppler.sh web-unified production
+#   ./scripts/deploy-with-doppler.sh spine-v2 production
+#   ./scripts/deploy-with-doppler.sh all production
+
+# First-time setup:
+#   ./scripts/doppler-setup-web-unified.sh

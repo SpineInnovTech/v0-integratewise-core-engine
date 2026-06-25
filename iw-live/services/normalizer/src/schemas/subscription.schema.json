@@ -1,0 +1,174 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://integratewise.io/schemas/subscription.json",
+  "title": "Subscription Schema",
+  "description": "Canonical schema for subscription/billing entities",
+  "type": "object",
+  "required": ["tenant_id", "status"],
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Tenant/workspace identifier"
+    },
+    "external_id": {
+      "type": "string",
+      "description": "External system identifier (e.g., Stripe subscription ID)"
+    },
+    "source_system": {
+      "type": "string",
+      "description": "Source system (e.g., stripe, chargebee, recurly)"
+    },
+    "organization_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Associated organization/account ID"
+    },
+    "customer_id": {
+      "type": "string",
+      "description": "External customer ID in billing system"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["trialing", "active", "past_due", "paused", "canceled", "unpaid", "incomplete"],
+      "description": "Subscription status"
+    },
+    "plan_id": {
+      "type": "string",
+      "description": "Plan/product identifier"
+    },
+    "plan_name": {
+      "type": "string",
+      "maxLength": 255,
+      "description": "Plan/product name"
+    },
+    "billing_interval": {
+      "type": "string",
+      "enum": ["monthly", "quarterly", "annual", "custom"],
+      "description": "Billing interval"
+    },
+    "amount": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Subscription amount per interval"
+    },
+    "currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "default": "USD",
+      "description": "ISO 4217 currency code"
+    },
+    "mrr": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Monthly Recurring Revenue"
+    },
+    "arr": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Annual Recurring Revenue"
+    },
+    "quantity": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Number of units/seats"
+    },
+    "discount_percent": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Discount percentage applied"
+    },
+    "trial_start": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Trial start date"
+    },
+    "trial_end": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Trial end date"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Subscription start date"
+    },
+    "current_period_start": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Current billing period start"
+    },
+    "current_period_end": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Current billing period end"
+    },
+    "canceled_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Cancellation date (if canceled)"
+    },
+    "cancel_at_period_end": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether subscription cancels at period end"
+    },
+    "cancellation_reason": {
+      "type": "string",
+      "maxLength": 500,
+      "description": "Reason for cancellation"
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": ["card", "bank_transfer", "invoice", "other"],
+      "description": "Payment method type"
+    },
+    "last_payment_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last successful payment date"
+    },
+    "last_payment_amount": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Last payment amount"
+    },
+    "failed_payment_count": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0,
+      "description": "Number of failed payment attempts"
+    },
+    "addons": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "addon_id": { "type": "string" },
+          "name": { "type": "string" },
+          "quantity": { "type": "integer" },
+          "amount": { "type": "number" }
+        }
+      },
+      "description": "Subscription add-ons"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Tags for categorization"
+    },
+    "custom_fields": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Custom fields for extensibility"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Additional metadata"
+    }
+  },
+  "additionalProperties": false
+}

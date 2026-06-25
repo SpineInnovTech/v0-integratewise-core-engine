@@ -1,0 +1,22 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "lib": ["ES2022"],
+    "moduleResolution": "bundler",
+    "types": ["@cloudflare/workers-types"],
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "esModuleInterop": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "../../packages/types/src/adaptive-schema.ts",
+    "../../packages/types/src/success-schema.ts",
+    "../../packages/types/src/schema.ts"
+  ],
+  "exclude": ["node_modules", "dist"]
+}

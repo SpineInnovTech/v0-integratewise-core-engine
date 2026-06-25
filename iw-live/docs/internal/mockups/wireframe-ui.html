@@ -1,0 +1,1493 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IntegrateWise — Full Product Flow</title>
+    <style>
+      :root {
+        --bg: #f4f0e8;
+        --surface: #ffffff;
+        --elevated: #f9f7f3;
+        --border: #e5e0d5;
+        --text: #1c1c1c;
+        --muted: #6b6458;
+        --dim: #9c9488;
+        --green: #27ae60;
+        --amber: #d4881a;
+        --red: #c0392b;
+        --blue: #2980b9;
+        --gold: #b8943f;
+        --purple: #6c3483;
+        --forest: #1a3a2a;
+        --forest-light: #2d5a3f;
+        --nav-w: 200px;
+        --top-h: 48px;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        overflow: hidden;
+        font-size: 13px;
+      }
+
+      /* ═══ SCREENS ═══ */
+      .screen {
+        display: none;
+        height: 100vh;
+        width: 100vw;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      .screen.active {
+        display: flex;
+      }
+
+      /* ═══ LOGIN ═══ */
+      .login-screen {
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(ellipse at 50% 30%, #111827 0%, #0b0f1a 70%);
+      }
+      .login-card {
+        width: 380px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 40px;
+        text-align: center;
+      }
+      .login-logo {
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--gold);
+        margin-bottom: 6px;
+      }
+      .login-sub {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 28px;
+      }
+      .login-btn {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--elevated);
+        color: var(--text);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: background 0.15s;
+      }
+      .login-btn:hover {
+        background: var(--border);
+      }
+      .login-btn.primary {
+        background: var(--gold);
+        color: var(--bg);
+        border-color: var(--gold);
+      }
+      .login-btn.primary:hover {
+        background: #d4a843;
+      }
+      .login-divider {
+        color: var(--dim);
+        font-size: 10px;
+        margin: 16px 0;
+      }
+      .login-footer {
+        margin-top: 20px;
+        font-size: 11px;
+        color: var(--dim);
+      }
+      .login-footer a {
+        color: var(--gold);
+        text-decoration: none;
+      }
+
+      /* ═══ ONBOARDING ═══ */
+      .onboard-screen {
+        align-items: center;
+        justify-content: center;
+        background: var(--bg);
+      }
+      .onboard-card {
+        width: 440px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 36px;
+      }
+      .onboard-progress {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 24px;
+      }
+      .onboard-progress .step {
+        flex: 1;
+        height: 3px;
+        border-radius: 2px;
+        background: var(--border);
+      }
+      .onboard-progress .step.done {
+        background: var(--gold);
+      }
+      .onboard-progress .step.current {
+        background: var(--green);
+      }
+      .onboard-title {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+      .onboard-desc {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 20px;
+      }
+      .onboard-options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 20px;
+      }
+      .onboard-opt {
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--elevated);
+        cursor: pointer;
+        text-align: center;
+        font-size: 12px;
+        font-weight: 500;
+        transition: all 0.12s;
+      }
+      .onboard-opt:hover {
+        border-color: var(--gold);
+        color: var(--gold);
+      }
+      .onboard-opt.selected {
+        border-color: var(--gold);
+        background: rgba(184, 148, 63, 0.1);
+        color: var(--gold);
+      }
+      .onboard-opt .opt-icon {
+        font-size: 18px;
+        margin-bottom: 4px;
+      }
+      .onboard-input {
+        width: 100%;
+        padding: 10px 14px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--elevated);
+        color: var(--text);
+        font-size: 12px;
+        outline: none;
+        margin-bottom: 12px;
+      }
+      .onboard-input::placeholder {
+        color: var(--dim);
+      }
+      .onboard-btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: none;
+        background: var(--gold);
+        color: var(--bg);
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        float: right;
+      }
+      .onboard-btn:hover {
+        background: #d4a843;
+      }
+      .onboard-btn.skip {
+        background: transparent;
+        color: var(--muted);
+        border: 1px solid var(--border);
+      }
+      .connector-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+      .connector-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        cursor: pointer;
+        font-size: 11px;
+        transition: all 0.12s;
+      }
+      .connector-item:hover {
+        border-color: var(--green);
+      }
+      .connector-item.connected {
+        border-color: var(--green);
+        background: rgba(16, 185, 129, 0.06);
+      }
+      .connector-item .c-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--dim);
+      }
+      .connector-item.connected .c-dot {
+        background: var(--green);
+      }
+      .loading-view {
+        text-align: center;
+        padding: 40px;
+      }
+      .loading-bar {
+        width: 200px;
+        height: 4px;
+        background: var(--border);
+        border-radius: 2px;
+        margin: 16px auto;
+        overflow: hidden;
+      }
+      .loading-bar .fill {
+        height: 100%;
+        background: var(--green);
+        border-radius: 2px;
+        animation: load 3s ease forwards;
+      }
+      @keyframes load {
+        from {
+          width: 0;
+        }
+        to {
+          width: 100%;
+        }
+      }
+      .loading-msg {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 8px;
+      }
+
+      /* ═══ APP SHELL ═══ */
+      .app-screen {
+        flex-direction: row;
+      }
+      .nav {
+        width: var(--nav-w);
+        background: var(--surface);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        padding: 12px 0;
+        flex-shrink: 0;
+      }
+      .nav-logo {
+        padding: 8px 14px 14px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--gold);
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 6px;
+      }
+      .nav-sec {
+        padding: 10px 14px 4px;
+        font-size: 9px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--dim);
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        font-size: 12px;
+        color: var(--muted);
+        cursor: pointer;
+        border-radius: 6px;
+        margin: 1px 6px;
+        transition: background 0.12s;
+      }
+      .nav-item:hover {
+        background: var(--elevated);
+        color: var(--text);
+      }
+      .nav-item.active {
+        background: rgba(184, 148, 63, 0.12);
+        color: var(--gold);
+      }
+      .nav-badge {
+        margin-left: auto;
+        background: rgba(239, 68, 68, 0.7);
+        color: #fff;
+        font-size: 9px;
+        padding: 1px 5px;
+        border-radius: 8px;
+        font-weight: 600;
+      }
+      .nav-div {
+        height: 1px;
+        background: var(--border);
+        margin: 8px 14px;
+      }
+
+      .app-main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+      .topbar {
+        height: var(--top-h);
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        gap: 12px;
+        flex-shrink: 0;
+      }
+      .topbar-title {
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .topbar-right {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .topbar-status {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 10px;
+        color: var(--muted);
+      }
+      .topbar-status .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--green);
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+      }
+      .avatar {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: var(--elevated);
+        border: 1px solid var(--border);
+        display: grid;
+        place-items: center;
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--gold);
+      }
+
+      .content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px 24px;
+      }
+      .view {
+        display: none;
+        animation: fadeIn 0.2s ease;
+      }
+      .view.active {
+        display: block;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(4px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ═══ COMPONENTS ═══ */
+      .greeting h1 {
+        font-size: 18px;
+        font-weight: 700;
+      }
+      .greeting p {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 3px;
+      }
+      .greeting {
+        margin-bottom: 16px;
+      }
+      .kpi-strip {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .kpi {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px 14px;
+      }
+      .kpi-label {
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        color: var(--muted);
+      }
+      .kpi-val {
+        font-size: 20px;
+        font-weight: 700;
+        margin-top: 3px;
+        font-variant-numeric: tabular-nums;
+      }
+      .kpi-trend {
+        font-size: 10px;
+        margin-top: 2px;
+      }
+      .kpi-trend.up {
+        color: var(--green);
+      }
+      .kpi-trend.down {
+        color: var(--red);
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        margin-bottom: 14px;
+        overflow: hidden;
+      }
+      .card-head {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .card-title {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--muted);
+      }
+      .card-badge {
+        font-size: 9px;
+        padding: 2px 7px;
+        border-radius: 8px;
+        background: var(--elevated);
+        color: var(--muted);
+        font-weight: 600;
+      }
+      .card-body {
+        padding: 14px 16px;
+      }
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        font-size: 12px;
+        cursor: pointer;
+      }
+      .row:last-child {
+        border-bottom: none;
+      }
+      .row:hover {
+        background: rgba(255, 255, 255, 0.02);
+        margin: 0 -16px;
+        padding: 8px 16px;
+      }
+      .sev {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .sev.crit {
+        background: var(--red);
+      }
+      .sev.high {
+        background: var(--amber);
+      }
+      .sev.med {
+        background: var(--blue);
+      }
+      .entity {
+        font-weight: 600;
+      }
+      .desc {
+        color: var(--muted);
+      }
+      .time {
+        margin-left: auto;
+        font-size: 10px;
+        color: var(--dim);
+        white-space: nowrap;
+      }
+      .health {
+        font-weight: 700;
+        width: 24px;
+        text-align: center;
+        font-variant-numeric: tabular-nums;
+      }
+      .health.good {
+        color: var(--green);
+      }
+      .health.warn {
+        color: var(--amber);
+      }
+      .health.bad {
+        color: var(--red);
+      }
+      .actions {
+        display: flex;
+        gap: 6px;
+        margin-top: 6px;
+      }
+      .actions button {
+        font-size: 10px;
+        padding: 4px 10px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .actions .approve {
+        background: var(--green);
+        color: #fff;
+      }
+      .actions .later {
+        background: var(--elevated);
+        color: var(--muted);
+        border: 1px solid var(--border);
+      }
+      .proposal {
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      }
+      .proposal:last-child {
+        border-bottom: none;
+      }
+      .proposal .p-title {
+        font-size: 12px;
+        font-weight: 500;
+      }
+      .proposal .p-meta {
+        font-size: 10px;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+
+      /* ═══ L2 DRAWER ═══ */
+      .l2-drawer {
+        position: fixed;
+        bottom: 0;
+        left: var(--nav-w);
+        right: 0;
+        background: var(--surface);
+        border-top: 2px solid var(--gold);
+        height: 170px;
+        display: flex;
+        padding: 14px 20px;
+        gap: 16px;
+        z-index: 100;
+        transform: translateY(100%);
+        transition: transform 0.25s ease;
+      }
+      .l2-drawer.open {
+        transform: translateY(0);
+      }
+      .l2-detail {
+        flex: 1;
+      }
+      .l2-detail h4 {
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .l2-detail p {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 6px;
+        line-height: 1.5;
+      }
+      .l2-evidence {
+        flex: 1;
+        border-left: 1px solid var(--border);
+        padding-left: 16px;
+      }
+      .l2-evidence h5 {
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        color: var(--dim);
+        margin-bottom: 6px;
+      }
+      .l2-evidence .ev {
+        font-size: 11px;
+        color: var(--muted);
+        padding: 3px 0;
+      }
+      .l2-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        justify-content: center;
+        min-width: 120px;
+      }
+      .l2-actions button {
+        padding: 8px 14px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .l2-actions .twin-btn {
+        background: var(--gold);
+        color: var(--bg);
+      }
+      .l2-actions .dismiss-btn {
+        background: var(--elevated);
+        color: var(--muted);
+        border: 1px solid var(--border);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- SCREEN 1: LOGIN                                                    -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <div class="screen login-screen active" id="s-login">
+      <div class="login-card">
+        <div class="login-logo">◆ IntegrateWise</div>
+        <div class="login-sub">Your tools unified. Your AI remembers.</div>
+        <button class="login-btn primary" onclick="goTo('onboard-1')">
+          ⊡ Continue with Google
+        </button>
+        <button class="login-btn" onclick="goTo('onboard-1')">⊡ Continue with GitHub</button>
+        <div class="login-divider">or</div>
+        <input class="onboard-input" placeholder="work@company.com" style="margin-bottom: 8px" />
+        <button class="login-btn" onclick="goTo('onboard-1')">Sign in with email</button>
+        <div class="login-footer">
+          First time? <a href="#" onclick="goTo('onboard-1')">Create workspace</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- SCREEN 2: ONBOARDING STEP 1 — Role + Department                   -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <div class="screen onboard-screen" id="s-onboard-1">
+      <div class="onboard-card">
+        <div class="onboard-progress">
+          <div class="step current"></div>
+          <div class="step"></div>
+          <div class="step"></div>
+          <div class="step"></div>
+        </div>
+        <div class="onboard-title">What do you do?</div>
+        <div class="onboard-desc">
+          This determines your workspace. You'll see views built for your work.
+        </div>
+        <div class="onboard-options">
+          <div class="onboard-opt" onclick="selectDept(this, 'cs')">
+            <div class="opt-icon">💚</div>
+            Customer Success
+          </div>
+          <div class="onboard-opt" onclick="selectDept(this, 'sales')">
+            <div class="opt-icon">💼</div>
+            Sales
+          </div>
+          <div class="onboard-opt" onclick="selectDept(this, 'marketing')">
+            <div class="opt-icon">📢</div>
+            Marketing
+          </div>
+          <div class="onboard-opt" onclick="selectDept(this, 'product')">
+            <div class="opt-icon">🚀</div>
+            Product / Eng
+          </div>
+          <div class="onboard-opt" onclick="selectDept(this, 'finance')">
+            <div class="opt-icon">💰</div>
+            Finance
+          </div>
+          <div class="onboard-opt" onclick="selectDept(this, 'bizops')">
+            <div class="opt-icon">⚡</div>
+            BizOps / Founder
+          </div>
+          <div class="onboard-opt" onclick="selectDept(this, 'service')">
+            <div class="opt-icon">🎧</div>
+            Service / Support
+          </div>
+          <div class="onboard-opt" onclick="selectDept(this, 'revops')">
+            <div class="opt-icon">🏢</div>
+            RevOps
+          </div>
+        </div>
+        <button class="onboard-btn" onclick="goTo('onboard-2')">Next →</button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- SCREEN 3: ONBOARDING STEP 2 — Industry                            -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <div class="screen onboard-screen" id="s-onboard-2">
+      <div class="onboard-card">
+        <div class="onboard-progress">
+          <div class="step done"></div>
+          <div class="step current"></div>
+          <div class="step"></div>
+          <div class="step"></div>
+        </div>
+        <div class="onboard-title">What's your industry?</div>
+        <div class="onboard-desc">We'll customize entity types and metrics for your sector.</div>
+        <div class="onboard-options">
+          <div class="onboard-opt" onclick="selectOpt(this)">
+            <div class="opt-icon">☁</div>
+            SaaS
+          </div>
+          <div class="onboard-opt" onclick="selectOpt(this)">
+            <div class="opt-icon">🏥</div>
+            Healthcare
+          </div>
+          <div class="onboard-opt" onclick="selectOpt(this)">
+            <div class="opt-icon">🏦</div>
+            FinTech
+          </div>
+          <div class="onboard-opt" onclick="selectOpt(this)">
+            <div class="opt-icon">🛒</div>
+            Retail / E-com
+          </div>
+          <div class="onboard-opt" onclick="selectOpt(this)">
+            <div class="opt-icon">🏭</div>
+            Manufacturing
+          </div>
+          <div class="onboard-opt" onclick="selectOpt(this)">
+            <div class="opt-icon">🎓</div>
+            Education
+          </div>
+          <div class="onboard-opt" onclick="selectOpt(this)">
+            <div class="opt-icon">🏗</div>
+            Construction
+          </div>
+          <div class="onboard-opt" onclick="selectOpt(this)">
+            <div class="opt-icon">📡</div>
+            Other
+          </div>
+        </div>
+        <input class="onboard-input" placeholder="Company name" />
+        <input class="onboard-input" placeholder="Workspace name (e.g. Acme Ops)" />
+        <button class="onboard-btn" onclick="goTo('onboard-3')">Next →</button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- SCREEN 4: ONBOARDING STEP 3 — Connect Tools                       -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <div class="screen onboard-screen" id="s-onboard-3">
+      <div class="onboard-card">
+        <div class="onboard-progress">
+          <div class="step done"></div>
+          <div class="step done"></div>
+          <div class="step current"></div>
+          <div class="step"></div>
+        </div>
+        <div class="onboard-title">Connect your tools</div>
+        <div class="onboard-desc">
+          Everything normalizes into one truth. Your AI stops reading tools directly. Add more
+          anytime.
+        </div>
+
+        <div
+          style="
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--dim);
+            margin-bottom: 6px;
+          "
+        >
+          Your Tools (ranked for Customer Success)
+        </div>
+        <div class="connector-grid">
+          <div class="connector-item connected" onclick="this.classList.toggle('connected')">
+            <span class="c-dot"></span>HubSpot
+          </div>
+          <div class="connector-item" onclick="this.classList.toggle('connected')">
+            <span class="c-dot"></span>Intercom
+          </div>
+          <div class="connector-item" onclick="this.classList.toggle('connected')">
+            <span class="c-dot"></span>Zendesk
+          </div>
+          <div class="connector-item" onclick="this.classList.toggle('connected')">
+            <span class="c-dot"></span>Salesforce
+          </div>
+          <div class="connector-item" onclick="this.classList.toggle('connected')">
+            <span class="c-dot"></span>Gainsight
+          </div>
+          <div class="connector-item" onclick="this.classList.toggle('connected')">
+            <span class="c-dot"></span>Jira
+          </div>
+        </div>
+
+        <div
+          style="
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--dim);
+            margin: 12px 0 6px;
+          "
+        >
+          Your AI (MCP — connect once, reads from Spine forever)
+        </div>
+        <div class="connector-grid">
+          <div class="connector-item connected" onclick="this.classList.toggle('connected')">
+            <span class="c-dot"></span>Claude (MCP)
+          </div>
+          <div class="connector-item" onclick="this.classList.toggle('connected')">
+            <span class="c-dot"></span>ChatGPT (MCP)
+          </div>
+          <div class="connector-item" onclick="this.classList.toggle('connected')">
+            <span class="c-dot"></span>Custom Agent
+          </div>
+        </div>
+
+        <div
+          style="
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--dim);
+            margin: 12px 0 6px;
+          "
+        >
+          Your Data
+        </div>
+        <div class="connector-grid">
+          <div class="connector-item connected" onclick="this.classList.toggle('connected')">
+            <span class="c-dot"></span>Gmail
+          </div>
+          <div class="connector-item connected" onclick="this.classList.toggle('connected')">
+            <span class="c-dot"></span>Slack
+          </div>
+          <div class="connector-item" onclick="this.classList.toggle('connected')">
+            <span class="c-dot"></span>Google Drive
+          </div>
+          <div class="connector-item" onclick="this.classList.toggle('connected')">
+            <span class="c-dot"></span>Notion
+          </div>
+          <div class="connector-item" onclick="this.classList.toggle('connected')">
+            <span class="c-dot"></span>Stripe
+          </div>
+          <div class="connector-item" onclick="this.classList.toggle('connected')">
+            <span class="c-dot"></span>GitHub
+          </div>
+        </div>
+        <button class="onboard-btn skip" style="float: left" onclick="goTo('onboard-4')">
+          Skip for now
+        </button>
+        <button class="onboard-btn" onclick="goTo('onboard-4')">Connect & Continue →</button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- SCREEN 5: ONBOARDING STEP 4 — Loading (Creamy Sync)               -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <div class="screen onboard-screen" id="s-onboard-4">
+      <div class="onboard-card">
+        <div class="onboard-progress">
+          <div class="step done"></div>
+          <div class="step done"></div>
+          <div class="step done"></div>
+          <div class="step current"></div>
+        </div>
+        <div class="loading-view">
+          <div style="font-size: 28px; margin-bottom: 8px">◆</div>
+          <div class="onboard-title">Setting up your workspace</div>
+          <div class="loading-bar"><div class="fill"></div></div>
+          <div class="loading-msg">Syncing HubSpot... 5 accounts loaded ✓</div>
+          <div class="loading-msg" style="margin-top: 4px">Building your entity graph...</div>
+          <div style="margin-top: 24px">
+            <button class="onboard-btn" onclick="goTo('app')">Enter Workspace →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- SCREEN 6: THE APP                                                  -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <div class="screen app-screen" id="s-app">
+      <!-- NAV -->
+      <nav class="nav">
+        <div class="nav-logo">◆ IntegrateWise</div>
+        <div class="nav-sec">Personal</div>
+        <div class="nav-item" onclick="showView('personal')">My Day</div>
+        <div class="nav-item">Tasks</div>
+        <div class="nav-item">Calendar</div>
+        <div class="nav-div"></div>
+        <div class="nav-sec" id="navDept">Customer Success</div>
+        <div class="nav-item active" onclick="showView('desk')">Dashboard</div>
+        <div class="nav-item" onclick="showView('accounts')">Accounts</div>
+        <div class="nav-item">Health</div>
+        <div class="nav-item">Renewals</div>
+        <div class="nav-item">At-Risk</div>
+        <div class="nav-item">Engagement</div>
+        <div class="nav-div"></div>
+        <div class="nav-sec">Awareness</div>
+        <div class="nav-item" onclick="showView('signals')">
+          Heads Up<span class="nav-badge">5</span>
+        </div>
+        <div class="nav-item" onclick="showView('insights')">Patterns</div>
+        <div class="nav-item" onclick="showView('triage')">
+          Decide<span class="nav-badge">2</span>
+        </div>
+        <div class="nav-div"></div>
+        <div class="nav-sec">Twin</div>
+        <div class="nav-item" onclick="showView('twin')">Think Together</div>
+        <div class="nav-div"></div>
+        <div class="nav-sec">Memory</div>
+        <div class="nav-item" onclick="showView('memory')">What We Know</div>
+        <div class="nav-item">My Patterns</div>
+        <div class="nav-item">Decisions</div>
+        <div class="nav-div"></div>
+        <div class="nav-item">Connectors</div>
+        <div class="nav-item">Settings</div>
+      </nav>
+
+      <!-- MAIN -->
+      <div class="app-main">
+        <header class="topbar">
+          <div class="topbar-title" id="topTitle">Dashboard</div>
+          <div class="topbar-right">
+            <div class="topbar-status">
+              <div class="dot"></div>
+              Live · 47 accounts
+            </div>
+            <div class="avatar">NP</div>
+          </div>
+        </header>
+        <div class="content">
+          <!-- DESK -->
+          <div class="view active" id="v-desk">
+            <div class="greeting">
+              <h1>Good morning, Nirmal.</h1>
+              <p>5 things need attention · 2 decisions waiting · $184K at risk</p>
+            </div>
+            <div class="kpi-strip">
+              <div class="kpi">
+                <div class="kpi-label">ARR</div>
+                <div class="kpi-val">$1.2M</div>
+                <div class="kpi-trend up">↑ 8%</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-label">Health</div>
+                <div class="kpi-val">74</div>
+                <div class="kpi-trend down">↓ 4pts</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-label">Renewals</div>
+                <div class="kpi-val">$340K</div>
+                <div class="kpi-trend">60 days</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-label">At Risk</div>
+                <div class="kpi-val" style="color: var(--red)">3</div>
+                <div class="kpi-trend down">$184K</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-label">Decide</div>
+                <div class="kpi-val">2</div>
+                <div class="kpi-trend">waiting</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-head"><span class="card-title">Heads Up</span></div>
+              <div class="card-body">
+                <div class="row" onclick="openDrawer()">
+                  <div class="sev crit"></div>
+                  <span class="entity">Acme Corp</span
+                  ><span class="desc">— Health dropped 18pts. Champion silent 23 days.</span
+                  ><span class="time">2h</span>
+                </div>
+                <div class="row">
+                  <div class="sev crit"></div>
+                  <span class="entity">Northwind</span
+                  ><span class="desc">— Renewal 12 days. No reply from champion.</span
+                  ><span class="time">overnight</span>
+                </div>
+                <div class="row">
+                  <div class="sev high"></div>
+                  <span class="entity">Helix</span
+                  ><span class="desc">— 3 escalated tickets in 48h.</span
+                  ><span class="time">6h</span>
+                </div>
+                <div class="row">
+                  <div class="sev high"></div>
+                  <span class="entity">Orion</span><span class="desc">— 34 days silence.</span
+                  ><span class="time">1d</span>
+                </div>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px">
+              <div class="card">
+                <div class="card-head"><span class="card-title">Decisions Waiting</span></div>
+                <div class="card-body">
+                  <div class="proposal">
+                    <div class="p-title">Exec check-in with Acme</div>
+                    <div class="p-meta">87% · 3 similar cases</div>
+                    <div class="actions">
+                      <button class="approve">Approve</button><button class="later">Later</button>
+                    </div>
+                  </div>
+                  <div class="proposal">
+                    <div class="p-title">Re-engage Orion</div>
+                    <div class="p-meta">79% · engagement pattern</div>
+                    <div class="actions">
+                      <button class="approve">Approve</button><button class="later">Later</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-head"><span class="card-title">Renewals</span></div>
+                <div class="card-body">
+                  <div class="row">
+                    <span class="health bad">64</span><span class="entity">Acme</span
+                    ><span class="time">47d</span>
+                  </div>
+                  <div class="row">
+                    <span class="health bad">51</span><span class="entity">Northwind</span
+                    ><span class="time">12d</span>
+                  </div>
+                  <div class="row">
+                    <span class="health good">82</span><span class="entity">Brightwave</span
+                    ><span class="time">78d</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SIGNALS -->
+          <div class="view" id="v-signals">
+            <div class="greeting">
+              <h1>Heads Up</h1>
+              <p>What changed and needs your attention</p>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                <div class="row" onclick="openDrawer()">
+                  <div class="sev crit"></div>
+                  <span class="entity">Acme Corp</span
+                  ><span class="desc"
+                    >— Health dropped 18pts. Matches Delphi pre-churn pattern.</span
+                  ><span class="time">2h</span>
+                </div>
+                <div class="row">
+                  <div class="sev crit"></div>
+                  <span class="entity">Northwind</span
+                  ><span class="desc">— Renewal in 12 days. Champion hasn't replied 18 days.</span
+                  ><span class="time">overnight</span>
+                </div>
+                <div class="row">
+                  <div class="sev high"></div>
+                  <span class="entity">Helix</span
+                  ><span class="desc">— 3 escalated tickets. Usage also dropped 20%.</span
+                  ><span class="time">6h</span>
+                </div>
+                <div class="row">
+                  <div class="sev high"></div>
+                  <span class="entity">Orion</span
+                  ><span class="desc">— 34 days silence. Last interaction was a complaint.</span
+                  ><span class="time">1d</span>
+                </div>
+                <div class="row">
+                  <div class="sev med"></div>
+                  <span class="entity">Brightwave</span
+                  ><span class="desc">— NPS dropped 8→6. Mentions slow support.</span
+                  ><span class="time">3d</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- INSIGHTS -->
+          <div class="view" id="v-insights">
+            <div class="greeting">
+              <h1>Patterns</h1>
+              <p>Dots connected across your accounts</p>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="sev high"></div>
+                  <span class="desc"
+                    >3 accounts showing same pre-churn behavior simultaneously</span
+                  >
+                </div>
+                <div class="row">
+                  <div class="sev med"></div>
+                  <span class="desc">Pipeline coverage below 3x — first time in 90 days</span>
+                </div>
+                <div class="row">
+                  <div class="sev med"></div>
+                  <span class="desc"
+                    >GlobalRetail API usage grew 300% — strongest expansion signal</span
+                  >
+                </div>
+                <div class="row">
+                  <div class="sev med"></div>
+                  <span class="desc">Thursday check-ins → 2x better renewal rate than Monday</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TRIAGE -->
+          <div class="view" id="v-triage">
+            <div class="greeting">
+              <h1>Decide</h1>
+              <p>Proposed by the Twin — your call</p>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                <div class="proposal">
+                  <div class="p-title">Schedule exec check-in with Acme this week</div>
+                  <div class="p-meta">
+                    87% confidence · Delphi resolved with exec outreach in 7 days. $84K ARR at risk.
+                  </div>
+                  <div class="actions">
+                    <button class="approve">Approve</button><button class="later">Edit</button
+                    ><button class="later">Later</button>
+                  </div>
+                </div>
+                <div class="proposal">
+                  <div class="p-title">Direct re-engagement for Orion Labs</div>
+                  <div class="p-meta">
+                    79% · 34 days silence + last interaction negative. 60% churn when this pattern
+                    continues.
+                  </div>
+                  <div class="actions">
+                    <button class="approve">Approve</button><button class="later">Edit</button
+                    ><button class="later">Later</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ACCOUNTS -->
+          <div class="view" id="v-accounts">
+            <div class="greeting">
+              <h1>Accounts</h1>
+              <p>47 accounts · $1.2M ARR</p>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <span class="health bad">64</span><span class="entity">Acme Corp</span
+                  ><span class="desc">· $84K · Renewal 47d</span><span class="time">At Risk</span>
+                </div>
+                <div class="row">
+                  <span class="health bad">51</span><span class="entity">Northwind</span
+                  ><span class="desc">· $120K · Renewal 12d</span><span class="time">Critical</span>
+                </div>
+                <div class="row">
+                  <span class="health warn">68</span><span class="entity">Helix Systems</span
+                  ><span class="desc">· $95K · Renewal 180d</span><span class="time">Warning</span>
+                </div>
+                <div class="row">
+                  <span class="health warn">62</span><span class="entity">Orion Labs</span
+                  ><span class="desc">· $67K · Renewal 220d</span><span class="time">Quiet</span>
+                </div>
+                <div class="row">
+                  <span class="health good">82</span><span class="entity">Brightwave</span
+                  ><span class="desc">· $45K · Renewal 78d</span><span class="time">Healthy</span>
+                </div>
+                <div class="row">
+                  <span class="health good">88</span><span class="entity">GlobalRetail</span
+                  ><span class="desc">· $120K · Expansion</span><span class="time">Growing</span>
+                </div>
+                <div class="row">
+                  <span class="health good">91</span><span class="entity">Meridian Tech</span
+                  ><span class="desc">· $200K · Renewal 150d</span><span class="time">Healthy</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TWIN -->
+          <div class="view" id="v-twin">
+            <div
+              style="
+                background: var(--elevated);
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                height: calc(100vh - 120px);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                gap: 12px;
+                color: var(--muted);
+              "
+            >
+              <div style="font-size: 32px">◎</div>
+              <div style="font-size: 13px">Twin — think together</div>
+              <div style="font-size: 10px; color: var(--dim)">
+                twin.integratewise.ai · Open WebUI + Grok-4.3 + Voice
+              </div>
+            </div>
+          </div>
+
+          <!-- MEMORY -->
+          <div class="view" id="v-memory">
+            <div class="greeting">
+              <h1>What We Know</h1>
+              <p>What we've learned together — institutional memory</p>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                <div style="padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.03)">
+                  <span
+                    style="
+                      font-size: 9px;
+                      background: rgba(59, 130, 246, 0.1);
+                      color: var(--blue);
+                      padding: 1px 6px;
+                      border-radius: 4px;
+                      font-weight: 600;
+                    "
+                    >PATTERN</span
+                  >
+                  <div style="font-size: 12px; font-weight: 500; margin-top: 4px">
+                    Proactive exec outreach resolves health drops 4/5 times
+                  </div>
+                  <div style="font-size: 11px; color: var(--muted); margin-top: 2px">
+                    Confirmed across Delphi, TechFlow, and 2 others. Within 7 days.
+                  </div>
+                </div>
+                <div style="padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.03)">
+                  <span
+                    style="
+                      font-size: 9px;
+                      background: rgba(239, 68, 68, 0.1);
+                      color: var(--red);
+                      padding: 1px 6px;
+                      border-radius: 4px;
+                      font-weight: 600;
+                    "
+                    >DOCTRINE</span
+                  >
+                  <div style="font-size: 12px; font-weight: 500; margin-top: 4px">
+                    Never discount more than 15% without CFO approval
+                  </div>
+                  <div style="font-size: 11px; color: var(--muted); margin-top: 2px">
+                    Locked June 2026. All renewal negotiations.
+                  </div>
+                </div>
+                <div style="padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.03)">
+                  <span
+                    style="
+                      font-size: 9px;
+                      background: rgba(16, 185, 129, 0.1);
+                      color: var(--green);
+                      padding: 1px 6px;
+                      border-radius: 4px;
+                      font-weight: 600;
+                    "
+                    >LEARNING</span
+                  >
+                  <div style="font-size: 12px; font-weight: 500; margin-top: 4px">
+                    Thursday calls have 2x better outcome than Monday
+                  </div>
+                  <div style="font-size: 11px; color: var(--muted); margin-top: 2px">
+                    14 accounts over 3 months. Statistically significant.
+                  </div>
+                </div>
+                <div style="padding: 8px 0">
+                  <span
+                    style="
+                      font-size: 9px;
+                      background: rgba(124, 58, 237, 0.1);
+                      color: var(--purple);
+                      padding: 1px 6px;
+                      border-radius: 4px;
+                      font-weight: 600;
+                    "
+                    >DECISION</span
+                  >
+                  <div style="font-size: 12px; font-weight: 500; margin-top: 4px">
+                    Acme: delay renewal discussion until champion returns
+                  </div>
+                  <div style="font-size: 11px; color: var(--muted); margin-top: 2px">
+                    Decided June 5 by Nirmal. Reviewed weekly.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PERSONAL -->
+          <div class="view" id="v-personal">
+            <div class="greeting">
+              <h1>Your Day</h1>
+              <p>Personal schedule + tasks</p>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px">
+              <div class="card">
+                <div class="card-head"><span class="card-title">Schedule</span></div>
+                <div class="card-body">
+                  <div class="row"><span class="desc">9:00 — Review at-risk portfolio</span></div>
+                  <div class="row"><span class="desc">10:30 — QBR prep for Acme</span></div>
+                  <div class="row"><span class="desc">2:00 — Exec call (if approved)</span></div>
+                  <div class="row"><span class="desc">4:00 — Pipeline review</span></div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-head">
+                  <span class="card-title">Tasks</span><span class="card-badge">4</span>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <span class="desc">Draft Northwind renewal proposal</span
+                    ><span class="time">Today</span>
+                  </div>
+                  <div class="row">
+                    <span class="desc">Follow up Helix escalation</span
+                    ><span class="time">Tomorrow</span>
+                  </div>
+                  <div class="row">
+                    <span class="desc">GlobalRetail expansion deck</span
+                    ><span class="time">Thu</span>
+                  </div>
+                  <div class="row">
+                    <span class="desc">Update Orion success plan</span><span class="time">Fri</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L2 DRAWER -->
+    <div class="l2-drawer" id="drawer">
+      <div class="l2-detail">
+        <h4>
+          <span class="sev crit" style="width: 8px; height: 8px"></span>Acme Corp — Health Critical
+        </h4>
+        <p>
+          Health dropped 18 points in 14 days (82→64). Champion inactive 23 days. Pattern matches
+          Delphi pre-churn. 3 open tickets, renewal in 47 days.
+        </p>
+      </div>
+      <div class="l2-evidence">
+        <h5>Why I'm telling you this</h5>
+        <div class="ev">• Last contact: 23 days ago (Sarah Chen)</div>
+        <div class="ev">• Support: 3 open, 2 escalated</div>
+        <div class="ev">• Delphi resolved w/ exec outreach in 7 days</div>
+        <div class="ev">• ARR exposed: $84,000</div>
+      </div>
+      <div class="l2-actions">
+        <button
+          class="twin-btn"
+          onclick="
+            showView('twin');
+            closeDrawer();
+          "
+        >
+          Think Together ↗
+        </button>
+        <button class="dismiss-btn" onclick="closeDrawer()">Got it</button>
+      </div>
+    </div>
+
+    <script>
+      let selectedDept = "cs";
+      function goTo(id) {
+        document.querySelectorAll(".screen").forEach((s) => s.classList.remove("active"));
+        document.getElementById("s-" + id).classList.add("active");
+      }
+      function selectDept(el, dept) {
+        document.querySelectorAll(".onboard-opt").forEach((o) => o.classList.remove("selected"));
+        el.classList.add("selected");
+        selectedDept = dept;
+      }
+      function selectOpt(el) {
+        document.querySelectorAll(".onboard-opt").forEach((o) => o.classList.remove("selected"));
+        el.classList.add("selected");
+      }
+      function showView(id) {
+        document.querySelectorAll(".view").forEach((v) => v.classList.remove("active"));
+        document.querySelectorAll(".nav-item").forEach((n) => n.classList.remove("active"));
+        const el = document.getElementById("v-" + id);
+        if (el) el.classList.add("active");
+        if (event && event.target) event.target.closest(".nav-item")?.classList.add("active");
+        closeDrawer();
+        const t = {
+          desk: "Dashboard",
+          signals: "Heads Up",
+          insights: "Patterns",
+          triage: "Decide",
+          accounts: "Accounts",
+          twin: "Twin",
+          memory: "What We Know",
+          personal: "Your Day",
+        };
+        document.getElementById("topTitle").textContent = t[id] || id;
+      }
+      function openDrawer() {
+        document.getElementById("drawer").classList.add("open");
+      }
+      function closeDrawer() {
+        document.getElementById("drawer").classList.remove("open");
+      }
+    </script>
+  </body>
+</html>

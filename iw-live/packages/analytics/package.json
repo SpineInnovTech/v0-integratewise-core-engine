@@ -1,0 +1,56 @@
+{
+  "name": "@integratewise/analytics",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cross-platform analytics for IntegrateWise",
+  "main": "./src/index.ts",
+  "module": "./dist/index.mjs",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./providers/*": {
+      "types": "./dist/providers/*.d.ts",
+      "import": "./dist/providers/*.mjs",
+      "require": "./dist/providers/*.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "peerDependencies": {
+    "@amplitude/analytics-browser": "*",
+    "mixpanel-browser": "*",
+    "posthog-js": "*",
+    "react": "^18.0.0 || ^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "@amplitude/analytics-browser": {
+      "optional": true
+    },
+    "mixpanel-browser": {
+      "optional": true
+    },
+    "posthog-js": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@amplitude/analytics-browser": "^2.0.0",
+    "@swc/helpers": "0.5.17",
+    "@types/react": "^18.2.0",
+    "mixpanel-browser": "^2.0.0",
+    "posthog-js": "^1.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0"
+  }
+}

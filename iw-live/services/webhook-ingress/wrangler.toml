@@ -1,0 +1,54 @@
+name = "integratewise-webhook-ingress"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Service bindings
+[[services]]
+binding = "MCP"
+service = "integratewise-mcp-connector"
+
+[[services]]
+binding = "BFF"
+service = "integratewise-bff"
+
+[[services]]
+binding = "CONNECTOR"
+service = "integratewise-connector"
+
+# NOTE: FOLDER_WATCHER removed — folder-watcher worker not yet deployed.
+# Re-add once folder-watcher is live:
+# [[services]]
+# binding = "FOLDER_WATCHER"
+# service = "integratewise-folder-watcher"
+
+# KV Namespaces
+[[kv_namespaces]]
+binding = "CONNECTOR_STATUS"
+id = "f7a3d773ff2841f7954d3cfeae82594f"
+
+# Pipeline queue
+[[queues.producers]]
+queue = "pipeline-process"
+binding = "PIPELINE_QUEUE"
+
+[vars]
+ENVIRONMENT = "dev"
+
+[[routes]]
+pattern = "ingress.dev.integratewise.ai"
+custom_domain = true
+
+[dev]
+inspector_port = 9259
+port = 8799
+
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+[observability.logs]
+enabled = true
+invocation_logs = true
+head_sampling_rate = 1

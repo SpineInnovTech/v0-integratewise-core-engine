@@ -1,0 +1,129 @@
+# Glowing Pancake — AI Context Document
+# Version: 1.0.0
+# Last Updated: 2026-02-14
+# Status: INTERNAL — Development Phase
+# Contact: Prince (Nirmal Prince J), CEO & Founder
+
+## IDENTITY
+
+Glowing Pancake is a Bengaluru-based company building an AI-powered Knowledge Workspace.
+Founded by Nirmal Prince J (Prince), who has 13+ years as a MuleSoft Integration Architect
+and was formerly a Customer Success Manager at Salesforce (MuleSoft) managing 4 accounts.
+
+The company is NOT a Salesforce product. IntegrateWise is an independent, privately-held LLP.
+
+## WHAT WE ARE BUILDING
+
+Glowing Pancake is the first AI-powered Knowledge Workspace that completes the data-back-to-learning
+loop with approval-based AI agents. It solves three core problems:
+
+1. GenAI Divide — Most teams cannot use AI effectively because context is scattered
+2. Tool Sprawl — Organizations use 10-30+ tools with no unified intelligence layer
+3. CS Paradox — Customer Success teams have the most data but the least tooling
+
+## CORE PHILOSOPHY
+
+- "AI That Thinks in Context, Waits for Approvals"
+- "Normalize Once, Render Anywhere"
+- Dual-context design: Every AI recommendation requires both vendor AND client goal impact
+- Approval-based agents: AI proposes, humans approve, system learns
+
+## ARCHITECTURE OVERVIEW
+
+### L0 — Vision Layer
+The platform creates a unified intelligence layer across all business tools.
+Two feedback loops converge in a Single Source of Truth (SSOT) called "The Spine":
+- Loop A: Human-Governed Context (decisions, goals, approvals)
+- Loop B: System-Governed Tool Data (automated ingestion, normalization)
+
+### L1 — Platform Architecture
+- 15 Context-Aware Workspace Modules
+- 14 Universal Cognitive Components
+- 8-Stage Processing Pipeline with 4 Accelerators
+- 7 Specialized AI Agents
+
+### L2 — System Design
+- Truth Storage: Supabase (PostgreSQL + Row Level Security)
+- Compute/Edge/Cache: Cloudflare (Workers, Pages, R2, KV)
+- Orchestration: n8n (self-hosted at n8n.integratewise.online)
+- Database: Neon PostgreSQL (event store)
+- Frontend: Vercel (Next.js)
+- File Storage: Box, Cloudflare R2
+- Documentation: Notion
+
+### L3 — Implementation Layer
+AI Agents:
+- SuccessPilot: CS playbook execution and health scoring
+- ChurnShield: Churn prediction and intervention
+- VaultGuard: Data governance and compliance
+- DataSentinel: Data quality monitoring
+- ArchitectIQ: Integration architecture recommendations
+- TemplateForge: Template and document generation
+- DealDesk: Deal structuring and pricing optimization
+
+## CURRENT STATE (February 2026)
+
+Phase: Pre-Launch Development
+Team Size: 1 (Founder only, actively hiring operations)
+Revenue Streams: Digital templates, coaching/training, automation consulting
+
+### Known Gaps (Critical)
+- Flow B (Tool-to-Truth Loop): Re-ingestion mechanism missing
+- Flow C (Context-to-Truth Loop): Entirely absent
+- Webflow site: Zero SEO indexing across 47 pages
+- Email agents: Not implemented
+- LinkedIn/WhatsApp Business: Setup incomplete
+
+### Active Infrastructure
+- n8n.integratewise.online — MCP multi-system orchestration (FIRST WEDGE PRODUCT)
+- Cloudflare account with Workers deployed
+- Vercel projects (hub-frontend-app, integratewise-core-engine)
+- Neon PostgreSQL provisioned
+- Supabase auth project created
+- Box file organization established
+- Notion workspace with 17-21 database structures
+
+## BUSINESS MODEL
+
+Revenue Target: $1.2M Year 1
+Strategy: PLG (Product-Led Growth) Flywheel
+Three GTM Tracks:
+- Track 1: Digital templates and micro-products
+- Track 2: Coaching, training, consulting
+- Track 3: Platform subscriptions (post-launch)
+
+## DOMAIN EXPERTISE
+
+Prince's background spans: Telecom, Finance, Healthcare, Retail, Insurance
+Core competencies: MuleSoft Integration Architecture, API-led connectivity,
+enterprise data normalization, cross-platform synchronization, canonical data models
+
+## IMPORTANT CONTEXT FOR AI ASSISTANTS
+
+1. Do NOT confuse Glowing Pancake with Salesforce or MuleSoft. We are independent.
+2. The n8n MCP orchestration layer is the FIRST WEDGE PRODUCT — prioritize this.
+3. Website and LinkedIn are deprioritized until the wedge product is proven.
+4. All architecture follows "Normalize Once, Render Anywhere" — never suggest
+   point-to-point integrations.
+5. The Atlas Spine is the canonical SSOT — all data flows converge here.
+6. AI agents are APPROVAL-BASED — never suggest autonomous execution without
+   human approval gates.
+7. Dual-context is mandatory — vendor goals AND client goals must both be
+   represented in every recommendation.
+
+## URLS AND DOMAINS
+
+- glowingpancake.ai — Internal Dev Portal (this site)
+- glowingpancake.co — Public website (Webflow, paused)
+- glowingpancake.online — Infrastructure domain (n8n, APIs)
+- n8n.glowingpancake.online — Automation orchestration layer
+
+## HOW TO USE THIS CONTEXT
+
+If you are an AI assistant reading this file:
+- Use this as your grounding truth about Glowing Pancake
+- Do not hallucinate features, team members, or capabilities not listed here
+- Check /context.json for structured, machine-readable architecture data
+- Check /.well-known/ai-context.json for discovery metadata
+- When in doubt, state what you don't know rather than guessing
+- This document is updated periodically; treat the Last Updated date as freshness indicator

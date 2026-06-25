@@ -1,0 +1,108 @@
+name: Live Verification
+
+# Live Verification (Option A — the other half of the split):
+#   Runs the checks that need DEPLOYED infrastructure or a full browser/runtime —
+#   integration flows (A/B/C), Playwright E2E (onboarding/twin/workspace), and
+#   smoke checks against deployed services (gateway/pipeline).
+#
+#   Separate from unit CI because these cannot pass on a bare runner without a
+#   deployed stack. Trigger manually (or wire to post-deploy) — never blocks merges.
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "What to verify"
+        required: true
+        default: "e2e"
+        type: choice
+        options:
+          - e2e
+          - integration
+          - all
+
+concurrency:
+  group: live-verification-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "22"
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    name: Playwright E2E (onboarding · workspace · gateway-wiring)
+    if: ${{ inputs.target == 'e2e' || inputs.target == 'all' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # Non-blocking: this is verification. The full SPA boots its real provider stack,
+    # so it needs runtime env (VITE_* secrets) or a deployed PLAYWRIGHT_BASE_URL. On a
+    # bare runner without either it can't boot — that is expected, not a pipeline failure.
+    continue-on-error: true
+    env:
+      # Point at a deployed app for true live verification; else the dev server boots
+      # with whatever runtime config the secrets provide (placeholders as last resort).
+      PLAYWRIGHT_BASE_URL: ${{ secrets.PLAYWRIGHT_BASE_URL }}
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://placeholder.supabase.co' }}
+      VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || 'placeholder' }}
+      VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL || '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm --filter @integratewise/web exec playwright install chromium
+
+      - name: Projection context regression (CS persona — single authority)
+        # First-class guard: CUSTOMER_SUCCESS must resolve to ONE context across
+        # header/nav/workbench (PROJECTION_MODEL.md §5). Proven to fail if the
+        # single-authority seed regresses. Runs before the full suite so a context
+        # regression is the first thing surfaced. (Proven bidirectional locally.)
+        run: pnpm --filter @integratewise/web exec playwright test projection-context --project=chromium
+
+      - name: Onboarding + user-landing verification
+        # Verifies the landing decision (unauthenticated → login; new user → onboarding;
+        # returning onboarded user → workspace) and onboarding step progression.
+        run: pnpm --filter @integratewise/web exec playwright test onboarding-journey --project=chromium
+
+      - name: E2E tests (auto-starts dev server per playwright.config.ts)
+        run: pnpm --filter @integratewise/web exec playwright test --project=chromium
+
+  integration:
+    name: Integration Flows (A/B/C — needs deployed infra)
+    if: ${{ inputs.target == 'integration' || inputs.target == 'all' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Integration tests
+        # Requires deployed endpoints / secrets to be configured in the environment.
+        run: pnpm --filter @integratewise/integration-tests test

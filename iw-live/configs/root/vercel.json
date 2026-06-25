@@ -1,0 +1,24 @@
+{
+  "framework": "nextjs",
+  "outputDirectory": ".next",
+  "installCommand": "pnpm install",
+  "buildCommand": "next build",
+  "crons": [
+    {
+      "path": "/api/cron/daily-insights",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/brainstorm/daily-insights",
+      "schedule": "0 10 * * *"
+    },
+    {
+      "path": "/api/cron/spend-insights",
+      "schedule": "0 8 * * 1"
+    },
+    {
+      "path": "/api/cron/hourly-insights",
+      "schedule": "0 * * * *"
+    }
+  ]
+}

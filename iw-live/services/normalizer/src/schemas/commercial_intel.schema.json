@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Commercial Intelligence (SSOT)",
+  "type": "object",
+  "required": ["account_id", "tenant_id", "arr"],
+  "properties": {
+    "account_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "tenant_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "arr": {
+      "type": "number",
+      "minimum": 0
+    },
+    "acv": {
+      "type": "number",
+      "minimum": 0
+    },
+    "tcv": {
+      "type": "number",
+      "minimum": 0
+    },
+    "wallet_share_percent": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "margin_percent": {
+      "type": "number"
+    },
+    "contract_end_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "renewal_risk_level": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"]
+    },
+    "cost_to_serve_usd": {
+      "type": "number"
+    }
+  },
+  "additionalProperties": true
+}

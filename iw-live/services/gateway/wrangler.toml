@@ -1,0 +1,817 @@
+name = "gateway"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+main = "src/index.ts"
+compatibility_date = "2026-06-03"
+compatibility_flags = ["nodejs_compat"]
+
+# Custom domain for dev
+route = { pattern = "gateway.dev.integratewise.ai", custom_domain = true }
+
+# ─── D1 Database (auth reads tenant/user records) ───
+[[d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+
+# Observability — traces and logs
+[observability]
+enabled = true
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+[observability.traces]
+enabled = true
+head_sampling_rate = 0.1
+
+# ─── Secrets from Cloudflare Secrets Store ───
+# Store ID: 1fd83fc5881e4cd296ae3c2fbe80693c
+# NOTE: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, DATABASE_URL, TOKEN_ENCRYPTION_KEY
+# are regular Worker secrets via `wrangler secret put` (not secrets_store_secrets).
+
+# --- Webhook verification secrets ---
+[[secrets_store_secrets]]
+binding = "GITHUB_WEBHOOK_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "GITHUB_WEBHOOK_SECRET"
+
+[[secrets_store_secrets]]
+binding = "HUBSPOT_WEBHOOK_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "HUBSPOT_WEBHOOK_SECRET"
+
+[[secrets_store_secrets]]
+binding = "SALESFORCE_WEBHOOK_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SALESFORCE_WEBHOOK_SECRET"
+
+[[secrets_store_secrets]]
+binding = "STRIPE_WEBHOOK_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "STRIPE_WEBHOOK_SECRET"
+
+[[secrets_store_secrets]]
+binding = "RAZORPAY_WEBHOOK_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "RAZORPAY_WEBHOOK_SECRET"
+
+[[secrets_store_secrets]]
+binding = "NANGO_SECRET_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "NANGO_SECRET_KEY"
+
+[[secrets_store_secrets]]
+binding = "SLACK_SIGNING_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SLACK_SIGNING_SECRET"
+
+# --- OAuth Provider Credentials (required by embedded Tenants service) ---
+[[secrets_store_secrets]]
+binding = "HUBSPOT_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "HUBSPOT_CLIENT_ID"
+
+[[secrets_store_secrets]]
+binding = "HUBSPOT_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "HUBSPOT_CLIENT_SECRET"
+
+[[secrets_store_secrets]]
+binding = "SALESFORCE_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SALESFORCE_CLIENT_ID"
+
+[[secrets_store_secrets]]
+binding = "SALESFORCE_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SALESFORCE_CLIENT_SECRET"
+
+[[secrets_store_secrets]]
+binding = "SLACK_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SLACK_CLIENT_ID"
+
+[[secrets_store_secrets]]
+binding = "SLACK_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SLACK_CLIENT_SECRET"
+
+[[secrets_store_secrets]]
+binding = "NOTION_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "NOTION_CLIENT_ID"
+
+[[secrets_store_secrets]]
+binding = "NOTION_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "NOTION_CLIENT_SECRET"
+
+[[secrets_store_secrets]]
+binding = "ASANA_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "ASANA_CLIENT_ID"
+
+[[secrets_store_secrets]]
+binding = "ASANA_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "ASANA_CLIENT_SECRET"
+
+[[secrets_store_secrets]]
+binding = "LINEAR_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "LINEAR_CLIENT_ID"
+
+[[secrets_store_secrets]]
+binding = "LINEAR_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "LINEAR_CLIENT_SECRET"
+
+[[secrets_store_secrets]]
+binding = "JIRA_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "JIRA_CLIENT_ID"
+
+[[secrets_store_secrets]]
+binding = "JIRA_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "JIRA_CLIENT_SECRET"
+
+[[secrets_store_secrets]]
+binding = "GOOGLE_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "GOOGLE_CLIENT_ID"
+
+[[secrets_store_secrets]]
+binding = "GOOGLE_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "GOOGLE_CLIENT_SECRET"
+
+[[secrets_store_secrets]]
+binding = "GITHUB_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "GITHUB_CLIENT_ID"
+
+[[secrets_store_secrets]]
+binding = "GITHUB_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "GITHUB_CLIENT_SECRET"
+
+# OAUTH_PRIVATE_KEY — RS256 private key for JWT signing (fail-closed if missing)
+[[secrets_store_secrets]]
+binding = "OAUTH_PRIVATE_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "OAUTH_PRIVATE_KEY"
+
+[[secrets_store_secrets]]
+binding = "STRIPE_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "STRIPE_CLIENT_ID"
+
+[[secrets_store_secrets]]
+binding = "STRIPE_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "STRIPE_CLIENT_SECRET"
+
+[[secrets_store_secrets]]
+binding = "ZENDESK_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "ZENDESK_CLIENT_ID"
+
+[[secrets_store_secrets]]
+binding = "ZENDESK_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "ZENDESK_CLIENT_SECRET"
+
+[[secrets_store_secrets]]
+binding = "INTERCOM_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "INTERCOM_CLIENT_ID"
+
+[[secrets_store_secrets]]
+binding = "INTERCOM_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "INTERCOM_CLIENT_SECRET"
+
+[[secrets_store_secrets]]
+binding = "ZOHO_CRM_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "ZOHO_CRM_CLIENT_ID"
+
+[[secrets_store_secrets]]
+binding = "ZOHO_CRM_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "ZOHO_CRM_CLIENT_SECRET"
+
+# ═══════════════════════════════════════════════
+# DEFAULT = DEV (no flags needed for wrangler deploy)
+# ═══════════════════════════════════════════════
+
+[vars]
+ENVIRONMENT = "dev"
+TENANT_HEADER = "x-tenant-id"
+AI_GATEWAY_ID = "integratewise-ai-dev"
+LOG_LEVEL = "debug"
+ENABLE_SIGNALS = "true"
+
+# Service bindings to sibling Workers (dev instances)
+[[services]]
+binding = "PIPELINE"
+service = "integratewise-pipeline"
+
+[[services]]
+binding = "AGENT_RUNTIME"
+service = "iw-agent-runtime"
+
+[[services]]
+binding = "INTELLIGENCE"
+service = "intelligence"
+
+# Additional service bindings (v3.6 consolidated model)
+# NOTE: dev binding targets MUST equal each worker's `name=` (not the
+# "integratewise-*" package name) or `wrangler deploy` fails with
+# "service not found". These now match the deployed worker names.
+[[services]]
+binding = "CONNECTOR"
+service = "connector"
+
+[[services]]
+binding = "CONNECTOR_SYNC"
+service = "integratewise-connector-sync"
+
+[[services]]
+binding = "KNOWLEDGE"
+service = "knowledge"
+
+# BFF is the workflow worker (prod binds workflow-prod). Optional in dev —
+# fetchService() degrades gracefully if it is not deployed.
+[[services]]
+binding = "BFF"
+service = "workflow"
+
+[[services]]
+binding = "L2"
+service = "l2"
+
+[[services]]
+binding = "WEBHOOK_INGRESS"
+service = "integratewise-webhook-ingress"
+
+# NOTE: FOLDER_WATCHER binding removed — folder-watcher worker not yet deployed.
+# Re-add once folder-watcher is live on Cloudflare.
+# [[services]]
+# binding = "FOLDER_WATCHER"
+# service = "folder-watcher"
+
+# AI binding (routes through AI Gateway in code)
+[ai]
+binding = "AI"
+
+# KV for rate limiting + session cache
+[[kv_namespaces]]
+binding = "RATE_LIMITS"
+id = "8f61d841d2574061ac1d547187d72a58"
+
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "508ba759f7a44ca8aaaf8502d603077b"
+
+[[kv_namespaces]]
+binding = "CONNECTOR_STATUS"
+id = "f7a3d773ff2841f7954d3cfeae82594f"
+
+[[kv_namespaces]]
+binding = "SIGNAL_CACHE"
+id = "747166a3165444d1a9c9c8c54abbd93a"
+
+[[kv_namespaces]]
+binding = "METRICS"
+id = "e80ee409f5be4bf8a9556c0917c113e2"
+
+[[kv_namespaces]]
+binding = "OAUTH_STATE_KV"
+id = "d610b2da55bf437ba90444f93077e1c6"
+
+# Custom domain for dev
+
+[dev]
+inspector_port = 9246
+port = 8786
+
+# ═══════════════════════════════════════════════
+# TEST ENVIRONMENT
+# Deploy: wrangler deploy --env=test
+# ═══════════════════════════════════════════════
+
+[env.test]
+name = "gateway-test"
+route = { pattern = "gateway.test.integratewise.ai", custom_domain = true }
+
+[env.test.vars]
+ENVIRONMENT = "test"
+TENANT_HEADER = "x-tenant-id"
+AI_GATEWAY_ID = "integratewise-ai-test"
+LOG_LEVEL = "info"
+ENABLE_SIGNALS = "true"
+
+# AI binding
+[env.test.ai]
+binding = "AI"
+
+# Secrets Store Secrets for test
+[[env.test.secrets_store_secrets]]
+binding = "GITHUB_WEBHOOK_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "GITHUB_WEBHOOK_SECRET"
+
+[[env.test.secrets_store_secrets]]
+binding = "HUBSPOT_WEBHOOK_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "HUBSPOT_WEBHOOK_SECRET"
+
+[[env.test.secrets_store_secrets]]
+binding = "SALESFORCE_WEBHOOK_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SALESFORCE_WEBHOOK_SECRET"
+
+[[env.test.secrets_store_secrets]]
+binding = "STRIPE_WEBHOOK_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "STRIPE_WEBHOOK_SECRET"
+
+[[env.test.secrets_store_secrets]]
+binding = "RAZORPAY_WEBHOOK_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "RAZORPAY_WEBHOOK_SECRET"
+
+[[env.test.secrets_store_secrets]]
+binding = "SLACK_SIGNING_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SLACK_SIGNING_SECRET"
+
+[[env.test.secrets_store_secrets]]
+binding = "HUBSPOT_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "HUBSPOT_CLIENT_ID"
+
+[[env.test.secrets_store_secrets]]
+binding = "HUBSPOT_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "HUBSPOT_CLIENT_SECRET"
+
+[[env.test.secrets_store_secrets]]
+binding = "SALESFORCE_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SALESFORCE_CLIENT_ID"
+
+[[env.test.secrets_store_secrets]]
+binding = "SALESFORCE_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SALESFORCE_CLIENT_SECRET"
+
+[[env.test.secrets_store_secrets]]
+binding = "SLACK_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SLACK_CLIENT_ID"
+
+[[env.test.secrets_store_secrets]]
+binding = "SLACK_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SLACK_CLIENT_SECRET"
+
+[[env.test.secrets_store_secrets]]
+binding = "NOTION_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "NOTION_CLIENT_ID"
+
+[[env.test.secrets_store_secrets]]
+binding = "NOTION_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "NOTION_CLIENT_SECRET"
+
+[[env.test.secrets_store_secrets]]
+binding = "ASANA_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "ASANA_CLIENT_ID"
+
+[[env.test.secrets_store_secrets]]
+binding = "ASANA_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "ASANA_CLIENT_SECRET"
+
+[[env.test.secrets_store_secrets]]
+binding = "LINEAR_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "LINEAR_CLIENT_ID"
+
+[[env.test.secrets_store_secrets]]
+binding = "LINEAR_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "LINEAR_CLIENT_SECRET"
+
+[[env.test.secrets_store_secrets]]
+binding = "JIRA_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "JIRA_CLIENT_ID"
+
+[[env.test.secrets_store_secrets]]
+binding = "JIRA_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "JIRA_CLIENT_SECRET"
+
+# [[env.test.secrets_store_secrets]]
+# binding = "GOOGLE_CLIENT_ID"
+# store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "GOOGLE_CLIENT_ID"
+# 
+# [[env.test.secrets_store_secrets]]
+# binding = "GOOGLE_CLIENT_SECRET"
+# store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "GOOGLE_CLIENT_SECRET"
+
+[[env.test.secrets_store_secrets]]
+binding = "GITHUB_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "GITHUB_CLIENT_ID"
+
+[[env.test.secrets_store_secrets]]
+binding = "GITHUB_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "GITHUB_CLIENT_SECRET"
+
+[[env.test.secrets_store_secrets]]
+binding = "OAUTH_PRIVATE_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "OAUTH_PRIVATE_KEY"
+
+[[env.test.secrets_store_secrets]]
+binding = "STRIPE_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "STRIPE_CLIENT_ID"
+
+[[env.test.secrets_store_secrets]]
+binding = "STRIPE_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "STRIPE_CLIENT_SECRET"
+
+[[env.test.secrets_store_secrets]]
+binding = "ZENDESK_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "ZENDESK_CLIENT_ID"
+
+[[env.test.secrets_store_secrets]]
+binding = "ZENDESK_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "ZENDESK_CLIENT_SECRET"
+
+[[env.test.secrets_store_secrets]]
+binding = "INTERCOM_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "INTERCOM_CLIENT_ID"
+
+[[env.test.secrets_store_secrets]]
+binding = "INTERCOM_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "INTERCOM_CLIENT_SECRET"
+
+[[env.test.secrets_store_secrets]]
+binding = "ZOHO_CRM_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "ZOHO_CRM_CLIENT_ID"
+
+[[env.test.secrets_store_secrets]]
+binding = "ZOHO_CRM_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "ZOHO_CRM_CLIENT_SECRET"
+
+[[env.test.secrets_store_secrets]]
+binding = "NANGO_SECRET_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "NANGO_SECRET_KEY"
+
+[[env.test.services]]
+binding = "PIPELINE"
+service = "pipeline-test"
+
+[[env.test.services]]
+binding = "AGENT_RUNTIME"
+service = "iw-agent-runtime-test"
+
+[[env.test.services]]
+binding = "INTELLIGENCE"
+service = "intelligence-test"
+
+[[env.test.services]]
+binding = "CONNECTOR"
+service = "connector-test"
+
+[[env.test.services]]
+binding = "CONNECTOR_SYNC"
+service = "connector-sync-test"
+
+[[env.test.services]]
+binding = "KNOWLEDGE"
+service = "knowledge-test"
+
+[[env.test.services]]
+binding = "BFF"
+service = "workflow-test"
+
+[[env.test.services]]
+binding = "L2"
+service = "l2-test"
+
+[[env.test.services]]
+binding = "WEBHOOK_INGRESS"
+service = "webhook-ingress-test"
+
+# NOTE: FOLDER_WATCHER binding removed — folder-watcher-test worker not yet deployed.
+# [[env.test.services]]
+# binding = "FOLDER_WATCHER"
+# service = "folder-watcher-test"
+
+[[env.test.kv_namespaces]]
+binding = "RATE_LIMITS"
+id = "8f61d841d2574061ac1d547187d72a58"
+
+[[env.test.kv_namespaces]]
+binding = "SESSIONS"
+id = "508ba759f7a44ca8aaaf8502d603077b"
+
+[[env.test.kv_namespaces]]
+binding = "CONNECTOR_STATUS"
+id = "f7a3d773ff2841f7954d3cfeae82594f"
+
+[[env.test.kv_namespaces]]
+binding = "SIGNAL_CACHE"
+id = "747166a3165444d1a9c9c8c54abbd93a"
+
+[[env.test.kv_namespaces]]
+binding = "METRICS"
+id = "e80ee409f5be4bf8a9556c0917c113e2"
+
+[[env.test.kv_namespaces]]
+binding = "OAUTH_STATE_KV"
+id = "d610b2da55bf437ba90444f93077e1c6"
+
+# ══��════════════════════════════════════════════
+# PROD ENVIRONMENT
+# Deploy: wrangler deploy --env=prod
+# ═══════════════════════════════════════════════
+
+[env.prod]
+name = "gateway-prod"
+routes = [
+  { pattern = "gateway.integratewise.ai", custom_domain = true },
+  "auth.integratewise.ai/*",
+]
+
+[env.prod.vars]
+ENVIRONMENT = "prod"
+TENANT_HEADER = "x-tenant-id"
+AI_GATEWAY_ID = "integratewise-ai-prod"
+LOG_LEVEL = "warn"
+ENABLE_SIGNALS = "true"
+
+# AI binding
+[env.prod.ai]
+binding = "AI"
+
+# Secrets Store Secrets for prod
+[[env.prod.secrets_store_secrets]]
+binding = "GITHUB_WEBHOOK_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "GITHUB_WEBHOOK_SECRET"
+
+[[env.prod.secrets_store_secrets]]
+binding = "HUBSPOT_WEBHOOK_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "HUBSPOT_WEBHOOK_SECRET"
+
+[[env.prod.secrets_store_secrets]]
+binding = "SALESFORCE_WEBHOOK_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SALESFORCE_WEBHOOK_SECRET"
+
+[[env.prod.secrets_store_secrets]]
+binding = "STRIPE_WEBHOOK_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "STRIPE_WEBHOOK_SECRET"
+
+[[env.prod.secrets_store_secrets]]
+binding = "RAZORPAY_WEBHOOK_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "RAZORPAY_WEBHOOK_SECRET"
+
+[[env.prod.secrets_store_secrets]]
+binding = "SLACK_SIGNING_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SLACK_SIGNING_SECRET"
+
+[[env.prod.secrets_store_secrets]]
+binding = "HUBSPOT_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "HUBSPOT_CLIENT_ID"
+
+[[env.prod.secrets_store_secrets]]
+binding = "HUBSPOT_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "HUBSPOT_CLIENT_SECRET"
+
+[[env.prod.secrets_store_secrets]]
+binding = "SALESFORCE_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SALESFORCE_CLIENT_ID"
+
+[[env.prod.secrets_store_secrets]]
+binding = "SALESFORCE_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SALESFORCE_CLIENT_SECRET"
+
+[[env.prod.secrets_store_secrets]]
+binding = "SLACK_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SLACK_CLIENT_ID"
+
+[[env.prod.secrets_store_secrets]]
+binding = "SLACK_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SLACK_CLIENT_SECRET"
+
+[[env.prod.secrets_store_secrets]]
+binding = "NOTION_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "NOTION_CLIENT_ID"
+
+[[env.prod.secrets_store_secrets]]
+binding = "NOTION_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "NOTION_CLIENT_SECRET"
+
+[[env.prod.secrets_store_secrets]]
+binding = "ASANA_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "ASANA_CLIENT_ID"
+
+[[env.prod.secrets_store_secrets]]
+binding = "ASANA_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "ASANA_CLIENT_SECRET"
+
+[[env.prod.secrets_store_secrets]]
+binding = "LINEAR_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "LINEAR_CLIENT_ID"
+
+[[env.prod.secrets_store_secrets]]
+binding = "LINEAR_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "LINEAR_CLIENT_SECRET"
+
+[[env.prod.secrets_store_secrets]]
+binding = "JIRA_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "JIRA_CLIENT_ID"
+
+[[env.prod.secrets_store_secrets]]
+binding = "JIRA_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "JIRA_CLIENT_SECRET"
+
+# [[env.prod.secrets_store_secrets]]
+# binding = "GOOGLE_CLIENT_ID"
+# store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "GOOGLE_CLIENT_ID"
+# 
+# [[env.prod.secrets_store_secrets]]
+# binding = "GOOGLE_CLIENT_SECRET"
+# store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "GOOGLE_CLIENT_SECRET"
+
+[[env.prod.secrets_store_secrets]]
+binding = "GITHUB_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "GITHUB_CLIENT_ID"
+
+[[env.prod.secrets_store_secrets]]
+binding = "GITHUB_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "GITHUB_CLIENT_SECRET"
+
+[[env.prod.secrets_store_secrets]]
+binding = "OAUTH_PRIVATE_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "OAUTH_PRIVATE_KEY"
+
+[[env.prod.secrets_store_secrets]]
+binding = "STRIPE_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "STRIPE_CLIENT_ID"
+
+[[env.prod.secrets_store_secrets]]
+binding = "STRIPE_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "STRIPE_CLIENT_SECRET"
+
+[[env.prod.secrets_store_secrets]]
+binding = "ZENDESK_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "ZENDESK_CLIENT_ID"
+
+[[env.prod.secrets_store_secrets]]
+binding = "ZENDESK_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "ZENDESK_CLIENT_SECRET"
+
+[[env.prod.secrets_store_secrets]]
+binding = "INTERCOM_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "INTERCOM_CLIENT_ID"
+
+[[env.prod.secrets_store_secrets]]
+binding = "INTERCOM_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "INTERCOM_CLIENT_SECRET"
+
+[[env.prod.secrets_store_secrets]]
+binding = "ZOHO_CRM_CLIENT_ID"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "ZOHO_CRM_CLIENT_ID"
+
+[[env.prod.secrets_store_secrets]]
+binding = "ZOHO_CRM_CLIENT_SECRET"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "ZOHO_CRM_CLIENT_SECRET"
+
+[[env.prod.secrets_store_secrets]]
+binding = "NANGO_SECRET_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "NANGO_SECRET_KEY"
+
+[[env.prod.services]]
+binding = "PIPELINE"
+service = "pipeline-prod"
+
+[[env.prod.services]]
+binding = "INTELLIGENCE"
+service = "intelligence-prod"
+
+[[env.prod.services]]
+binding = "CONNECTOR"
+service = "connector-prod"
+
+[[env.prod.services]]
+binding = "CONNECTOR_SYNC"
+service = "integratewise-connector-sync"
+
+[[env.prod.services]]
+binding = "KNOWLEDGE"
+service = "knowledge-prod"
+
+[[env.prod.services]]
+binding = "BFF"
+service = "workflow-prod"
+
+[[env.prod.services]]
+binding = "L2"
+service = "l2-prod"
+
+[[env.prod.services]]
+binding = "AGENT_RUNTIME"
+service = "iw-agent-runtime"
+
+[[env.prod.services]]
+binding = "WEBHOOK_INGRESS"
+service = "integratewise-webhook-ingress"
+
+[[env.prod.services]]
+binding = "FOLDER_WATCHER"
+service = "folder-watcher-prod"
+
+[[env.prod.kv_namespaces]]
+binding = "RATE_LIMITS"
+id = "8f61d841d2574061ac1d547187d72a58"
+
+[[env.prod.kv_namespaces]]
+binding = "SESSIONS"
+id = "508ba759f7a44ca8aaaf8502d603077b"
+
+[[env.prod.kv_namespaces]]
+binding = "CONNECTOR_STATUS"
+id = "f7a3d773ff2841f7954d3cfeae82594f"
+
+[[env.prod.kv_namespaces]]
+binding = "SIGNAL_CACHE"
+id = "747166a3165444d1a9c9c8c54abbd93a"
+
+[[env.prod.kv_namespaces]]
+binding = "METRICS"
+id = "e80ee409f5be4bf8a9556c0917c113e2"
+
+[[env.prod.kv_namespaces]]
+binding = "OAUTH_STATE_KV"
+id = "d610b2da55bf437ba90444f93077e1c6"
+
+[[env.prod.d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"

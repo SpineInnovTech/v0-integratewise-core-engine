@@ -1,0 +1,81 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Python (e.g. apps/dev-portal/python-intelligence)
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Build artifacts
+dist/
+build/
+.next/
+*.tsbuildinfo
+.turbo/
+
+# Environment & secrets
+.env
+.env.*
+.env.local
+!.env.example
+.secrets
+.secrets-new
+.dev.vars
+
+# IDE
+.DS_Store
+*.swp
+*.swo
+*~
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Cloudflare
+.wrangler/
+
+# Lock files (pnpm only)
+package-lock.json
+yarn.lock
+
+# Coverage
+coverage/
+test-results/
+
+# Firebase (legacy)
+.firebase/
+.firebaserc
+
+# Migration export (Neon schema dump; run scripts/export-neon-schema.sh)
+scripts/neon-schema-export.sql
+
+# Legacy/backup (see docs/REPO_STRUCTURE.md §7)
+# Uncomment to ignore backup dirs when you no longer need them in repo:
+# **/src.bak/
+.aider*
+
+# Cursor IDE config (may contain secrets in MCP env blocks)
+.cursor/mcp.json
+
+# direnv (cross-repo isolation)
+.direnv/
+.envrc.local
+.iw/secrets.json
+
+# AI Runtime State — NEVER commit
+.claude/
+.cursor/
+.kimi/
+.kiro/
+.opencode/
+.aider*
+.agent-browser/
+.agent-zero/
+.logs/
+
+*.vite.config.*.mjs
+.vercel

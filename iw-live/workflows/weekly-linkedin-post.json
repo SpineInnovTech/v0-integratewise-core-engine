@@ -1,0 +1,92 @@
+{
+  "name": "IntegrateWise Weekly LinkedIn Post",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "weeksInterval": 1,
+              "triggerAtDay": 3,
+              "triggerAtHour": 10
+            }
+          ]
+        }
+      },
+      "name": "Schedule - Wednesdays 10AM",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://integratewise-think.connect-a1b.workers.dev",
+        "method": "POST",
+        "body": {
+          "prompt": "Generate a LinkedIn post for IntegrateWise about AI-powered knowledge workspaces. Focus on: 1) The problem of fragmented tools, 2) Our unique approach with Spine + Context + AI, 3) A thought-provoking question. Keep it under 150 words, professional but conversational tone."
+        },
+        "options": {}
+      },
+      "name": "Generate Post Content",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Process AI response\nconst content = $input.first().json;\nconst postText = content.response || content.content || content;\n\n// Extract hashtags\nconst hashtags = ['#AI', '#KnowledgeManagement', '#IntegrateWise', '#DigitalWorkspace', '#Productivity'];\n\nreturn [{\n  json: {\n    post: postText + '\\n\\n' + hashtags.join(' '),\n    generatedAt: new Date().toISOString(),\n    platform: 'linkedin'\n  }\n}];"
+      },
+      "name": "Format Post",
+      "type": "n8n-nodes-base.code",
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "text": "=\"📝 New LinkedIn Post Generated\\n\\n\" + $json.post + \"\\n\\nReview and post manually at: https://www.linkedin.com\"",
+        "otherOptions": {},
+        "options": {}
+      },
+      "name": "Send for Review",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [850, 300]
+    }
+  ],
+  "connections": {
+    "Schedule - Wednesdays 10AM": {
+      "main": [
+        [
+          {
+            "node": "Generate Post Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Post Content": {
+      "main": [
+        [
+          {
+            "node": "Format Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Post": {
+      "main": [
+        [
+          {
+            "node": "Send for Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": ["integratewise", "linkedin", "social-media", "content"]
+}

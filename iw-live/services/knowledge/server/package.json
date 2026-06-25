@@ -1,0 +1,30 @@
+{
+  "name": "knowledge-bank-api",
+  "version": "1.0.0",
+  "description": "IntegrateWise Knowledge Bank API Server",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "sync-topics": "tsx src/jobs/topic-sync.ts",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@google-cloud/firestore": "^7.10.0",
+    "@google-cloud/storage": "^7.14.0",
+    "express": "^4.21.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express-validator": "^7.2.0",
+    "google-auth-library": "^9.0.0",
+    "axios": "^1.7.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/cors": "^2.8.17",
+    "@types/node": "^22.10.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "name": "integratewise-webhooks",
+  "version": "1.0.0",
+  "description": "IntegrateWise Webhook Ingress - Cloudflare Worker",
+  "main": "src/worker.ts",
+  "scripts": {
+    "dev": "wrangler dev --inspector-port=0",
+    "deploy": "wrangler deploy",
+    "deploy:prod": "wrangler deploy --env production",
+    "tail": "wrangler tail --env production"
+  },
+  "keywords": [
+    "webhooks",
+    "cloudflare",
+    "workers",
+    "integratewise"
+  ],
+  "author": "IntegrateWise",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@cloudflare/workers-types": "^4.20260317.1",
+    "@integratewise/tenancy": "workspace:*",
+    "@supabase/supabase-js": "^2.47.0",
+    "itty-router": "^5.0.22",
+    "wrangler": "^4.76.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

@@ -1,0 +1,80 @@
+# IntegrateWise — Cursor Agent Rules
+
+## Project Context
+- **Name**: IntegrateWise
+- **Tagline**: "Knowledge Workspace over the Spine, empowered by AI"
+- **Identity**: NOT an OS, NOT a platform, NOT a tool. Never say "IntegrateWise OS" or "Cognitive OS" in code, comments, or docs.
+- **Architecture**: Flow C (L0 → L1 → L2 → L3)
+- **Stack**: React 19, Tailwind v4, shadcn/ui, Supabase, Cloudflare
+
+## Agent Modes (Use @ mention to activate)
+
+### @ui — UI/UX Implementation
+**When to use**: Figma-to-code, components, styling, accessibility
+- Check Figma designs via MCP before implementing
+- Use Tailwind v4 variables (no bracket escaping: `bg-primary` not `bg-[var(--primary)]`)
+- Responsive: sm:640px, md:768px, lg:1024px, xl:1280px
+- Accessibility: aria-labels, keyboard nav, focus states
+- Hierarchy: OnboardingFlow → AppShell → WorkspaceShell
+
+### @backend — Backend & Database
+**When to use**: Supabase, Edge Functions, APIs, migrations
+- RLS policies MANDATORY for all tables
+- Migrations in `/migrations` or `/sql-migrations`
+- Edge Functions in `/supabase/functions/`
+- Naming: snake_case (DB), camelCase (TS)
+- Signal flow: sectorize() → SIGNAL_QUEUE → Dispatcher
+
+### @arch — System Architecture
+**When to use**: Flow C design, Spine, data flow, integrations
+- Spine Objects: Customer, Vendor, Opportunity, Content, Agent, Session
+- Relations: WORKS_WITH, INTERESTED_IN, CREATED_BY, MENTIONED_IN
+- Storage: Org-scoped (shared) vs User-scoped (private)
+- L0: Onboarding → L1: Workspace → L2: Context → L3: Agents
+- Approval-based AI actions (never auto-execute)
+
+### @fullstack — End-to-End Features
+**When to use**: Features spanning API + UI
+1. Data model → 2. API layer → 3. UI components → 4. Wire together
+- React Query for server state
+- react-hook-form + zod for forms
+- Proper loading/error states
+
+### @devops — Infrastructure
+**When to use**: Cloudflare, CI/CD, environments
+- Cloudflare Pages (apps), Workers (services)
+- GitHub Actions (CI/CD)
+- Doppler for secrets (never commit to repo)
+- Test staging before production
+
+### @debug — Troubleshooting
+**When to use**: Errors, bugs, test failures
+1. Gather logs → 2. Isolate reproduction → 3. Hypothesize → 4. Test → 5. Fix → 6. Prevent
+- Check: async/await, race conditions, useEffect deps, RLS policies
+
+## Quick Reference
+
+### Key Files
+- `AGENTS.md` — Session handoffs (MUST read at start, update at end)
+- `ARCHITECTURE_FLOW_C.md` — System design
+- `wrangler.toml` — Cloudflare config
+- `doppler.yaml` — Secret management
+
+### Stack Reminders
+- **Tailwind v4**: Variables work directly (`text-primary`, `bg-surface`)
+- **TypeScript**: Strict mode, no `any`, export types
+- **React 19**: Server components default, `'use client'` when needed
+- **Supabase**: RLS required, use generated Database types
+
+### MCP Servers Available
+- `figma` — Design specs, assets, variables
+- `github` — PRs, issues, code search
+- `supabase` — Database, edge functions
+- `playwright` — Browser automation, testing
+
+## Output Standards
+- Clean, typed TypeScript
+- Export types for complex props
+- Tailwind classes: layout → spacing → typography → effects
+- Error boundaries for async operations
+- Responsive by default

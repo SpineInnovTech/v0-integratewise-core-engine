@@ -1,0 +1,145 @@
+{
+  "schema_version": "1.0",
+  "server": {
+    "name": "integratewise-mcp",
+    "version": "1.0.0",
+    "description": "IntegrateWise Universal Knowledge Workspace — MCP Server. Provides Spine-driven tool discovery, context queries, and governed action execution."
+  },
+  "tools": [
+    {
+      "name": "query_context",
+      "description": "Query the IntegrateWise Spine for architecture, gaps, timeline, or current status",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "What to query: 'architecture', 'gaps', 'timeline', 'status', 'agents'"
+          },
+          "detail_level": {
+            "type": "string",
+            "enum": ["summary", "full"],
+            "default": "summary"
+          }
+        },
+        "required": ["query"]
+      }
+    },
+    {
+      "name": "get_system_status",
+      "description": "Get current system status including active services, recent deployments, and health checks",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "component": {
+            "type": "string",
+            "enum": ["all", "workflows", "database", "workers", "frontend"],
+            "default": "all"
+          }
+        }
+      }
+    },
+    {
+      "name": "create_task",
+      "description": "Create a new task or issue — requires Govern approval for execution",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string", "description": "Task title" },
+          "description": { "type": "string", "description": "Task description" },
+          "priority": {
+            "type": "string",
+            "enum": ["critical", "high", "medium", "low"],
+            "default": "medium"
+          },
+          "category": {
+            "type": "string",
+            "enum": ["architecture", "infrastructure", "agent", "gap", "feature"]
+          }
+        },
+        "required": ["title", "description", "category"]
+      }
+    },
+    {
+      "name": "trigger_workflow",
+      "description": "Trigger a Cloudflare Workflow (services/workflow — CF Workers/Queues)",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "workflow_id": { "type": "string", "description": "Cloudflare Workflow ID or name" },
+          "payload": { "type": "object", "description": "Data to pass to workflow" }
+        },
+        "required": ["workflow_id"]
+      }
+    },
+    {
+      "name": "analyze_with_python",
+      "description": "Run Python Intelligence Runtime analysis on Spine data",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "analysis_type": {
+            "type": "string",
+            "enum": ["churn_prediction", "health_score", "data_quality", "custom"]
+          },
+          "data_source": { "type": "string", "description": "Data source identifier or query" },
+          "parameters": { "type": "object", "description": "Additional parameters for analysis" }
+        },
+        "required": ["analysis_type"]
+      }
+    },
+    {
+      "name": "update_context",
+      "description": "Update the AI context layer (llm.txt, context.json) — requires approval",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "update_type": {
+            "type": "string",
+            "enum": ["milestone", "gap_resolved", "architecture_change", "status_update"]
+          },
+          "content": { "type": "string", "description": "Content of the update" },
+          "requires_approval": { "type": "boolean", "default": true }
+        },
+        "required": ["update_type", "content"]
+      }
+    },
+    {
+      "name": "get_agent_status",
+      "description": "Get status of Spine-driven AI agents",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "agent_name": {
+            "type": "string",
+            "enum": [
+              "all",
+              "SuccessPilot",
+              "ChurnShield",
+              "VaultGuard",
+              "DataSentinel",
+              "ArchitectIQ",
+              "TemplateForge",
+              "DealDesk"
+            ],
+            "default": "all"
+          }
+        }
+      }
+    }
+  ],
+  "resources": [
+    {
+      "uri": "https://integratewise.ai/llm.txt",
+      "name": "llm_context",
+      "description": "Primary AI context document — No-Hallucination Library",
+      "mimeType": "text/plain"
+    },
+    {
+      "uri": "https://integratewise.ai/context.json",
+      "name": "structured_context",
+      "description": "Machine-readable Spine architecture context",
+      "mimeType": "application/json"
+    }
+  ]
+}

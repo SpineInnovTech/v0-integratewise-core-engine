@@ -1,0 +1,19 @@
+<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dark blue background -->
+  <rect width="180" height="180" rx="40" fill="#1a365d"/>
+
+  <!-- Left bar with cutout for circle -->
+  <rect x="25" y="15" width="35" height="140" fill="white"/>
+
+  <!-- Circle cutout (same color as background) -->
+  <circle cx="42" cy="55" r="14" fill="#1a365d"/>
+
+  <!-- Right bar -->
+  <rect x="120" y="15" width="35" height="140" fill="white"/>
+
+  <!-- Bottom W/chevron shape -->
+  <polygon points="25,155 90,105 155,155 155,175 90,130 25,175" fill="white"/>
+
+  <!-- Teal upward arrow -->
+  <path d="M90,20 L72,48 L81,48 L81,78 L99,78 L99,48 L108,48 Z" fill="#14b8a6"/>
+</svg>

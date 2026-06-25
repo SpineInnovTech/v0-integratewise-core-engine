@@ -1,0 +1,4 @@
+{
+  "name": "IntegrateWise Knowledge Bank",
+  "description": "A minimal viable UI for searching and managing the IntegrateWise Knowledge Bank, built for a 48-hour MVP sprint. It provides an inbox for recent session summaries, a powerful search interface powered by Vertex AI Search, and a configuration page for managing sync topics."
+}

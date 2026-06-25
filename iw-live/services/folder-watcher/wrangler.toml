@@ -1,0 +1,51 @@
+name = "integratewise-folder-watcher"
+main = "src/index.ts"
+compatibility_date = "2024-04-05"
+
+[durable_objects]
+bindings = [
+  { name = "FOLDER_WATCHER_DO", class_name = "FolderWatcherDO" }
+]
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["FolderWatcherDO"]
+
+[[queues.producers]]
+queue = "pipeline-process"
+binding = "PIPELINE_QUEUE"
+
+[[d1_databases]]
+binding = "SPINE_CACHE_DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+[[vectorize]]
+binding = "AI_SEARCH"
+index_name = "integratewise-knowledge"
+
+[env.test]
+name = "folder-watcher-test"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+[[env.test.routes]]
+pattern = "watcher.test.integratewise.ai"
+custom_domain = true
+
+[env.prod]
+name = "folder-watcher-prod"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+[[env.prod.routes]]
+pattern = "watcher.integratewise.ai"
+custom_domain = true
+
+[[routes]]
+pattern = "watcher.dev.integratewise.ai"
+custom_domain = true
+
+
+
+[dev]
+port = 8807
+inspector_port = 9267

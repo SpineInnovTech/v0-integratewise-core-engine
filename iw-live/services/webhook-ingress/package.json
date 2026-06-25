@@ -1,0 +1,20 @@
+{
+  "name": "integratewise-webhook-ingress",
+  "version": "1.0.0",
+  "description": "Webhook ingress and real-time connector event broadcasting",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev --inspector-port=0",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "hono": "^4.12.4"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260317.1",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.3.0",
+    "wrangler": "^4.76.0"
+  }
+}

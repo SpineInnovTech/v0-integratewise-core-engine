@@ -1,0 +1,17 @@
+{
+  "name": "@integratewise/memory-repo-connector",
+  "version": "1.0.0",
+  "description": "Syncs IntegrateWise memory vault to Cloudflare Pipeline",
+  "main": "src/sync.ts",
+  "scripts": {
+    "sync": "ts-node src/sync.ts"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}

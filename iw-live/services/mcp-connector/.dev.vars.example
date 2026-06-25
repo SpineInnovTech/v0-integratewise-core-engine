@@ -1,0 +1,8 @@
+# Copy to .dev.vars and set your values (do not commit .dev.vars)
+# Required for wrangler dev when not using remote Secrets Store:
+# SUPABASE_URL=
+# SUPABASE_SERVICE_ROLE_KEY=
+# GITHUB_WEBHOOK_SECRET=
+
+# Optional: for /tools and /invoke without JWT (use x-tenant-id with this key)
+# MCP_CONNECTOR_API_KEY=

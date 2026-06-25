@@ -1,0 +1,24 @@
+node_modules
+dist
+.next
+.wrangler
+.pnpm-home
+.turbo
+.claude
+.cursor/plans
+apps/web/src.bak
+docs/archive
+legacy-repos
+coverage
+*.min.js
+pnpm-lock.yaml
+
+# n8n workflow JSON — uses n8n expression syntax (="...") which is not valid JSON
+n8n-workflows/
+n8n-workflows/**
+
+# External/generated files — do not reformat
+v0-review/
+supabase/migrations/
+**/schemas/*.schema.json
+vitest-stubs/

@@ -1,0 +1,217 @@
+flowchart TD
+
+%% ======================
+%% LAYER 1: WORKSPACE (DAILY + KEY SPINE FIELDS)
+%% ======================
+subgraph L1_Workspace["Layer 1: Workspace (Human-First, Daily Use)"]
+    Dashboard["Dashboard"]
+    Projects["Projects"]
+    Accounts["Accounts"]
+    Contacts["Contacts"]
+    Meetings["Meetings"]
+    Docs["Documents"]
+    Tasks["Tasks"]
+    Calendar["Calendar"]
+    Notes["Notes"]
+    Knowledge["Knowledge Base"]
+    Team["Team Directory"]
+    Pipeline["Opportunities"]
+    Risks["Risks"]
+    Expansion["Expansion Initiatives"]
+    Analytics_Widget["Analytics Widgets (KPIs, Trends, Stats)"]
+    AI_Chat_Bar["AI Chat Bar / Quick Ask"]
+end
+
+Accounts --- S_Account["Account (ID, Name, Owner, ARR, Health, Status, Industry, Segment, Renewal)"]
+Contacts --- S_Contact["Contact (Name, Email, Role, Account, Active/Inactive, Last Contact)"]
+Projects --- S_Objective["Objective (Name, Owner, Due, Status, Linked Account)"]
+Tasks --- S_Task["Task (ID, Name, Owner, Due, Status, Linked Project/Account)"]
+Meetings --- S_Meeting["Meeting (Date, Attendees, Account, Notes, Type, Outcome)"]
+Docs --- S_Doc["Doc (Title, Type, Owner, Version, Linked Account/Project)"]
+Pipeline --- S_Opportunity["Opportunity (ID, Value, Stage, Account, Owner, Confidence, Target Close)"]
+Risks --- S_Risk["Risk (Title, Impact, Mitigation, Owner, Status, Linked Account/Project)"]
+Expansion --- S_Initiative["Initiative (Name, Value, Progress, Owner, Status, Linked Account)"]
+
+Accounts --> Contacts
+Accounts --> Projects
+Projects --> Tasks
+Tasks --> Meetings
+Meetings --> Notes
+Docs --> Notes
+Accounts --> Pipeline
+Accounts --> Risks
+Accounts --> Expansion
+Projects --> Knowledge
+Team --> Projects
+Team --> Accounts
+
+Dashboard --> Analytics_Widget
+Accounts --> Analytics_Widget
+Projects --> Analytics_Widget
+Meetings --> Analytics_Widget
+Tasks --> Analytics_Widget
+Dashboard --> AI_Chat_Bar
+Accounts --> AI_Chat_Bar
+Tasks --> AI_Chat_Bar
+
+%% ======================
+%% LAYER 2: COGNITIVE/AI OVERLAYS
+%% ======================
+subgraph L2_Cognitive["Layer 2: Cognitive/AI Overlay (Opt-In, Advanced)"]
+    EvidenceDrawer["Evidence Drawer (Timeline, All Activity, Deep Fields)"]
+    AI_Analytics["Advanced Analytics & Deep Dive"]
+    AI_Chat_History["AI Chat History & Memory"]
+    AI_Insights["AI-Generated Insights, Explanations"]
+    Nudges["Action Nudges / Alerts (AI & Data-driven)"]
+    AgentOrchestrator["Agent/Automation Controls (Advanced)"]
+    Approvals["Approval / Human-in-the-Loop"]
+    MemoryStore["Session Memory / Archive"]
+    AuditPanel["Audit, Compliance, Traceability"]
+end
+
+Analytics_Widget -.-> AI_Analytics
+AI_Chat_Bar -.-> AI_Chat_History
+AI_Chat_Bar -.-> AI_Insights
+
+Projects -.-> EvidenceDrawer
+Accounts -.-> EvidenceDrawer
+Meetings -.-> EvidenceDrawer
+Tasks -.-> EvidenceDrawer
+Notes -.-> EvidenceDrawer
+Risks -.-> AI_Analytics
+Pipeline -.-> AI_Analytics
+Expansion -.-> AI_Analytics
+
+AI_Analytics -.-> Dashboard
+AI_Insights -.-> Dashboard
+AI_Chat_History -.-> Dashboard
+
+Nudges -.-> Tasks
+Nudges -.-> Accounts
+AgentOrchestrator -.-> Tasks
+AgentOrchestrator -.-> Approvals
+Approvals -.-> Accounts
+
+EvidenceDrawer --> MemoryStore
+AI_Analytics --> MemoryStore
+AI_Chat_History --> MemoryStore
+AI_Insights --> MemoryStore
+Nudges --> MemoryStore
+AgentOrchestrator --> MemoryStore
+Approvals --> MemoryStore
+AuditPanel --> MemoryStore
+MemoryStore --> AuditPanel
+
+style EvidenceDrawer stroke-dasharray: 5 5
+style AI_Analytics stroke-dasharray: 5 5
+style AI_Chat_History stroke-dasharray: 5 5
+style AI_Insights stroke-dasharray: 5 5
+style Nudges stroke-dasharray: 5 5
+style AgentOrchestrator stroke-dasharray: 5 5
+style Approvals stroke-dasharray: 5 5
+style AuditPanel stroke-dasharray: 5 5
+style MemoryStore stroke-dasharray: 5 5
+
+%% ======================
+%% LAYER 3: BACKEND / PLATFORM / MICROSERVICES
+%% ======================
+subgraph L3_Backend["Layer 3: Backend & Platform"]
+    Ingest["Ingestion Layer (AI Loader, Initial Load, Connectors)"]
+    Processing["Processing Layer (Normalizer, Classifier, Enricher)"]
+    EventBus["Event Bus & Streaming Pipeline"]
+    MemorySvc["Memory & Triage Bot (Session/AI Chat, Merge, Compact)"]
+    SpineDB["Spine Database (Truth, SSOT, Structured)"]
+    ContextDB["Context Database (Unstructured, Signals, AI, Files)"]
+    AuditStore["Audit & Evidence Store"]
+    AgentEngine["Agent Engine (Workflow, Policy, Colony)"]
+    SyncService["Sync/Events Service (Polling, Patch, Webhooks)"]
+    Orchestrator["Orchestrator (Agent Routing, Approvals, Workflow)"]
+    Connectors["Connectors Hub (Slack, Salesforce, Jira, Notion, GDrive, etc)"]
+    WebhookSvc["Webhooks Handler"]
+    Governance["Governance/Policy Layer (RBAC, Approvals, Roles)"]
+    Observability["Observability/Monitoring (Health, Metrics, SLO, Logs, Tracing)"]
+    Platform["Platform Infra (Cloudflare Workers, Durable Objects, R2, D1)"]
+    Security["Security Layer (Auth, Tokens, Throttling, Idempotency)"]
+    API["API Gateway/Edge Layer"]
+    Billing["Billing/Admin (Plans, Usage, Invoices)"]
+    DevTools["Developer Tools (API Keys, Sandbox, Docs, Webhooks)"]
+end
+
+%% L1/L2 -> Backend dataflow
+Ingest <-- Dashboard
+Ingest <-- Projects
+Ingest <-- Accounts
+Ingest <-- Contacts
+Ingest <-- Meetings
+Ingest <-- Docs
+Ingest <-- Tasks
+Ingest <-- Calendar
+Ingest <-- Notes
+Ingest <-- Knowledge
+Ingest <-- Team
+Ingest <-- Pipeline
+Ingest <-- Risks
+Ingest <-- Expansion
+
+Connectors <-- Ingest
+WebhookSvc <-- Ingest
+
+Processing <-- Ingest
+EventBus <-- Processing
+MemorySvc <-- EventBus
+AgentEngine <-- EventBus
+SyncService <-- EventBus
+Orchestrator <-- AgentEngine
+
+SpineDB <-- Processing
+ContextDB <-- Processing
+AuditStore <-- Processing
+
+MemoryStore <-- MemorySvc
+EvidenceDrawer <-- AuditStore
+AI_Chat_History <-- MemorySvc
+AI_Analytics <-- SpineDB
+AI_Analytics <-- ContextDB
+AI_Insights <-- SpineDB
+AI_Insights <-- ContextDB
+
+AgentOrchestrator <-- AgentEngine
+Approvals <-- Orchestrator
+AuditPanel <-- AuditStore
+AuditPanel <-- Governance
+
+Governance <-- Orchestrator
+Governance <-- API
+
+Observability <-- Platform
+Observability <-- EventBus
+Observability <-- Processing
+Observability <-- AgentEngine
+Observability <-- SyncService
+
+Platform <-- API
+Platform <-- Security
+API <-- Dashboard
+API <-- Projects
+API <-- Accounts
+API <-- Contacts
+API <-- Meetings
+API <-- Docs
+API <-- Tasks
+API <-- Calendar
+API <-- Notes
+API <-- Knowledge
+API <-- Team
+API <-- Pipeline
+API <-- Risks
+API <-- Expansion
+
+Billing <-- API
+DevTools <-- API
+
+%% Connectors and syncs
+Connectors <-- SyncService
+SyncService <-- Orchestrator
+
+%% Visual emphasis
+style L3_Backend fill:#e8e8e8,stroke:#505050,stroke-width:2px

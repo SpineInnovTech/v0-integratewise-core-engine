@@ -1,0 +1,445 @@
+# Consolidated Intelligence Worker (v3.6 Architecture)
+# Merges: think + act + govern + agents
+name = "intelligence"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+main = "src/index.ts"
+compatibility_date = "2026-06-03"
+compatibility_flags = ["nodejs_compat"]
+
+# Custom domain for dev
+route = { pattern = "intelligence.dev.integratewise.ai", custom_domain = true }
+
+# Cron triggers for L0.5 Operating Layer
+# [triggers]
+# crons = [
+#   "0 7 * * *",      # Morning brief at 7am (MorningBriefWorkflow)
+#   "0 */6 * * *"     # Signal analysis sweep every 6 hours
+# ]
+
+# Observability (see docs/WORKERS_OBSERVABILITY_OTLP.md)
+[observability]
+enabled = true
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+[observability.traces]
+enabled = true
+head_sampling_rate = 0.1
+
+# NOTE: Phase 1 - OpenRouter API key (free tier)
+[[secrets_store_secrets]]
+binding = "OPENROUTER_API_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "OPENROUTER_API_KEY"
+
+# Optional API keys (commented out for Phase 1)
+# [[secrets_store_secrets]]
+# binding = "OPENAI_API_KEY"
+# store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "OPENAI_API_KEY"
+
+# [[secrets_store_secrets]]
+# binding = "GITHUB_TOKEN"
+# store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "GITHUB_TOKEN"
+
+# [[secrets_store_secrets]]
+# binding = "GOOGLE_API_KEY"
+# store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "GOOGLE_API_KEY"
+
+# [[secrets_store_secrets]]
+# binding = "XAI_API_KEY"
+# store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "XAI_API_KEY"
+
+# [[secrets_store_secrets]]
+# binding = "OPENCODE_API_KEY"
+# store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "OPENCODE_API_KEY"
+
+# ═══════════════════════════════════════════════
+# DEFAULT = DEV
+# Deploy: wrangler deploy (no flags needed)
+# ═══════════════════════════════════════════════
+
+[vars]
+ENVIRONMENT = "dev"
+VECTORIZE_INDEX = "intelligence-embeddings"
+AI_GATEWAY_ID = "integratewise-ai-dev"
+LOG_LEVEL = "debug"
+ENABLE_SIGNALS = "true"
+LIBRARY_BASE_URL = "https://integratewise.ai"
+
+# Vectorize binding (same index name across envs, isolated by metadata)
+# NOTE: Commenting out - moving to AI Search (Phase 3)
+# [[vectorize]]
+# binding = "VECTOR_INDEX"
+# index_name = "intelligence-embeddings"
+
+# AI binding
+[ai]
+binding = "AI"
+
+# --- Queue Consumers (dev) ---
+# [[queues.consumers]]
+# queue = "intelligence-events"
+# max_batch_size = 10
+# max_batch_timeout = 30
+
+# [[queues.consumers]]
+# queue = "intelligence-act"
+# max_batch_size = 10
+# max_batch_timeout = 30
+
+# [[queues.consumers]]
+# queue = "ops-dlq"
+# max_batch_size = 10
+# max_batch_timeout = 30
+
+# [[queues.consumers]]
+# queue = "signals"
+# max_batch_size = 10
+# max_batch_timeout = 30
+
+# --- Queue Producers (dev) ---
+[[queues.producers]]
+queue = "pipeline-process"
+binding = "PIPELINE_QUEUE"
+
+[[queues.producers]]
+queue = "intelligence-act"
+binding = "INTELLIGENCE_ACT_QUEUE"
+
+[[queues.producers]]
+queue = "ops-dlq"
+binding = "OPS_DLQ_QUEUE"
+
+[[queues.producers]]
+queue = "memory-promote"
+binding = "MEMORY_PROMOTE"
+
+# --- Workflows (dev) ---
+[[workflows]]
+name = "triage-workflow"
+binding = "TRIAGE_WORKFLOW"
+class_name = "TriageWorkflow"
+
+[[workflows]]
+name = "bulk-cleanup-swarm"
+binding = "AGENT_COLONY"
+class_name = "BulkCleanupSwarmWorkflow"
+
+# --- Durable Objects (dev) ---
+[durable_objects]
+bindings = [
+  { name = "HANDOFF_TIMEOUT", class_name = "HandoffTimeoutDO" }
+]
+
+[[migrations]]
+tag = "v1-handoff-timeout-do"
+new_classes = ["HandoffTimeoutDO"]
+
+# --- Service Bindings (dev) ---
+[[services]]
+binding = "CONNECTOR"
+service = "integratewise-connector"
+
+[[services]]
+binding = "WORKFLOW"
+service = "integratewise-workflow"
+
+[[services]]
+binding = "KNOWLEDGE"
+service = "integratewise-knowledge"
+
+[[services]]
+binding = "PIPELINE"
+service = "integratewise-pipeline"
+
+# NOTE: GOVERN binding removed — govern was merged into intelligence in v3.6 (self-reference was misleading)
+
+[[d1_databases]]
+binding = "D1"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+[[ai_search_namespaces]]
+binding = "AI_SEARCH"
+namespace = "integratewise-intelligence"
+
+# R2 bucket — memory content storage (DOC-09 Section 3)
+[[r2_buckets]]
+binding = "FILES"
+bucket_name = "integratewise-files-prod"
+
+# Custom domain for dev
+
+# Dev environment
+[dev]
+inspector_port = 9248
+port = 8788
+
+# ═══════════════════════════════════════════════
+# TEST ENVIRONMENT
+# Deploy: wrangler deploy --env=test
+# ═══════════════════════════════════════════════
+
+[env.test]
+name = "intelligence-test"
+route = { pattern = "intelligence.test.integratewise.ai", custom_domain = true }
+
+[env.test.vars]
+ENVIRONMENT = "test"
+AI_GATEWAY_ID = "integratewise-ai-test"
+LOG_LEVEL = "info"
+ENABLE_SIGNALS = "true"
+LIBRARY_BASE_URL = "https://integratewise.ai"
+
+# AI binding
+[env.test.ai]
+binding = "AI"
+
+# Secrets Store Secrets for test (Phase 1 - OpenRouter)
+[[env.test.secrets_store_secrets]]
+binding = "OPENROUTER_API_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "OPENROUTER_API_KEY"
+
+# Optional API keys (commented out for Phase 1)
+# [[env.test.secrets_store_secrets]]
+# binding = "OPENAI_API_KEY"
+# store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "OPENAI_API_KEY"
+#
+# [[env.test.secrets_store_secrets]]
+# binding = "GITHUB_TOKEN"
+# store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "GITHUB_TOKEN"
+#
+# [[env.test.secrets_store_secrets]]
+# binding = "GOOGLE_API_KEY"
+# store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "GOOGLE_API_KEY"
+#
+# [[env.test.secrets_store_secrets]]
+# binding = "XAI_API_KEY"
+# store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "XAI_API_KEY"
+#
+# [[env.test.secrets_store_secrets]]
+# binding = "OPENCODE_API_KEY"
+# store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "OPENCODE_API_KEY"
+
+# [[env.test.vectorize]]
+# binding = "VECTOR_INDEX"
+# index_name = "intelligence-embeddings"
+
+[[env.test.queues.consumers]]
+queue = "intelligence-events"
+max_batch_size = 10
+max_batch_timeout = 30
+
+[[env.test.queues.consumers]]
+queue = "intelligence-act"
+max_batch_size = 10
+max_batch_timeout = 30
+
+[[env.test.queues.consumers]]
+queue = "ops-dlq"
+max_batch_size = 10
+max_batch_timeout = 30
+
+[[env.test.queues.consumers]]
+queue = "signals"
+max_batch_size = 10
+max_batch_timeout = 30
+
+[[env.test.queues.producers]]
+queue = "pipeline-process"
+binding = "PIPELINE_QUEUE"
+
+[[env.test.queues.producers]]
+queue = "intelligence-act"
+binding = "INTELLIGENCE_ACT_QUEUE"
+
+[[env.test.queues.producers]]
+queue = "ops-dlq"
+binding = "OPS_DLQ_QUEUE"
+
+[[env.test.queues.producers]]
+queue = "memory-promote"
+binding = "MEMORY_PROMOTE"
+
+[[env.test.workflows]]
+name = "triage-workflow"
+binding = "TRIAGE_WORKFLOW"
+class_name = "TriageWorkflow"
+
+[[env.test.workflows]]
+name = "bulk-cleanup-swarm"
+binding = "AGENT_COLONY"
+class_name = "BulkCleanupSwarmWorkflow"
+
+[env.test.durable_objects]
+bindings = [
+  { name = "HANDOFF_TIMEOUT", class_name = "HandoffTimeoutDO" }
+]
+
+[[env.test.services]]
+binding = "CONNECTOR"
+service = "connector-test"
+
+[[env.test.services]]
+binding = "WORKFLOW"
+service = "workflow-test"
+
+[[env.test.services]]
+binding = "KNOWLEDGE"
+service = "knowledge-test"
+
+[[env.test.services]]
+binding = "PIPELINE"
+service = "pipeline-test"
+
+[[env.test.d1_databases]]
+binding = "D1"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+[[env.test.ai_search_namespaces]]
+binding = "AI_SEARCH"
+namespace = "integratewise-intelligence"
+
+# ═══════════════════════════════════════════════
+# PROD ENVIRONMENT
+# Deploy: wrangler deploy --env=prod
+# ═══════════════════════════════════════════════
+
+[env.prod]
+name = "intelligence-prod"
+route = { pattern = "intelligence.integratewise.ai", custom_domain = true }
+
+[env.prod.vars]
+ENVIRONMENT = "prod"
+AI_GATEWAY_ID = "integratewise-ai-prod"
+LOG_LEVEL = "warn"
+ENABLE_SIGNALS = "true"
+LIBRARY_BASE_URL = "https://integratewise.ai"
+
+# AI binding
+[env.prod.ai]
+binding = "AI"
+
+# Secrets Store Secrets for prod (Phase 1 - OpenRouter)
+[[env.prod.secrets_store_secrets]]
+binding = "OPENROUTER_API_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "OPENROUTER_API_KEY"
+
+# Optional API keys (commented out for Phase 1)
+# [[env.prod.secrets_store_secrets]]
+# binding = "OPENAI_API_KEY"
+# store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "OPENAI_API_KEY"
+#
+# [[env.prod.secrets_store_secrets]]
+# binding = "GITHUB_TOKEN"
+# store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "GITHUB_TOKEN"
+#
+# [[env.prod.secrets_store_secrets]]
+# binding = "GOOGLE_API_KEY"
+# store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "GOOGLE_API_KEY"
+#
+# [[env.prod.secrets_store_secrets]]
+# binding = "XAI_API_KEY"
+# store_id =="1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "XAI_API_KEY"
+#
+# [[env.prod.secrets_store_secrets]]
+# binding = "OPENCODE_API_KEY"
+# store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "OPENCODE_API_KEY"
+
+# [[env.prod.vectorize]]
+# binding = "VECTOR_INDEX"
+# index_name = "intelligence-embeddings"
+
+[[env.prod.queues.consumers]]
+queue = "intelligence-events"
+max_batch_size = 10
+max_batch_timeout = 30
+
+[[env.prod.queues.consumers]]
+queue = "intelligence-act"
+max_batch_size = 10
+max_batch_timeout = 30
+
+[[env.prod.queues.consumers]]
+queue = "ops-dlq"
+max_batch_size = 10
+max_batch_timeout = 30
+
+[[env.prod.queues.consumers]]
+queue = "signals"
+max_batch_size = 10
+max_batch_timeout = 30
+
+[[env.prod.queues.producers]]
+queue = "pipeline-process"
+binding = "PIPELINE_QUEUE"
+
+[[env.prod.queues.producers]]
+queue = "intelligence-act"
+binding = "INTELLIGENCE_ACT_QUEUE"
+
+[[env.prod.queues.producers]]
+queue = "ops-dlq"
+binding = "OPS_DLQ_QUEUE"
+
+[[env.prod.queues.producers]]
+queue = "memory-promote"
+binding = "MEMORY_PROMOTE"
+
+[[env.prod.workflows]]
+name = "triage-workflow"
+binding = "TRIAGE_WORKFLOW"
+class_name = "TriageWorkflow"
+
+[[env.prod.workflows]]
+name = "bulk-cleanup-swarm"
+binding = "AGENT_COLONY"
+class_name = "BulkCleanupSwarmWorkflow"
+
+[env.prod.durable_objects]
+bindings = [
+  { name = "HANDOFF_TIMEOUT", class_name = "HandoffTimeoutDO" }
+]
+
+[[env.prod.services]]
+binding = "CONNECTOR"
+service = "connector-prod"
+
+[[env.prod.services]]
+binding = "WORKFLOW"
+service = "workflow-prod"
+
+[[env.prod.services]]
+binding = "KNOWLEDGE"
+service = "knowledge-prod"
+
+[[env.prod.services]]
+binding = "PIPELINE"
+service = "pipeline-prod"
+
+[[env.prod.d1_databases]]
+binding = "D1"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+[[env.prod.ai_search_namespaces]]
+binding = "AI_SEARCH"
+namespace = "integratewise-intelligence"

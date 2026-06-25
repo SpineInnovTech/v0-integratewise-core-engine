@@ -1,0 +1,24 @@
+# Doppler Configuration for IntegrateWise Unified Frontend (Vite)
+# Replaces the old Next.js web app's Doppler config
+#
+# Project: integratewise
+# Configs: dev_web-unified, stg_web-unified, prd_web-unified
+#
+# Required secrets in Doppler:
+#   VITE_SUPABASE_URL          - https://<project-id>.supabase.co
+#   VITE_SUPABASE_ANON_KEY     - Supabase public anon key
+#   VITE_API_BASE_URL           - Gateway Worker URL (e.g., https://gateway.integratewise.workers.dev)
+#   VITE_POSTHOG_KEY            - PostHog analytics key (optional)
+#   VITE_SENTRY_DSN             - Sentry error tracking (optional)
+#
+# Usage:
+#   doppler run --config dev_web-unified -- npm run dev
+#   doppler run --config prd_web-unified -- npm run build
+#
+# Deploy:
+#   doppler run --config prd_web-unified -- wrangler pages deploy dist --project-name=integratewise
+
+setup:
+  - project: integratewise
+    config: dev_web-unified
+    path: .

@@ -1,0 +1,29 @@
+{
+  "name": "@integratewise/knowledge-bank-ui",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Canonical in-repo Knowledge Bank UI package for IntegrateWise",
+  "main": "./index.tsx",
+  "types": "./types.ts",
+  "exports": {
+    ".": "./index.tsx",
+    "./App": "./App.tsx",
+    "./types": "./types.ts",
+    "./services/api": "./services/api.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "typescript": "^5.7.3"
+  }
+}

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IntegrateWise | Account Success</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        background: #f4f7f6;
+        margin: 0;
+        color: #333;
+      }
+      .workbench {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+      }
+      header {
+        background: #1a2a3a;
+        color: white;
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .workbench-upper {
+        flex: 2;
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 1rem;
+        padding: 1rem;
+      }
+      .widget {
+        background: white;
+        border-radius: 8px;
+        padding: 1rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .workbench-lower {
+        flex: 1;
+        background: #fff;
+        border-top: 2px solid #ddd;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .proposal-item {
+        border-left: 4px solid #ccc;
+        padding: 0.5rem;
+        margin-bottom: 0.5rem;
+        background: #f9f9f9;
+      }
+      .state-pending {
+        border-color: #f39c12;
+      }
+      .state-approved {
+        border-color: #27ae60;
+      }
+
+      #twin-chat {
+        flex: 1;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 0.5rem;
+        overflow-y: auto;
+      }
+      #twin-input {
+        width: 100%;
+        padding: 0.5rem;
+        margin-top: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="workbench">
+      <header>
+        <strong>IntegrateWise</strong> | <span>Normalize Once, Render Anywhere</span>
+        <small>Account Success Wedge</small>
+      </header>
+
+      <div class="workbench-upper">
+        <!-- At-Risk Brief & Entity 360 -->
+        <div class="widget">
+          <h3>Daily At-Risk Brief</h3>
+          <p>Synthesis: <em>Org Memory</em> + <em>Spine</em></p>
+          <ul>
+            <li>Company A: Health Score 42 (Engagement Drop)</li>
+            <li>Company B: Renewal Risk (High-Value Ticket Unresolved)</li>
+          </ul>
+        </div>
+
+        <!-- HITL Queue -->
+        <div class="widget">
+          <h3>HITL Proposal Queue</h3>
+          <div class="proposal-item state-pending">
+            <strong>Jira Update:</strong> Draft (pending_review)
+          </div>
+          <div class="proposal-item state-approved">
+            <strong>HubSpot Email:</strong> Approved (executing)
+          </div>
+        </div>
+      </div>
+
+      <div class="workbench-lower">
+        <h3>Twin (Primary Interface)</h3>
+        <div id="twin-chat">
+          <p>
+            <strong>Twin:</strong> Detected health drop for Company A. Proposing update to task_item
+            in Spine. Shall I draft?
+          </p>
+        </div>
+        <input type="text" id="twin-input" placeholder="Type instructions for Twin..." />
+      </div>
+    </div>
+  </body>
+</html>

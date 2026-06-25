@@ -1,0 +1,18 @@
+name = "integratewise-mcp-connector"
+main = "dist/worker.js"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+ENVIRONMENT = "production"
+
+# NOTE: This service requires DATABASE_URL secret for Neon PostgreSQL
+# Set it via: npx wrangler secret put DATABASE_URL
+# Value should be your Neon connection string (same as other Neon services)
+
+[ai]
+binding = "AI"
+
+[dev]
+port = 8801
+inspector_port = 9262

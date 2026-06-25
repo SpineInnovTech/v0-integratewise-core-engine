@@ -1,0 +1,93 @@
+- generic [ref=e2]:
+    - complementary [ref=e3]:
+        - generic [ref=e4]:
+            - generic [ref=e5]:
+                - generic [ref=e6]: IW
+                - generic [ref=e7]: IntegrateWise
+            - generic [ref=e8]: operations.integratewise.ai
+        - generic [ref=e9]:
+            - generic [ref=e10]: Product
+            - button "Account Success" [ref=e11] [cursor=pointer]
+            - button "Business Ops" [ref=e12] [cursor=pointer]
+        - generic [ref=e13]:
+            - generic [ref=e14]: Workbenches
+            - button "👤 User Workbench" [ref=e15] [cursor=pointer]
+            - button "✦ Twin Workbench" [ref=e16] [cursor=pointer]
+            - button "🧠 Cognitive Workbench" [ref=e17] [cursor=pointer]
+            - button "🛡️ Governance Workbench" [active] [ref=e18] [cursor=pointer]
+        - generic [ref=e19]:
+            - generic [ref=e20]: Memory
+            - button "💬 Conversational" [ref=e21] [cursor=pointer]
+            - button "🔒 Personal" [ref=e22] [cursor=pointer]
+            - button "🏢 Organizational" [ref=e23] [cursor=pointer]
+        - generic [ref=e24]:
+            - generic [ref=e25]: Hermes v0.14.0 — 116 skills
+            - generic [ref=e27]: 32 skill gap pending
+    - generic [ref=e29]:
+        - generic [ref=e30]:
+            - generic [ref=e31]:
+                - generic [ref=e32]: IntegrateWise
+                - generic [ref=e33]: ›
+                - generic [ref=e34]: Account Success
+                - generic [ref=e35]: ›
+                - generic [ref=e36]: Governance Workbench
+            - generic [ref=e37]:
+                - img [ref=e38]
+                - textbox "Search everything..." [ref=e41]
+                - generic [ref=e42]: ⌘K
+            - generic [ref=e43]:
+                - button "Notifications" [ref=e44] [cursor=pointer]:
+                    - img [ref=e45]
+                - button "Toggle L2" [ref=e49] [cursor=pointer]:
+                    - img [ref=e50]
+                - generic [ref=e52]: "N"
+        - generic [ref=e408]:
+            - generic [ref=e409]: Governance Workbench
+            - generic [ref=e410]: Approvals, trust checks, policy enforcement, and audit trail
+            - generic [ref=e411]:
+                - generic [ref=e412]:
+                    - generic [ref=e413]: Pending Approvals
+                    - generic [ref=e414]: "2"
+                    - generic [ref=e415]: Awaiting your review
+                - generic [ref=e416]:
+                    - generic [ref=e417]: Policy Check
+                    - generic [ref=e418]: Pass
+                    - generic [ref=e419]: All actions within bounds
+                - generic [ref=e420]:
+                    - generic [ref=e421]: Drift Protection
+                    - generic [ref=e422]: Active
+                    - generic [ref=e423]: "Last scan: 4m ago"
+                - generic [ref=e424]:
+                    - generic [ref=e425]: Triage Bot Today
+                    - generic [ref=e426]: "24"
+                    - generic [ref=e427]: 6 escalated to human
+            - generic [ref=e428]:
+                - generic [ref=e429]:
+                    - generic [ref=e430]: Approval Queue
+                    - generic [ref=e432]:
+                        - generic [ref=e433]:
+                            - generic [ref=e434]: Extend renewal discount — Acme Corp
+                            - generic [ref=e435]: "Proposed: 15% discount · Impact: -$67K · Confidence: 89%"
+                            - generic [ref=e436]:
+                                - button "Approve" [ref=e437] [cursor=pointer]
+                                - button "Reject" [ref=e438] [cursor=pointer]
+                        - generic [ref=e439]:
+                            - generic [ref=e440]: Escalate TechFlow to executive sponsor
+                            - generic [ref=e441]: "Trigger: NPS drop + usage decline · Confidence: 89%"
+                            - generic [ref=e442]:
+                                - button "Approve" [ref=e443] [cursor=pointer]
+                                - button "Reject" [ref=e444] [cursor=pointer]
+                - generic [ref=e445]:
+                    - generic [ref=e446]: Trust & Audit
+                    - generic [ref=e448]:
+                        - generic [ref=e449]: AI Drift Protection
+                        - generic [ref=e450]: Continuous monitoring for model drift, hallucination patterns, and confidence degradation. When drift exceeds 5%, the system auto-switches to a fallback model and alerts the trust team.
+                        - generic [ref=e451]: Triage Bot Activity
+                        - generic [ref=e452]:
+                            - generic [ref=e453]: 🤖 24 triaged
+                            - generic [ref=e454]: ✓ 18 auto-resolved
+                            - generic [ref=e455]: 👤 6 escalated
+                            - generic [ref=e456]: ⚡ 0 false positives
+                    - generic [ref=e458]:
+                        - generic [ref=e459]: Self-Evolving System
+                        - generic [ref=e460]: System updates are gated behind human approval. Folder watcher monitors /QBRs, /Contracts, /Product-Updates. New files auto-ingested, summarized, and promoted to org memory based on relevance scoring.

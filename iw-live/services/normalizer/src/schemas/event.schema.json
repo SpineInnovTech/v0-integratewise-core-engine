@@ -1,0 +1,132 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://integratewise.io/schemas/event.json",
+  "title": "Generic Event Schema",
+  "description": "Canonical schema for generic event entities",
+  "type": "object",
+  "required": ["tenant_id", "event_type", "occurred_at"],
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Tenant/workspace identifier"
+    },
+    "external_id": {
+      "type": "string",
+      "description": "External system identifier"
+    },
+    "source_system": {
+      "type": "string",
+      "description": "Source system (e.g., segment, amplitude, mixpanel)"
+    },
+    "organization_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Associated organization/account ID"
+    },
+    "person_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Associated person ID"
+    },
+    "event_type": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255,
+      "description": "Event type identifier (e.g., 'call', 'meeting', 'email', 'page_view')"
+    },
+    "event_category": {
+      "type": "string",
+      "enum": ["activity", "engagement", "billing", "support", "system", "custom"],
+      "description": "Event category"
+    },
+    "subject": {
+      "type": "string",
+      "maxLength": 500,
+      "description": "Event subject/title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Event description"
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the event occurred"
+    },
+    "duration_minutes": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Duration in minutes (for timed events)"
+    },
+    "participants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "person_id": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "name": { "type": "string" },
+          "role": { "type": "string" }
+        }
+      },
+      "description": "Event participants"
+    },
+    "related_entity_type": {
+      "type": "string",
+      "enum": ["client", "deal", "ticket", "subscription", "task"],
+      "description": "Related entity type"
+    },
+    "related_entity_id": {
+      "type": "string",
+      "description": "Related entity ID"
+    },
+    "outcome": {
+      "type": "string",
+      "maxLength": 255,
+      "description": "Event outcome (e.g., 'completed', 'no_show', 'rescheduled')"
+    },
+    "sentiment": {
+      "type": "string",
+      "enum": ["positive", "neutral", "negative"],
+      "description": "Sentiment of the event"
+    },
+    "created_by": {
+      "type": "string",
+      "format": "uuid",
+      "description": "User who created/triggered the event"
+    },
+    "properties": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Event-specific properties"
+    },
+    "context": {
+      "type": "object",
+      "properties": {
+        "ip": { "type": "string" },
+        "user_agent": { "type": "string" },
+        "page_url": { "type": "string", "format": "uri" },
+        "referrer": { "type": "string", "format": "uri" },
+        "device_type": { "type": "string" },
+        "os": { "type": "string" },
+        "browser": { "type": "string" },
+        "locale": { "type": "string" },
+        "timezone": { "type": "string" }
+      },
+      "additionalProperties": true,
+      "description": "Event context/environment"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Tags for categorization"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Additional metadata"
+    }
+  },
+  "additionalProperties": false
+}

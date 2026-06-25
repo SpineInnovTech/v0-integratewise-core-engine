@@ -1,0 +1,29 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "lib": ["ES2022"],
+    "moduleResolution": "bundler",
+    "outDir": "./dist",
+    "rootDir": "../..",
+    "baseUrl": "../..",
+    "paths": {
+      "@integratewise/*": ["packages/*/dist"]
+    },
+    "types": ["@cloudflare/workers-types"]
+  },
+  "include": [
+    "src/**/*.ts",
+    "../think/src/**/*.ts",
+    "../act/src/**/*.ts",
+    "../govern/src/**/*.ts",
+    "../agents/src/**/*.ts"
+  ],
+  "exclude": [
+    "../think/src/**/*.test.ts",
+    "../act/src/**/*.test.ts",
+    "../govern/src/**/*.test.ts",
+    "../agents/src/**/*.test.ts"
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "folders": [
+    {
+      "path": "../..",
+    },
+    {
+      "path": "../../../business-intelligence-ui",
+    },
+    {
+      "path": "../../../Account Success & TAM",
+    },
+    {
+      "path": "../../../Business Intelligence",
+    },
+    {
+      "path": "../../../integratewise-business-intelligence-hub",
+    },
+    {
+      "path": "../../../IntegrateWise - Memory",
+    },
+    {
+      "path": "../../../integratewise-ops",
+    },
+    {
+      "path": "../../../integratewise-docs",
+    },
+    {
+      "path": "../../../org-mem.bookofprojects-integratewise",
+    },
+    {
+      "path": "../../../integratewise-marketing",
+    },
+  ],
+  "settings": {
+    "window.autoDetectColorScheme": true,
+    "files.associations": {
+      "*.css": "tailwindcss",
+    },
+    "notebook.defaultFormatter": "esbenp.prettier-vscode",
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "typescript.enablePromptUseWorkspaceTsdk": true,
+    "terminal.integrated.env.osx": {
+      "OPENROUTER_API_KEY": "${env:OPENROUTER_API_KEY}",
+      "SPINE_URL": "${env:SPINE_URL}",
+      "SPINE_SERVICE_ROLE_KEY": "${env:SPINE_SERVICE_ROLE_KEY}",
+      "SPINE_SERVICE_KEY": "${env:SPINE_SERVICE_KEY}",
+      "VITE_API_BASE_URL": "${env:VITE_API_BASE_URL}",
+      "VITE_SPINE_URL": "${env:VITE_SPINE_URL}",
+      "VITE_SPINE_ANON_KEY": "${env:VITE_SPINE_ANON_KEY}",
+    },
+    "terminal.integrated.env.linux": {
+      "OPENROUTER_API_KEY": "${env:OPENROUTER_API_KEY}",
+      "SPINE_URL": "${env:SPINE_URL}",
+      "SPINE_SERVICE_ROLE_KEY": "${env:SPINE_SERVICE_ROLE_KEY}",
+      "SPINE_SERVICE_KEY": "${env:SPINE_SERVICE_KEY}",
+      "VITE_API_BASE_URL": "${env:VITE_API_BASE_URL}",
+      "VITE_SPINE_URL": "${env:VITE_SPINE_URL}",
+      "VITE_SPINE_ANON_KEY": "${env:VITE_SPINE_ANON_KEY}",
+    },
+    "terminal.integrated.env.windows": {
+      "OPENROUTER_API_KEY": "${env:OPENROUTER_API_KEY}",
+      "SPINE_URL": "${env:SPINE_URL}",
+      "SPINE_SERVICE_ROLE_KEY": "${env:SPINE_SERVICE_ROLE_KEY}",
+      "SPINE_SERVICE_KEY": "${env:SPINE_SERVICE_KEY}",
+      "VITE_API_BASE_URL": "${env:VITE_API_BASE_URL}",
+      "VITE_SPINE_URL": "${env:VITE_SPINE_URL}",
+      "VITE_SPINE_ANON_KEY": "${env:VITE_SPINE_ANON_KEY}",
+    },
+    "kiroAgent.notifications.agent.success": true,
+    "kiroAgent.agentAutonomy": "Autopilot",
+    "kiroAgent.enableCodebaseIndexing": true,
+    "kiroAgent.enableDebugLogs": true,
+    "kiroAgent.enableTabAutocomplete": true,
+  },
+}

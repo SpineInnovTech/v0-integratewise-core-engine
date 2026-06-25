@@ -1,0 +1,24 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@integratewise/*": ["packages/*/src"]
+    }
+  },
+  "files": [],
+  "references": [
+    { "path": "./apps/web" },
+    { "path": "./packages/accelerators" },
+    { "path": "./packages/analytics" },
+    { "path": "./packages/config" },
+    { "path": "./packages/connector-contracts" },
+    { "path": "./packages/connector-utils" },
+    { "path": "./packages/connectors" },
+    { "path": "./packages/db" },
+    { "path": "./packages/lib" },
+    { "path": "./packages/rbac" },
+    { "path": "./packages/tenancy" },
+    { "path": "./packages/types" }
+  ]
+}

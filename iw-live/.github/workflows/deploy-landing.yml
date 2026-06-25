@@ -1,0 +1,89 @@
+name: Deploy Landing (integratewise.ai)
+
+on:
+  push:
+    branches: [main, staging]
+    paths:
+      - "apps/landing/**"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/deploy-landing.yml"
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Deploy environment"
+        required: true
+        default: "production"
+        type: choice
+        options:
+          - production
+          - staging
+
+concurrency:
+  group: deploy-landing-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "22"
+  LANDING_PROJECT_NAME: "integratewise-landing"
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-deploy:
+    name: Build & Deploy Landing
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build landing (Vite)
+        env:
+          VITE_APP_ENTRY_URL: ${{ secrets.VITE_APP_ENTRY_URL }}
+          VITE_CONTACT_API_URL: ${{ secrets.VITE_CONTACT_API_URL }}
+        run: pnpm --filter ./apps/landing build
+
+      - name: Validate Cloudflare secrets
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "Missing required secret: CLOUDFLARE_API_TOKEN"
+            exit 1
+          fi
+          if [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "Missing required secret: CLOUDFLARE_ACCOUNT_ID"
+            exit 1
+          fi
+
+      - name: Deploy to Cloudflare Pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: pnpm dlx wrangler@4 pages deploy apps/landing/dist --project-name=${{ env.LANDING_PROJECT_NAME }} --branch=${{ (github.event_name == 'workflow_dispatch' && inputs.environment == 'production') && 'main' || (github.ref == 'refs/heads/main' && 'main' || 'staging') }}
+
+      - name: Deployment Summary
+        run: |
+          echo "## Landing Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "- **Project:** ${{ env.LANDING_PROJECT_NAME }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Domain:** https://integratewise.ai" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch:** ${{ (github.event_name == 'workflow_dispatch' && inputs.environment == 'production') && 'main' || (github.ref == 'refs/heads/main' && 'main' || 'staging') }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment:** ${{ github.event_name == 'workflow_dispatch' && inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY

@@ -1,0 +1,56 @@
+- generic [ref=e2]:
+    - generic [ref=e7]:
+        - generic [ref=e8]:
+            - generic [ref=e16]:
+                - generic [ref=e17]:
+                    - img "IntegrateWise" [ref=e18]
+                    - generic [ref=e23]: IntegrateWise
+                - paragraph [ref=e24]: AI-Native Integration Intelligence
+            - generic [ref=e25]:
+                - heading "Unify your tools. Amplify your growth." [level=2] [ref=e26]:
+                    - text: Unify your tools.
+                    - text: Amplify your growth.
+                - paragraph [ref=e27]: Connect every tool in your stack. IntegrateWise turns fragmented data into goal-aligned intelligence — from reality to action.
+                - generic [ref=e28]:
+                    - generic [ref=e29]: Connects with
+                    - generic [ref=e30]:
+                        - generic [ref=e31]: ☁️
+                        - generic [ref=e32]: 🧡
+                        - generic [ref=e33]: 💬
+                        - generic [ref=e34]: 🎧
+                        - generic [ref=e35]: 💳
+                        - generic [ref=e36]: 🔵
+                        - generic [ref=e37]: 📊
+                        - generic [ref=e38]: "+40"
+            - generic [ref=e39]: © 2026 IntegrateWise. All rights reserved.
+        - generic [ref=e41]:
+            - generic [ref=e42]:
+                - heading "Welcome back" [level=1] [ref=e43]
+                - paragraph [ref=e44]: Sign in to your workspace
+            - generic [ref=e45]:
+                - generic [ref=e46]:
+                    - generic [ref=e47]: Email
+                    - generic [ref=e48]:
+                        - img [ref=e49]
+                        - textbox "you@company.com" [ref=e52]
+                - generic [ref=e53]:
+                    - generic [ref=e54]: Password
+                    - generic [ref=e55]:
+                        - img [ref=e56]
+                        - textbox "Enter your password" [ref=e59]
+                        - button [ref=e60]:
+                            - img [ref=e61]
+                - button "Forgot password?" [disabled] [ref=e65]
+                - button "Sign In" [ref=e66]:
+                    - text: Sign In
+                    - img [ref=e67]
+            - generic [ref=e71]: or continue with
+            - generic [ref=e73]:
+                - button "G Google" [ref=e74]:
+                    - generic [ref=e75]: G
+                    - text: Google
+                - button "GitHub" [ref=e76]
+            - paragraph [ref=e77]:
+                - text: Don't have an account?
+                - button "Request Early Access" [ref=e78]
+    - region "Notifications alt+T"

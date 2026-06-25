@@ -1,0 +1,7 @@
+{
+  "name": "integratewise-live",
+  "compatibility_date": "2026-06-09",
+  "assets": {
+    "directory": "services/connector-sync",
+  },
+}

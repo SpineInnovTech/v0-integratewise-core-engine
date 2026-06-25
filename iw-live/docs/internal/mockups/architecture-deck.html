@@ -1,0 +1,3072 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IntegrateWise — Final System Architecture</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --forest: #1a3a2a;
+        --forest-soft: #2d5a40;
+        --forest-mid: #245038;
+        --forest-deep: #1e4430;
+        --paper: #f4f0e8;
+        --paper-warm: #faf7f0;
+        --ink: #1a1a1a;
+        --ink-soft: #4a4a4a;
+        --ink-mute: #8a8a7a;
+        --rule: #d8d3c5;
+        --clay: #b85c3f;
+        --sage: #6b8f71;
+        --tan: #c4a96a;
+        --lime: #a8d14b;
+        --lime-deep: #7da832;
+        --serif: "DM Serif Display", Georgia, serif;
+        --sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        --mono: "JetBrains Mono", "Fira Code", monospace;
+        --pad: clamp(24px, 5vw, 144px);
+        --pad-sm: clamp(16px, 3vw, 80px);
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #0a0a0a;
+        font-family: var(--sans);
+        -webkit-font-smoothing: antialiased;
+      }
+      .deck {
+        width: 100vw;
+        height: 100vh;
+        position: relative;
+      }
+      .slide {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.4s ease;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+      .slide.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .slide-container {
+        width: 100%;
+        min-height: 100%;
+        position: relative;
+        background: var(--paper);
+        overflow: hidden;
+        padding-bottom: 80px;
+      }
+      .slide-container.dark {
+        background: var(--forest);
+      }
+      .paper-grain::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 0;
+      }
+      .serif-display {
+        font-family: var(--serif);
+        font-weight: 400;
+        line-height: 0.98;
+        letter-spacing: -0.025em;
+      }
+      .eyebrow {
+        font-family: var(--mono);
+        font-size: clamp(11px, 1.2vw, 14px);
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--forest);
+        font-weight: 500;
+      }
+      .forest-band {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: clamp(40px, 5vw, 96px);
+        height: 100%;
+        background: var(--forest);
+        z-index: 1;
+      }
+      .header-rule {
+        position: absolute;
+        left: var(--pad);
+        top: 120px;
+        width: calc(100% - var(--pad) * 2);
+        height: 1px;
+        background: var(--rule);
+        z-index: 1;
+      }
+      .header-rule.light {
+        background: rgba(244, 239, 228, 0.18);
+      }
+      .brand-mark {
+        position: absolute;
+        left: var(--pad);
+        top: 80px;
+        z-index: 10;
+      }
+      .brand-mark .name {
+        font-family: var(--mono);
+        font-size: clamp(12px, 1.2vw, 15px);
+        letter-spacing: 0.22em;
+        color: var(--ink);
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+      .brand-mark .tagline {
+        font-family: var(--mono);
+        font-size: clamp(10px, 1vw, 13px);
+        letter-spacing: 0.18em;
+        color: var(--ink-mute);
+        text-transform: uppercase;
+        margin-top: 6px;
+      }
+      .brand-mark.light .name,
+      .brand-mark.light .tagline {
+        color: rgba(244, 239, 228, 0.55);
+      }
+      .slide-number {
+        position: absolute;
+        right: var(--pad);
+        top: 80px;
+        font-family: var(--mono);
+        font-size: clamp(11px, 1vw, 13px);
+        letter-spacing: 0.18em;
+        color: var(--ink-mute);
+        text-transform: uppercase;
+        z-index: 10;
+      }
+      .slide-number.light {
+        color: rgba(244, 239, 228, 0.55);
+      }
+      .slide-label {
+        position: absolute;
+        left: var(--pad);
+        top: 80px;
+        font-family: var(--mono);
+        font-size: clamp(12px, 1.2vw, 14px);
+        letter-spacing: 0.2em;
+        color: var(--ink-mute);
+        text-transform: uppercase;
+        z-index: 10;
+      }
+      .slide-label.light {
+        color: rgba(244, 239, 228, 0.55);
+      }
+      .footer-rule {
+        position: absolute;
+        left: var(--pad);
+        bottom: 56px;
+        width: calc(100% - var(--pad) * 2);
+        height: 1px;
+        background: var(--rule);
+        z-index: 1;
+      }
+      .footer-rule.light {
+        background: rgba(244, 239, 228, 0.18);
+      }
+      .footer-left {
+        position: absolute;
+        left: var(--pad);
+        bottom: 28px;
+        font-family: var(--mono);
+        font-size: clamp(10px, 1vw, 13px);
+        letter-spacing: 0.18em;
+        color: var(--ink-mute);
+        text-transform: uppercase;
+        z-index: 10;
+      }
+      .footer-left.light {
+        color: rgba(244, 239, 228, 0.55);
+      }
+      .footer-right {
+        position: absolute;
+        right: var(--pad);
+        bottom: 28px;
+        font-family: var(--mono);
+        font-size: clamp(10px, 1vw, 13px);
+        letter-spacing: 0.18em;
+        color: var(--ink-mute);
+        text-transform: uppercase;
+        z-index: 10;
+      }
+      .footer-right.light {
+        color: rgba(244, 239, 228, 0.55);
+      }
+      .signal-pill {
+        display: inline-block;
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-weight: 600;
+        padding: 5px 12px;
+        border-radius: 2px;
+      }
+      .card {
+        background: var(--paper-warm);
+        border: 1px solid var(--rule);
+        padding: clamp(16px, 2vw, 28px) clamp(16px, 2vw, 30px);
+        z-index: 5;
+        position: relative;
+      }
+      .card.highlight {
+        background: var(--forest);
+        border: none;
+      }
+      .card.highlight .card-title {
+        color: #f4efe4;
+      }
+      .card.highlight .card-desc {
+        color: rgba(244, 239, 228, 0.75);
+      }
+      .card.highlight .card-label {
+        color: var(--lime);
+      }
+      .card.top-border {
+        border-top: 3px solid var(--forest);
+      }
+      .card.top-border-clay {
+        border-top: 3px solid var(--clay);
+      }
+      .card.top-border-sage {
+        border-top: 3px solid var(--sage);
+      }
+      .card.top-border-lime {
+        border-top: 3px solid var(--lime-deep);
+      }
+      .card.left-border-clay {
+        border-left: 3px solid var(--clay);
+      }
+      .card-label {
+        font-family: var(--mono);
+        font-size: clamp(10px, 1vw, 12px);
+        letter-spacing: 0.16em;
+        color: var(--forest);
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: clamp(8px, 1vw, 14px);
+      }
+      .card-title {
+        font-family: var(--serif);
+        font-size: clamp(20px, 2.5vw, 32px);
+        color: var(--ink);
+        line-height: 1.1;
+        letter-spacing: -0.015em;
+        margin-bottom: clamp(8px, 1vw, 12px);
+      }
+      .card-desc {
+        font-family: var(--sans);
+        font-size: clamp(13px, 1.3vw, 16px);
+        color: var(--ink-soft);
+        line-height: 1.5;
+      }
+      .nav-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 48px;
+        background: rgba(26, 26, 26, 0.92);
+        backdrop-filter: blur(12px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        z-index: 1000;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .nav-bar button {
+        background: none;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: rgba(255, 255, 255, 0.7);
+        font-family: var(--mono);
+        font-size: 12px;
+        padding: 6px 16px;
+        cursor: pointer;
+        border-radius: 3px;
+        transition: all 0.2s;
+        letter-spacing: 0.1em;
+      }
+      .nav-bar button:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.3);
+      }
+      .nav-bar .counter {
+        font-family: var(--mono);
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.5);
+        letter-spacing: 0.15em;
+        min-width: 80px;
+        text-align: center;
+      }
+      .progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background: var(--lime);
+        z-index: 1001;
+        transition: width 0.4s ease;
+      }
+      .arch-box {
+        background: var(--forest);
+        border: 1px solid rgba(168, 209, 75, 0.3);
+        padding: clamp(12px, 1.5vw, 20px) clamp(16px, 2vw, 24px);
+        font-family: var(--mono);
+        font-size: clamp(11px, 1.1vw, 13px);
+        color: rgba(244, 239, 228, 0.85);
+        line-height: 1.7;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        overflow-x: auto;
+        z-index: 5;
+        position: relative;
+      }
+      .arch-box .highlight-line {
+        color: var(--lime);
+        font-weight: 600;
+      }
+      .rule-card {
+        background: var(--paper-warm);
+        border: 1px solid var(--rule);
+        border-left: 4px solid var(--forest);
+        padding: clamp(12px, 1.5vw, 20px) clamp(16px, 2vw, 24px);
+        z-index: 5;
+        position: relative;
+      }
+      .rule-card .rule-num {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.15em;
+        color: var(--forest);
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .rule-card .rule-text {
+        font-family: var(--sans);
+        font-size: clamp(13px, 1.2vw, 15px);
+        color: var(--ink);
+        line-height: 1.5;
+      }
+      .slide-content {
+        position: relative;
+        z-index: 10;
+        padding: var(--pad);
+        padding-top: 140px;
+        padding-bottom: 80px;
+        width: 100%;
+      }
+      .slide-content.grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: clamp(12px, 1.5vw, 16px);
+      }
+      .slide-content.grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: clamp(12px, 1.5vw, 16px);
+      }
+      .slide-content.grid-4 {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: clamp(12px, 1.5vw, 16px);
+      }
+      .slide-content.grid-5 {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: clamp(12px, 1.5vw, 16px);
+      }
+      .slide-content.grid-20 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: clamp(8px, 1vw, 10px);
+      }
+      .slide-content.split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: clamp(16px, 2vw, 24px);
+      }
+      @media (max-width: 900px) {
+        .slide-content.grid-3,
+        .slide-content.grid-4,
+        .slide-content.grid-5 {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .slide-content.split {
+          grid-template-columns: 1fr;
+        }
+        .two-col-abs {
+          position: relative !important;
+          width: calc(100% - var(--pad) * 2) !important;
+          right: auto !important;
+          margin-bottom: 16px;
+        }
+      }
+      @media (max-width: 600px) {
+        .slide-content.grid-2,
+        .slide-content.grid-3,
+        .slide-content.grid-4,
+        .slide-content.grid-5,
+        .slide-content.grid-20 {
+          grid-template-columns: 1fr;
+        }
+        .slide-content.split {
+          grid-template-columns: 1fr;
+        }
+        .forest-band {
+          width: 24px;
+        }
+        .header-rule,
+        .footer-rule {
+          left: var(--pad-sm);
+          width: calc(100% - var(--pad-sm) * 2);
+        }
+        .brand-mark,
+        .slide-label,
+        .footer-left {
+          left: var(--pad-sm);
+        }
+        .slide-number,
+        .footer-right {
+          right: var(--pad-sm);
+        }
+        .brand-mark {
+          top: 60px;
+        }
+        .slide-label {
+          top: 60px;
+        }
+        .slide-number {
+          top: 60px;
+        }
+        .header-rule {
+          top: 100px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      style="
+        background: #7a1f1f;
+        color: #fff;
+        padding: 14px 20px;
+        font-family: sans-serif;
+        font-size: 14px;
+        line-height: 1.5;
+      "
+    >
+      &#9888; <strong>SUPERSEDED (2026-06-12).</strong> This deck depicts a retired Twin runtime.
+      The Twin is now Cloudflare-native (<code>services/iw-agent-runtime</code>) and the product
+      plane is 100% Cloudflare (DECISION 22). Read as history only. Current canon:
+      <code>docs/CANON.md</code> &rarr; <code>docs/architecture/PRODUCT_ARCHITECTURE.md</code>.
+    </div>
+    <div class="deck" id="deck">
+      <div class="progress-bar" id="progress"></div>
+
+      <!-- S01 COVER -->
+      <div class="slide active" data-slide="1">
+        <div class="slide-container dark">
+          <div
+            style="
+              position: absolute;
+              inset: 0;
+              background: radial-gradient(
+                ellipse at 70% 30%,
+                rgba(168, 209, 75, 0.12) 0%,
+                transparent 55%
+              );
+              z-index: 2;
+            "
+          ></div>
+          <div class="brand-mark light">
+            <div class="name">IntegrateWise</div>
+            <div class="tagline">Continuity Infrastructure for AI</div>
+          </div>
+          <div class="header-rule light"></div>
+          <div class="slide-number light">
+            Architecture<br /><span style="margin-top: 6px; display: block">v1.1 · 2026</span>
+          </div>
+          <div style="position: absolute; left: var(--pad); top: 240px; z-index: 10">
+            <span class="eyebrow" style="color: var(--lime)">— Final System Architecture</span>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 320px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              class="serif-display"
+              style="font-size: clamp(56px, 7vw, 120px); color: #f4efe4; line-height: 1.02"
+            >
+              One Twin.<br />One Spine.<br />One Memory.
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 700px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--serif);
+                font-size: clamp(36px, 4vw, 64px);
+                color: var(--lime);
+                line-height: 1.1;
+                letter-spacing: -0.02em;
+                font-style: italic;
+              "
+            >
+              One Bridge.
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 830px;
+              max-width: 900px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--sans);
+                font-size: 20px;
+                color: rgba(244, 239, 228, 0.7);
+                line-height: 1.5;
+              "
+            >
+              The canonical architecture for IntegrateWise.<br />Cloudflare is the edge. D1 is the
+              Spine. The Bridge is the product.
+            </div>
+          </div>
+          <div class="footer-rule light"></div>
+          <div class="footer-left light">Confidential · Architecture Review</div>
+          <div class="footer-right light">01 / 20</div>
+        </div>
+      </div>
+
+      <!-- S02 ONE-LINE ARCHITECTURE -->
+      <div class="slide" data-slide="2">
+        <div class="slide-container paper-grain">
+          <div class="forest-band"></div>
+          <div class="brand-mark">
+            <div class="name">IntegrateWise</div>
+            <div class="tagline">Architecture</div>
+          </div>
+          <div class="header-rule"></div>
+          <div class="slide-label">02 — One-Line Architecture</div>
+          <div class="slide-number">v1.1</div>
+          <div
+            class="eyebrow"
+            style="position: absolute; left: var(--pad); top: 180px; z-index: 10"
+          >
+            The complete data flow
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 240px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="arch-box" style="font-size: 15px; line-height: 2">
+              <span class="highlight-line">Tools</span> → Nango → Connector Sync/Webhooks → Loader →
+              Normalizer → <span class="highlight-line">Cloudflare Spine</span> → Signals + Memory +
+              Intelligence → <span class="highlight-line">IW Continuity Bridge</span> → L1/L2/L3/L4
+              Surfaces → Human Approves → Act →
+              <span class="highlight-line">Tools → Spine Updates Again</span> →
+              <span class="highlight-line">Browser Agent</span> (Playwright, VPS) → Snapshot → Act →
+              Verify → Spine learns
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 540px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--sans);
+                font-size: 22px;
+                color: var(--ink-soft);
+                line-height: 1.5;
+                font-weight: 300;
+              "
+            >
+              The system never starts cold because every session, signal, decision, and memory<br />loops
+              back into the Spine and Memory substrate.
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 680px;
+              display: grid;
+              grid-template-columns: repeat(3, 1fr);
+              gap: 16px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="card top-border">
+              <div class="card-label">Inbound</div>
+              <div class="card-title" style="font-size: 24px">World changes</div>
+              <div class="card-desc">
+                Tool webhook fires → Normalizer → Spine learns → Twin acts
+              </div>
+            </div>
+            <div class="card top-border-sage">
+              <div class="card-label" style="color: var(--sage)">Outbound</div>
+              <div class="card-title" style="font-size: 24px">User asks</div>
+              <div class="card-desc">Spine answers → Surface renders → Dashboard paints</div>
+            </div>
+            <div class="card top-border-lime">
+              <div class="card-label" style="color: var(--lime-deep)">Loop</div>
+              <div class="card-title" style="font-size: 24px">Memory compounds</div>
+              <div class="card-desc">
+                Learning proposed → Triage → Stored → Next session smarter
+              </div>
+            </div>
+          </div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">Architecture · v1.1</div>
+          <div class="footer-right">02 / 20</div>
+        </div>
+      </div>
+
+      <!-- S03 SYSTEM MAP -->
+      <div class="slide" data-slide="3">
+        <div class="slide-container paper-grain">
+          <div class="forest-band"></div>
+          <div class="brand-mark">
+            <div class="name">IntegrateWise</div>
+            <div class="tagline">Architecture</div>
+          </div>
+          <div class="header-rule"></div>
+          <div class="slide-label">03 — System Map</div>
+          <div class="slide-number">v1.1</div>
+          <div
+            class="eyebrow"
+            style="position: absolute; left: var(--pad); top: 180px; z-index: 10"
+          >
+            Four strata, top to bottom
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 230px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="arch-box" style="font-size: 13px; line-height: 1.8">
+              ┌─────────────────────────────────────────────────────────────────┐ │ USER SURFACES │
+              │ L0 Onboarding · L1 Workspace · L2 Awareness · L3 Twin · L4 Library │
+              └───────────────────────────────┬─────────────────────────────────┘ │ ▼
+              ┌─────────────────────────────────────────────────────────────────┐ │ IW CONTINUITY
+              BRIDGE │ │ OpenWebUI → continuity-tool-server → Gateway → Pipeline │ │ Browser Agent
+              (Playwright on VPS, cua-driver pattern) │ │ The Bridge is the product. MCP is the
+              external door. │ └───────────────────────────────┬─────────────────────────────────┘ │
+              ▼ ┌─────────────────────────────────────────────────────────────────┐ │ CLOUDFLARE
+              EDGE │ │ Zero Trust · Gateway · D1 JWT · Workers · Queues · KV · R2 │ │ D1 spine_vault
+              · Vectorize · AI Search │
+              └───────────────────────────────┬─────────────────────────────────┘ │ ▼
+              ┌─────────────────────────────────────────────────────────────────┐ │ EXTERNAL TOOLS │
+              │ HubSpot · Salesforce · Jira · Stripe · Slack · Gmail · GitHub │ │ Tool identity dies
+              at the Normalizer. Spine stores nature. │
+              └─────────────────────────────────────────────────────────────────┘
+            </div>
+          </div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">Architecture · v1.1</div>
+          <div class="footer-right">03 / 20</div>
+        </div>
+      </div>
+
+      <!-- S04 CORE PRODUCT -->
+      <div class="slide" data-slide="4">
+        <div class="slide-container dark">
+          <div
+            style="
+              position: absolute;
+              inset: 0;
+              background: radial-gradient(
+                ellipse at 30% 70%,
+                rgba(168, 209, 75, 0.1) 0%,
+                transparent 55%
+              );
+              z-index: 2;
+            "
+          ></div>
+          <div class="brand-mark light">
+            <div class="name">IntegrateWise</div>
+            <div class="tagline">Architecture</div>
+          </div>
+          <div class="header-rule light"></div>
+          <div class="slide-label light">04 — Core Product</div>
+          <div class="slide-number light">v1.1</div>
+          <div
+            class="eyebrow"
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 180px;
+              z-index: 10;
+              color: var(--lime);
+            "
+          >
+            What you actually buy
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 260px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="serif-display" style="font-size: clamp(56px, 7vw, 110px); color: #f4efe4">
+              The IW Continuity<br /><em style="font-style: italic; color: var(--lime)">Bridge</em>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 560px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--sans);
+                font-size: 22px;
+                color: rgba(244, 239, 228, 0.75);
+                line-height: 1.6;
+                max-width: 900px;
+              "
+            >
+              The Bridge gives every user and every AI agent continuous context across:<br /><br /><span
+                style="color: var(--lime)"
+                >tools · sessions · departments · decisions · signals · memory · playbooks ·
+                approvals · browser execution</span
+              >
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 830px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px">
+              <div
+                style="
+                  background: rgba(244, 239, 228, 0.06);
+                  border: 1px solid rgba(244, 239, 228, 0.18);
+                  padding: 24px;
+                "
+              >
+                <div
+                  style="
+                    font-family: var(--mono);
+                    font-size: 12px;
+                    letter-spacing: 0.15em;
+                    color: var(--lime);
+                    text-transform: uppercase;
+                    margin-bottom: 10px;
+                  "
+                >
+                  Twin
+                </div>
+                <div style="font-family: var(--serif); font-size: 22px; color: #f4efe4">
+                  The visible reasoning surface
+                </div>
+              </div>
+              <div
+                style="
+                  background: rgba(244, 239, 228, 0.06);
+                  border: 1px solid rgba(244, 239, 228, 0.18);
+                  padding: 24px;
+                "
+              >
+                <div
+                  style="
+                    font-family: var(--mono);
+                    font-size: 12px;
+                    letter-spacing: 0.15em;
+                    color: var(--lime);
+                    text-transform: uppercase;
+                    margin-bottom: 10px;
+                  "
+                >
+                  Spine + Memory
+                </div>
+                <div style="font-family: var(--serif); font-size: 22px; color: #f4efe4">
+                  The substance underneath
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="footer-rule light"></div>
+          <div class="footer-left light">Architecture · v1.1</div>
+          <div class="footer-right light">04 / 20</div>
+        </div>
+      </div>
+
+      <!-- S05 FIVE LAYERS -->
+      <div class="slide" data-slide="5">
+        <div class="slide-container paper-grain">
+          <div class="forest-band"></div>
+          <div class="brand-mark">
+            <div class="name">IntegrateWise</div>
+            <div class="tagline">Architecture</div>
+          </div>
+          <div class="header-rule"></div>
+          <div class="slide-label">05 — The Five Layers</div>
+          <div class="slide-number">v1.1</div>
+          <div
+            class="eyebrow"
+            style="position: absolute; left: var(--pad); top: 180px; z-index: 10"
+          >
+            L0 through L4
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 230px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+              display: grid;
+              grid-template-columns: repeat(5, 1fr);
+              gap: 12px;
+            "
+          >
+            <div class="card top-border" style="padding: 20px">
+              <div class="card-label" style="font-size: 11px">L0</div>
+              <div class="card-title" style="font-size: 20px">Onboarding</div>
+              <div class="card-desc" style="font-size: 13px">
+                Entry → Setup → First value in &lt;2 min
+              </div>
+            </div>
+            <div class="card top-border-sage" style="padding: 20px">
+              <div class="card-label" style="font-size: 11px; color: var(--sage)">L1</div>
+              <div class="card-title" style="font-size: 20px">Workspace</div>
+              <div class="card-desc" style="font-size: 13px">Where you WORK. Personal + Work.</div>
+            </div>
+            <div class="card top-border-clay" style="padding: 20px">
+              <div class="card-label" style="font-size: 11px; color: var(--clay)">L2</div>
+              <div class="card-title" style="font-size: 20px">Awareness</div>
+              <div class="card-desc" style="font-size: 13px">
+                Signal-triggered drawer. Not a page.
+              </div>
+            </div>
+            <div class="card top-border-lime" style="padding: 20px">
+              <div class="card-label" style="font-size: 11px; color: var(--lime-deep)">L3</div>
+              <div class="card-title" style="font-size: 20px">Twin</div>
+              <div class="card-desc" style="font-size: 13px">
+                Where you THINK. Voice. Agent Zero.
+              </div>
+            </div>
+            <div class="card" style="padding: 20px; border-top: 3px solid var(--tan)">
+              <div class="card-label" style="font-size: 11px; color: var(--tan)">L4</div>
+              <div class="card-title" style="font-size: 20px">Library</div>
+              <div class="card-desc" style="font-size: 13px">Where you KNOW. Coda projection.</div>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 520px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--sans);
+                font-size: 18px;
+                color: var(--ink-soft);
+                line-height: 1.6;
+              "
+            >
+              All five layers read from the same Spine (D1 encrypted vault), use the same
+              gateway,<br />share one Memory, authenticated by the same JWT (CF Access), connected
+              via the IW Continuity Bridge.
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 650px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="arch-box" style="font-size: 14px; line-height: 2">
+              L0 = how you ENTER → onboarding → first value L1 = where you WORK → Personal + Work
+              toggle L2 = what INTERRUPTS you → awareness-driven overlay L3 = where you THINK → Twin
+              runtime, voice, full reasoning L4 = where you KNOW → library projection, Coda
+            </div>
+          </div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">Architecture · v1.1</div>
+          <div class="footer-right">05 / 20</div>
+        </div>
+      </div>
+
+      <!-- S06 CLOUDFLARE AUTH -->
+      <div class="slide" data-slide="6">
+        <div class="slide-container paper-grain">
+          <div class="forest-band"></div>
+          <div class="brand-mark">
+            <div class="name">IntegrateWise</div>
+            <div class="tagline">Architecture</div>
+          </div>
+          <div class="header-rule"></div>
+          <div class="slide-label">06 — Cloudflare Auth & Provisioning</div>
+          <div class="slide-number">v1.1</div>
+          <div
+            class="eyebrow"
+            style="position: absolute; left: var(--pad); top: 180px; z-index: 10"
+          >
+            Identity membrane
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 230px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="arch-box" style="font-size: 14px; line-height: 1.9">
+              <span class="highlight-line">Cloudflare Access</span> proves who the user is.
+              <span class="highlight-line">Gateway + D1</span> prove what the user can access.
+              <span class="highlight-line">Continuity Bridge</span> provides what the Twin should
+              know. <span class="highlight-line">OpenWebUI</span> provides where the user thinks.
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 480px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 13px;
+                letter-spacing: 0.15em;
+                color: var(--forest);
+                text-transform: uppercase;
+                font-weight: 600;
+                margin-bottom: 16px;
+              "
+            >
+              Provisioning is just-in-time
+            </div>
+            <div class="arch-box" style="font-size: 13px; line-height: 1.8">
+              identity_seen → d1_user_created → tenant_bound → awareness_profile_assigned →
+              twin_entitlement_checked → continuity_session_created → openwebui_runtime_user_ready
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 780px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--sans);
+                font-size: 18px;
+                color: var(--ink-soft);
+                line-height: 1.5;
+                font-style: italic;
+              "
+            >
+              OpenWebUI user records are only runtime convenience records.<br />They are not the
+              product identity layer.
+            </div>
+          </div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">Architecture · v1.1</div>
+          <div class="footer-right">06 / 20</div>
+        </div>
+      </div>
+
+      <!-- S07 TWIN SESSION CONTRACT -->
+      <div class="slide" data-slide="7">
+        <div class="slide-container dark">
+          <div
+            style="
+              position: absolute;
+              inset: 0;
+              background: radial-gradient(
+                ellipse at 60% 40%,
+                rgba(168, 209, 75, 0.08) 0%,
+                transparent 55%
+              );
+              z-index: 2;
+            "
+          ></div>
+          <div class="brand-mark light">
+            <div class="name">IntegrateWise</div>
+            <div class="tagline">Architecture</div>
+          </div>
+          <div class="header-rule light"></div>
+          <div class="slide-label light">07 — Trusted Twin Session Contract</div>
+          <div class="slide-number light">v1.1</div>
+          <div
+            class="eyebrow"
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 180px;
+              z-index: 10;
+              color: var(--lime);
+            "
+          >
+            Frontend sends context hints only
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 240px;
+              width: calc(50% - var(--pad) / 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 13px;
+                letter-spacing: 0.15em;
+                color: var(--lime);
+                text-transform: uppercase;
+                font-weight: 600;
+                margin-bottom: 16px;
+              "
+            >
+              Browser may send
+            </div>
+            <div
+              class="arch-box"
+              style="
+                font-size: 13px;
+                line-height: 1.7;
+                background: rgba(244, 239, 228, 0.06);
+                border-color: rgba(244, 239, 228, 0.18);
+              "
+            >
+              { source: "l2", domain: "sales", entityId: "ent_acme", entityType: "opportunity",
+              entityName: "Acme Corp", insightTitle: "Deal stalled 21d" }
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              right: var(--pad);
+              top: 240px;
+              width: calc(50% - var(--pad) / 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 13px;
+                letter-spacing: 0.15em;
+                color: var(--lime);
+                text-transform: uppercase;
+                font-weight: 600;
+                margin-bottom: 16px;
+              "
+            >
+              Gateway derives server-side
+            </div>
+            <div
+              class="arch-box"
+              style="
+                font-size: 13px;
+                line-height: 1.7;
+                background: rgba(244, 239, 228, 0.06);
+                border-color: rgba(244, 239, 228, 0.18);
+              "
+            >
+              { userId, email, tenantId, role, department, plan, awarenessProfileId,
+              signalThreshold, groups }
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 560px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 13px;
+                letter-spacing: 0.15em;
+                color: var(--clay);
+                text-transform: uppercase;
+                font-weight: 600;
+                margin-bottom: 12px;
+              "
+            >
+              Critical rule
+            </div>
+            <div
+              style="font-family: var(--serif); font-size: 36px; color: #f4efe4; line-height: 1.2"
+            >
+              Only Gateway/Cloudflare may inject trusted headers.<br />Browser-supplied identity
+              headers must be stripped.
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 740px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 13px;
+                letter-spacing: 0.15em;
+                color: var(--lime);
+                text-transform: uppercase;
+                font-weight: 600;
+                margin-bottom: 12px;
+              "
+            >
+              Trusted headers to OpenWebUI
+            </div>
+            <div
+              class="arch-box"
+              style="
+                font-size: 12px;
+                line-height: 1.6;
+                background: rgba(244, 239, 228, 0.06);
+                border-color: rgba(244, 239, 228, 0.18);
+              "
+            >
+              X-User-Email · X-User-Name · X-IW-User-ID · X-IW-Tenant-ID · X-IW-Role X-IW-Department
+              · X-IW-Groups · X-IW-Continuity-Session · X-IW-Context-Key · X-IW-Launch-JWT
+            </div>
+          </div>
+          <div class="footer-rule light"></div>
+          <div class="footer-left light">Architecture · v1.1</div>
+          <div class="footer-right light">07 / 20</div>
+        </div>
+      </div>
+
+      <!-- S08 SPINE ARCHITECTURE -->
+      <div class="slide" data-slide="8">
+        <div class="slide-container paper-grain">
+          <div class="forest-band"></div>
+          <div class="brand-mark">
+            <div class="name">IntegrateWise</div>
+            <div class="tagline">Architecture</div>
+          </div>
+          <div class="header-rule"></div>
+          <div class="slide-label">08 — Spine Architecture</div>
+          <div class="slide-number">v1.1</div>
+          <div
+            class="eyebrow"
+            style="position: absolute; left: var(--pad); top: 180px; z-index: 10"
+          >
+            Canonical operational truth
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 240px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="arch-box" style="font-size: 14px; line-height: 1.9">
+              <span class="highlight-line">Spine Definition:</span>
+              Cloudflare D1 spine_vault · AES-256-GCM encrypted rows KV hot cache · R2 backup/cold
+              store AI Search / Vectorize for semantic memory Queues for asynchronous processing
+
+              <span class="highlight-line">Spine Write Rule:</span>
+              Only the Pipeline writes operational truth to Spine. No dashboard writes directly. No
+              Twin writes directly. No external MCP client writes directly. No source tool writes
+              directly.
+
+              <span class="highlight-line">Everything enters through:</span>
+              Loader → Normalizer → Pipeline → spine_vault
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 620px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 13px;
+                letter-spacing: 0.15em;
+                color: var(--forest);
+                text-transform: uppercase;
+                font-weight: 600;
+                margin-bottom: 16px;
+              "
+            >
+              The Spine Abstraction Principle
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
+              <div class="card top-border-clay">
+                <div class="card-label" style="color: var(--clay)">Before IntegrateWise</div>
+                <div class="card-desc">
+                  Claude → HubSpot (direct, stateless)<br />ChatGPT → HubSpot (direct, stateless)<br />3
+                  agents × 10 tools = 30 connections
+                </div>
+              </div>
+              <div class="card top-border-lime">
+                <div class="card-label" style="color: var(--lime-deep)">After IntegrateWise</div>
+                <div class="card-desc">
+                  All tools → Spine (one normalized truth)<br />Claude → Spine via MCP<br />10 tools
+                  × 1 Spine = 10 connections forever
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">Architecture · v1.1</div>
+          <div class="footer-right">08 / 20</div>
+        </div>
+      </div>
+
+      <!-- S09 INGESTION ARCHITECTURE -->
+      <div class="slide" data-slide="9">
+        <div class="slide-container paper-grain">
+          <div class="forest-band"></div>
+          <div class="brand-mark">
+            <div class="name">IntegrateWise</div>
+            <div class="tagline">Architecture</div>
+          </div>
+          <div class="header-rule"></div>
+          <div class="slide-label">09 — Ingestion Architecture</div>
+          <div class="slide-number">v1.1</div>
+          <div
+            class="eyebrow"
+            style="position: absolute; left: var(--pad); top: 180px; z-index: 10"
+          >
+            Three channels into the Spine
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 240px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+              display: grid;
+              grid-template-columns: repeat(3, 1fr);
+              gap: 16px;
+            "
+          >
+            <div class="card top-border" style="padding: 22px">
+              <div class="card-label">Channel 1</div>
+              <div class="card-title" style="font-size: 20px">Connector Pull / Webhook</div>
+              <div class="card-desc" style="font-size: 13px">
+                External tool → Nango → connector-sync/webhook → Loader → Normalizer → Spine
+              </div>
+            </div>
+            <div class="card top-border-sage" style="padding: 22px">
+              <div class="card-label" style="color: var(--sage)">Channel 2</div>
+              <div class="card-title" style="font-size: 20px">External MCP</div>
+              <div class="card-desc" style="font-size: 13px">
+                External agent → mcp.integratewise.ai → read governed context → propose
+                memory/action
+              </div>
+            </div>
+            <div class="card top-border-lime" style="padding: 22px">
+              <div class="card-label" style="color: var(--lime-deep)">Channel 3</div>
+              <div class="card-title" style="font-size: 20px">Knowledge Ingestion</div>
+              <div class="card-desc" style="font-size: 13px">
+                Documents / Gmail / Slack → extraction → R2 + AI Search + D1 metadata
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 530px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 13px;
+                letter-spacing: 0.15em;
+                color: var(--forest);
+                text-transform: uppercase;
+                font-weight: 600;
+                margin-bottom: 14px;
+              "
+            >
+              Channel 1 detailed flow
+            </div>
+            <div class="arch-box" style="font-size: 13px; line-height: 1.7">
+              Source tool fires webhook → Nango (holds OAuth token) → webhook-ingress →
+              pipeline-process queue → Loader (provenance tagged, idempotent) → Normalizer (8
+              stages, source identity erased) → D1 spine_vault (AES-256-GCM) → KV cache invalidated
+              → Signal generated
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 740px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--sans);
+                font-size: 17px;
+                color: var(--ink-soft);
+                line-height: 1.5;
+              "
+            >
+              <strong>Nango owns all OAuth tokens.</strong> Workers never store raw tool
+              credentials.<br /><strong>Tool identity dies at the Normalizer.</strong> Spine stores
+              canonical truth, not source labels.
+            </div>
+          </div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">Architecture · v1.1</div>
+          <div class="footer-right">09 / 20</div>
+        </div>
+      </div>
+
+      <!-- S10 NORMALIZER -->
+      <div class="slide" data-slide="10">
+        <div class="slide-container dark">
+          <div
+            style="
+              position: absolute;
+              inset: 0;
+              background: radial-gradient(
+                ellipse at 40% 60%,
+                rgba(168, 209, 75, 0.1) 0%,
+                transparent 55%
+              );
+              z-index: 2;
+            "
+          ></div>
+          <div class="brand-mark light">
+            <div class="name">IntegrateWise</div>
+            <div class="tagline">Architecture</div>
+          </div>
+          <div class="header-rule light"></div>
+          <div class="slide-label light">10 — The Normalizer</div>
+          <div class="slide-number light">v1.1</div>
+          <div
+            class="eyebrow"
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 180px;
+              z-index: 10;
+              color: var(--lime);
+            "
+          >
+            The abstraction membrane
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 240px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              class="arch-box"
+              style="
+                font-size: 15px;
+                line-height: 2;
+                background: rgba(244, 239, 228, 0.06);
+                border-color: rgba(244, 239, 228, 0.18);
+              "
+            >
+              <span class="highlight-line">8 Stages:</span>
+              1. Parse + provenance tag — where it came from, recorded once 2. Trait detection (LLM)
+              — "this is a deal/opportunity" 3. Resource-type resolution (LLM) — opportunity →
+              canonical Opportunity 4. Entity resolution (LLM) — HubSpot company → existing Acme
+              Corp 5. Relationship hydration — link Opportunity → Account → Owner 6. Field mapping
+              (LLM) — source fields → Spine schema 7. Validate vs tenant_spine_config 8. Emit MCP
+              tool calls — NOT a JSON blob
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 600px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="font-family: var(--serif); font-size: 40px; color: #f4efe4; line-height: 1.2"
+            >
+              After Stage 8, the word "HubSpot"<br /><em
+                style="color: var(--lime); font-style: italic"
+                >no longer exists in the data.</em
+              >
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 760px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--sans);
+                font-size: 18px;
+                color: rgba(244, 239, 228, 0.7);
+                line-height: 1.5;
+              "
+            >
+              The Normalizer turns every tool into one source-agnostic model.<br />Agents don't know
+              which tool data came from.
+            </div>
+          </div>
+          <div class="footer-rule light"></div>
+          <div class="footer-left light">Architecture · v1.1</div>
+          <div class="footer-right light">10 / 20</div>
+        </div>
+      </div>
+
+      <!-- S11 MEMORY ARCHITECTURE -->
+      <div class="slide" data-slide="11">
+        <div class="slide-container paper-grain">
+          <div class="forest-band"></div>
+          <div class="brand-mark">
+            <div class="name">IntegrateWise</div>
+            <div class="tagline">Architecture</div>
+          </div>
+          <div class="header-rule"></div>
+          <div class="slide-label">11 — Memory Architecture</div>
+          <div class="slide-number">v1.1</div>
+          <div
+            class="eyebrow"
+            style="position: absolute; left: var(--pad); top: 180px; z-index: 10"
+          >
+            Not just chat history
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 230px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+              display: grid;
+              grid-template-columns: repeat(4, 1fr);
+              gap: 12px;
+            "
+          >
+            <div class="card" style="padding: 18px">
+              <div class="card-label" style="font-size: 11px">Conversational</div>
+              <div class="card-desc" style="font-size: 13px">Chat sessions, role history</div>
+            </div>
+            <div class="card top-border-sage" style="padding: 18px">
+              <div class="card-label" style="font-size: 11px; color: var(--sage)">Personal</div>
+              <div class="card-desc" style="font-size: 13px">Behavioral patterns, preferences</div>
+            </div>
+            <div class="card top-border-clay" style="padding: 18px">
+              <div class="card-label" style="font-size: 11px; color: var(--clay)">
+                Organizational
+              </div>
+              <div class="card-desc" style="font-size: 13px">Decisions, doctrine, policies</div>
+            </div>
+            <div class="card top-border-lime" style="padding: 18px">
+              <div class="card-label" style="font-size: 11px; color: var(--lime-deep)">
+                Institutional
+              </div>
+              <div class="card-desc" style="font-size: 13px">Learnings, patterns, playbooks</div>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 440px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 13px;
+                letter-spacing: 0.15em;
+                color: var(--forest);
+                text-transform: uppercase;
+                font-weight: 600;
+                margin-bottom: 14px;
+              "
+            >
+              The Memory Loop
+            </div>
+            <div class="arch-box" style="font-size: 14px; line-height: 1.9">
+              1. CAPTURE — Conversation → memory.write_conversational 2. IDENTIFY — Twin identifies
+              something worth keeping 3. PROPOSE — memory.propose → proposals table (Triage Bot
+              queue) 4. GOVERN — Triage Bot scores: ≥0.85 auto | 0.60–0.84 HITL | <0.60 reject 5.
+              STORE — R2 (raw) + AI Search (embedded) + D1 (metadata) 6. RETRIEVE — Next session:
+              Twin reads via AI Search (semantic)
+
+              <span class="highlight-line"
+                >LOOP CLOSES. Knowledge compounds. Nothing starts cold.</span
+              >
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 770px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--sans);
+                font-size: 16px;
+                color: var(--ink-soft);
+                line-height: 1.5;
+              "
+            >
+              Storage: D1 proposals · R2 raw · AI Search embeddings · Coda projection · Filesystem
+              vault (Customer Zero)<br />Supabase mirror only for promoted tenants. No archive.
+              Active or superseded (with lineage).
+            </div>
+          </div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">Architecture · v1.1</div>
+          <div class="footer-right">11 / 20</div>
+        </div>
+      </div>
+
+      <!-- S12 INTELLIGENCE & SIGNALS -->
+      <div class="slide" data-slide="12">
+        <div class="slide-container paper-grain">
+          <div class="forest-band"></div>
+          <div class="brand-mark">
+            <div class="name">IntegrateWise</div>
+            <div class="tagline">Architecture</div>
+          </div>
+          <div class="header-rule"></div>
+          <div class="slide-label">12 — Intelligence & Signals</div>
+          <div class="slide-number">v1.1</div>
+          <div
+            class="eyebrow"
+            style="position: absolute; left: var(--pad); top: 180px; z-index: 10"
+          >
+            State changes become awareness
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 230px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="arch-box" style="font-size: 14px; line-height: 1.9">
+              <span class="highlight-line">Signal Flow:</span>
+              Spine change → diff detection → signal emitted → signals queue → intelligence worker →
+              SIGNAL_CACHE (KV) → L2 awareness gate → user sees only entitled signals
+
+              <span class="highlight-line">Signal Types:</span>
+              deal_stalled · renewal_risk · health_drop · engagement_drop pipeline_risk · incident ·
+              cash_risk · strategic_escalation
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 520px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 13px;
+                letter-spacing: 0.15em;
+                color: var(--forest);
+                text-transform: uppercase;
+                font-weight: 600;
+                margin-bottom: 14px;
+              "
+            >
+              Awareness Profile determines
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px">
+              <div class="card" style="padding: 18px">
+                <div class="card-label" style="font-size: 11px">Which signals</div>
+                <div class="card-desc" style="font-size: 13px">
+                  signal.type ∈ user.signal_entitlements
+                </div>
+              </div>
+              <div class="card top-border-sage" style="padding: 18px">
+                <div class="card-label" style="font-size: 11px; color: var(--sage)">
+                  Confidence threshold
+                </div>
+                <div class="card-desc" style="font-size: 13px">signal.confidence > threshold</div>
+              </div>
+              <div class="card top-border-lime" style="padding: 18px">
+                <div class="card-label" style="font-size: 11px; color: var(--lime-deep)">
+                  Which panels
+                </div>
+                <div class="card-desc" style="font-size: 13px">
+                  panel_entitlements (spine, context)
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 740px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--sans);
+                font-size: 17px;
+                color: var(--ink-soft);
+                line-height: 1.5;
+              "
+            >
+              Default thresholds: Founder → 0.65 · Manager → 0.75 · Member → 0.85 · Viewer → 0.95<br />L2
+              manifests only when BOTH conditions pass. Otherwise, user is never interrupted.
+            </div>
+          </div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">Architecture · v1.1</div>
+          <div class="footer-right">12 / 20</div>
+        </div>
+      </div>
+
+      <!-- S13 GOVERNANCE & ACTION -->
+      <div class="slide" data-slide="13">
+        <div class="slide-container dark">
+          <div
+            style="
+              position: absolute;
+              inset: 0;
+              background: radial-gradient(
+                ellipse at 50% 50%,
+                rgba(168, 209, 75, 0.08) 0%,
+                transparent 55%
+              );
+              z-index: 2;
+            "
+          ></div>
+          <div class="brand-mark light">
+            <div class="name">IntegrateWise</div>
+            <div class="tagline">Architecture</div>
+          </div>
+          <div class="header-rule light"></div>
+          <div class="slide-label light">13 — Governance & Action</div>
+          <div class="slide-number light">v1.1</div>
+          <div
+            class="eyebrow"
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 180px;
+              z-index: 10;
+              color: var(--lime);
+            "
+          >
+            The approval boundary
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 250px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px">
+              <div
+                style="
+                  background: rgba(244, 239, 228, 0.06);
+                  border: 1px solid rgba(244, 239, 228, 0.18);
+                  padding: 28px;
+                "
+              >
+                <div
+                  style="
+                    font-family: var(--mono);
+                    font-size: 12px;
+                    letter-spacing: 0.15em;
+                    color: var(--lime);
+                    text-transform: uppercase;
+                    margin-bottom: 12px;
+                  "
+                >
+                  U3 · Reason
+                </div>
+                <div
+                  style="
+                    font-family: var(--serif);
+                    font-size: 28px;
+                    color: #f4efe4;
+                    margin-bottom: 10px;
+                  "
+                >
+                  Twin proposes
+                </div>
+                <div
+                  style="
+                    font-family: var(--sans);
+                    font-size: 15px;
+                    color: rgba(244, 239, 228, 0.7);
+                    line-height: 1.5;
+                  "
+                >
+                  Agent Zero reasons, generates insight, creates a proposal. Never an action.
+                </div>
+              </div>
+              <div
+                style="
+                  background: rgba(244, 239, 228, 0.06);
+                  border: 1px solid rgba(168, 209, 75, 0.4);
+                  padding: 28px;
+                "
+              >
+                <div
+                  style="
+                    font-family: var(--mono);
+                    font-size: 12px;
+                    letter-spacing: 0.15em;
+                    color: var(--lime);
+                    text-transform: uppercase;
+                    margin-bottom: 12px;
+                  "
+                >
+                  U4 · Decide
+                </div>
+                <div
+                  style="
+                    font-family: var(--serif);
+                    font-size: 28px;
+                    color: var(--lime);
+                    margin-bottom: 10px;
+                  "
+                >
+                  Governance decides
+                </div>
+                <div
+                  style="
+                    font-family: var(--sans);
+                    font-size: 15px;
+                    color: rgba(244, 239, 228, 0.7);
+                    line-height: 1.5;
+                  "
+                >
+                  Human approves in Governance Workbench. Writes to D1 audit trail.
+                </div>
+              </div>
+              <div
+                style="
+                  background: rgba(244, 239, 228, 0.06);
+                  border: 1px solid rgba(244, 239, 228, 0.18);
+                  padding: 28px;
+                "
+              >
+                <div
+                  style="
+                    font-family: var(--mono);
+                    font-size: 12px;
+                    letter-spacing: 0.15em;
+                    color: var(--lime);
+                    text-transform: uppercase;
+                    margin-bottom: 12px;
+                  "
+                >
+                  U5 · Act
+                </div>
+                <div
+                  style="
+                    font-family: var(--serif);
+                    font-size: 28px;
+                    color: #f4efe4;
+                    margin-bottom: 10px;
+                  "
+                >
+                  Act executes
+                </div>
+                <div
+                  style="
+                    font-family: var(--sans);
+                    font-size: 15px;
+                    color: rgba(244, 239, 228, 0.7);
+                    line-height: 1.5;
+                  "
+                >
+                  Only after approval or policy. Tool updated via Nango. Spine re-syncs.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 600px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="font-family: var(--serif); font-size: 36px; color: #f4efe4; line-height: 1.2"
+            >
+              <em style="color: var(--clay); font-style: italic">Chat is not the audit trail.</em
+              ><br />D1 governance/audit tables are the audit trail.
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 760px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              class="arch-box"
+              style="
+                font-size: 13px;
+                line-height: 1.7;
+                background: rgba(244, 239, 228, 0.06);
+                border-color: rgba(244, 239, 228, 0.18);
+              "
+            >
+              Customer Zero: Act executes directly (we control engine + ops machines) External user:
+              Twin hands off PLAYBOOK (JSON) → user's local agent runs it (Execution boundary axiom
+              — no centralized customer execution) Browser Agent: governance-gated execution on VPS
+              (Playwright) snapshot → act → verify invariant. Requires x-proposal-id in production.
+              cua-driver pattern: DOM element_index addressing, never CSS selectors.
+            </div>
+          </div>
+          <div class="footer-rule light"></div>
+          <div class="footer-left light">Architecture · v1.1</div>
+          <div class="footer-right light">13 / 20</div>
+        </div>
+      </div>
+
+      <!-- S14 STORAGE MAP -->
+      <div class="slide" data-slide="14">
+        <div class="slide-container paper-grain">
+          <div class="forest-band"></div>
+          <div class="brand-mark">
+            <div class="name">IntegrateWise</div>
+            <div class="tagline">Architecture</div>
+          </div>
+          <div class="header-rule"></div>
+          <div class="slide-label">14 — Storage Map</div>
+          <div class="slide-number">v1.1</div>
+          <div
+            class="eyebrow"
+            style="position: absolute; left: var(--pad); top: 180px; z-index: 10"
+          >
+            Every layer has a job
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 230px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="arch-box" style="font-size: 13px; line-height: 1.7">
+              <span class="highlight-line">D1 spine_vault</span> Operational truth, encrypted
+              <span class="highlight-line">D1 tenant_users</span> User, tenant, role, department,
+              plan, status <span class="highlight-line">D1 awareness_profiles</span> Signal
+              thresholds, panel entitlements
+              <span class="highlight-line">D1 signals</span> Time-ordered signal history
+              <span class="highlight-line">D1 proposals</span> Memory/action proposal queue
+              <span class="highlight-line">D1 twin_sessions</span> Twin launch/session metadata
+              <span class="highlight-line">D1 audit_events</span> Approvals, denials, handoffs,
+              actions
+
+              <span class="highlight-line">KV CACHE</span> Hot entity/session reads (60–300s TTL)
+              <span class="highlight-line">KV SIGNAL_CACHE</span> Fast signal delivery
+
+              <span class="highlight-line">R2</span> Raw memory, documents, backups, replay path
+              <span class="highlight-line">AI Search / Vectorize</span> Semantic search over
+              memory/context
+
+              <span class="highlight-line">Queues</span> pipeline-process, signals, knowledge,
+              intelligence-events, intelligence-act, accelerator, DLQs
+
+              <span class="highlight-line">Supabase</span> Promoted tenant fortress mirror only No
+              auth · Not default
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 780px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--sans);
+                font-size: 16px;
+                color: var(--ink-soft);
+                line-height: 1.5;
+              "
+            >
+              Edge-only tenants (initial users) run on D1 + KV + R2 + AI Search. No Supabase.<br />Supabase
+              is fortress data for promoted/enterprise tenants only.
+            </div>
+          </div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">Architecture · v1.1</div>
+          <div class="footer-right">14 / 20</div>
+        </div>
+      </div>
+
+      <!-- S15 GATEWAY -->
+      <div class="slide" data-slide="15">
+        <div class="slide-container paper-grain">
+          <div class="forest-band"></div>
+          <div class="brand-mark">
+            <div class="name">IntegrateWise</div>
+            <div class="tagline">Architecture</div>
+          </div>
+          <div class="header-rule"></div>
+          <div class="slide-label">15 — Gateway Responsibilities</div>
+          <div class="slide-number">v1.1</div>
+          <div
+            class="eyebrow"
+            style="position: absolute; left: var(--pad); top: 180px; z-index: 10"
+          >
+            The control plane
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 240px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+              display: grid;
+              grid-template-columns: repeat(4, 1fr);
+              gap: 12px;
+            "
+          >
+            <div class="card" style="padding: 16px">
+              <div class="card-label" style="font-size: 11px">Auth</div>
+              <div class="card-desc" style="font-size: 13px">
+                CF Access validation<br />D1 JWT issuing
+              </div>
+            </div>
+            <div class="card top-border-sage" style="padding: 16px">
+              <div class="card-label" style="font-size: 11px; color: var(--sage)">Tenant</div>
+              <div class="card-desc" style="font-size: 13px">
+                x-tenant-id injection<br />tenant resolution
+              </div>
+            </div>
+            <div class="card top-border-clay" style="padding: 16px">
+              <div class="card-label" style="font-size: 11px; color: var(--clay)">Enforcement</div>
+              <div class="card-desc" style="font-size: 13px">
+                Rate limiting<br />Plan/role gating
+              </div>
+            </div>
+            <div class="card top-border-lime" style="padding: 16px">
+              <div class="card-label" style="font-size: 11px; color: var(--lime-deep)">Twin</div>
+              <div class="card-desc" style="font-size: 13px">Handoff creation<br />Launch JWT</div>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 460px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--sans);
+                font-size: 20px;
+                color: var(--ink-soft);
+                line-height: 1.6;
+              "
+            >
+              All surfaces call Gateway. No frontend should call internal services directly.<br />Gateway
+              resolves: user, tenant, role, department, plan, awareness profile, entitlements.
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 600px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 13px;
+                letter-spacing: 0.15em;
+                color: var(--forest);
+                text-transform: uppercase;
+                font-weight: 600;
+                margin-bottom: 14px;
+              "
+            >
+              Twin Handoff Endpoint
+            </div>
+            <div class="arch-box" style="font-size: 13px; line-height: 1.7">
+              POST /v1/twin/handoff 1. Validate Cloudflare Access identity 2. Resolve Gateway/D1
+              user 3. Validate tenant membership + Twin entitlement 4. Resolve department +
+              awareness profile 5. Create context key + Twin session row 6. Create one-time launch
+              JWT 7. Store context/session in KV 8. Return Twin launch URL 9. Write audit event
+            </div>
+          </div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">Architecture · v1.1</div>
+          <div class="footer-right">15 / 20</div>
+        </div>
+      </div>
+
+      <!-- S16 MCP POSITION -->
+      <div class="slide" data-slide="16">
+        <div class="slide-container dark">
+          <div
+            style="
+              position: absolute;
+              inset: 0;
+              background: radial-gradient(
+                ellipse at 70% 50%,
+                rgba(168, 209, 75, 0.08) 0%,
+                transparent 55%
+              );
+              z-index: 2;
+            "
+          ></div>
+          <div class="brand-mark light">
+            <div class="name">IntegrateWise</div>
+            <div class="tagline">Architecture</div>
+          </div>
+          <div class="header-rule light"></div>
+          <div class="slide-label light">16 — MCP Position</div>
+          <div class="slide-number light">v1.1</div>
+          <div
+            class="eyebrow"
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 180px;
+              z-index: 10;
+              color: var(--lime);
+            "
+          >
+            External door vs runtime path
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 250px;
+              width: calc(50% - var(--pad) / 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                background: rgba(244, 239, 228, 0.06);
+                border: 1px solid rgba(168, 209, 75, 0.4);
+                padding: 28px;
+              "
+            >
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 12px;
+                  letter-spacing: 0.15em;
+                  color: var(--lime);
+                  text-transform: uppercase;
+                  margin-bottom: 14px;
+                "
+              >
+                Twin / OpenWebUI
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 28px;
+                  color: #f4efe4;
+                  margin-bottom: 12px;
+                "
+              >
+                Uses IW Continuity Bridge
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 15px;
+                  color: rgba(244, 239, 228, 0.7);
+                  line-height: 1.5;
+                "
+              >
+                continuity-tool-server → pipeline → Spine. The product runtime path.
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              right: var(--pad);
+              top: 250px;
+              width: calc(50% - var(--pad) / 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                background: rgba(244, 239, 228, 0.06);
+                border: 1px solid rgba(244, 239, 228, 0.18);
+                padding: 28px;
+              "
+            >
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 12px;
+                  letter-spacing: 0.15em;
+                  color: rgba(244, 239, 228, 0.55);
+                  text-transform: uppercase;
+                  margin-bottom: 14px;
+                "
+              >
+                External Agents
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 28px;
+                  color: #f4efe4;
+                  margin-bottom: 12px;
+                "
+              >
+                Use mcp.integratewise.ai
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 15px;
+                  color: rgba(244, 239, 228, 0.7);
+                  line-height: 1.5;
+                "
+              >
+                Claude, ChatGPT, Cursor, Kiro. The external agent door.
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 560px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 13px;
+                letter-spacing: 0.15em;
+                color: var(--clay);
+                text-transform: uppercase;
+                font-weight: 600;
+                margin-bottom: 12px;
+              "
+            >
+              MCP exposes ~20 tools
+            </div>
+            <div
+              class="arch-box"
+              style="
+                font-size: 14px;
+                line-height: 1.8;
+                background: rgba(244, 239, 228, 0.06);
+                border-color: rgba(244, 239, 228, 0.18);
+              "
+            >
+              memory.* · spine.* · book.* · kb.* · proposal.* External agents may: read governed
+              context, search memory, create proposals External agents may NOT: write Spine
+              directly, bypass Gateway, touch Nango tokens
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 760px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="font-family: var(--serif); font-size: 28px; color: #f4efe4; line-height: 1.3"
+            >
+              OpenWebUI / Agent Zero should
+              <em style="color: var(--lime); font-style: italic">not</em> be treated as<br />an
+              external MCP client. It is inside the Bridge experience.
+            </div>
+          </div>
+          <div class="footer-rule light"></div>
+          <div class="footer-left light">Architecture · v1.1</div>
+          <div class="footer-right light">16 / 20</div>
+        </div>
+      </div>
+
+      <!-- S17 TENANT MODEL -->
+      <div class="slide" data-slide="17">
+        <div class="slide-container paper-grain">
+          <div class="forest-band"></div>
+          <div class="brand-mark">
+            <div class="name">IntegrateWise</div>
+            <div class="tagline">Architecture</div>
+          </div>
+          <div class="header-rule"></div>
+          <div class="slide-label">17 — Tenant Model</div>
+          <div class="slide-number">v1.1</div>
+          <div
+            class="eyebrow"
+            style="position: absolute; left: var(--pad); top: 180px; z-index: 10"
+          >
+            Every query is tenant-scoped
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 240px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="arch-box" style="font-size: 14px; line-height: 1.9">
+              x-tenant-id is injected by Gateway. Frontend cannot choose tenant directly. D1 queries
+              must include tenant_id. Memory queries must include tenant_id. Signals must include
+              tenant_id. Twin sessions must include tenant_id. MCP calls must include tenant_id
+              after auth resolution.
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 500px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 13px;
+                letter-spacing: 0.15em;
+                color: var(--forest);
+                text-transform: uppercase;
+                font-weight: 600;
+                margin-bottom: 14px;
+              "
+            >
+              Storage Tiers
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px">
+              <div class="card top-border" style="padding: 20px">
+                <div class="card-label">Edge-Only</div>
+                <div class="card-title" style="font-size: 18px">Default</div>
+                <div class="card-desc" style="font-size: 13px">
+                  D1 + KV + R2 + AI Search<br />Initial users. Full product at edge.
+                </div>
+              </div>
+              <div class="card top-border-sage" style="padding: 20px">
+                <div class="card-label" style="color: var(--sage)">Promoted</div>
+                <div class="card-title" style="font-size: 18px">Usage-earned</div>
+                <div class="card-desc" style="font-size: 13px">
+                  + Supabase fortress mirror<br />Enterprise/compliance triggers.
+                </div>
+              </div>
+              <div class="card top-border-lime" style="padding: 20px">
+                <div class="card-label" style="color: var(--lime-deep)">Customer Zero</div>
+                <div class="card-title" style="font-size: 18px">Full access</div>
+                <div class="card-desc" style="font-size: 13px">
+                  Internal ops + filesystem vault<br />+ agent swarm + observability.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 760px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--sans);
+                font-size: 17px;
+                color: var(--ink-soft);
+                line-height: 1.5;
+              "
+            >
+              Promotion is one-way: backfill R2+D1 → Supabase, then enable dual-write.<br />No
+              cross-tenant data leakage possible. Hard RLS.
+            </div>
+          </div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">Architecture · v1.1</div>
+          <div class="footer-right">17 / 20</div>
+        </div>
+      </div>
+
+      <!-- S18 SECURITY BOUNDARIES -->
+      <div class="slide" data-slide="18">
+        <div class="slide-container paper-grain">
+          <div class="forest-band"></div>
+          <div class="brand-mark">
+            <div class="name">IntegrateWise</div>
+            <div class="tagline">Architecture</div>
+          </div>
+          <div class="header-rule"></div>
+          <div class="slide-label">18 — Security Boundaries</div>
+          <div class="slide-number">v1.1</div>
+          <div
+            class="eyebrow"
+            style="position: absolute; left: var(--pad); top: 180px; z-index: 10"
+          >
+            What's public, what's internal
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 240px;
+              width: calc(50% - var(--pad) / 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 13px;
+                letter-spacing: 0.15em;
+                color: var(--forest);
+                text-transform: uppercase;
+                font-weight: 600;
+                margin-bottom: 14px;
+              "
+            >
+              Public
+            </div>
+            <div class="arch-box" style="font-size: 13px; line-height: 1.7">
+              gateway.dev.integratewise.ai mcp.integratewise.ai (CF Access + HMAC)
+              twin.integratewise.ai (CF Access)
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              right: var(--pad);
+              top: 240px;
+              width: calc(50% - var(--pad) / 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 13px;
+                letter-spacing: 0.15em;
+                color: var(--clay);
+                text-transform: uppercase;
+                font-weight: 600;
+                margin-bottom: 14px;
+              "
+            >
+              Internal Only
+            </div>
+            <div class="arch-box" style="font-size: 13px; line-height: 1.7">
+              pipeline (SERVICE_SECRET gate) intelligence · knowledge · connector-sync
+              webhook-ingress (signature verification) bff · continuity-tool-server browser-agent
+              (Playwright, VPS, x-iw-browser-key)
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 480px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 13px;
+                letter-spacing: 0.15em;
+                color: var(--forest);
+                text-transform: uppercase;
+                font-weight: 600;
+                margin-bottom: 14px;
+              "
+            >
+              Protected Secrets
+            </div>
+            <div class="arch-box" style="font-size: 13px; line-height: 1.7">
+              SPINE_ENCRYPTION_KEY in Cloudflare Secrets Nango OAuth tokens in Nango Gateway JWT
+              signing keys in Cloudflare Secrets MCP HMAC/service tokens in Cloudflare Secrets
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 680px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--sans);
+                font-size: 17px;
+                color: var(--ink-soft);
+                line-height: 1.5;
+              "
+            >
+              Forbidden: OpenWebUI as primary auth · Supabase auth · browser-provided tenant_id<br />OpenWebUI
+              direct D1 access · Nango token exposure to Twin · approval only in chat
+            </div>
+          </div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">Architecture · v1.1</div>
+          <div class="footer-right">18 / 20</div>
+        </div>
+      </div>
+
+      <!-- S19 HARD RULES -->
+      <div class="slide" data-slide="19">
+        <div class="slide-container dark">
+          <div
+            style="
+              position: absolute;
+              inset: 0;
+              background: radial-gradient(
+                ellipse at 30% 40%,
+                rgba(184, 92, 63, 0.08) 0%,
+                transparent 55%
+              );
+              z-index: 2;
+            "
+          ></div>
+          <div class="brand-mark light">
+            <div class="name">IntegrateWise</div>
+            <div class="tagline">Architecture</div>
+          </div>
+          <div class="header-rule light"></div>
+          <div class="slide-label light">19 — Hard Rules</div>
+          <div class="slide-number light">v1.1</div>
+          <div
+            class="eyebrow"
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 180px;
+              z-index: 10;
+              color: var(--clay);
+            "
+          >
+            Never violate
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 240px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+              display: grid;
+              grid-template-columns: repeat(2, 1fr);
+              gap: 10px;
+            "
+          >
+            <div
+              class="rule-card"
+              style="
+                background: rgba(244, 239, 228, 0.06);
+                border-color: rgba(244, 239, 228, 0.18);
+                border-left-color: var(--lime);
+              "
+            >
+              <div class="rule-num" style="color: var(--lime)">01</div>
+              <div class="rule-text" style="color: #f4efe4; font-size: 14px">
+                Cloudflare Zero Trust is the identity membrane.
+              </div>
+            </div>
+            <div
+              class="rule-card"
+              style="
+                background: rgba(244, 239, 228, 0.06);
+                border-color: rgba(244, 239, 228, 0.18);
+                border-left-color: var(--lime);
+              "
+            >
+              <div class="rule-num" style="color: var(--lime)">02</div>
+              <div class="rule-text" style="color: #f4efe4; font-size: 14px">
+                Gateway is the authorization brain.
+              </div>
+            </div>
+            <div
+              class="rule-card"
+              style="
+                background: rgba(244, 239, 228, 0.06);
+                border-color: rgba(244, 239, 228, 0.18);
+                border-left-color: var(--lime);
+              "
+            >
+              <div class="rule-num" style="color: var(--lime)">03</div>
+              <div class="rule-text" style="color: #f4efe4; font-size: 14px">
+                D1 spine_vault is operational truth.
+              </div>
+            </div>
+            <div
+              class="rule-card"
+              style="
+                background: rgba(244, 239, 228, 0.06);
+                border-color: rgba(244, 239, 228, 0.18);
+                border-left-color: var(--lime);
+              "
+            >
+              <div class="rule-num" style="color: var(--lime)">04</div>
+              <div class="rule-text" style="color: #f4efe4; font-size: 14px">
+                Pipeline is the only Spine writer.
+              </div>
+            </div>
+            <div
+              class="rule-card"
+              style="
+                background: rgba(244, 239, 228, 0.06);
+                border-color: rgba(244, 239, 228, 0.18);
+                border-left-color: var(--lime);
+              "
+            >
+              <div class="rule-num" style="color: var(--lime)">05</div>
+              <div class="rule-text" style="color: #f4efe4; font-size: 14px">
+                Normalizer erases source identity.
+              </div>
+            </div>
+            <div
+              class="rule-card"
+              style="
+                background: rgba(244, 239, 228, 0.06);
+                border-color: rgba(244, 239, 228, 0.18);
+                border-left-color: var(--lime);
+              "
+            >
+              <div class="rule-num" style="color: var(--lime)">06</div>
+              <div class="rule-text" style="color: #f4efe4; font-size: 14px">
+                Nango owns tool credentials.
+              </div>
+            </div>
+            <div
+              class="rule-card"
+              style="
+                background: rgba(244, 239, 228, 0.06);
+                border-color: rgba(244, 239, 228, 0.18);
+                border-left-color: var(--lime);
+              "
+            >
+              <div class="rule-num" style="color: var(--lime)">07</div>
+              <div class="rule-text" style="color: #f4efe4; font-size: 14px">
+                Twin reads through Continuity Bridge.
+              </div>
+            </div>
+            <div
+              class="rule-card"
+              style="
+                background: rgba(244, 239, 228, 0.06);
+                border-color: rgba(244, 239, 228, 0.18);
+                border-left-color: var(--lime);
+              "
+            >
+              <div class="rule-num" style="color: var(--lime)">08</div>
+              <div class="rule-text" style="color: #f4efe4; font-size: 14px">
+                MCP is for external agents.
+              </div>
+            </div>
+            <div
+              class="rule-card"
+              style="
+                background: rgba(244, 239, 228, 0.06);
+                border-color: rgba(244, 239, 228, 0.18);
+                border-left-color: var(--lime);
+              "
+            >
+              <div class="rule-num" style="color: var(--lime)">09</div>
+              <div class="rule-text" style="color: #f4efe4; font-size: 14px">
+                L2 is an awareness service, not a page.
+              </div>
+            </div>
+            <div
+              class="rule-card"
+              style="
+                background: rgba(244, 239, 228, 0.06);
+                border-color: rgba(244, 239, 228, 0.18);
+                border-left-color: var(--lime);
+              "
+            >
+              <div class="rule-num" style="color: var(--lime)">10</div>
+              <div class="rule-text" style="color: #f4efe4; font-size: 14px">
+                Twin proposes; Governance decides; Act executes.
+              </div>
+            </div>
+            <div
+              class="rule-card"
+              style="
+                background: rgba(244, 239, 228, 0.06);
+                border-color: rgba(244, 239, 228, 0.18);
+                border-left-color: var(--lime);
+              "
+            >
+              <div class="rule-num" style="color: var(--lime)">11</div>
+              <div class="rule-text" style="color: #f4efe4; font-size: 14px">
+                Chat is not the audit trail.
+              </div>
+            </div>
+            <div
+              class="rule-card"
+              style="
+                background: rgba(244, 239, 228, 0.06);
+                border-color: rgba(244, 239, 228, 0.18);
+                border-left-color: var(--lime);
+              "
+            >
+              <div class="rule-num" style="color: var(--lime)">12</div>
+              <div class="rule-text" style="color: #f4efe4; font-size: 14px">
+                Coda is projection, not truth.
+              </div>
+            </div>
+            <div
+              class="rule-card"
+              style="
+                background: rgba(244, 239, 228, 0.06);
+                border-color: rgba(244, 239, 228, 0.18);
+                border-left-color: var(--lime);
+              "
+            >
+              <div class="rule-num" style="color: var(--lime)">13</div>
+              <div class="rule-text" style="color: #f4efe4; font-size: 14px">
+                Supabase is not auth.
+              </div>
+            </div>
+            <div
+              class="rule-card"
+              style="
+                background: rgba(244, 239, 228, 0.06);
+                border-color: rgba(244, 239, 228, 0.18);
+                border-left-color: var(--lime);
+              "
+            >
+              <div class="rule-num" style="color: var(--lime)">14</div>
+              <div class="rule-text" style="color: #f4efe4; font-size: 14px">
+                Supabase is not default.
+              </div>
+            </div>
+            <div
+              class="rule-card"
+              style="
+                background: rgba(244, 239, 228, 0.06);
+                border-color: rgba(244, 239, 228, 0.18);
+                border-left-color: var(--lime);
+              "
+            >
+              <div class="rule-num" style="color: var(--lime)">15</div>
+              <div class="rule-text" style="color: #f4efe4; font-size: 14px">
+                Every query is tenant-scoped.
+              </div>
+            </div>
+            <div
+              class="rule-card"
+              style="
+                background: rgba(244, 239, 228, 0.06);
+                border-color: rgba(244, 239, 228, 0.18);
+                border-left-color: var(--lime);
+              "
+            >
+              <div class="rule-num" style="color: var(--lime)">16</div>
+              <div class="rule-text" style="color: #f4efe4; font-size: 14px">
+                No surface reads source tools directly.
+              </div>
+            </div>
+            <div
+              class="rule-card"
+              style="
+                background: rgba(244, 239, 228, 0.06);
+                border-color: rgba(244, 239, 228, 0.18);
+                border-left-color: var(--lime);
+              "
+            >
+              <div class="rule-num" style="color: var(--lime)">17</div>
+              <div class="rule-text" style="color: #f4efe4; font-size: 14px">
+                No agent gets raw source credentials.
+              </div>
+            </div>
+            <div
+              class="rule-card"
+              style="
+                background: rgba(244, 239, 228, 0.06);
+                border-color: rgba(244, 239, 228, 0.18);
+                border-left-color: var(--lime);
+              "
+            >
+              <div class="rule-num" style="color: var(--lime)">18</div>
+              <div class="rule-text" style="color: #f4efe4; font-size: 14px">
+                Every action loops back through Spine.
+              </div>
+            </div>
+            <div
+              class="rule-card"
+              style="
+                background: rgba(244, 239, 228, 0.06);
+                border-color: rgba(244, 239, 228, 0.18);
+                border-left-color: var(--lime);
+              "
+            >
+              <div class="rule-num" style="color: var(--lime)">19</div>
+              <div class="rule-text" style="color: #f4efe4; font-size: 14px">
+                Every useful learning can become Memory.
+              </div>
+            </div>
+            <div
+              class="rule-card"
+              style="
+                background: rgba(244, 239, 228, 0.06);
+                border-color: rgba(244, 239, 228, 0.18);
+                border-left-color: var(--lime);
+              "
+            >
+              <div class="rule-num" style="color: var(--lime)">20</div>
+              <div class="rule-text" style="color: #f4efe4; font-size: 14px">
+                The system never starts cold.
+              </div>
+            </div>
+          </div>
+          <div class="footer-rule light"></div>
+          <div class="footer-left light">Architecture · v1.1</div>
+          <div class="footer-right light">19 / 20</div>
+        </div>
+      </div>
+
+      <!-- S20 CLOSING -->
+      <div class="slide" data-slide="20">
+        <div class="slide-container dark">
+          <div
+            style="
+              position: absolute;
+              inset: 0;
+              background: radial-gradient(
+                ellipse at 80% 30%,
+                rgba(168, 209, 75, 0.16) 0%,
+                transparent 55%
+              );
+              z-index: 2;
+            "
+          ></div>
+          <div class="brand-mark light">
+            <div class="name">IntegrateWise</div>
+            <div class="tagline">Architecture</div>
+          </div>
+          <div class="header-rule light"></div>
+          <div class="slide-label light">20 — Final Statement</div>
+          <div class="slide-number light">v1.1</div>
+          <div style="position: absolute; left: var(--pad); top: 240px; z-index: 10">
+            <div
+              style="
+                display: inline-flex;
+                align-items: center;
+                gap: 12px;
+                padding: 8px 16px;
+                background: rgba(168, 209, 75, 0.14);
+                border: 1px solid rgba(168, 209, 75, 0.4);
+                border-radius: 2px;
+              "
+            >
+              <div
+                style="width: 8px; height: 8px; background: var(--lime); border-radius: 50%"
+              ></div>
+              <span
+                style="
+                  font-family: var(--mono);
+                  font-size: 14px;
+                  letter-spacing: 0.18em;
+                  color: var(--lime);
+                  text-transform: uppercase;
+                  font-weight: 500;
+                "
+                >Canonical · v1.1</span
+              >
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 340px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              class="serif-display"
+              style="font-size: clamp(48px, 6vw, 96px); color: #f4efe4; line-height: 1.05"
+            >
+              Connect once.<br />Normalize once.<br />Render anywhere.
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 620px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              class="serif-display"
+              style="
+                font-size: clamp(48px, 6vw, 96px);
+                color: var(--lime);
+                line-height: 1.05;
+                font-style: italic;
+              "
+            >
+              Reason continuously.<br />Approve deliberately.<br />Act safely. Remember forever.
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 900px;
+              width: calc(100% - var(--pad) * 2);
+              height: 1px;
+              background: rgba(244, 239, 228, 0.18);
+              z-index: 3;
+            "
+          ></div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 930px;
+              max-width: 900px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 14px;
+                letter-spacing: 0.18em;
+                color: rgba(244, 239, 228, 0.55);
+                text-transform: uppercase;
+                margin-bottom: 14px;
+              "
+            >
+              Architecture · v1.1 · June 2026
+            </div>
+            <div
+              style="
+                font-family: var(--serif);
+                font-size: 42px;
+                color: #f4efe4;
+                line-height: 1.1;
+                letter-spacing: -0.02em;
+              "
+            >
+              IW Continuity Bridge
+            </div>
+            <div
+              style="
+                font-family: var(--sans);
+                font-size: 18px;
+                color: rgba(244, 239, 228, 0.7);
+                line-height: 1.5;
+                margin-top: 12px;
+                max-width: 780px;
+              "
+            >
+              IntegrateWise is an edge-native continuity system.<br />Cloudflare is the edge. D1 is
+              the Spine. The Bridge is the product.<br />Every agent session follows the Continuity
+              Protocol: read lineage → execute → handoff → triage.
+            </div>
+          </div>
+          <div class="footer-rule light"></div>
+          <div class="footer-left light">
+            IntegrateWise · Continuity Infrastructure for AI · 2026
+          </div>
+          <div class="footer-right light">20 / 20 — FIN</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NAV BAR -->
+    <div class="nav-bar">
+      <button onclick="goSlide(current - 1)">← PREV</button>
+      <span class="counter" id="counter">01 / 20</span>
+      <button onclick="goSlide(current + 1)">NEXT →</button>
+    </div>
+
+    <script>
+      const slides = document.querySelectorAll(".slide");
+      let current = 0;
+      function goSlide(n) {
+        if (n < 0 || n >= slides.length) return;
+        slides[current].classList.remove("active");
+        current = n;
+        slides[current].classList.add("active");
+        document.getElementById("counter").textContent =
+          String(current + 1).padStart(2, "0") + " / " + slides.length;
+        document.getElementById("progress").style.width =
+          ((current + 1) / slides.length) * 100 + "%";
+      }
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight" || e.key === " ") goSlide(current + 1);
+        if (e.key === "ArrowLeft") goSlide(current - 1);
+        if (e.key === "Home") goSlide(0);
+        if (e.key === "End") goSlide(slides.length - 1);
+      });
+      document.getElementById("progress").style.width = (1 / slides.length) * 100 + "%";
+    </script>
+  </body>
+</html>

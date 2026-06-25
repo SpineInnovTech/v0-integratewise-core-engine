@@ -1,0 +1,27 @@
+{
+  "name": "@integratewise/coda-pack",
+  "version": "1.0.0",
+  "description": "IntegrateWise Coda Pack — Control Surface for managing IW operations",
+  "main": "pack.ts",
+  "scripts": {
+    "build": "packs build pack.ts",
+    "test": "packs validate pack.ts",
+    "deploy": "packs upload pack.ts",
+    "template": "tsx template.ts"
+  },
+  "dependencies": {
+    "@codahq/packs-sdk": "^1.15.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
+  },
+  "keywords": [
+    "coda",
+    "pack",
+    "integratewise",
+    "memory",
+    "governance"
+  ],
+  "license": "MIT"
+}

@@ -1,0 +1,97 @@
+# Universal Connector Sync Worker
+# Handles scheduled and on-demand syncs for ALL connector providers.
+# Replaces the HubSpot-only sync with a multi-provider sync engine.
+name = "integratewise-connector-sync"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+main = "src/index.ts"
+compatibility_date = "2024-12-10"
+compatibility_flags = ["nodejs_compat"]
+
+# ─── D1 Database (schema-driven entity resolution + sync checkpoints) ───
+# Mirrors the gateway binding EXACTLY — connector-sync must READ/WRITE the same
+# tenant_spine_config the gateway writes (single Cloudflare/D1 truth, DECISION 22).
+[[d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+# Queue for sync jobs (all providers) — consumer ACTIVE (Full/Delta scheduler + on-demand)
+[[queues.consumers]]
+queue = "connector-sync"
+max_batch_size = 10
+max_batch_timeout = 30
+
+[[queues.producers]]
+queue = "connector-sync"
+binding = "SYNC_QUEUE"
+
+# KV for connector status (shared across all providers)
+[[kv_namespaces]]
+binding = "CONNECTOR_STATUS"
+id = "f7a3d773ff2841f7954d3cfeae82594f"
+
+# Service bindings
+[[services]]
+binding = "CONNECTOR"
+service = "integratewise-connector"
+
+# Scheduler: a self-rescheduling Durable Object alarm (replaces the account-wide
+# cron, which hit a trigger-slot limit). Arm once via POST /scheduler/arm.
+[[durable_objects.bindings]]
+name = "SYNC_SCHEDULER"
+class_name = "SyncSchedulerDO"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["SyncSchedulerDO"]
+
+[vars]
+ENVIRONMENT = "dev"
+FULL_SYNC_DELAY_HOURS = "36"
+
+[env.test]
+name = "connector-sync-test"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+[env.test.vars]
+ENVIRONMENT = "test"
+FULL_SYNC_DELAY_HOURS = "36"
+
+[[env.test.services]]
+binding = "CONNECTOR"
+service = "integratewise-connector-test"
+
+[[env.test.d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+[env.prod]
+name = "connector-sync-prod"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+[env.prod.vars]
+ENVIRONMENT = "prod"
+FULL_SYNC_DELAY_HOURS = "36"
+
+[[env.prod.services]]
+binding = "CONNECTOR"
+service = "integratewise-connector-prod"
+
+[[env.prod.d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+[dev]
+inspector_port = 9244
+port = 8784
+
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+[observability.logs]
+enabled = true
+invocation_logs = true
+head_sampling_rate = 1

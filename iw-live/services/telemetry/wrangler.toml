@@ -1,0 +1,19 @@
+name = "integratewise-telemetry"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+
+[env.staging]
+name = "integratewise-telemetry-staging"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+# We will use the existing Spine Cache D1 database for logs since account limits are reached
+[[env.staging.d1_databases]]
+binding = "LOGS_DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+
+[dev]
+port = 8809
+inspector_port = 9269

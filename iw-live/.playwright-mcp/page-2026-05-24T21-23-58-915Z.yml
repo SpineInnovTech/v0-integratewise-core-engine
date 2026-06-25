@@ -1,0 +1,137 @@
+- generic [ref=e2]:
+    - complementary [ref=e3]:
+        - generic [ref=e4]:
+            - generic [ref=e5]:
+                - generic [ref=e6]: IW
+                - generic [ref=e7]: IntegrateWise
+            - generic [ref=e8]: operations.integratewise.ai
+        - generic [ref=e9]:
+            - generic [ref=e10]: Product
+            - button "Account Success" [ref=e11] [cursor=pointer]
+            - button "Business Ops" [ref=e12] [cursor=pointer]
+        - generic [ref=e13]:
+            - generic [ref=e14]: Workbenches
+            - button "👤 User Workbench" [ref=e15] [cursor=pointer]
+            - button "✦ Twin Workbench" [ref=e16] [cursor=pointer]
+            - button "🧠 Cognitive Workbench" [ref=e17] [cursor=pointer]
+            - button "🛡️ Governance Workbench" [ref=e18] [cursor=pointer]
+        - generic [ref=e19]:
+            - generic [ref=e20]: Memory
+            - button "💬 Conversational" [ref=e21] [cursor=pointer]
+            - button "🔒 Personal" [ref=e22] [cursor=pointer]
+            - button "🏢 Organizational" [ref=e23] [cursor=pointer]
+        - generic [ref=e24]:
+            - generic [ref=e25]: Hermes v0.14.0 — 116 skills
+            - generic [ref=e27]: 32 skill gap pending
+    - generic [ref=e29]:
+        - generic [ref=e30]:
+            - generic [ref=e31]:
+                - generic [ref=e32]: IntegrateWise
+                - generic [ref=e33]: ›
+                - generic [ref=e34]: Account Success
+                - generic [ref=e35]: ›
+                - generic [ref=e36]: User Workbench
+            - generic [ref=e37]:
+                - img [ref=e38]
+                - textbox "Search everything..." [ref=e41]
+                - generic [ref=e42]: ⌘K
+            - generic [ref=e43]:
+                - button "Notifications" [ref=e44] [cursor=pointer]:
+                    - img [ref=e45]
+                - button "Toggle L2" [ref=e49] [cursor=pointer]:
+                    - img [ref=e50]
+                - generic [ref=e52]: "N"
+        - generic [ref=e54]:
+            - generic [ref=e55]:
+                - generic [ref=e56]:
+                    - generic [ref=e57]:
+                        - generic [ref=e58]: Account Success
+                        - generic [ref=e59]: 6 accounts
+                    - generic [ref=e60]:
+                        - generic [ref=e61]:
+                            - generic [ref=e62]: Total ARR
+                            - generic [ref=e63]: $1,813K
+                        - generic [ref=e64]:
+                            - generic [ref=e65]: Expansion
+                            - generic [ref=e66]: $337K
+                        - generic [ref=e67]:
+                            - generic [ref=e68]: At Risk
+                            - generic [ref=e69]: 2 accts
+                        - generic [ref=e70]:
+                            - generic [ref=e71]: Renewing ≤30d
+                            - generic [ref=e72]: 2 accts
+                - generic [ref=e73]:
+                    - generic [ref=e74] [cursor=pointer]:
+                        - generic [ref=e75]:
+                            - generic [ref=e76]:
+                                - generic [ref=e77]: Axiom Financial
+                                - generic [ref=e78]: Healthy
+                            - generic [ref=e79]: "Financial Services · CSM: Sarah Chen"
+                            - generic [ref=e80]:
+                                - generic [ref=e81]: $420K ARR
+                                - generic [ref=e82]: 94d renewal
+                            - generic [ref=e83]:
+                                - generic [ref=e84]: 1 risk
+                                - generic [ref=e85]: 4 tasks
+                        - generic [ref=e87]: "87"
+                    - generic [ref=e90] [cursor=pointer]:
+                        - generic [ref=e91]:
+                            - generic [ref=e92]:
+                                - generic [ref=e93]: MedCore Health Systems
+                                - generic [ref=e94]: At Risk
+                            - generic [ref=e95]: "Healthcare · CSM: Marcus Webb"
+                            - generic [ref=e96]:
+                                - generic [ref=e97]: $310K ARR
+                                - generic [ref=e98]: 28d renewal
+                            - generic [ref=e99]:
+                                - generic [ref=e100]: 5 risks
+                                - generic [ref=e101]: 9 tasks
+                        - generic [ref=e103]: "54"
+                    - generic [ref=e106] [cursor=pointer]:
+                        - generic [ref=e107]:
+                            - generic [ref=e108]:
+                                - generic [ref=e109]: Stellarworks SaaS
+                                - generic [ref=e110]: Healthy
+                            - generic [ref=e111]: "Technology · CSM: Priya Nair"
+                            - generic [ref=e112]:
+                                - generic [ref=e113]: $195K ARR
+                                - generic [ref=e114]: 187d renewal
+                            - generic [ref=e116]: 2 tasks
+                        - generic [ref=e118]: "91"
+                    - generic [ref=e121] [cursor=pointer]:
+                        - generic [ref=e122]:
+                            - generic [ref=e123]:
+                                - generic [ref=e124]: Vantage Telecom
+                                - generic [ref=e125]: Critical
+                            - generic [ref=e126]: "Telecommunications · CSM: Sarah Chen"
+                            - generic [ref=e127]:
+                                - generic [ref=e128]: $540K ARR
+                                - generic [ref=e129]: 11d renewal
+                            - generic [ref=e130]:
+                                - generic [ref=e131]: 9 risks
+                                - generic [ref=e132]: 14 tasks
+                        - generic [ref=e134]: "31"
+                    - generic [ref=e137] [cursor=pointer]:
+                        - generic [ref=e138]:
+                            - generic [ref=e139]:
+                                - generic [ref=e140]: Crestline Manufacturing
+                                - generic [ref=e141]: Healthy
+                            - generic [ref=e142]: "Manufacturing · CSM: Marcus Webb"
+                            - generic [ref=e143]:
+                                - generic [ref=e144]: $260K ARR
+                                - generic [ref=e145]: 142d renewal
+                        - generic [ref=e147]: "73"
+                    - generic [ref=e150] [cursor=pointer]:
+                        - generic [ref=e151]:
+                            - generic [ref=e152]:
+                                - generic [ref=e153]: Luminos Retail Group
+                                - generic [ref=e154]: Healthy
+                            - generic [ref=e155]: "Retail & Commerce · CSM: Priya Nair"
+                            - generic [ref=e156]:
+                                - generic [ref=e157]: $88K ARR
+                                - generic [ref=e158]: 63d renewal
+                        - generic [ref=e160]: "68"
+            - generic [ref=e164]:
+                - generic [ref=e165]: ◎
+                - generic [ref=e166]: Select an account
+                - generic [ref=e167]: Choose an account from the list to view its 15-layer intelligence graph — from contract metadata to AI-generated strategic insights.

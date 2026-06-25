@@ -1,0 +1,320 @@
+# Consolidated Connector Worker (v3.6 Architecture)
+# Merges: loader + mcp-connector + store
+name = "connector"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Observability (see docs/WORKERS_OBSERVABILITY_OTLP.md)
+[observability]
+enabled = true
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+[observability.traces]
+enabled = true
+head_sampling_rate = 0.1
+
+# Secrets from Cloudflare Secrets Store — replace 1fd83fc5881e4cd296ae3c2fbe80693c (see docs/SECRETS_STORE_SETUP.md)
+# NANGO for REAL user connections (OAuth to HubSpot, Jira, GitHub, etc.)
+# 1. Sign up / log in at https://app.nango.dev
+# 2. For each app you want users to connect (from the expanded NANGO_INTEGRATION_MAP):
+#    - Create OAuth app in the provider (HubSpot App, Jira OAuth, GitHub OAuth App, etc.)
+#    - In Nango → Integrations, add the integration and paste the client ID/secret.
+#    - Copy the redirect URI Nango gives you into the provider's OAuth settings.
+# 3. In Nango dashboard, copy your "Secret Key" (for the environment: Prod or Dev).
+# 4. Also set Webhook secret if using /webhooks/nango.
+# 5. Put into CF Secrets Store (or wrangler secret put):
+#    NANGO_SECRET_KEY=your-nango-secret
+#    NANGO_WEBHOOK_SECRET=your-webhook-secret (optional)
+#
+# For nango dev (local testing): NANGO_BASE_URL=http://localhost:3003
+# In wrangler dev: use .dev.vars with NANGO_BASE_URL=...
+# vars:
+# NANGO_BASE_URL = "http://localhost:3003"  # for dev only
+# Set in .dev.vars for local wrangler dev.
+
+# Core connector paths use D1 (DECISION 22). Nango is for auth brokering only.
+[[secrets_store_secrets]]
+binding = "NANGO_SECRET_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "NANGO_SECRET_KEY"
+
+# [[secrets_store_secrets]]
+# binding = "NANGO_WEBHOOK_SECRET"
+# store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "NANGO_WEBHOOK_SECRET"
+
+# Legacy Supabase (only for sub-loader compatibility during migration — guard all paths).
+[[secrets_store_secrets]]
+binding = "SUPABASE_URL"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SUPABASE_URL"
+
+[[secrets_store_secrets]]
+binding = "SUPABASE_SERVICE_ROLE_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SUPABASE_SERVICE_ROLE_KEY"
+
+[[secrets_store_secrets]]
+binding = "DATABASE_URL"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "DATABASE_URL"
+
+[[secrets_store_secrets]]
+binding = "TOKEN_ENCRYPTION_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "TOKEN_ENCRYPTION_KEY"
+
+
+
+# --- Queue Producers ---
+
+# From loader: data → pipeline
+
+# [[secrets_store_secrets]]
+# binding = "GITHUB_TOKEN"
+# store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "GITHUB_TOKEN"
+
+# [[secrets_store_secrets]]
+# binding = "OPENAI_API_KEY"
+# store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "OPENAI_API_KEY"
+
+# [[secrets_store_secrets]]
+# binding = "GOOGLE_API_KEY"
+# store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "GOOGLE_API_KEY"
+
+# [[secrets_store_secrets]]
+# binding = "VERCEL_TOKEN"
+# store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "VERCEL_TOKEN"
+
+# [[secrets_store_secrets]]
+# binding = "XAI_API_KEY"
+# store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "XAI_API_KEY"
+
+[[secrets_store_secrets]]
+binding = "OPENROUTER_API_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "OPENROUTER_API_KEY"
+
+# [[secrets_store_secrets]]
+# binding = "OPENCODE_API_KEY"
+# store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "OPENCODE_API_KEY"
+
+# [[services]]
+# binding = "MCP"
+# service = "mcp-connector"
+
+
+[[queues.producers]]
+queue = "pipeline-process"
+binding = "PIPELINE_QUEUE"
+
+# From mcp-connector: sessions → knowledge
+[[queues.producers]]
+queue = "knowledge-ingest"
+binding = "KNOWLEDGE_QUEUE"
+
+# --- KV Namespaces ---
+
+# From loader/mcp-connector: idempotency checks
+[[kv_namespaces]]
+binding = "MCP_IDEMPOTENCY"
+id = "16510bf2287a45d8b24163ddafd3d302"
+
+# Optional: installation mappings + connector status (shared KV used by webhook-ingress)
+[[kv_namespaces]]
+binding = "CONNECTOR_STATUS"
+id = "f7a3d773ff2841f7954d3cfeae82594f"
+
+# --- D1 for connector cursors + dedup ---
+
+[[d1_databases]]
+binding = "EDGE_DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+# --- R2 for file storage (from store) ---
+
+[[r2_buckets]]
+binding = "FILES"
+bucket_name = "integratewise-files-prod"
+
+# Optional MCP auth: wrangler secret put MCP_CONNECTOR_API_KEY
+# MCP_CONNECTOR_API_KEY = Bearer/X-MCP-Key for /tools and /invoke.
+
+
+# --- Service bindings (external) ---
+
+# Store triggers knowledge ingestion
+# [[services]]
+# binding = "KNOWLEDGE"
+# service = "knowledge"
+
+# Connector-Sync: used by Loader scheduled() to trigger creamy sync for unsynced connectors
+# [[services]]
+# binding = "CONNECTOR_SYNC"
+# service = "connector-sync"
+
+[env.test]
+name = "connector-test"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+[[env.test.d1_databases]]
+binding = "EDGE_DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+[[env.test.kv_namespaces]]
+binding = "MCP_IDEMPOTENCY"
+id = "16510bf2287a45d8b24163ddafd3d302"
+
+[[env.test.kv_namespaces]]
+binding = "CONNECTOR_STATUS"
+id = "f7a3d773ff2841f7954d3cfeae82594f"
+
+[[env.test.queues.producers]]
+queue = "pipeline-process"
+binding = "PIPELINE_QUEUE"
+
+[[env.test.queues.producers]]
+queue = "knowledge-ingest"
+binding = "KNOWLEDGE_QUEUE"
+
+[[env.test.r2_buckets]]
+binding = "FILES"
+bucket_name = "integratewise-files-staging"
+
+[[env.test.services]]
+binding = "MCP"
+service = "mcp-connector-test"
+
+[[env.test.services]]
+binding = "KNOWLEDGE"
+service = "knowledge-test"
+
+[[env.test.services]]
+binding = "CONNECTOR_SYNC"
+service = "connector-sync-test"
+
+[[env.test.secrets_store_secrets]]
+binding = "NANGO_SECRET_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "NANGO_SECRET_KEY"
+
+# [[env.test.secrets_store_secrets]]
+# binding = "NANGO_WEBHOOK_SECRET"
+# store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "NANGO_WEBHOOK_SECRET"
+
+[[env.test.secrets_store_secrets]]
+binding = "SUPABASE_URL"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SUPABASE_URL"
+
+[[env.test.secrets_store_secrets]]
+binding = "SUPABASE_SERVICE_ROLE_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SUPABASE_SERVICE_ROLE_KEY"
+
+[[env.test.secrets_store_secrets]]
+binding = "DATABASE_URL"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "DATABASE_URL"
+
+[[env.test.secrets_store_secrets]]
+binding = "TOKEN_ENCRYPTION_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "TOKEN_ENCRYPTION_KEY"
+
+[[env.test.secrets_store_secrets]]
+binding = "OPENROUTER_API_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "OPENROUTER_API_KEY"
+
+[env.prod]
+name = "connector-prod"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+[[env.prod.d1_databases]]
+binding = "EDGE_DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+[[env.prod.kv_namespaces]]
+binding = "MCP_IDEMPOTENCY"
+id = "16510bf2287a45d8b24163ddafd3d302"
+
+[[env.prod.kv_namespaces]]
+binding = "CONNECTOR_STATUS"
+id = "f7a3d773ff2841f7954d3cfeae82594f"
+
+[[env.prod.queues.producers]]
+queue = "pipeline-process"
+binding = "PIPELINE_QUEUE"
+
+[[env.prod.queues.producers]]
+queue = "knowledge-ingest"
+binding = "KNOWLEDGE_QUEUE"
+
+[[env.prod.r2_buckets]]
+binding = "FILES"
+bucket_name = "integratewise-files-prod"
+
+# [[env.prod.services]]
+# binding = "MCP"
+# service = "mcp-connector-prod"
+
+# [[env.prod.services]]
+# binding = "KNOWLEDGE"
+# service = "knowledge-prod"
+
+# [[env.prod.services]]
+# binding = "CONNECTOR_SYNC"
+# service = "connector-sync-prod"
+
+[[env.prod.secrets_store_secrets]]
+binding = "NANGO_SECRET_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "NANGO_SECRET_KEY"
+
+# [[env.prod.secrets_store_secrets]]
+# binding = "NANGO_WEBHOOK_SECRET"
+# store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+# secret_name = "NANGO_WEBHOOK_SECRET"
+
+[[env.prod.secrets_store_secrets]]
+binding = "SUPABASE_URL"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SUPABASE_URL"
+
+[[env.prod.secrets_store_secrets]]
+binding = "SUPABASE_SERVICE_ROLE_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SUPABASE_SERVICE_ROLE_KEY"
+
+[[env.prod.secrets_store_secrets]]
+binding = "DATABASE_URL"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "DATABASE_URL"
+
+[[env.prod.secrets_store_secrets]]
+binding = "TOKEN_ENCRYPTION_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "TOKEN_ENCRYPTION_KEY"
+
+[[env.prod.secrets_store_secrets]]
+binding = "OPENROUTER_API_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "OPENROUTER_API_KEY"
+
+[dev]
+inspector_port = 9245
+port = 8785

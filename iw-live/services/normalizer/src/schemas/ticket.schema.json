@@ -1,0 +1,153 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://integratewise.io/schemas/ticket.json",
+  "title": "Support Ticket Schema",
+  "description": "Canonical schema for support ticket entities",
+  "type": "object",
+  "required": ["tenant_id", "subject", "status", "priority"],
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Tenant/workspace identifier"
+    },
+    "external_id": {
+      "type": "string",
+      "description": "External system identifier (e.g., Zendesk ticket ID)"
+    },
+    "source_system": {
+      "type": "string",
+      "description": "Source system (e.g., zendesk, freshdesk, intercom)"
+    },
+    "organization_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Associated organization/account ID"
+    },
+    "contact_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Contact person who created the ticket"
+    },
+    "subject": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500,
+      "description": "Ticket subject/title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Full ticket description"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["open", "pending", "in_progress", "on_hold", "resolved", "closed"],
+      "description": "Ticket status"
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "urgent", "critical"],
+      "description": "Ticket priority"
+    },
+    "category": {
+      "type": "string",
+      "maxLength": 100,
+      "description": "Primary category"
+    },
+    "subcategory": {
+      "type": "string",
+      "maxLength": 100,
+      "description": "Subcategory"
+    },
+    "ticket_type": {
+      "type": "string",
+      "enum": ["question", "incident", "problem", "task", "feature_request"],
+      "description": "Type of ticket"
+    },
+    "channel": {
+      "type": "string",
+      "enum": ["email", "chat", "phone", "web", "api", "social"],
+      "description": "Channel through which ticket was created"
+    },
+    "assigned_to": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Assigned agent/user ID"
+    },
+    "assigned_group": {
+      "type": "string",
+      "description": "Assigned support group/team"
+    },
+    "sla_due_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "SLA due date/time"
+    },
+    "sla_breached": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether SLA was breached"
+    },
+    "first_response_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "First response timestamp"
+    },
+    "resolved_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Resolution timestamp"
+    },
+    "closed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Closure timestamp"
+    },
+    "resolution_notes": {
+      "type": "string",
+      "description": "Resolution notes/summary"
+    },
+    "satisfaction_score": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Customer satisfaction score (1-5)"
+    },
+    "satisfaction_comment": {
+      "type": "string",
+      "description": "Customer satisfaction comment"
+    },
+    "escalated": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether ticket was escalated"
+    },
+    "escalated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Escalation timestamp"
+    },
+    "reply_count": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0,
+      "description": "Number of replies"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Tags for categorization"
+    },
+    "custom_fields": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Custom fields for extensibility"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Additional metadata"
+    }
+  },
+  "additionalProperties": false
+}

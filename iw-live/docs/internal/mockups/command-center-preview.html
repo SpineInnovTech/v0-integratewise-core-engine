@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ops Command Center — Preview</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: #f4f6f8;
+        color: #1a1a2e;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 24px;
+      }
+      h1 {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      .subtitle {
+        font-size: 14px;
+        color: #7b8aad;
+        margin-bottom: 24px;
+      }
+      .grid-4 {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+      .card {
+        background: white;
+        border: 1px solid #e8ecf2;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      }
+      .card-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #5f6e93;
+      }
+      .metric-value {
+        font-size: 28px;
+        font-weight: 600;
+        color: #1a1a2e;
+      }
+      .badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 9999px;
+        font-size: 11px;
+        font-weight: 500;
+        margin-top: 8px;
+      }
+      .badge-attention {
+        background: #fef2f2;
+        color: #dc2626;
+      }
+      .badge-ok {
+        background: #f0fdf4;
+        color: #16a34a;
+      }
+      .badge-ontrack {
+        background: #eff6ff;
+        color: #2563eb;
+      }
+      .badge-awaiting {
+        background: #f8fafc;
+        color: #64748b;
+        border: 1px solid #e2e8f0;
+      }
+      .signal-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .signal-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 8px;
+        transition: background 0.15s;
+      }
+      .signal-item:hover {
+        background: #f8fafc;
+      }
+      .signal-badge {
+        font-size: 10px;
+        padding: 2px 8px;
+        border-radius: 4px;
+        background: #f1f5f9;
+        color: #475569;
+        font-weight: 500;
+        margin-top: 2px;
+        white-space: nowrap;
+      }
+      .signal-title {
+        font-size: 13px;
+        font-weight: 500;
+      }
+      .signal-desc {
+        font-size: 12px;
+        color: #7b8aad;
+        margin-top: 2px;
+      }
+      @media (max-width: 900px) {
+        .grid-4 {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Ops Command Center</h1>
+      <p class="subtitle">
+        Cross-functional view across pipeline, churn, incidents, and workflows. One spine, one
+        place.
+      </p>
+
+      <!-- Metrics -->
+      <div class="grid-4">
+        <div class="card">
+          <div class="card-header">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#94a3b8"
+              stroke-width="2"
+            >
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg>
+            Pipeline → Churn
+          </div>
+          <div class="metric-value">12.4%</div>
+          <span class="badge badge-ontrack">on-track</span>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#94a3b8"
+              stroke-width="2"
+            >
+              <path
+                d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+              />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+            Open Incidents
+          </div>
+          <div class="metric-value">3</div>
+          <span class="badge badge-attention">attention</span>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#94a3b8"
+              stroke-width="2"
+            >
+              <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+              <polyline points="22 4 12 14.01 9 11.01" />
+            </svg>
+            Workflows Running
+          </div>
+          <div class="metric-value">14</div>
+          <span class="badge badge-ok">ok</span>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#94a3b8"
+              stroke-width="2"
+            >
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+              <polyline points="17 6 23 6 23 12" />
+            </svg>
+            Cost vs Plan
+          </div>
+          <div class="metric-value">$24.1K</div>
+          <span class="badge badge-ontrack">on-track</span>
+        </div>
+      </div>
+
+      <!-- Cross-domain Signals -->
+      <div class="card">
+        <div class="card-header" style="font-size: 15px; color: #1a1a2e; margin-bottom: 16px">
+          Cross-domain Signals
+        </div>
+        <div class="signal-list">
+          <div class="signal-item">
+            <span class="signal-badge">cs</span>
+            <div>
+              <div class="signal-title">Renewal risk: FinanceFlow Solutions</div>
+              <div class="signal-desc">
+                Champion silent for 12 days, payment failed twice. Renewal in 29 days.
+              </div>
+            </div>
+          </div>
+          <div class="signal-item">
+            <span class="signal-badge">sales</span>
+            <div>
+              <div class="signal-title">3 deals stalled in negotiation</div>
+              <div class="signal-desc">
+                Pipeline velocity down 18% vs last week. Consider escalation.
+              </div>
+            </div>
+          </div>
+          <div class="signal-item">
+            <span class="signal-badge">pe</span>
+            <div>
+              <div class="signal-title">Stripe schema drift auto-corrected</div>
+              <div class="signal-desc">
+                Field mapping updated, 47 records re-normalized. No action needed.
+              </div>
+            </div>
+          </div>
+          <div class="signal-item">
+            <span class="signal-badge">cross</span>
+            <div>
+              <div class="signal-title">Expansion signal: TechServe India</div>
+              <div class="signal-desc">
+                Usage up 34%, new team added. Co-sell opportunity with partner.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

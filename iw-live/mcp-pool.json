@@ -1,0 +1,283 @@
+{
+  "$schema": "https://schemas.modelcontextprotocol.io/json-rpc/session.json",
+  "mcpServers": {
+    "integratewise": {
+      "type": "sse",
+      "url": "https://mcp.integratewise.ai/mcp",
+      "description": "IntegrateWise Platform - Knowledge Base, Memory, Spine, Signals, Proposals, Books",
+      "env": {
+        "INTEGRATEWISE_TENANT_ID": "integratewise",
+        "INTEGRATEWISE_CLIENT_ID": "cursor-iw"
+      }
+    },
+    "integratewise-full": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["scripts/integratewise-mcp-bridge.mjs"],
+      "description": "IntegrateWise Governed Writes - Memory Proposals, KB Articles, Approvals",
+      "env": {
+        "INTEGRATEWISE_MCP_URL": "https://mcp.integratewise.ai",
+        "INTEGRATEWISE_MCP_TOKEN": "${input:integratewise_mcp_token}",
+        "INTEGRATEWISE_TENANT_ID": "integratewise",
+        "INTEGRATEWISE_CLIENT_ID": "kiro-iw",
+        "ENABLE_WRITE_TOOLS": "true"
+      }
+    },
+    "github": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "description": "GitHub repository access and operations",
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${input:github_token}"
+      }
+    },
+    "github-copilot": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["scripts/github-copilot-mcp.mjs"],
+      "description": "GitHub Copilot integration for code generation and suggestions"
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"],
+      "description": "Browser automation and testing with Playwright"
+    },
+    "context7": {
+      "type": "sse",
+      "url": "https://api.context7.ai/mcp",
+      "description": "Context7 - Extended context and memory management",
+      "env": {
+        "CONTEXT7_API_KEY": "${input:context7_api_key}"
+      }
+    },
+    "notion": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-notion"],
+      "description": "Notion workspace access and content management",
+      "env": {
+        "NOTION_API_TOKEN": "${input:notion_api_token}"
+      }
+    },
+    "huggingface": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-huggingface"],
+      "description": "Hugging Face model access and inference",
+      "env": {
+        "HUGGINGFACE_API_TOKEN": "${input:huggingface_api_token}"
+      }
+    },
+    "cloudflare": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@cloudflare/mcp-server-cloudflare", "run"],
+      "description": "Cloudflare workers, pages, and infrastructure management",
+      "env": {
+        "CLOUDFLARE_ACCOUNT_ID": "${input:cloudflare_account_id}",
+        "CLOUDFLARE_API_TOKEN": "${input:cloudflare_api_token}"
+      }
+    },
+    "cloudflare-docs": {
+      "type": "sse",
+      "url": "https://docs.cloudflare.com/.well-known/mcp",
+      "description": "Cloudflare documentation search and reference"
+    },
+    "cloudflare-bindings": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["scripts/cloudflare-bindings-mcp.mjs"],
+      "description": "Cloudflare D1, R2, KV bindings and configuration"
+    },
+    "cloudflare-builds": {
+      "type": "sse",
+      "url": "https://builds.cloudflare.com/.well-known/mcp",
+      "description": "Cloudflare Builds integration and deployment"
+    },
+    "cloudflare-observability": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["@cloudflare/mcp-server-analytics"],
+      "description": "Cloudflare analytics, logs, and observability"
+    },
+    "figma": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-figma"],
+      "description": "Figma file access and design collaboration",
+      "env": {
+        "FIGMA_API_TOKEN": "${input:figma_api_token}"
+      }
+    },
+    "supabase": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-supabase"],
+      "description": "Supabase PostgreSQL and auth management",
+      "env": {
+        "SUPABASE_URL": "${input:supabase_url}",
+        "SUPABASE_API_KEY": "${input:supabase_api_key}"
+      }
+    },
+    "stripe": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-stripe"],
+      "description": "Stripe payments and subscription management",
+      "env": {
+        "STRIPE_API_KEY": "${input:stripe_api_key}"
+      }
+    },
+    "firebase": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-firebase"],
+      "description": "Firebase realtime database and auth",
+      "env": {
+        "FIREBASE_PROJECT_ID": "${input:firebase_project_id}",
+        "FIREBASE_API_KEY": "${input:firebase_api_key}"
+      }
+    },
+    "aws-knowledge": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-aws-knowledge"],
+      "description": "AWS documentation and best practices knowledge base"
+    },
+    "aws-dynamodb": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-aws-dynamodb"],
+      "description": "AWS DynamoDB operations and queries",
+      "env": {
+        "AWS_REGION": "${input:aws_region}",
+        "AWS_ACCESS_KEY_ID": "${input:aws_access_key_id}",
+        "AWS_SECRET_ACCESS_KEY": "${input:aws_secret_access_key}"
+      }
+    },
+    "fetch": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-fetch"],
+      "description": "Generic HTTP/fetch operations for any REST API"
+    },
+    "mcpflare": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["scripts/mcpflare-aggregator.mjs"],
+      "description": "Local MCP aggregator - routes multiple servers through single connection"
+    }
+  },
+  "inputs": [
+    {
+      "id": "github_token",
+      "type": "promptString",
+      "description": "GitHub Personal Access Token (requires repo, gist scopes)",
+      "password": true
+    },
+    {
+      "id": "integratewise_mcp_token",
+      "type": "promptString",
+      "description": "IntegrateWise JWT or MCP Bearer token",
+      "password": true
+    },
+    {
+      "id": "context7_api_key",
+      "type": "promptString",
+      "description": "Context7 API key for extended context",
+      "password": true
+    },
+    {
+      "id": "notion_api_token",
+      "type": "promptString",
+      "description": "Notion integration token",
+      "password": true
+    },
+    {
+      "id": "huggingface_api_token",
+      "type": "promptString",
+      "description": "Hugging Face API token for model access",
+      "password": true
+    },
+    {
+      "id": "cloudflare_account_id",
+      "type": "promptString",
+      "description": "Cloudflare account ID (Dashboard → Workers & Pages → Account ID)",
+      "default": "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+    },
+    {
+      "id": "cloudflare_api_token",
+      "type": "promptString",
+      "description": "Cloudflare API token (requires all zones, account access)",
+      "password": true
+    },
+    {
+      "id": "figma_api_token",
+      "type": "promptString",
+      "description": "Figma API personal access token",
+      "password": true
+    },
+    {
+      "id": "supabase_url",
+      "type": "promptString",
+      "description": "Supabase project URL (https://xxxxx.supabase.co)"
+    },
+    {
+      "id": "supabase_api_key",
+      "type": "promptString",
+      "description": "Supabase service role key or anon key",
+      "password": true
+    },
+    {
+      "id": "stripe_api_key",
+      "type": "promptString",
+      "description": "Stripe secret API key (sk_test_... or sk_live_...)",
+      "password": true
+    },
+    {
+      "id": "firebase_project_id",
+      "type": "promptString",
+      "description": "Firebase project ID"
+    },
+    {
+      "id": "firebase_api_key",
+      "type": "promptString",
+      "description": "Firebase API key",
+      "password": true
+    },
+    {
+      "id": "aws_region",
+      "type": "promptString",
+      "description": "AWS region (us-east-1, eu-west-1, etc.)",
+      "default": "us-east-1"
+    },
+    {
+      "id": "aws_access_key_id",
+      "type": "promptString",
+      "description": "AWS access key ID",
+      "password": true
+    },
+    {
+      "id": "aws_secret_access_key",
+      "type": "promptString",
+      "description": "AWS secret access key",
+      "password": true
+    }
+  ],
+  "metadata": {
+    "version": "1.0.0",
+    "description": "Consolidated MCP server pool for IntegrateWise - 21 servers aggregated",
+    "servers": 21,
+    "combinations": [
+      "integratewise + integratewise-full (reads + governed writes)",
+      "github + github-copilot (repository + AI suggestions)",
+      "cloudflare ecosystem (workers, pages, docs, bindings, builds, observability)",
+      "all external integrations (notion, figma, supabase, stripe, firebase, aws, etc.)",
+      "mcpflare aggregator for centralized routing"
+    ],
+    "usage": "Copy to ~/.cursor/mcp.json, ~/.kiro/settings/mcp.json, or .vscode/settings.json",
+    "lastUpdated": "2026-06-25"
+  }
+}

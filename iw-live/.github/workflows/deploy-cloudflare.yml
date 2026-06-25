@@ -1,0 +1,349 @@
+name: Deploy Frontend to Cloudflare (Best Practices)
+
+# NOTE: Worker deployment is now handled by deploy-workers.yml (selective).
+# This workflow handles FRONTEND (Cloudflare Pages) deployment only.
+# The workers job below only runs on manual workflow_dispatch with target=workers.
+
+on:
+  push:
+    branches: [main, staging]
+    paths:
+      - "apps/web/**"
+      - "packages/**"
+      - ".github/workflows/deploy-cloudflare.yml"
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Deployment target"
+        required: true
+        default: "frontend"
+        type: choice
+        options:
+          - frontend
+          - workers
+          - all
+      deploy_method:
+        description: "Frontend: direct_upload (GHA builds) or cloudflare_git (Cloudflare builds, secrets in dashboard)"
+        required: false
+        default: "direct_upload"
+        type: choice
+        options:
+          - direct_upload
+          - cloudflare_git
+      environment:
+        description: "Environment"
+        required: true
+        default: "production"
+        type: choice
+        options:
+          - production
+          - staging
+      skip_tests:
+        description: "Skip tests (emergency only)"
+        required: false
+        default: false
+        type: boolean
+      dry_run:
+        description: "Dry run (validate only)"
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: deploy-cloudflare-${{ github.ref }}-${{ github.event.inputs.environment || 'production' }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: write
+
+env:
+  NODE_VERSION: "22"
+
+jobs:
+  # ============================================================================
+  # Pre-deployment Validation (Best Practice: Validate before deploy)
+  # ============================================================================
+  validate:
+    name: Validate Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: ${{ github.event.inputs.skip_tests != 'true' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: TypeScript type check (frontend)
+        # Scoped to the frontend: the Pages deploy validates apps/web, not the
+        # whole monorepo. Backend services typecheck + deploy via deploy-workers.yml.
+        run: pnpm --filter @integratewise/web typecheck
+
+      - name: Build application
+        run: |
+          cd apps/web
+          pnpm build
+        env:
+          VITE_SUPABASE_URL: https://placeholder.supabase.co
+          VITE_SUPABASE_ANON_KEY: placeholder
+          VITE_API_BASE_URL: ""
+
+      - name: Build summary
+        run: |
+          echo "## Pre-deployment Validation" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ TypeScript check passed" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Build successful" >> $GITHUB_STEP_SUMMARY
+
+  # ============================================================================
+  # Deploy Frontend (Cloudflare Pages)
+  # ============================================================================
+  # Skip when deploy_method=cloudflare_git (Cloudflare builds via Git integration; secrets in Cloudflare dashboard)
+  deploy-frontend:
+    name: Deploy Frontend to Cloudflare Pages
+    needs: validate
+    if: |
+      (github.event.inputs.target == 'frontend' || github.event.inputs.target == 'all' || !github.event.inputs.target) &&
+      (needs.validate.result == 'success' || needs.validate.result == 'skipped') &&
+      (github.event_name != 'workflow_dispatch' || github.event.inputs.deploy_method != 'cloudflare_git')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: ${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }}
+      url: ${{ github.ref == 'refs/heads/main' && 'https://app.integratewise.ai' || 'https://staging.integratewise.pages.dev' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build with GitHub Secrets
+        run: pnpm --filter @integratewise/web build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          VITE_STREAM_URL: ${{ secrets.VITE_STREAM_URL }}
+          VITE_POSTHOG_KEY: ${{ secrets.VITE_POSTHOG_KEY }}
+          VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+          VITE_LANDING_URL: ${{ secrets.VITE_LANDING_URL }}
+
+      - name: Create deployment marker
+        run: |
+          cd apps/web/dist
+          echo '{"deployment_id":"${{ github.run_id }}","commit":"${{ github.sha }}","timestamp":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'","environment":"${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }}","actor":"${{ github.actor }}"}' > deployment.json
+
+      # Always deploy to a preview branch — never to main/production.
+      # Production promotion is manual by Nirmal via Cloudflare dashboard.
+      - name: Compute preview branch label
+        id: label
+        run: |
+          RAW="${GITHUB_REF#refs/heads/}"
+          SAFE=$(echo "$RAW" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | cut -c1-28)
+          if [ "$SAFE" = "main" ] || [ "$SAFE" = "production" ]; then
+            SAFE="preview-$(echo ${{ github.sha }} | cut -c1-7)"
+          fi
+          echo "branch=$SAFE" >> $GITHUB_OUTPUT
+
+      - name: Deploy to Cloudflare Pages (preview only)
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pnpm dlx wrangler@4 pages deploy apps/web/dist \
+            --project-name=integratewise \
+            --branch="${{ steps.label.outputs.branch }}" \
+            --commit-dirty=true
+
+      - name: Deployment Summary
+        run: |
+          echo "## ✅ Preview Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "- **Target:** ${{ github.event.inputs.target || 'frontend' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Preview branch:** \`${{ steps.label.outputs.branch }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Actor:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          if [[ "${{ github.event.inputs.dry_run }}" == "true" ]]; then
+            echo "- **Mode:** 🔍 Dry Run" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- **Status:** 🚀 Preview deployed" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "> ⚠️ Production promotion is manual by Nirmal via Cloudflare dashboard." >> $GITHUB_STEP_SUMMARY
+          fi
+
+  # ============================================================================
+  # Deploy Workers (Cloudflare Workers)
+  # ============================================================================
+  deploy-workers:
+    name: Deploy Workers
+    needs: validate
+    if: |
+      (github.event.inputs.target == 'workers' || github.event.inputs.target == 'all') &&
+      (needs.validate.result == 'success' || needs.validate.result == 'skipped')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: ${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }}-workers
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Deploy Workers
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          DEPLOY_ENV: ${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }}
+        run: |
+          # Deploy order matters — downstream services first, gateway LAST
+          SERVICES=(
+            "services/pipeline/wrangler.toml"
+            "services/connector/wrangler.toml"
+            "services/intelligence/wrangler.toml"
+            "services/knowledge/wrangler.toml"
+            "services/workflow/wrangler.toml"
+            "services/l2/wrangler.toml"
+            "services/gateway/wrangler.toml"
+          )
+
+          DEPLOYED=0
+          FAILED=()
+
+          for config in "${SERVICES[@]}"; do
+            service=$(basename $(dirname "$config"))
+            echo "🚀 Deploying $service..."
+            
+            # Check if environment section exists (with support for prod/test mappings)
+            if grep -q "\[env\.${DEPLOY_ENV}\]" "$config"; then
+              ENV_FLAG="--env ${DEPLOY_ENV}"
+            elif [[ "${DEPLOY_ENV}" == "production" ]] && grep -q "\[env\.prod\]" "$config"; then
+              ENV_FLAG="--env prod"
+            elif [[ "${DEPLOY_ENV}" == "staging" ]] && grep -q "\[env\.test\]" "$config"; then
+              ENV_FLAG="--env test"
+            else
+              ENV_FLAG=""
+            fi
+            
+            if npx wrangler deploy -c "$config" $ENV_FLAG --keep-vars; then
+              ((DEPLOYED++))
+              echo "✅ $service deployed"
+            else
+              FAILED+=("$service")
+              echo "❌ $service failed"
+            fi
+          done
+
+          echo ""
+          echo "════════════════════════════════════════"
+          echo "✅ Deployed: $DEPLOYED"
+          if [[ ${#FAILED[@]} -gt 0 ]]; then
+            echo "❌ Failed: ${#FAILED[@]}"
+            echo "Failed: ${FAILED[*]}"
+          fi
+          echo "════════════════════════════════════════"
+
+          if [[ ${#FAILED[@]} -gt 0 ]]; then
+            exit 1
+          fi
+
+      - name: Deployment Summary
+        run: |
+          echo "## Workers Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "- **Target:** ${{ github.event.inputs.target }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment:** ${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          if [[ "${{ github.event.inputs.dry_run }}" == "true" ]]; then
+            echo "- **Mode:** 🔍 Dry Run" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- **Status:** 🚀 Deployed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+  # ============================================================================
+  # Health Check (Best Practice: Verify after deploy)
+  # ============================================================================
+  health-check:
+    name: Post-Deployment Health Check
+    needs: [deploy-frontend, deploy-workers]
+    if: |
+      always() &&
+      (needs.deploy-frontend.result == 'success' || needs.deploy-frontend.result == 'skipped') &&
+      (needs.deploy-workers.result == 'success' || needs.deploy-workers.result == 'skipped') &&
+      github.event.inputs.dry_run != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Wait for deployment propagation
+        run: sleep 30
+
+      - name: Health Check
+        run: |
+          ENV="${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }}"
+
+          if [[ "$ENV" == "production" ]]; then
+            ENDPOINTS=(
+              "https://app.integratewise.ai/deployment.json"
+              "https://gateway.integratewise.ai/health"
+            )
+          else
+            ENDPOINTS=(
+              "https://staging.integratewise.pages.dev/deployment.json"
+              "https://gateway-staging.integratewise.ai/health"
+            )
+          fi
+
+          ALL_HEALTHY=true
+          for url in "${ENDPOINTS[@]}"; do
+            echo "Checking $url..."
+            if curl -sf --max-time 15 "$url" > /dev/null 2>&1; then
+              echo "  ✅ Healthy"
+            else
+              echo "  ⚠️  Unhealthy"
+              ALL_HEALTHY=false
+            fi
+          done
+
+          if [[ "$ALL_HEALTHY" == false ]]; then
+            echo "::warning::Some health checks failed - monitor closely"
+          fi
+
+      - name: Health Check Summary
+        run: |
+          echo "## Health Check" >> $GITHUB_STEP_SUMMARY
+          echo "- ⏱️  Waited 30s for propagation" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔍 Verified deployment endpoints" >> $GITHUB_STEP_SUMMARY

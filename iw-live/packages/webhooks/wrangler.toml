@@ -1,0 +1,59 @@
+# IntegrateWise Webhook Ingress Worker
+name = "integratewise-webhooks"
+main = "src/worker.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# ============================================================================
+# Production Environment
+# ============================================================================
+[env.production]
+name = "integratewise-webhooks"
+routes = [
+  { pattern = "webhooks.integratewise.ai/*", zone_name = "integratewise.ai" }
+]
+
+[env.production.vars]
+ENVIRONMENT = "production"
+
+# ============================================================================
+# Staging Environment
+# ============================================================================
+[env.staging]
+name = "integratewise-webhooks-staging"
+routes = [
+  { pattern = "webhooks-staging.integratewise.ai/*", zone_name = "integratewise.ai" }
+]
+
+[env.staging.vars]
+ENVIRONMENT = "staging"
+
+# ============================================================================
+# Secrets (set via wrangler secret put --env production)
+# ============================================================================
+# wrangler secret put NEON_CONNECTION_STRING --env production
+# wrangler secret put RAZORPAY_WEBHOOK_SECRET --env production
+# wrangler secret put STRIPE_ENDPOINT_SECRET --env production
+# wrangler secret put GITHUB_WEBHOOK_SECRET --env production
+# wrangler secret put VERCEL_WEBHOOK_SECRET --env production
+# wrangler secret put AI_RELAY_SECRET --env production
+# wrangler secret put CODA_API_TOKEN --env production
+# wrangler secret put TRIAGE_WEBHOOK_SECRET --env production
+# wrangler secret put FIRESTORE_PROJECT_ID --env production
+# wrangler secret put FIRESTORE_SERVICE_ACCOUNT_TOKEN --env production
+
+# ============================================================================
+# Observability
+# ============================================================================
+[observability]
+enabled = true
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+
+# Note: CPU limits require paid plan
+
+[dev]
+port = 8803
+inspector_port = 9263

@@ -1,0 +1,1765 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IntegrateWise — Full Product Trial (CS + TAM)</title>
+    <style>
+      :root {
+        --iw-bg: #0b0f1a;
+        --iw-surface: #111827;
+        --iw-elevated: #1a2235;
+        --iw-border: #1f2937;
+        --iw-text: #f3f4f6;
+        --iw-muted: #9ca3af;
+        --iw-primary: #4154a3;
+        --iw-primary-light: #5b6fc7;
+        --iw-success: #10b981;
+        --iw-warning: #f59e0b;
+        --iw-danger: #ef4444;
+        --iw-info: #3b82f6;
+        --iw-cs-accent: #059669;
+        --iw-tam-accent: #7c3aed;
+        --iw-twin-bg: #0d1117;
+        --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        height: 100%;
+        font-family: var(--font);
+        background: var(--iw-bg);
+        color: var(--iw-text);
+        overflow: hidden;
+      }
+
+      /* ========== LAYOUT ========== */
+      .app {
+        display: flex;
+        height: 100vh;
+        width: 100vw;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 220px;
+        background: var(--iw-surface);
+        border-right: 1px solid var(--iw-border);
+        display: flex;
+        flex-direction: column;
+        padding: 16px 12px;
+        gap: 4px;
+        flex-shrink: 0;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 8px 16px;
+        border-bottom: 1px solid var(--iw-border);
+        margin-bottom: 8px;
+      }
+      .logo-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 7px;
+        background: var(--iw-primary);
+        display: grid;
+        place-items: center;
+        font-size: 14px;
+      }
+      .logo-text {
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: -0.3px;
+      }
+      .nav-section {
+        margin-top: 8px;
+      }
+      .nav-section-title {
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: var(--iw-muted);
+        padding: 8px;
+        letter-spacing: 0.5px;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        font-size: 12.5px;
+        color: var(--iw-muted);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .nav-item:hover {
+        background: var(--iw-elevated);
+        color: var(--iw-text);
+      }
+      .nav-item.active {
+        background: var(--iw-primary);
+        color: white;
+      }
+      .nav-item .nav-icon {
+        width: 16px;
+        text-align: center;
+      }
+
+      /* Main */
+      .main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+
+      /* Top bar */
+      .topbar {
+        height: 52px;
+        background: var(--iw-surface);
+        border-bottom: 1px solid var(--iw-border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        flex-shrink: 0;
+      }
+      .breadcrumbs {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+      }
+      .breadcrumb-domain {
+        color: var(--iw-muted);
+      }
+      .breadcrumb-sep {
+        color: var(--iw-muted);
+        font-size: 11px;
+      }
+      .breadcrumb-active {
+        font-weight: 600;
+      }
+      .topbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .search-box {
+        background: var(--iw-elevated);
+        border: 1px solid var(--iw-border);
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-size: 12px;
+        color: var(--iw-text);
+        width: 260px;
+        outline: none;
+      }
+      .search-box::placeholder {
+        color: var(--iw-muted);
+      }
+      .icon-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: var(--iw-elevated);
+        border: 1px solid var(--iw-border);
+        color: var(--iw-muted);
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        font-size: 13px;
+        transition: all 0.15s;
+      }
+      .icon-btn:hover {
+        background: var(--iw-primary);
+        color: white;
+        border-color: var(--iw-primary);
+      }
+      .user-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: var(--iw-primary-light);
+        display: grid;
+        place-items: center;
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      /* Content area */
+      .content {
+        flex: 1;
+        overflow: auto;
+        padding: 20px;
+      }
+
+      /* ========== WORKBENCH TABS ========== */
+      .workbench-tabs {
+        display: flex;
+        gap: 4px;
+        margin-bottom: 16px;
+      }
+      .tab-btn {
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 12.5px;
+        font-weight: 600;
+        background: transparent;
+        border: 1px solid var(--iw-border);
+        color: var(--iw-muted);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .tab-btn:hover {
+        background: var(--iw-elevated);
+        color: var(--iw-text);
+      }
+      .tab-btn.active {
+        background: var(--iw-primary);
+        color: white;
+        border-color: var(--iw-primary);
+      }
+      .tab-btn.cs-active {
+        background: var(--iw-cs-accent);
+        color: white;
+        border-color: var(--iw-cs-accent);
+      }
+      .tab-btn.tam-active {
+        background: var(--iw-tam-accent);
+        color: white;
+        border-color: var(--iw-tam-accent);
+      }
+
+      /* ========== KPI STRIP ========== */
+      .kpi-strip {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .kpi-card {
+        background: var(--iw-surface);
+        border: 1px solid var(--iw-border);
+        border-radius: 12px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .kpi-label {
+        font-size: 11px;
+        color: var(--iw-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+      }
+      .kpi-value {
+        font-size: 22px;
+        font-weight: 700;
+      }
+      .kpi-change {
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .kpi-change.up {
+        color: var(--iw-success);
+      }
+      .kpi-change.down {
+        color: var(--iw-danger);
+      }
+      .kpi-change.neutral {
+        color: var(--iw-muted);
+      }
+
+      /* ========== CONTENT GRID ========== */
+      .content-grid {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 16px;
+      }
+      .left-col {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .right-col {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      /* Panels */
+      .panel {
+        background: var(--iw-surface);
+        border: 1px solid var(--iw-border);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .panel-header {
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--iw-border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .panel-title {
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .panel-badge {
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 12px;
+        background: var(--iw-elevated);
+        color: var(--iw-muted);
+      }
+      .panel-body {
+        padding: 16px;
+      }
+
+      /* Entity List */
+      .entity-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--iw-border);
+      }
+      .entity-row:last-child {
+        border-bottom: none;
+      }
+      .entity-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .entity-name {
+        font-size: 12.5px;
+        font-weight: 600;
+      }
+      .entity-meta {
+        font-size: 11px;
+        color: var(--iw-muted);
+      }
+      .entity-tags {
+        display: flex;
+        gap: 4px;
+      }
+      .tag {
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 7px;
+        border-radius: 6px;
+      }
+      .tag-green {
+        background: rgba(16, 185, 129, 0.12);
+        color: var(--iw-success);
+      }
+      .tag-amber {
+        background: rgba(245, 158, 11, 0.12);
+        color: var(--iw-warning);
+      }
+      .tag-red {
+        background: rgba(239, 68, 68, 0.12);
+        color: var(--iw-danger);
+      }
+      .tag-purple {
+        background: rgba(124, 58, 237, 0.12);
+        color: var(--iw-tam-accent);
+      }
+      .tag-blue {
+        background: rgba(59, 130, 246, 0.12);
+        color: var(--iw-info);
+      }
+
+      /* Health Bar */
+      .health-bar-bg {
+        height: 6px;
+        background: var(--iw-elevated);
+        border-radius: 3px;
+        overflow: hidden;
+        width: 80px;
+      }
+      .health-bar-fill {
+        height: 100%;
+        border-radius: 3px;
+        transition: width 0.3s;
+      }
+
+      /* Timeline */
+      .timeline {
+        position: relative;
+        padding-left: 20px;
+      }
+      .timeline::before {
+        content: "";
+        position: absolute;
+        left: 5px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--iw-border);
+      }
+      .timeline-item {
+        position: relative;
+        padding-bottom: 14px;
+      }
+      .timeline-item::before {
+        content: "";
+        position: absolute;
+        left: -17px;
+        top: 3px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--iw-primary);
+      }
+      .timeline-item.commercial::before {
+        background: var(--iw-cs-accent);
+      }
+      .timeline-item.technical::before {
+        background: var(--iw-tam-accent);
+      }
+      .timeline-time {
+        font-size: 10px;
+        color: var(--iw-muted);
+      }
+      .timeline-text {
+        font-size: 12px;
+        margin-top: 2px;
+      }
+
+      /* Connector Layer */
+      .connector-strip {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        background: var(--iw-surface);
+        border: 1px solid var(--iw-border);
+        border-radius: 12px;
+        padding: 16px;
+      }
+      .connector-item {
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.15s;
+        padding: 8px;
+        border-radius: 8px;
+      }
+      .connector-item:hover {
+        background: var(--iw-elevated);
+      }
+      .connector-icon {
+        font-size: 20px;
+        margin-bottom: 6px;
+      }
+      .connector-label {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--iw-muted);
+      }
+      .connector-count {
+        font-size: 13px;
+        font-weight: 700;
+        margin-top: 2px;
+      }
+
+      /* Quick Nav Grid */
+      .quick-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 8px;
+      }
+      .quick-btn {
+        background: var(--iw-elevated);
+        border: 1px solid var(--iw-border);
+        border-radius: 8px;
+        padding: 10px 6px;
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--iw-muted);
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.15s;
+      }
+      .quick-btn:hover {
+        background: var(--iw-primary);
+        color: white;
+        border-color: var(--iw-primary);
+      }
+
+      /* ========== TWIN SIDEBAR ========== */
+      .twin-sidebar {
+        width: 340px;
+        background: var(--iw-twin-bg);
+        border-left: 1px solid var(--iw-border);
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        transition: width 0.2s;
+      }
+      .twin-sidebar.collapsed {
+        width: 48px;
+      }
+      .twin-header {
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--iw-border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .twin-title {
+        font-size: 13px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .twin-status {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--iw-success);
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+      }
+      .twin-messages {
+        flex: 1;
+        overflow: auto;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .twin-msg {
+        max-width: 90%;
+        padding: 10px 14px;
+        border-radius: 12px;
+        font-size: 12.5px;
+        line-height: 1.5;
+      }
+      .twin-msg.user {
+        align-self: flex-end;
+        background: var(--iw-primary);
+        color: white;
+      }
+      .twin-msg.ai {
+        align-self: flex-start;
+        background: var(--iw-elevated);
+        border: 1px solid var(--iw-border);
+      }
+      .twin-msg-context {
+        font-size: 10px;
+        color: var(--iw-muted);
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .twin-input-wrap {
+        padding: 12px 16px;
+        border-top: 1px solid var(--iw-border);
+      }
+      .twin-input {
+        width: 100%;
+        background: var(--iw-elevated);
+        border: 1px solid var(--iw-border);
+        border-radius: 10px;
+        padding: 10px 14px;
+        font-size: 12.5px;
+        color: var(--iw-text);
+        outline: none;
+      }
+      .twin-input::placeholder {
+        color: var(--iw-muted);
+      }
+      .twin-quick-actions {
+        display: flex;
+        gap: 6px;
+        padding: 8px 16px;
+        flex-wrap: wrap;
+      }
+      .twin-quick {
+        font-size: 10px;
+        padding: 4px 10px;
+        border-radius: 6px;
+        background: var(--iw-elevated);
+        border: 1px solid var(--iw-border);
+        color: var(--iw-muted);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .twin-quick:hover {
+        background: var(--iw-primary);
+        color: white;
+        border-color: var(--iw-primary);
+      }
+
+      /* ========== L2 DRAWER ========== */
+      .l2-drawer {
+        position: fixed;
+        bottom: 0;
+        left: 220px;
+        right: 340px;
+        height: 0;
+        background: var(--iw-surface);
+        border-top: 1px solid var(--iw-border);
+        border-radius: 16px 16px 0 0;
+        overflow: hidden;
+        transition: height 0.3s ease;
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+      }
+      .l2-drawer.open {
+        height: 380px;
+      }
+      .l2-handle {
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--iw-elevated);
+        border: 1px solid var(--iw-border);
+        border-radius: 8px 8px 0 0;
+        padding: 6px 20px;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--iw-muted);
+        cursor: pointer;
+        z-index: 101;
+      }
+      .l2-handle:hover {
+        color: var(--iw-text);
+      }
+      .l2-tabs {
+        display: flex;
+        gap: 4px;
+        padding: 12px 16px 0;
+        border-bottom: 1px solid var(--iw-border);
+      }
+      .l2-tab {
+        padding: 8px 14px;
+        border-radius: 8px 8px 0 0;
+        font-size: 12px;
+        font-weight: 600;
+        background: transparent;
+        border: none;
+        color: var(--iw-muted);
+        cursor: pointer;
+      }
+      .l2-tab:hover {
+        color: var(--iw-text);
+      }
+      .l2-tab.active {
+        background: var(--iw-elevated);
+        color: var(--iw-text);
+        border-bottom: 2px solid var(--iw-primary);
+      }
+      .l2-content {
+        flex: 1;
+        overflow: auto;
+        padding: 16px;
+      }
+      .l2-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+      }
+      .l2-card {
+        background: var(--iw-elevated);
+        border: 1px solid var(--iw-border);
+        border-radius: 10px;
+        padding: 14px;
+        font-size: 12px;
+      }
+      .l2-card-title {
+        font-weight: 600;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .l2-signal-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--iw-border);
+        font-size: 11.5px;
+      }
+      .l2-signal-row:last-child {
+        border-bottom: none;
+      }
+
+      /* ========== VIEW TOGGLES ========== */
+      .view-section {
+        display: none;
+      }
+      .view-section.active {
+        display: block;
+      }
+
+      /* ========== ANIMATIONS ========== */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .fade-in {
+        animation: fadeIn 0.3s ease;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <!-- ========== SIDEBAR ========== -->
+      <aside class="sidebar">
+        <div class="logo">
+          <div class="logo-icon">🧠</div>
+          <div class="logo-text">IntegrateWise</div>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Today</div>
+          <div class="nav-item active" onclick="switchDomain('cs')">
+            <span class="nav-icon">💚</span> Customer Success
+          </div>
+          <div class="nav-item" onclick="switchDomain('sales')">
+            <span class="nav-icon">💼</span> Sales
+          </div>
+          <div class="nav-item" onclick="switchDomain('marketing')">
+            <span class="nav-icon">📢</span> Marketing
+          </div>
+          <div class="nav-item" onclick="switchDomain('bizops')">
+            <span class="nav-icon">⚡</span> BizOps
+          </div>
+          <div class="nav-item" onclick="switchDomain('product')">
+            <span class="nav-icon">🚀</span> Product
+          </div>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">All Domains</div>
+          <div class="nav-item"><span class="nav-icon">💰</span> Finance</div>
+          <div class="nav-item"><span class="nav-icon">🔧</span> Engineering</div>
+          <div class="nav-item"><span class="nav-icon">🎧</span> Service</div>
+          <div class="nav-item"><span class="nav-icon">🏢</span> RevOps</div>
+          <div class="nav-item"><span class="nav-icon">🛡️</span> IT Admin</div>
+          <div class="nav-item"><span class="nav-icon">📦</span> Procurement</div>
+          <div class="nav-item"><span class="nav-icon">🤝</span> Partnerships</div>
+          <div class="nav-item"><span class="nav-icon">📚</span> Knowledge</div>
+        </div>
+
+        <div style="flex: 1"></div>
+        <div class="nav-section">
+          <div class="nav-item"><span class="nav-icon">⚙️</span> Settings</div>
+          <div class="nav-item"><span class="nav-icon">❓</span> Help</div>
+        </div>
+      </aside>
+
+      <!-- ========== MAIN ========== -->
+      <div class="main">
+        <div class="topbar">
+          <div class="breadcrumbs">
+            <span class="breadcrumb-domain" id="bc-domain">Customer Success</span>
+            <span class="breadcrumb-sep">›</span>
+            <span class="breadcrumb-active" id="bc-view">Account Success</span>
+          </div>
+          <div class="topbar-actions">
+            <input class="search-box" placeholder="Search accounts, signals, commands... (⌘K)" />
+            <button class="icon-btn" title="Notifications">🔔</button>
+            <button class="icon-btn" title="Toggle L2 (⌘J)" onclick="toggleL2()">✨</button>
+            <div class="user-avatar">SK</div>
+          </div>
+        </div>
+
+        <div class="content">
+          <!-- Workbench Tabs -->
+          <div class="workbench-tabs">
+            <button class="tab-btn cs-active active" id="tab-cs" onclick="switchLens('cs')">
+              💚 Account Success
+            </button>
+            <button class="tab-btn" id="tab-tam" onclick="switchLens('tam')">
+              🔮 Technical Account Mgmt
+            </button>
+            <button class="tab-btn" id="tab-org" onclick="switchLens('org')">🏢 Org View</button>
+            <button class="tab-btn" id="tab-personal" onclick="switchLens('personal')">
+              👤 Personal
+            </button>
+          </div>
+
+          <!-- ========== ACCOUNT SUCCESS VIEW ========== -->
+          <div class="view-section active" id="view-cs">
+            <div class="kpi-strip">
+              <div class="kpi-card">
+                <div class="kpi-label">Total ARR</div>
+                <div class="kpi-value" style="color: var(--iw-cs-accent)">$4.2M</div>
+                <div class="kpi-change up">↗ +12% vs last quarter</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Avg Health Score</div>
+                <div class="kpi-value" style="color: var(--iw-success)">
+                  7.8<span style="font-size: 13px; color: var(--iw-muted)">/10</span>
+                </div>
+                <div class="kpi-change up">↗ +0.3 this month</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Renewals (60d)</div>
+                <div class="kpi-value">$680K</div>
+                <div class="kpi-change neutral">14 accounts</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">At-Risk Accounts</div>
+                <div class="kpi-value" style="color: var(--iw-danger)">3</div>
+                <div class="kpi-change down">↘ $340K at risk</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">NPS Score</div>
+                <div class="kpi-value" style="color: var(--iw-info)">42</div>
+                <div class="kpi-change up">↗ +5 from last survey</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Expansion Pipeline</div>
+                <div class="kpi-value" style="color: var(--iw-cs-accent)">$1.1M</div>
+                <div class="kpi-change up">↗ 8 opportunities</div>
+              </div>
+            </div>
+
+            <div class="content-grid">
+              <div class="left-col">
+                <div class="panel">
+                  <div class="panel-header">
+                    <div class="panel-title">📋 Accounts Needing Attention</div>
+                    <span class="panel-badge">Priority</span>
+                  </div>
+                  <div class="panel-body">
+                    <div class="entity-row">
+                      <div class="entity-info">
+                        <div class="entity-name">Acme Corporation</div>
+                        <div class="entity-meta">$450K ARR · Renewal in 14 days · CSM: Sarah</div>
+                      </div>
+                      <div style="display: flex; align-items: center; gap: 10px">
+                        <div class="entity-tags">
+                          <span class="tag tag-red">At Risk</span
+                          ><span class="tag tag-amber">Renewal</span>
+                        </div>
+                        <div class="health-bar-bg">
+                          <div
+                            class="health-bar-fill"
+                            style="width: 35%; background: var(--iw-danger)"
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="entity-row">
+                      <div class="entity-info">
+                        <div class="entity-name">TechFlow Inc</div>
+                        <div class="entity-meta">$280K ARR · NPS dropped to 22 · CSM: Mike</div>
+                      </div>
+                      <div style="display: flex; align-items: center; gap: 10px">
+                        <div class="entity-tags">
+                          <span class="tag tag-amber">Warning</span
+                          ><span class="tag tag-blue">NPS Alert</span>
+                        </div>
+                        <div class="health-bar-bg">
+                          <div
+                            class="health-bar-fill"
+                            style="width: 55%; background: var(--iw-warning)"
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="entity-row">
+                      <div class="entity-info">
+                        <div class="entity-name">GlobalRetail Ltd</div>
+                        <div class="entity-meta">
+                          $120K ARR · Expansion opportunity · CSM: Sarah
+                        </div>
+                      </div>
+                      <div style="display: flex; align-items: center; gap: 10px">
+                        <div class="entity-tags">
+                          <span class="tag tag-green">Healthy</span
+                          ><span class="tag tag-purple">Expansion</span>
+                        </div>
+                        <div class="health-bar-bg">
+                          <div
+                            class="health-bar-fill"
+                            style="width: 82%; background: var(--iw-success)"
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="entity-row">
+                      <div class="entity-info">
+                        <div class="entity-name">Nexus Digital</div>
+                        <div class="entity-meta">
+                          $95K ARR · No engagement in 45 days · CSM: Priya
+                        </div>
+                      </div>
+                      <div style="display: flex; align-items: center; gap: 10px">
+                        <div class="entity-tags"><span class="tag tag-amber">Quiet</span></div>
+                        <div class="health-bar-bg">
+                          <div
+                            class="health-bar-fill"
+                            style="width: 60%; background: var(--iw-warning)"
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="panel">
+                  <div class="panel-header">
+                    <div class="panel-title">📅 Engagement Timeline</div>
+                    <span class="panel-badge">This Week</span>
+                  </div>
+                  <div class="panel-body">
+                    <div class="timeline">
+                      <div class="timeline-item commercial">
+                        <div class="timeline-time">Today, 2:00 PM</div>
+                        <div class="timeline-text">
+                          QBR with Acme Corporation — <b>Renewal discussion</b>
+                        </div>
+                      </div>
+                      <div class="timeline-item commercial">
+                        <div class="timeline-time">Tomorrow, 10:00 AM</div>
+                        <div class="timeline-text">Executive business review — TechFlow Inc</div>
+                      </div>
+                      <div class="timeline-item technical">
+                        <div class="timeline-time">Wed, 11:00 AM</div>
+                        <div class="timeline-text">
+                          Technical deep-dive — API migration review with Nexus Digital
+                        </div>
+                      </div>
+                      <div class="timeline-item commercial">
+                        <div class="timeline-time">Thu, 3:00 PM</div>
+                        <div class="timeline-text">
+                          Expansion proposal review — GlobalRetail Ltd ($45K upsell)
+                        </div>
+                      </div>
+                      <div class="timeline-item technical">
+                        <div class="timeline-time">Fri, 9:00 AM</div>
+                        <div class="timeline-text">
+                          Platform health review — All enterprise accounts
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="right-col">
+                <div class="panel">
+                  <div class="panel-header">
+                    <div class="panel-title">⚡ Pending Approvals</div>
+                    <span
+                      class="panel-badge"
+                      style="background: rgba(239, 68, 68, 0.15); color: var(--iw-danger)"
+                      >2</span
+                    >
+                  </div>
+                  <div class="panel-body" style="padding: 12px 16px">
+                    <div class="entity-row" style="padding: 10px 0">
+                      <div class="entity-info">
+                        <div class="entity-name" style="font-size: 11.5px">
+                          Extend renewal discount — Acme Corp
+                        </div>
+                        <div class="entity-meta">Proposed: 15% discount · Impact: -$67K</div>
+                      </div>
+                      <span class="tag tag-amber">Approve</span>
+                    </div>
+                    <div class="entity-row" style="padding: 10px 0">
+                      <div class="entity-info">
+                        <div class="entity-name" style="font-size: 11.5px">
+                          Escalate TechFlow to executive sponsor
+                        </div>
+                        <div class="entity-meta">
+                          Confidence: 89% · Trigger: NPS drop + usage decline
+                        </div>
+                      </div>
+                      <span class="tag tag-amber">Approve</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="panel">
+                  <div class="panel-header">
+                    <div class="panel-title">💡 AI Insights</div>
+                    <span
+                      class="panel-badge"
+                      style="background: rgba(16, 185, 129, 0.15); color: var(--iw-success)"
+                      >Live</span
+                    >
+                  </div>
+                  <div
+                    class="panel-body"
+                    style="font-size: 11.5px; line-height: 1.6; color: var(--iw-muted)"
+                  >
+                    <p style="margin-bottom: 8px">
+                      <b style="color: var(--iw-text)">🔔 Renewal Risk:</b> Acme Corp's engagement
+                      score dropped 40% in 30 days. Recommend executive business review before
+                      renewal.
+                    </p>
+                    <p style="margin-bottom: 8px">
+                      <b style="color: var(--iw-text)">📈 Expansion Signal:</b> GlobalRetail's API
+                      usage grew 300% — prime upsell moment for Enterprise tier.
+                    </p>
+                    <p>
+                      <b style="color: var(--iw-text)">⚠️ Churn Predictor:</b> TechFlow shows 3 of 5
+                      early churn indicators. Proactive outreach recommended.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="panel">
+                  <div class="panel-header">
+                    <div class="panel-title">📊 Health Distribution</div>
+                  </div>
+                  <div class="panel-body" style="display: flex; align-items: center; gap: 12px">
+                    <div
+                      style="
+                        width: 60px;
+                        height: 60px;
+                        border-radius: 50%;
+                        background: conic-gradient(
+                          var(--iw-success) 0% 65%,
+                          var(--iw-warning) 65% 85%,
+                          var(--iw-danger) 85% 100%
+                        );
+                      "
+                    ></div>
+                    <div style="font-size: 11px; line-height: 1.8">
+                      <div><span style="color: var(--iw-success)">●</span> Healthy (13)</div>
+                      <div><span style="color: var(--iw-warning)">●</span> Warning (4)</div>
+                      <div><span style="color: var(--iw-danger)">●</span> At Risk (3)</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ========== TAM VIEW ========== -->
+          <div class="view-section" id="view-tam">
+            <div class="kpi-strip">
+              <div class="kpi-card">
+                <div class="kpi-label">Platform Uptime</div>
+                <div class="kpi-value" style="color: var(--iw-tam-accent)">99.97%</div>
+                <div class="kpi-change up">↗ +0.02% this week</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">API Avg Latency</div>
+                <div class="kpi-value" style="color: var(--iw-success)">42ms</div>
+                <div class="kpi-change up">↘ -8ms improvement</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">SLA Breaches</div>
+                <div class="kpi-value" style="color: var(--iw-danger)">2</div>
+                <div class="kpi-change down">↗ Both from Acme Corp</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Integration Sync Failures</div>
+                <div class="kpi-value" style="color: var(--iw-warning)">5</div>
+                <div class="kpi-change neutral">Across 3 accounts</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Capability Maturity</div>
+                <div class="kpi-value" style="color: var(--iw-info)">
+                  6.2<span style="font-size: 13px; color: var(--iw-muted)">/10</span>
+                </div>
+                <div class="kpi-change up">↗ +0.5 avg this quarter</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Open Incidents</div>
+                <div class="kpi-value">7</div>
+                <div class="kpi-change down">↘ 2 critical, 5 minor</div>
+              </div>
+            </div>
+
+            <div class="content-grid">
+              <div class="left-col">
+                <div class="panel">
+                  <div class="panel-header">
+                    <div class="panel-title">🔮 Platform Health Metrics</div>
+                    <span class="panel-badge">Real-time</span>
+                  </div>
+                  <div class="panel-body">
+                    <div class="entity-row">
+                      <div class="entity-info">
+                        <div class="entity-name">Acme Corp — Payment API</div>
+                        <div class="entity-meta">
+                          Target: 99.9% · Current: 98.2% · Category: Core API
+                        </div>
+                      </div>
+                      <div style="display: flex; align-items: center; gap: 10px">
+                        <span class="tag tag-red">Critical</span>
+                        <div class="health-bar-bg">
+                          <div
+                            class="health-bar-fill"
+                            style="width: 75%; background: var(--iw-danger)"
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="entity-row">
+                      <div class="entity-info">
+                        <div class="entity-name">TechFlow — Search Service</div>
+                        <div class="entity-meta">
+                          Target: 200ms · Current: 312ms · Category: Search
+                        </div>
+                      </div>
+                      <div style="display: flex; align-items: center; gap: 10px">
+                        <span class="tag tag-amber">Warning</span>
+                        <div class="health-bar-bg">
+                          <div
+                            class="health-bar-fill"
+                            style="width: 55%; background: var(--iw-warning)"
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="entity-row">
+                      <div class="entity-info">
+                        <div class="entity-name">GlobalRetail — Catalog Sync</div>
+                        <div class="entity-meta">
+                          Target: 99.5% · Current: 99.8% · Category: Integration
+                        </div>
+                      </div>
+                      <div style="display: flex; align-items: center; gap: 10px">
+                        <span class="tag tag-green">Healthy</span>
+                        <div class="health-bar-bg">
+                          <div
+                            class="health-bar-fill"
+                            style="width: 95%; background: var(--iw-success)"
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="entity-row">
+                      <div class="entity-info">
+                        <div class="entity-name">Nexus Digital — Auth Service</div>
+                        <div class="entity-meta">
+                          Target: 99.99% · Current: 99.97% · Category: Security
+                        </div>
+                      </div>
+                      <div style="display: flex; align-items: center; gap: 10px">
+                        <span class="tag tag-green">Healthy</span>
+                        <div class="health-bar-bg">
+                          <div
+                            class="health-bar-fill"
+                            style="width: 92%; background: var(--iw-success)"
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="panel">
+                  <div class="panel-header">
+                    <div class="panel-title">🔗 API Portfolio</div>
+                    <span class="panel-badge">24 APIs</span>
+                  </div>
+                  <div class="panel-body">
+                    <div class="entity-row">
+                      <div class="entity-info">
+                        <div class="entity-name">/v2/payments/process</div>
+                        <div class="entity-meta">
+                          REST · 450K txns/mo · 42ms avg · 99.97% uptime
+                        </div>
+                      </div>
+                      <span class="tag tag-green">Production</span>
+                    </div>
+                    <div class="entity-row">
+                      <div class="entity-info">
+                        <div class="entity-name">/v1/search/products</div>
+                        <div class="entity-meta">
+                          GraphQL · 1.2M txns/mo · 312ms avg · 98.5% uptime
+                        </div>
+                      </div>
+                      <span class="tag tag-amber">Degraded</span>
+                    </div>
+                    <div class="entity-row">
+                      <div class="entity-info">
+                        <div class="entity-name">/webhooks/inventory</div>
+                        <div class="entity-meta">
+                          Webhook · 85K txns/mo · 28ms avg · 99.9% uptime
+                        </div>
+                      </div>
+                      <span class="tag tag-green">Production</span>
+                    </div>
+                    <div class="entity-row">
+                      <div class="entity-info">
+                        <div class="entity-name">/v3/auth/token</div>
+                        <div class="entity-meta">
+                          REST · 2.1M txns/mo · 12ms avg · 99.99% uptime
+                        </div>
+                      </div>
+                      <span class="tag tag-green">Production</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="right-col">
+                <div class="panel">
+                  <div class="panel-header">
+                    <div class="panel-title">🚨 Technical Alerts</div>
+                    <span
+                      class="panel-badge"
+                      style="background: rgba(239, 68, 68, 0.15); color: var(--iw-danger)"
+                      >3</span
+                    >
+                  </div>
+                  <div class="panel-body" style="font-size: 11.5px; line-height: 1.6">
+                    <div style="padding: 8px 0; border-bottom: 1px solid var(--iw-border)">
+                      <b style="color: var(--iw-danger)">Critical:</b> Acme Corp Payment API — SLA
+                      breach detected (98.2% vs 99.9% target). Error rate spiked to 2.3%.
+                    </div>
+                    <div style="padding: 8px 0; border-bottom: 1px solid var(--iw-border)">
+                      <b style="color: var(--iw-warning)">Warning:</b> TechFlow Search Service
+                      latency >300ms for 15min. Auto-scaling triggered.
+                    </div>
+                    <div style="padding: 8px 0">
+                      <b style="color: var(--iw-warning)">Warning:</b> 3 integration sync failures
+                      detected (Salesforce, HubSpot, NetSuite). Manual retry recommended.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="panel">
+                  <div class="panel-header">
+                    <div class="panel-title">📈 Capability Maturity</div>
+                  </div>
+                  <div class="panel-body" style="font-size: 11.5px">
+                    <div style="display: flex; justify-content: space-between; padding: 6px 0">
+                      <span>API Management</span
+                      ><span style="color: var(--iw-success); font-weight: 600">8.2/10</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 6px 0">
+                      <span>Data Integration</span
+                      ><span style="color: var(--iw-warning); font-weight: 600">5.4/10</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 6px 0">
+                      <span>Security & Auth</span
+                      ><span style="color: var(--iw-success); font-weight: 600">9.1/10</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 6px 0">
+                      <span>Monitoring</span
+                      ><span style="color: var(--iw-warning); font-weight: 600">6.0/10</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 6px 0">
+                      <span>DevOps</span
+                      ><span style="color: var(--iw-info); font-weight: 600">7.5/10</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="panel">
+                  <div class="panel-header">
+                    <div class="panel-title">🔧 Integration Sync Health</div>
+                  </div>
+                  <div class="panel-body" style="font-size: 11.5px">
+                    <div class="entity-row" style="padding: 6px 0">
+                      <span>Salesforce → Spine</span><span class="tag tag-green">✓ Synced</span>
+                    </div>
+                    <div class="entity-row" style="padding: 6px 0">
+                      <span>HubSpot → Spine</span><span class="tag tag-amber">⚠ 2h lag</span>
+                    </div>
+                    <div class="entity-row" style="padding: 6px 0">
+                      <span>NetSuite → Spine</span><span class="tag tag-red">✗ Failed</span>
+                    </div>
+                    <div class="entity-row" style="padding: 6px 0">
+                      <span>Zendesk → Spine</span><span class="tag tag-green">✓ Synced</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ========== ORG VIEW ========== -->
+          <div class="view-section" id="view-org">
+            <div class="kpi-strip">
+              <div class="kpi-card">
+                <div class="kpi-label">Total Accounts</div>
+                <div class="kpi-value">42</div>
+                <div class="kpi-change neutral">20 enterprise, 22 mid-market</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Combined ARR</div>
+                <div class="kpi-value" style="color: var(--iw-cs-accent)">$8.7M</div>
+                <div class="kpi-change up">↗ +18% YoY</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Team CS Health</div>
+                <div class="kpi-value" style="color: var(--iw-success)">
+                  7.4<span style="font-size: 13px; color: var(--iw-muted)">/10</span>
+                </div>
+                <div class="kpi-change up">↗ +0.2</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Open Technical Issues</div>
+                <div class="kpi-value">12</div>
+                <div class="kpi-change down">↘ 3 critical</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Renewal Rate</div>
+                <div class="kpi-value" style="color: var(--iw-success)">94%</div>
+                <div class="kpi-change up">↗ +2%</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">CS Team Members</div>
+                <div class="kpi-value">8</div>
+                <div class="kpi-change neutral">4 CSMs, 2 TAMs, 2 Onboarding</div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="panel-header">
+                <div class="panel-title">🏢 Cross-Team Account Map</div>
+              </div>
+              <div class="panel-body" style="font-size: 12px; color: var(--iw-muted)">
+                <p style="margin-bottom: 12px">
+                  This view shows how Account Success and TAM collaborate on shared accounts. Each
+                  account has both a <b style="color: var(--iw-cs-accent)">CSM</b> (commercial) and
+                  <b style="color: var(--iw-tam-accent)">TAM</b> (technical) lens.
+                </p>
+                <div class="entity-row">
+                  <div class="entity-info">
+                    <div class="entity-name">Acme Corporation</div>
+                    <div class="entity-meta">
+                      $450K ARR · Health: 3.5/10 · CSM: Sarah · TAM: David
+                    </div>
+                  </div>
+                  <div class="entity-tags">
+                    <span class="tag tag-red">CS: At Risk</span
+                    ><span class="tag tag-red">TAM: Critical</span>
+                  </div>
+                </div>
+                <div class="entity-row">
+                  <div class="entity-info">
+                    <div class="entity-name">TechFlow Inc</div>
+                    <div class="entity-meta">
+                      $280K ARR · Health: 5.5/10 · CSM: Mike · TAM: Lisa
+                    </div>
+                  </div>
+                  <div class="entity-tags">
+                    <span class="tag tag-amber">CS: Warning</span
+                    ><span class="tag tag-amber">TAM: Warning</span>
+                  </div>
+                </div>
+                <div class="entity-row">
+                  <div class="entity-info">
+                    <div class="entity-name">GlobalRetail Ltd</div>
+                    <div class="entity-meta">
+                      $120K ARR · Health: 8.2/10 · CSM: Sarah · TAM: David
+                    </div>
+                  </div>
+                  <div class="entity-tags">
+                    <span class="tag tag-green">CS: Healthy</span
+                    ><span class="tag tag-green">TAM: Healthy</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ========== PERSONAL VIEW ========== -->
+          <div class="view-section" id="view-personal">
+            <div style="text-align: center; padding: 60px 20px; color: var(--iw-muted)">
+              <div style="font-size: 48px; margin-bottom: 16px">👤</div>
+              <h2 style="font-size: 18px; color: var(--iw-text); margin-bottom: 8px">
+                Personal Space
+              </h2>
+              <p style="font-size: 13px; max-width: 400px; margin: 0 auto 24px">
+                Your personal view shows tasks, saved views, and AI conversations scoped to you —
+                across all domains.
+              </p>
+              <div class="panel" style="max-width: 500px; margin: 0 auto; text-align: left">
+                <div class="panel-header"><div class="panel-title">📝 My Tasks</div></div>
+                <div class="panel-body">
+                  <div class="entity-row">
+                    <div class="entity-info">
+                      <div class="entity-name">Prep QBR slides for Acme</div>
+                      <div class="entity-meta">Due today · Customer Success</div>
+                    </div>
+                    <span class="tag tag-amber">Today</span>
+                  </div>
+                  <div class="entity-row">
+                    <div class="entity-info">
+                      <div class="entity-name">Review TechFlow health report</div>
+                      <div class="entity-meta">Due tomorrow · TAM</div>
+                    </div>
+                    <span class="tag tag-blue">Tomorrow</span>
+                  </div>
+                  <div class="entity-row">
+                    <div class="entity-info">
+                      <div class="entity-name">Update success plan — GlobalRetail</div>
+                      <div class="entity-meta">Due Friday · Account Success</div>
+                    </div>
+                    <span class="tag tag-green">This Week</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Connector Layer -->
+          <div style="margin-top: 20px">
+            <div
+              style="
+                font-size: 11px;
+                font-weight: 600;
+                color: var(--iw-muted);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                margin-bottom: 10px;
+              "
+            >
+              Connector Layer
+            </div>
+            <div class="connector-strip">
+              <div class="connector-item">
+                <div class="connector-icon">🎯</div>
+                <div class="connector-label">Goals / OKRs</div>
+                <div class="connector-count">5 active</div>
+              </div>
+              <div class="connector-item">
+                <div class="connector-icon">📊</div>
+                <div class="connector-label">Metrics / KPIs</div>
+                <div class="connector-count">12 tracked</div>
+              </div>
+              <div class="connector-item">
+                <div class="connector-icon">🔌</div>
+                <div class="connector-label">Tools & Services</div>
+                <div class="connector-count">8 connected</div>
+              </div>
+              <div class="connector-item">
+                <div class="connector-icon">🚀</div>
+                <div class="connector-label">Product</div>
+                <div class="connector-count">3 features</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Nav -->
+          <div style="margin-top: 20px">
+            <div
+              style="
+                font-size: 11px;
+                font-weight: 600;
+                color: var(--iw-muted);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                margin-bottom: 10px;
+              "
+            >
+              All Departments
+            </div>
+            <div class="quick-grid">
+              <button class="quick-btn">💚 CS</button>
+              <button class="quick-btn">💼 Sales</button>
+              <button class="quick-btn">📢 Marketing</button>
+              <button class="quick-btn">⚡ BizOps</button>
+              <button class="quick-btn">🚀 Product</button>
+              <button class="quick-btn">💰 Finance</button>
+              <button class="quick-btn">🔧 Eng</button>
+              <button class="quick-btn">🎧 Service</button>
+              <button class="quick-btn">🏢 RevOps</button>
+              <button class="quick-btn">🛡️ IT</button>
+              <button class="quick-btn">📦 Procure</button>
+              <button class="quick-btn">🤝 Partners</button>
+              <button class="quick-btn">📚 Knowledge</button>
+              <button class="quick-btn">📈 BI</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== TWIN SIDEBAR ========== -->
+      <aside class="twin-sidebar" id="twinSidebar">
+        <div class="twin-header">
+          <div class="twin-title">
+            <div class="twin-status"></div>
+            Digital Twin
+          </div>
+          <button
+            class="icon-btn"
+            style="width: 24px; height: 24px; font-size: 11px"
+            onclick="toggleTwin()"
+          >
+            ✕
+          </button>
+        </div>
+        <div class="twin-quick-actions">
+          <button class="twin-quick">Summarize Acme</button>
+          <button class="twin-quick">Health check</button>
+          <button class="twin-quick">Draft email</button>
+          <button class="twin-quick">Next actions</button>
+        </div>
+        <div class="twin-messages" id="twinMessages">
+          <div class="twin-msg ai">
+            <div class="twin-msg-context">💚 Account Success lens · Acme Corporation</div>
+            Hi Sarah. Acme Corp's renewal is in 14 days and their health score dropped to 3.5/10.
+            The Payment API has been breaching SLA (98.2% uptime vs 99.9% target). I recommend
+            scheduling an executive business review with both commercial and technical stakeholders.
+          </div>
+          <div class="twin-msg user">What specific actions should I take this week?</div>
+          <div class="twin-msg ai">
+            <div class="twin-msg-context">💚 Account Success + 🔮 TAM combined lens</div>
+            Based on both commercial and technical signals, here are your priority actions:<br /><br />
+            1. <b>Today:</b> Call Acme's CTO — acknowledge the API issue and share remediation
+            timeline<br />
+            2. <b>Tomorrow:</b> Submit discount approval for 15% renewal concession ($67K impact)<br />
+            3. <b>Wednesday:</b> Escalate to your VP — this is a logo-at-risk situation<br />
+            4. <b>Ongoing:</b> Daily standup with TAM David on API recovery progress<br /><br />
+            Would you like me to draft the executive summary?
+          </div>
+        </div>
+        <div class="twin-input-wrap">
+          <input
+            class="twin-input"
+            placeholder="Ask about accounts, health, actions..."
+            id="twinInput"
+            onkeydown="if (event.key === 'Enter') sendTwin();"
+          />
+        </div>
+      </aside>
+    </div>
+
+    <!-- ========== L2 DRAWER ========== -->
+    <div class="l2-handle" id="l2Handle" onclick="toggleL2()">
+      ✨ L2 Cognitive Overlay — Click or press ⌘J
+    </div>
+    <div class="l2-drawer" id="l2Drawer">
+      <div class="l2-tabs">
+        <button class="l2-tab active" onclick="switchL2Tab('spine')">🧠 Spine</button>
+        <button class="l2-tab" onclick="switchL2Tab('signals')">📡 Signals</button>
+        <button class="l2-tab" onclick="switchL2Tab('think')">💭 Think</button>
+        <button class="l2-tab" onclick="switchL2Tab('trust')">🛡️ Trust</button>
+        <button class="l2-tab" onclick="switchL2Tab('memory')">📝 Memory</button>
+      </div>
+      <div class="l2-content" id="l2Content">
+        <div class="l2-grid" id="l2-spine">
+          <div class="l2-card">
+            <div class="l2-card-title">🟢 Spine Health</div>
+            <div style="font-size: 24px; font-weight: 700; color: var(--iw-success)">98.4%</div>
+            <div style="font-size: 11px; color: var(--iw-muted); margin-top: 4px">
+              All systems operational
+            </div>
+          </div>
+          <div class="l2-card">
+            <div class="l2-card-title">📊 Projection Coverage</div>
+            <div style="font-size: 24px; font-weight: 700; color: var(--iw-info)">94%</div>
+            <div style="font-size: 11px; color: var(--iw-muted); margin-top: 4px">
+              16 of 17 entity types mapped
+            </div>
+          </div>
+          <div class="l2-card">
+            <div class="l2-card-title">🔗 Connectors Active</div>
+            <div style="font-size: 24px; font-weight: 700; color: var(--iw-primary-light)">8/8</div>
+            <div style="font-size: 11px; color: var(--iw-muted); margin-top: 4px">
+              Salesforce, HubSpot, NetSuite, Zendesk...
+            </div>
+          </div>
+          <div class="l2-card">
+            <div class="l2-card-title">⚡ Last Sync</div>
+            <div style="font-size: 24px; font-weight: 700; color: var(--iw-text)">2m ago</div>
+            <div style="font-size: 11px; color: var(--iw-muted); margin-top: 4px">
+              Next: real-time streaming
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ========== STATE ==========
+      let currentLens = "cs";
+      let l2Open = false;
+      let twinOpen = true;
+
+      // ========== LENS SWITCHING ==========
+      function switchLens(lens) {
+        currentLens = lens;
+        document.querySelectorAll(".view-section").forEach((el) => el.classList.remove("active"));
+        document.getElementById("view-" + lens).classList.add("active");
+
+        document.querySelectorAll(".tab-btn").forEach((el) => {
+          el.classList.remove("active", "cs-active", "tam-active");
+        });
+
+        const activeTab = document.getElementById("tab-" + lens);
+        activeTab.classList.add("active");
+        if (lens === "cs") activeTab.classList.add("cs-active");
+        if (lens === "tam") activeTab.classList.add("tam-active");
+
+        const bcView = document.getElementById("bc-view");
+        if (lens === "cs") bcView.textContent = "Account Success";
+        if (lens === "tam") bcView.textContent = "Technical Account Management";
+        if (lens === "org") bcView.textContent = "Organization View";
+        if (lens === "personal") bcView.textContent = "Personal Space";
+
+        // Update twin context
+        updateTwinContext(lens);
+      }
+
+      function switchDomain(domain) {
+        document.querySelectorAll(".nav-item").forEach((el) => el.classList.remove("active"));
+        event.currentTarget.classList.add("active");
+        document.getElementById("bc-domain").textContent =
+          domain === "cs"
+            ? "Customer Success"
+            : domain === "sales"
+              ? "Sales"
+              : domain === "marketing"
+                ? "Marketing"
+                : domain === "bizops"
+                  ? "Business Operations"
+                  : domain === "product"
+                    ? "Product"
+                    : domain;
+      }
+
+      // ========== TWIN ==========
+      function updateTwinContext(lens) {
+        const msgs = document.getElementById("twinMessages");
+        const contexts = {
+          cs: "💚 Account Success lens · Commercial view active",
+          tam: "🔮 TAM lens · Technical view active",
+          org: "🏢 Organization lens · Cross-team view",
+          personal: "👤 Personal lens · User-scoped",
+        };
+        // In real app, this would re-fetch context
+      }
+
+      function toggleTwin() {
+        twinOpen = !twinOpen;
+        document.getElementById("twinSidebar").classList.toggle("collapsed", !twinOpen);
+      }
+
+      function sendTwin() {
+        const input = document.getElementById("twinInput");
+        const text = input.value.trim();
+        if (!text) return;
+
+        const msgs = document.getElementById("twinMessages");
+
+        const userMsg = document.createElement("div");
+        userMsg.className = "twin-msg user";
+        userMsg.textContent = text;
+        msgs.appendChild(userMsg);
+
+        input.value = "";
+        msgs.scrollTop = msgs.scrollHeight;
+
+        setTimeout(() => {
+          const aiMsg = document.createElement("div");
+          aiMsg.className = "twin-msg ai";
+          const context =
+            currentLens === "cs"
+              ? "💚 Account Success lens"
+              : currentLens === "tam"
+                ? "🔮 TAM lens"
+                : currentLens === "org"
+                  ? "🏢 Org lens"
+                  : "👤 Personal lens";
+          aiMsg.innerHTML = `<div class="twin-msg-context">${context}</div>I'm analyzing that across your current view. In a live system, I'd query the Spine projection for real data. For now: I see you're asking about <b>${text}</b>. The twin would return domain-scoped insights, entity references, and suggested actions.`;
+          msgs.appendChild(aiMsg);
+          msgs.scrollTop = msgs.scrollHeight;
+        }, 600);
+      }
+
+      // ========== L2 DRAWER ==========
+      function toggleL2() {
+        l2Open = !l2Open;
+        document.getElementById("l2Drawer").classList.toggle("open", l2Open);
+        document.getElementById("l2Handle").textContent = l2Open
+          ? "✨ L2 Cognitive Overlay — Click to close"
+          : "✨ L2 Cognitive Overlay — Click or press ⌘J";
+      }
+
+      function switchL2Tab(tab) {
+        document.querySelectorAll(".l2-tab").forEach((el) => el.classList.remove("active"));
+        event.target.classList.add("active");
+
+        const content = document.getElementById("l2Content");
+        const grids = {
+          spine: `
+      <div class="l2-grid">
+        <div class="l2-card"><div class="l2-card-title">🟢 Spine Health</div><div style="font-size:24px;font-weight:700;color:var(--iw-success)">98.4%</div><div style="font-size:11px;color:var(--iw-muted);margin-top:4px">All systems operational</div></div>
+        <div class="l2-card"><div class="l2-card-title">📊 Projection Coverage</div><div style="font-size:24px;font-weight:700;color:var(--iw-info)">94%</div><div style="font-size:11px;color:var(--iw-muted);margin-top:4px">16 of 17 entity types mapped</div></div>
+        <div class="l2-card"><div class="l2-card-title">🔗 Connectors Active</div><div style="font-size:24px;font-weight:700;color:var(--iw-primary-light)">8/8</div><div style="font-size:11px;color:var(--iw-muted);margin-top:4px">All integrations healthy</div></div>
+        <div class="l2-card"><div class="l2-card-title">⚡ Last Sync</div><div style="font-size:24px;font-weight:700;color:var(--iw-text)">2m ago</div></div>
+      </div>`,
+          signals: `
+      <div class="l2-grid">
+        <div class="l2-card" style="grid-column:1/-1">
+          <div class="l2-card-title">📡 Live Signals</div>
+          <div class="l2-signal-row"><span><b style="color:var(--iw-danger)">🔴 High</b> Acme Corp — API error rate spike (2.3%)</span><span style="color:var(--iw-muted)">2m ago</span></div>
+          <div class="l2-signal-row"><span><b style="color:var(--iw-warning)">🟡 Med</b> TechFlow — Search latency degradation</span><span style="color:var(--iw-muted)">15m ago</span></div>
+          <div class="l2-signal-row"><span><b style="color:var(--iw-success)">🟢 Low</b> GlobalRetail — Usage growth +300%</span><span style="color:var(--iw-muted)">1h ago</span></div>
+          <div class="l2-signal-row"><span><b style="color:var(--iw-info)">🔵 Info</b> Nexus Digital — New capability adopted</span><span style="color:var(--iw-muted)">3h ago</span></div>
+        </div>
+      </div>`,
+          think: `
+      <div class="l2-grid">
+        <div class="l2-card"><div class="l2-card-title">💭 Think Queue</div><div style="font-size:11px;color:var(--iw-muted);line-height:1.6">3 recommendations pending:<br>• Renewal discount approval<br>• TechFlow escalation<br>• GlobalRetail upsell proposal</div></div>
+        <div class="l2-card"><div class="l2-card-title">🎯 Predictions</div><div style="font-size:11px;color:var(--iw-muted);line-height:1.6">Next 30 days:<br>• 89% chance Acme renews (with intervention)<br>• 72% chance GlobalRetail expands</div></div>
+      </div>`,
+          trust: `
+      <div class="l2-grid">
+        <div class="l2-card"><div class="l2-card-title">🛡️ Governance Queue</div><div style="font-size:11px;color:var(--iw-muted);line-height:1.6">2 approvals pending:<br>• Discount extension (-$67K)<br>• Executive escalation</div></div>
+        <div class="l2-card"><div class="l2-card-title">✅ Policy Check</div><div style="font-size:11px;color:var(--iw-success)">All actions within policy bounds</div></div>
+      </div>`,
+          memory: `
+      <div class="l2-grid">
+        <div class="l2-card"><div class="l2-card-title">📝 Work Memory</div><div style="font-size:11px;color:var(--iw-muted);line-height:1.6">Recent context:<br>• Acme renewal discussion (CS)<br>• API SLA breach analysis (TAM)<br>• GlobalRetail expansion planning</div></div>
+        <div class="l2-card"><div class="l2-card-title">👤 Personal Memory</div><div style="font-size:11px;color:var(--iw-muted);line-height:1.6">Your preferences:<br>• Default lens: Account Success<br>• Morning briefing: enabled<br>• Alert threshold: medium+</div></div>
+      </div>`,
+        };
+        content.innerHTML = grids[tab] || grids.spine;
+      }
+
+      // ========== KEYBOARD ==========
+      document.addEventListener("keydown", (e) => {
+        if (e.metaKey && e.key === "j") {
+          e.preventDefault();
+          toggleL2();
+        }
+        if (e.metaKey && e.key === "k") {
+          e.preventDefault();
+          document.querySelector(".search-box").focus();
+        }
+      });
+    </script>
+  </body>
+</html>

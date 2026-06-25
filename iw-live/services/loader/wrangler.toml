@@ -1,0 +1,99 @@
+name = "integratewise-loader"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Observability (see docs/WORKERS_OBSERVABILITY_OTLP.md)
+[observability]
+enabled = true
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+[observability.traces]
+enabled = true
+head_sampling_rate = 0.1
+
+# Secrets from Cloudflare Secrets Store — replace 1fd83fc5881e4cd296ae3c2fbe80693c (see docs/SECRETS_STORE_SETUP.md)
+[[secrets_store_secrets]]
+binding = "SUPABASE_URL"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SUPABASE_URL"
+
+[[secrets_store_secrets]]
+binding = "SUPABASE_SERVICE_ROLE_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SUPABASE_SERVICE_ROLE_KEY"
+
+# Produces to pipeline queue
+
+[[secrets_store_secrets]]
+binding = "GITHUB_TOKEN"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "GITHUB_TOKEN"
+
+[[secrets_store_secrets]]
+binding = "OPENAI_API_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "OPENAI_API_KEY"
+
+[[secrets_store_secrets]]
+binding = "GOOGLE_API_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "GOOGLE_API_KEY"
+
+[[secrets_store_secrets]]
+binding = "VERCEL_TOKEN"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "VERCEL_TOKEN"
+
+[[secrets_store_secrets]]
+binding = "XAI_API_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "XAI_API_KEY"
+
+[[secrets_store_secrets]]
+binding = "OPENROUTER_API_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "OPENROUTER_API_KEY"
+
+[[secrets_store_secrets]]
+binding = "OPENCODE_API_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "OPENCODE_API_KEY"
+
+[[services]]
+binding = "MCP"
+service = "integratewise-mcp-connector"
+
+
+[[queues.producers]]
+queue = "pipeline-process"
+binding = "PIPELINE_QUEUE"
+
+# KV for idempotency checks
+[[kv_namespaces]]
+binding = "MCP_IDEMPOTENCY"
+id = "16510bf2287a45d8b24163ddafd3d302"
+
+# D1 for connector cursors + dedup
+[[d1_databases]]
+binding = "EDGE_DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+# Cron trigger for polling connectors
+[triggers]
+crons = ["*/5 * * * *"]
+
+[env.staging]
+name = "integratewise-loader-staging"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+[env.production]
+name = "integratewise-loader"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+[dev]
+inspector_port = 9251
+port = 8791

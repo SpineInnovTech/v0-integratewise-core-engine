@@ -1,0 +1,5012 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IntegrateWise — IW Continuity Bridge · Pitch Deck</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --forest: #1a3a2a;
+        --forest-soft: #2d5a40;
+        --forest-mid: #245038;
+        --forest-deep: #1e4430;
+        --paper: #f4f0e8;
+        --paper-warm: #faf7f0;
+        --ink: #1a1a1a;
+        --ink-soft: #4a4a4a;
+        --ink-mute: #8a8a7a;
+        --rule: #d8d3c5;
+        --clay: #b85c3f;
+        --sage: #6b8f71;
+        --tan: #c4a96a;
+        --lime: #a8d14b;
+        --lime-deep: #7da832;
+        --serif: "DM Serif Display", Georgia, serif;
+        --sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        --mono: "JetBrains Mono", "Fira Code", monospace;
+        --pad: clamp(24px, 5vw, 144px);
+        --pad-sm: clamp(16px, 3vw, 80px);
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #0a0a0a;
+        font-family: var(--sans);
+        -webkit-font-smoothing: antialiased;
+      }
+      .deck {
+        width: 100vw;
+        height: 100vh;
+        position: relative;
+      }
+      .slide {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.4s ease;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+      .slide.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .slide-container {
+        width: 100%;
+        min-height: 100%;
+        position: relative;
+        background: var(--paper);
+        overflow: hidden;
+        padding-bottom: 80px;
+      }
+      .slide-container.dark {
+        background: var(--forest);
+      }
+      .paper-grain::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 0;
+      }
+      .serif-display {
+        font-family: var(--serif);
+        font-weight: 400;
+        line-height: 0.98;
+        letter-spacing: -0.025em;
+      }
+      .eyebrow {
+        font-family: var(--mono);
+        font-size: clamp(11px, 1.2vw, 14px);
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--forest);
+        font-weight: 500;
+      }
+      .forest-band {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: clamp(40px, 5vw, 96px);
+        height: 100%;
+        background: var(--forest);
+        z-index: 1;
+      }
+      .header-rule {
+        position: absolute;
+        left: var(--pad);
+        top: 120px;
+        width: calc(100% - var(--pad) * 2);
+        height: 1px;
+        background: var(--rule);
+        z-index: 1;
+      }
+      .header-rule.light {
+        background: rgba(244, 239, 228, 0.18);
+      }
+      .brand-mark {
+        position: absolute;
+        left: var(--pad);
+        top: 80px;
+        z-index: 10;
+      }
+      .brand-mark .name {
+        font-family: var(--mono);
+        font-size: clamp(12px, 1.2vw, 15px);
+        letter-spacing: 0.22em;
+        color: var(--ink);
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+      .brand-mark .tagline {
+        font-family: var(--mono);
+        font-size: clamp(10px, 1vw, 13px);
+        letter-spacing: 0.18em;
+        color: var(--ink-mute);
+        text-transform: uppercase;
+        margin-top: 6px;
+      }
+      .brand-mark.light .name,
+      .brand-mark.light .tagline {
+        color: rgba(244, 239, 228, 0.55);
+      }
+      .slide-number {
+        position: absolute;
+        right: var(--pad);
+        top: 80px;
+        font-family: var(--mono);
+        font-size: clamp(11px, 1vw, 13px);
+        letter-spacing: 0.18em;
+        color: var(--ink-mute);
+        text-transform: uppercase;
+        z-index: 10;
+      }
+      .slide-number.light {
+        color: rgba(244, 239, 228, 0.55);
+      }
+      .slide-label {
+        position: absolute;
+        left: var(--pad);
+        top: 80px;
+        font-family: var(--mono);
+        font-size: clamp(12px, 1.2vw, 14px);
+        letter-spacing: 0.2em;
+        color: var(--ink-mute);
+        text-transform: uppercase;
+        z-index: 10;
+      }
+      .slide-label.light {
+        color: rgba(244, 239, 228, 0.55);
+      }
+      .footer-rule {
+        position: absolute;
+        left: var(--pad);
+        bottom: 56px;
+        width: calc(100% - var(--pad) * 2);
+        height: 1px;
+        background: var(--rule);
+        z-index: 1;
+      }
+      .footer-rule.light {
+        background: rgba(244, 239, 228, 0.18);
+      }
+      .footer-left {
+        position: absolute;
+        left: var(--pad);
+        bottom: 28px;
+        font-family: var(--mono);
+        font-size: clamp(10px, 1vw, 13px);
+        letter-spacing: 0.18em;
+        color: var(--ink-mute);
+        text-transform: uppercase;
+        z-index: 10;
+      }
+      .footer-left.light {
+        color: rgba(244, 239, 228, 0.55);
+      }
+      .footer-right {
+        position: absolute;
+        right: var(--pad);
+        bottom: 28px;
+        font-family: var(--mono);
+        font-size: 13px;
+        letter-spacing: 0.18em;
+        color: var(--ink-mute);
+        text-transform: uppercase;
+        z-index: 10;
+      }
+      .footer-right.light {
+        color: rgba(244, 239, 228, 0.55);
+      }
+      .signal-pill {
+        display: inline-block;
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-weight: 600;
+        padding: 5px 12px;
+        border-radius: 2px;
+      }
+      .card {
+        background: var(--paper-warm);
+        border: 1px solid var(--rule);
+        padding: 28px 30px;
+        z-index: 5;
+        position: relative;
+      }
+      .card.highlight {
+        background: var(--forest);
+        border: none;
+      }
+      .card.highlight .card-title {
+        color: #f4efe4;
+      }
+      .card.highlight .card-desc {
+        color: rgba(244, 239, 228, 0.75);
+      }
+      .card.highlight .card-label {
+        color: var(--lime);
+      }
+      .card.top-border {
+        border-top: 3px solid var(--forest);
+      }
+      .card.top-border-clay {
+        border-top: 3px solid var(--clay);
+      }
+      .card.top-border-sage {
+        border-top: 3px solid var(--sage);
+      }
+      .card.top-border-lime {
+        border-top: 3px solid var(--lime-deep);
+      }
+      .card.left-border-clay {
+        border-left: 3px solid var(--clay);
+      }
+      .card-label {
+        font-family: var(--mono);
+        font-size: 12px;
+        letter-spacing: 0.16em;
+        color: var(--forest);
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 14px;
+      }
+      .card-title {
+        font-family: var(--serif);
+        font-size: clamp(22px, 2.5vw, 32px);
+        color: var(--ink);
+        line-height: 1.1;
+        letter-spacing: -0.015em;
+        margin-bottom: 12px;
+      }
+      .card-desc {
+        font-family: var(--sans);
+        font-size: clamp(13px, 1.3vw, 16px);
+        color: var(--ink-soft);
+        line-height: 1.5;
+      }
+      .nav-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 48px;
+        background: rgba(26, 26, 26, 0.92);
+        backdrop-filter: blur(12px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        z-index: 1000;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .nav-bar button {
+        background: none;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: rgba(255, 255, 255, 0.7);
+        font-family: var(--mono);
+        font-size: 12px;
+        padding: 6px 16px;
+        cursor: pointer;
+        border-radius: 3px;
+        transition: all 0.2s;
+        letter-spacing: 0.1em;
+      }
+      .nav-bar button:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.3);
+      }
+      .nav-bar .counter {
+        font-family: var(--mono);
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.5);
+        letter-spacing: 0.15em;
+        min-width: 80px;
+        text-align: center;
+      }
+      .progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background: var(--lime);
+        z-index: 1001;
+        transition: width 0.4s ease;
+      }
+      @media (max-width: 900px) {
+        .slide-container .grid-4 {
+          grid-template-columns: repeat(2, 1fr) !important;
+        }
+        .slide-container .grid-5 {
+          grid-template-columns: repeat(2, 1fr) !important;
+        }
+        .slide-container .grid-3 {
+          grid-template-columns: repeat(2, 1fr) !important;
+        }
+        .slide-container .split {
+          grid-template-columns: 1fr !important;
+        }
+      }
+      @media (max-width: 600px) {
+        .slide-container .grid-2,
+        .slide-container .grid-3,
+        .slide-container .grid-4,
+        .slide-container .grid-5 {
+          grid-template-columns: 1fr !important;
+        }
+        .slide-container .split {
+          grid-template-columns: 1fr !important;
+        }
+        .forest-band {
+          width: 24px !important;
+        }
+        .header-rule,
+        .footer-rule {
+          left: var(--pad-sm) !important;
+          width: calc(100% - var(--pad-sm) * 2) !important;
+        }
+        .brand-mark,
+        .slide-label,
+        .footer-left {
+          left: var(--pad-sm) !important;
+        }
+        .slide-number,
+        .footer-right {
+          right: var(--pad-sm) !important;
+        }
+        .brand-mark {
+          top: 60px !important;
+        }
+        .slide-label {
+          top: 60px !important;
+        }
+        .slide-number {
+          top: 60px !important;
+        }
+        .header-rule {
+          top: 100px !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="deck" id="deck">
+      <div class="progress-bar" id="progress"></div>
+
+      <!-- S01 COVER -->
+      <div class="slide active" data-slide="1">
+        <div class="slide-container paper-grain">
+          <div class="forest-band"></div>
+          <div class="brand-mark">
+            <div class="name">IntegrateWise</div>
+            <div class="tagline">Continuity Infrastructure for AI</div>
+          </div>
+          <div class="header-rule"></div>
+          <div class="slide-number">
+            Pitch Deck · v3.2<br /><span style="margin-top: 6px; display: block">2026</span>
+          </div>
+          <div style="position: absolute; left: var(--pad); top: 300px; z-index: 10">
+            <span class="eyebrow">— The Continuity Layer</span>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 360px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              class="serif-display"
+              style="font-size: clamp(60px, 8vw, 132px); color: var(--ink)"
+            >
+              One connected workspace<br />for
+              <em style="font-style: italic; color: var(--forest)">humans</em> &amp; their
+              <em style="font-style: italic; color: var(--forest)">Digital&nbsp;Twin</em>.
+            </div>
+          </div>
+          <div
+            style="position: absolute; left: var(--pad); top: 790px; max-width: 900px; z-index: 10"
+          >
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 14px;
+                letter-spacing: 0.2em;
+                color: var(--ink-mute);
+                text-transform: uppercase;
+                margin-bottom: 18px;
+              "
+            >
+              Introducing
+            </div>
+            <div
+              style="
+                font-family: var(--serif);
+                font-size: 56px;
+                font-weight: 500;
+                color: var(--forest);
+                line-height: 1;
+                letter-spacing: -0.02em;
+              "
+            >
+              IW Continuity Bridge
+            </div>
+            <div
+              style="
+                font-family: var(--sans);
+                font-size: 21px;
+                color: var(--ink-soft);
+                margin-top: 14px;
+                max-width: 780px;
+                line-height: 1.45;
+              "
+            >
+              Shared memory and unified context across every AI system, application, and person in
+              your organization.
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              right: var(--pad);
+              top: 780px;
+              max-width: 576px;
+              height: 200px;
+              background: var(--paper-warm);
+              border: 1px solid var(--rule);
+              z-index: 5;
+              padding: 28px 30px;
+            "
+          >
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px">
+              <div
+                style="width: 10px; height: 10px; background: var(--lime); border-radius: 50%"
+              ></div>
+              <span
+                style="
+                  font-family: var(--mono);
+                  font-size: 12px;
+                  letter-spacing: 0.16em;
+                  color: var(--forest);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                "
+                >TWIN · LIVE</span
+              >
+            </div>
+            <div
+              style="
+                font-family: var(--serif);
+                font-size: 30px;
+                color: var(--ink);
+                line-height: 1.2;
+                letter-spacing: -0.015em;
+              "
+            >
+              "Your AI is ready.<br />Give it&nbsp;memory."
+            </div>
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 13px;
+                letter-spacing: 0.14em;
+                color: var(--ink-mute);
+                margin-top: 18px;
+                text-transform: uppercase;
+              "
+            >
+              — The continuity layer · Connect Once · Normalize Once · Render Anywhere
+            </div>
+          </div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">Confidential · For Discussion</div>
+          <div class="footer-right">01 / 18</div>
+        </div>
+      </div>
+
+      <!-- S02 THE PROBLEM -->
+      <div class="slide" data-slide="2">
+        <div class="slide-container paper-grain">
+          <div class="slide-label">02 — The Problem</div>
+          <div class="slide-number">IntegrateWise</div>
+          <div class="header-rule"></div>
+          <div
+            class="eyebrow"
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 180px;
+              z-index: 10;
+              color: var(--clay);
+            "
+          >
+            The bottleneck nobody is naming
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 230px;
+              max-width: 1400px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              class="serif-display"
+              style="font-size: clamp(50px, 7vw, 120px); color: var(--ink)"
+            >
+              AI <em style="font-style: italic; color: var(--clay)">forgets</em>.<br />Work
+              <em style="font-style: italic; color: var(--clay)">restarts</em>.
+            </div>
+          </div>
+          <div
+            style="position: absolute; left: var(--pad); top: 560px; max-width: 1000px; z-index: 10"
+          >
+            <div
+              style="
+                font-family: var(--sans);
+                font-size: 26px;
+                color: var(--ink-soft);
+                line-height: 1.45;
+                font-weight: 300;
+              "
+            >
+              Models got smarter. Memory didn't.<br />Every conversation, every tool, every team —
+              starts from zero.
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 740px;
+              display: grid;
+              grid-template-columns: repeat(4, 1fr);
+              gap: 12px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="card left-border-clay">
+              <div class="card-label" style="color: var(--clay)">01 · Memory loss</div>
+              <div class="card-title">AI forgets between sessions</div>
+              <div class="card-desc">
+                Each chat starts blank. Preferences, decisions, history — gone.
+              </div>
+            </div>
+            <div class="card left-border-clay">
+              <div class="card-label" style="color: var(--clay)">02 · Trapped knowledge</div>
+              <div class="card-title">Knowledge is locked in chats</div>
+              <div class="card-desc">
+                Insights live in Slack threads, DMs, and prompt boxes — invisible to the org.
+              </div>
+            </div>
+            <div class="card left-border-clay">
+              <div class="card-label" style="color: var(--clay)">03 · Context resets</div>
+              <div class="card-title">Context resets between tools</div>
+              <div class="card-desc">
+                Slack doesn't know what HubSpot knows. Neither knows what your AI just learned.
+              </div>
+            </div>
+            <div class="card left-border-clay">
+              <div class="card-label" style="color: var(--clay)">04 · Repeated work</div>
+              <div class="card-title">Teams recreate the same work</div>
+              <div class="card-desc">
+                22% of workers lose 2+ hours weekly to tool fatigue — 2.5 workweeks gone per year.
+              </div>
+            </div>
+          </div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">Source · Lokalise / HCAmag Tool Fatigue Report</div>
+          <div class="footer-right">02 / 18</div>
+        </div>
+      </div>
+
+      <!-- S03 WHY AI BREAKS -->
+      <div class="slide" data-slide="3">
+        <div class="slide-container paper-grain">
+          <div class="slide-label">03 — Why Current AI Breaks</div>
+          <div class="slide-number">IntegrateWise</div>
+          <div class="header-rule"></div>
+          <div
+            class="eyebrow"
+            style="position: absolute; left: var(--pad); top: 180px; z-index: 10"
+          >
+            The architecture problem
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 230px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              class="serif-display"
+              style="font-size: clamp(44px, 5.5vw, 96px); color: var(--ink)"
+            >
+              Every AI is an
+              <em style="font-style: italic; color: var(--forest)">island</em>.<br />Intelligence
+              never <em style="font-style: italic; color: var(--forest)">compounds</em>.
+            </div>
+          </div>
+          <div
+            style="position: absolute; left: var(--pad); top: 540px; max-width: 900px; z-index: 10"
+          >
+            <div
+              style="
+                font-family: var(--sans);
+                font-size: 22px;
+                color: var(--ink-soft);
+                line-height: 1.5;
+                font-weight: 300;
+              "
+            >
+              The enterprise has bought 50+ AI tools. None of them talk. None of them learn from
+              each other. None of them remember anything past today.
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 700px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 60px 1fr 1fr;
+                gap: 0;
+                border-top: 1px solid var(--rule);
+              "
+            >
+              <div
+                style="
+                  padding: 18px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--mono);
+                  font-size: 14px;
+                  color: var(--clay);
+                  font-weight: 600;
+                  letter-spacing: 0.12em;
+                "
+              >
+                01
+              </div>
+              <div
+                style="
+                  padding: 18px 24px 18px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--serif);
+                  font-size: 28px;
+                  color: var(--ink);
+                  letter-spacing: -0.01em;
+                "
+              >
+                Every AI has <em style="font-style: italic">isolated</em> memory
+              </div>
+              <div
+                style="
+                  padding: 18px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--sans);
+                  font-size: 17px;
+                  color: var(--ink-soft);
+                  line-height: 1.4;
+                "
+              >
+                ChatGPT doesn't know Claude. Claude doesn't know your copilot. Your copilot doesn't
+                know last Tuesday.
+              </div>
+              <div
+                style="
+                  padding: 18px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--mono);
+                  font-size: 14px;
+                  color: var(--clay);
+                  font-weight: 600;
+                  letter-spacing: 0.12em;
+                "
+              >
+                02
+              </div>
+              <div
+                style="
+                  padding: 18px 24px 18px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--serif);
+                  font-size: 28px;
+                  color: var(--ink);
+                  letter-spacing: -0.01em;
+                "
+              >
+                Every tool has <em style="font-style: italic">isolated</em> context
+              </div>
+              <div
+                style="
+                  padding: 18px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--sans);
+                  font-size: 17px;
+                  color: var(--ink-soft);
+                  line-height: 1.4;
+                "
+              >
+                Slack threads, Notion pages, Salesforce notes — same customer, four disconnected
+                stories.
+              </div>
+              <div
+                style="
+                  padding: 18px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--mono);
+                  font-size: 14px;
+                  color: var(--clay);
+                  font-weight: 600;
+                  letter-spacing: 0.12em;
+                "
+              >
+                03
+              </div>
+              <div
+                style="
+                  padding: 18px 24px 18px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--serif);
+                  font-size: 28px;
+                  color: var(--ink);
+                  letter-spacing: -0.01em;
+                "
+              >
+                Every team builds <em style="font-style: italic">duplicate</em> knowledge
+              </div>
+              <div
+                style="
+                  padding: 18px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--sans);
+                  font-size: 17px;
+                  color: var(--ink-soft);
+                  line-height: 1.4;
+                "
+              >
+                Sales writes the brief. Success rewrites it. Support rebuilds it. Same customer,
+                three times the work.
+              </div>
+              <div
+                style="
+                  padding: 18px 0;
+                  font-family: var(--mono);
+                  font-size: 14px;
+                  color: var(--clay);
+                  font-weight: 600;
+                  letter-spacing: 0.12em;
+                "
+              >
+                04
+              </div>
+              <div
+                style="
+                  padding: 18px 24px 18px 0;
+                  font-family: var(--serif);
+                  font-size: 28px;
+                  color: var(--ink);
+                  letter-spacing: -0.01em;
+                "
+              >
+                Organizational intelligence <em style="font-style: italic">never compounds</em>
+              </div>
+              <div
+                style="
+                  padding: 18px 0;
+                  font-family: var(--sans);
+                  font-size: 17px;
+                  color: var(--ink-soft);
+                  line-height: 1.4;
+                "
+              >
+                Every new hire restarts the cycle. Every offboarding loses tacit knowledge. The org
+                gets older but not wiser.
+              </div>
+            </div>
+          </div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">The architecture is fragmented by design</div>
+          <div class="footer-right">03 / 18</div>
+        </div>
+      </div>
+
+      <!-- S04 MISSING LAYER -->
+      <div class="slide" data-slide="4">
+        <div class="slide-container paper-grain">
+          <div class="slide-label">04 — The Missing Layer</div>
+          <div class="slide-number">IntegrateWise</div>
+          <div class="header-rule"></div>
+          <div
+            class="eyebrow"
+            style="position: absolute; left: var(--pad); top: 180px; z-index: 10"
+          >
+            The continuity problem
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 228px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              class="serif-display"
+              style="font-size: clamp(48px, 6vw, 108px); color: var(--ink)"
+            >
+              The model is <em style="font-style: italic">not</em> the bottleneck.
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 400px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              class="serif-display"
+              style="font-size: clamp(48px, 6vw, 108px); color: var(--forest)"
+            >
+              <em style="font-style: italic">Continuity</em> is.
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 620px;
+              display: grid;
+              grid-template-columns: repeat(3, 1fr);
+              gap: 16px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                background: var(--paper);
+                border: 1px solid var(--rule);
+                padding: 40px;
+                z-index: 5;
+                position: relative;
+              "
+            >
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 13px;
+                  letter-spacing: 0.18em;
+                  color: var(--lime-deep);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                  margin-bottom: 18px;
+                "
+              >
+                ↳ MEMORY
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 42px;
+                  color: var(--ink);
+                  line-height: 1.1;
+                  letter-spacing: -0.02em;
+                  margin-bottom: 18px;
+                "
+              >
+                What was learned, stays learned.
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 18px;
+                  color: var(--ink-soft);
+                  line-height: 1.5;
+                "
+              >
+                Persistent, governed memory across every conversation, system, and session.
+              </div>
+            </div>
+            <div
+              style="
+                background: var(--paper);
+                border: 1px solid var(--rule);
+                padding: 40px;
+                z-index: 5;
+                position: relative;
+              "
+            >
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 13px;
+                  letter-spacing: 0.18em;
+                  color: var(--lime-deep);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                  margin-bottom: 18px;
+                "
+              >
+                ↳ CONTEXT
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 42px;
+                  color: var(--ink);
+                  line-height: 1.1;
+                  letter-spacing: -0.02em;
+                  margin-bottom: 18px;
+                "
+              >
+                One truth across every system.
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 18px;
+                  color: var(--ink-soft);
+                  line-height: 1.5;
+                "
+              >
+                Normalized entities, relationships, and state — shared by every AI and every app.
+              </div>
+            </div>
+            <div style="background: var(--forest); padding: 40px; z-index: 5; position: relative">
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 13px;
+                  letter-spacing: 0.18em;
+                  color: var(--lime);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                  margin-bottom: 18px;
+                "
+              >
+                ↳ CONTINUITY
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 42px;
+                  color: #f4efe4;
+                  line-height: 1.1;
+                  letter-spacing: -0.02em;
+                  margin-bottom: 18px;
+                "
+              >
+                Work compounds, never restarts.
+              </div>
+              <div
+                style="font-family: var(--sans); font-size: 18px; color: #d8d3c5; line-height: 1.5"
+              >
+                A live operational state every person, agent, and process can build on.
+              </div>
+            </div>
+          </div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">
+            Memory + Context + Continuity = the missing infrastructure layer
+          </div>
+          <div class="footer-right">04 / 18</div>
+        </div>
+      </div>
+
+      <!-- S05 INTRODUCING -->
+      <div class="slide" data-slide="5">
+        <div class="slide-container dark">
+          <div
+            style="
+              position: absolute;
+              inset: 0;
+              background: radial-gradient(
+                ellipse at 75% 60%,
+                rgba(168, 209, 75, 0.12) 0%,
+                transparent 55%
+              );
+              z-index: 2;
+            "
+          ></div>
+          <div class="slide-label light">05 — Introducing</div>
+          <div class="slide-number light">IntegrateWise</div>
+          <div class="header-rule light"></div>
+          <div style="position: absolute; left: var(--pad); top: 200px; z-index: 10">
+            <div
+              style="
+                display: inline-flex;
+                align-items: center;
+                gap: 12px;
+                padding: 8px 16px;
+                background: rgba(168, 209, 75, 0.14);
+                border: 1px solid rgba(168, 209, 75, 0.35);
+                border-radius: 2px;
+              "
+            >
+              <div
+                style="width: 8px; height: 8px; background: var(--lime); border-radius: 50%"
+              ></div>
+              <span
+                style="
+                  font-family: var(--mono);
+                  font-size: 14px;
+                  letter-spacing: 0.18em;
+                  color: var(--lime);
+                  text-transform: uppercase;
+                  font-weight: 500;
+                "
+                >Enterprise Continuity Layer · Live</span
+              >
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 285px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="serif-display" style="font-size: clamp(80px, 10vw, 172px); color: #f4efe4">
+              IW Continuity<br /><em style="font-style: italic; color: var(--lime)">Bridge.</em>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 760px;
+              max-width: 1100px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--serif);
+                font-size: 38px;
+                color: #f4efe4;
+                line-height: 1.25;
+                letter-spacing: -0.015em;
+                font-weight: 400;
+              "
+            >
+              Shared memory across every AI, every system, and every person.<br /><span
+                style="color: rgba(244, 239, 228, 0.65)"
+                >One normalized truth. One operational state. One browser execution layer.</span
+              >
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              right: var(--pad);
+              top: 740px;
+              max-width: 396px;
+              height: 230px;
+              background: rgba(244, 239, 228, 0.06);
+              border: 1px solid rgba(244, 239, 228, 0.18);
+              z-index: 5;
+              padding: 28px 30px;
+            "
+          >
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 12px;
+                letter-spacing: 0.16em;
+                color: var(--lime);
+                text-transform: uppercase;
+                font-weight: 600;
+                margin-bottom: 14px;
+              "
+            >
+              Built on Atlas Spine
+            </div>
+            <div
+              style="
+                font-family: var(--serif);
+                font-size: 28px;
+                color: #f4efe4;
+                line-height: 1.2;
+                letter-spacing: -0.015em;
+                margin-bottom: 14px;
+              "
+            >
+              100+ tools<br />normalized into<br />one work graph.
+            </div>
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 13px;
+                letter-spacing: 0.14em;
+                color: rgba(244, 239, 228, 0.5);
+                text-transform: uppercase;
+              "
+            >
+              Normalize once. Render anywhere.
+            </div>
+          </div>
+          <div class="footer-rule light"></div>
+          <div class="footer-left light">The continuity layer between humans, AI, and systems</div>
+          <div class="footer-right light">05 / 18</div>
+        </div>
+      </div>
+
+      <!-- S06 HOW IT WORKS -->
+      <div class="slide" data-slide="6">
+        <div class="slide-container paper-grain">
+          <div class="slide-label">06 — How It Works</div>
+          <div class="slide-number">IntegrateWise</div>
+          <div class="header-rule"></div>
+          <div
+            class="eyebrow"
+            style="position: absolute; left: var(--pad); top: 180px; z-index: 10"
+          >
+            The Continuity Flow
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 228px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="serif-display" style="font-size: clamp(40px, 5vw, 88px); color: var(--ink)">
+              Five steps. <em style="font-style: italic; color: var(--forest)">One spine.</em>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: calc(var(--pad) + 96px);
+              top: 560px;
+              width: calc(100% - var(--pad) * 2 - 192px);
+              height: 2px;
+              background: linear-gradient(90deg, var(--clay), var(--forest));
+              z-index: 2;
+            "
+          ></div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 480px;
+              display: grid;
+              grid-template-columns: repeat(5, 1fr);
+              gap: 12px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="card" style="padding: 26px">
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 12px;
+                  letter-spacing: 0.16em;
+                  color: var(--clay);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                  margin-bottom: 10px;
+                "
+              >
+                01
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 28px;
+                  color: var(--ink);
+                  line-height: 1.1;
+                  letter-spacing: -0.015em;
+                  margin-bottom: 8px;
+                "
+              >
+                Connect AI
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 15px;
+                  color: var(--ink-soft);
+                  line-height: 1.4;
+                "
+              >
+                ChatGPT, Claude, Gemini, internal models — BYOM, one bridge.
+              </div>
+            </div>
+            <div class="card" style="padding: 26px">
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 12px;
+                  letter-spacing: 0.16em;
+                  color: var(--clay);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                  margin-bottom: 10px;
+                "
+              >
+                02
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 28px;
+                  color: var(--ink);
+                  line-height: 1.1;
+                  letter-spacing: -0.015em;
+                  margin-bottom: 8px;
+                "
+              >
+                Connect Systems
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 15px;
+                  color: var(--ink-soft);
+                  line-height: 1.4;
+                "
+              >
+                Slack, HubSpot, Notion, Salesforce, GitHub — 100+ connectors.
+              </div>
+            </div>
+            <div class="card" style="padding: 26px">
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 12px;
+                  letter-spacing: 0.16em;
+                  color: var(--sage);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                  margin-bottom: 10px;
+                "
+              >
+                03
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 28px;
+                  color: var(--ink);
+                  line-height: 1.1;
+                  letter-spacing: -0.015em;
+                  margin-bottom: 8px;
+                "
+              >
+                Normalize Context
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 15px;
+                  color: var(--ink-soft);
+                  line-height: 1.4;
+                "
+              >
+                Entities, relationships, state — into one work graph.
+              </div>
+            </div>
+            <div class="card" style="padding: 26px">
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 12px;
+                  letter-spacing: 0.16em;
+                  color: var(--sage);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                  margin-bottom: 10px;
+                "
+              >
+                04
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 28px;
+                  color: var(--ink);
+                  line-height: 1.1;
+                  letter-spacing: -0.015em;
+                  margin-bottom: 8px;
+                "
+              >
+                Persist Memory
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 15px;
+                  color: var(--ink-soft);
+                  line-height: 1.4;
+                "
+              >
+                Event-sourced. Governed. Permission-aware. Auditable.
+              </div>
+            </div>
+            <div class="card highlight" style="padding: 26px">
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 12px;
+                  letter-spacing: 0.16em;
+                  color: var(--lime);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                  margin-bottom: 10px;
+                "
+              >
+                05 · OUTPUT
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 28px;
+                  color: #f4efe4;
+                  line-height: 1.1;
+                  letter-spacing: -0.015em;
+                  margin-bottom: 8px;
+                "
+              >
+                Deliver Continuity
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 15px;
+                  color: rgba(244, 239, 228, 0.75);
+                  line-height: 1.4;
+                "
+              >
+                Render anywhere: chat, workbench, agent, app, browser.
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 740px;
+              width: calc(100% - var(--pad) * 2);
+              height: 220px;
+              background: var(--paper-warm);
+              border-left: 3px solid var(--forest);
+              z-index: 5;
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 80px;
+              padding: 30px 56px;
+            "
+          >
+            <div>
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 13px;
+                  letter-spacing: 0.16em;
+                  color: var(--forest);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                  margin-bottom: 14px;
+                "
+              >
+                ↳ Architecture
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 36px;
+                  color: var(--ink);
+                  line-height: 1.2;
+                  letter-spacing: -0.015em;
+                "
+              >
+                Event Sourcing + CQRS at the core.
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 18px;
+                  color: var(--ink-soft);
+                  line-height: 1.5;
+                  margin-top: 10px;
+                "
+              >
+                Every signal is captured once, normalized into the Atlas Spine, and replayable for
+                any agent, workflow, or human surface.
+              </div>
+            </div>
+            <div>
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 13px;
+                  letter-spacing: 0.16em;
+                  color: var(--forest);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                  margin-bottom: 14px;
+                "
+              >
+                ↳ Principle
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 36px;
+                  color: var(--ink);
+                  line-height: 1.2;
+                  letter-spacing: -0.015em;
+                  font-style: italic;
+                "
+              >
+                "Normalize once. Render anywhere."
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 18px;
+                  color: var(--ink-soft);
+                  line-height: 1.5;
+                  margin-top: 10px;
+                "
+              >
+                BYOM (Bring Your Own Model) · BYOT (Bring Your Own Template). Data sovereignty
+                preserved.
+              </div>
+            </div>
+          </div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">Connect → Normalize → Persist → Deliver</div>
+          <div class="footer-right">06 / 18</div>
+        </div>
+      </div>
+
+      <!-- S07 BEFORE VS AFTER -->
+      <div class="slide" data-slide="7">
+        <div class="slide-container paper-grain">
+          <div class="slide-label">07 — Before vs After</div>
+          <div class="slide-number">IntegrateWise</div>
+          <div class="header-rule"></div>
+          <div
+            class="eyebrow"
+            style="position: absolute; left: var(--pad); top: 180px; z-index: 10"
+          >
+            The shift
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 228px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="serif-display" style="font-size: clamp(40px, 5vw, 88px); color: var(--ink)">
+              From <em style="font-style: italic; color: var(--clay)">spaghetti</em> to
+              <em style="font-style: italic; color: var(--forest)">spine.</em>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 430px;
+              display: grid;
+              grid-template-columns: 1fr 80px 1fr;
+              gap: 0;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                background: var(--paper-warm);
+                border: 1px solid var(--rule);
+                padding: 36px 40px;
+              "
+            >
+              <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 22px">
+                <span
+                  class="signal-pill"
+                  style="background: rgba(184, 92, 63, 0.15); color: var(--clay)"
+                  >RISK · Before</span
+                ><span
+                  style="
+                    font-family: var(--mono);
+                    font-size: 13px;
+                    color: var(--ink-mute);
+                    letter-spacing: 0.14em;
+                    text-transform: uppercase;
+                  "
+                  >Today's stack</span
+                >
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 48px;
+                  color: var(--ink);
+                  line-height: 1.05;
+                  letter-spacing: -0.02em;
+                  margin-bottom: 28px;
+                "
+              >
+                Point-to-point chaos
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 19px;
+                  color: var(--ink);
+                  line-height: 1.7;
+                "
+              >
+                <div
+                  style="
+                    display: flex;
+                    gap: 18px;
+                    align-items: flex-start;
+                    padding: 14px 0;
+                    border-bottom: 1px solid var(--rule);
+                  "
+                >
+                  <span
+                    style="
+                      color: var(--clay);
+                      font-family: var(--mono);
+                      font-size: 15px;
+                      font-weight: 600;
+                      margin-top: 3px;
+                    "
+                    >✕</span
+                  >
+                  <div>
+                    <div style="font-weight: 500">Point-to-point integrations</div>
+                    <div style="font-size: 16px; color: var(--ink-soft); margin-top: 3px">
+                      N² connectors, brittle, ungoverned.
+                    </div>
+                  </div>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    gap: 18px;
+                    align-items: flex-start;
+                    padding: 14px 0;
+                    border-bottom: 1px solid var(--rule);
+                  "
+                >
+                  <span
+                    style="
+                      color: var(--clay);
+                      font-family: var(--mono);
+                      font-size: 15px;
+                      font-weight: 600;
+                      margin-top: 3px;
+                    "
+                    >✕</span
+                  >
+                  <div>
+                    <div style="font-weight: 500">Fragmented context</div>
+                    <div style="font-size: 16px; color: var(--ink-soft); margin-top: 3px">
+                      Every tool tells a different version of the same story.
+                    </div>
+                  </div>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    gap: 18px;
+                    align-items: flex-start;
+                    padding: 14px 0;
+                    border-bottom: 1px solid var(--rule);
+                  "
+                >
+                  <span
+                    style="
+                      color: var(--clay);
+                      font-family: var(--mono);
+                      font-size: 15px;
+                      font-weight: 600;
+                      margin-top: 3px;
+                    "
+                    >✕</span
+                  >
+                  <div>
+                    <div style="font-weight: 500">Repeated work</div>
+                    <div style="font-size: 16px; color: var(--ink-soft); margin-top: 3px">
+                      Same brief, written three times — by three teams.
+                    </div>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 18px; align-items: flex-start; padding: 14px 0">
+                  <span
+                    style="
+                      color: var(--clay);
+                      font-family: var(--mono);
+                      font-size: 15px;
+                      font-weight: 600;
+                      margin-top: 3px;
+                    "
+                    >✕</span
+                  >
+                  <div>
+                    <div style="font-weight: 500">Knowledge evaporates</div>
+                    <div style="font-size: 16px; color: var(--ink-soft); margin-top: 3px">
+                      Senior context leaves with senior people.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: var(--serif);
+                font-size: 60px;
+                color: var(--forest);
+                font-style: italic;
+              "
+            >
+              →
+            </div>
+            <div style="background: var(--forest); padding: 36px 40px">
+              <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 22px">
+                <span
+                  class="signal-pill"
+                  style="background: rgba(168, 209, 75, 0.2); color: var(--lime)"
+                  >OPPORTUNITY · After</span
+                ><span
+                  style="
+                    font-family: var(--mono);
+                    font-size: 13px;
+                    color: rgba(244, 239, 228, 0.6);
+                    letter-spacing: 0.14em;
+                    text-transform: uppercase;
+                  "
+                  >With Bridge</span
+                >
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 48px;
+                  color: #f4efe4;
+                  line-height: 1.05;
+                  letter-spacing: -0.02em;
+                  margin-bottom: 28px;
+                "
+              >
+                One continuity layer
+              </div>
+              <div
+                style="font-family: var(--sans); font-size: 19px; color: #f4efe4; line-height: 1.7"
+              >
+                <div
+                  style="
+                    display: flex;
+                    gap: 18px;
+                    align-items: flex-start;
+                    padding: 14px 0;
+                    border-bottom: 1px solid rgba(244, 239, 228, 0.18);
+                  "
+                >
+                  <span
+                    style="
+                      color: var(--lime);
+                      font-family: var(--mono);
+                      font-size: 15px;
+                      font-weight: 600;
+                      margin-top: 3px;
+                    "
+                    >✓</span
+                  >
+                  <div>
+                    <div style="font-weight: 500">One bridge, every system</div>
+                    <div style="font-size: 16px; color: rgba(244, 239, 228, 0.7); margin-top: 3px">
+                      100+ tools normalized through Atlas Spine.
+                    </div>
+                  </div>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    gap: 18px;
+                    align-items: flex-start;
+                    padding: 14px 0;
+                    border-bottom: 1px solid rgba(244, 239, 228, 0.18);
+                  "
+                >
+                  <span
+                    style="
+                      color: var(--lime);
+                      font-family: var(--mono);
+                      font-size: 15px;
+                      font-weight: 600;
+                      margin-top: 3px;
+                    "
+                    >✓</span
+                  >
+                  <div>
+                    <div style="font-weight: 500">Shared memory</div>
+                    <div style="font-size: 16px; color: rgba(244, 239, 228, 0.7); margin-top: 3px">
+                      Every AI sees what every other AI just learned.
+                    </div>
+                  </div>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    gap: 18px;
+                    align-items: flex-start;
+                    padding: 14px 0;
+                    border-bottom: 1px solid rgba(244, 239, 228, 0.18);
+                  "
+                >
+                  <span
+                    style="
+                      color: var(--lime);
+                      font-family: var(--mono);
+                      font-size: 15px;
+                      font-weight: 600;
+                      margin-top: 3px;
+                    "
+                    >✓</span
+                  >
+                  <div>
+                    <div style="font-weight: 500">Unified context</div>
+                    <div style="font-size: 16px; color: rgba(244, 239, 228, 0.7); margin-top: 3px">
+                      One Entity360. One operational truth.
+                    </div>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 18px; align-items: flex-start; padding: 14px 0">
+                  <span
+                    style="
+                      color: var(--lime);
+                      font-family: var(--mono);
+                      font-size: 15px;
+                      font-weight: 600;
+                      margin-top: 3px;
+                    "
+                    >✓</span
+                  >
+                  <div>
+                    <div style="font-weight: 500">Knowledge compounds</div>
+                    <div style="font-size: 16px; color: rgba(244, 239, 228, 0.7); margin-top: 3px">
+                      Org IQ grows every day, automatically.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">N² integrations → one normalized spine</div>
+          <div class="footer-right">07 / 18</div>
+        </div>
+      </div>
+
+      <!-- S08 CAPABILITIES -->
+      <div class="slide" data-slide="8">
+        <div class="slide-container paper-grain">
+          <div class="slide-label">08 — What Continuity Unlocks</div>
+          <div class="slide-number">IntegrateWise</div>
+          <div class="header-rule"></div>
+          <div
+            class="eyebrow"
+            style="position: absolute; left: var(--pad); top: 180px; z-index: 10"
+          >
+            Seven capabilities, one spine
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 228px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="serif-display" style="font-size: clamp(40px, 5vw, 88px); color: var(--ink)">
+              What you get when AI
+              <em style="font-style: italic; color: var(--forest)">remembers.</em>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 430px;
+              display: grid;
+              grid-template-columns: repeat(4, 1fr);
+              gap: 12px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="card top-border">
+              <div class="card-label">01 · Memory</div>
+              <div class="card-title">Persistent recall across every session.</div>
+              <div class="card-desc">
+                Episodic, semantic, and procedural — three memory types, one store.
+              </div>
+            </div>
+            <div class="card top-border">
+              <div class="card-label">02 · Knowledge</div>
+              <div class="card-title">Living docs, not buried drives.</div>
+              <div class="card-desc">
+                Decisions, rationale, and context — captured at the source of work.
+              </div>
+            </div>
+            <div class="card top-border">
+              <div class="card-label">03 · Entity360</div>
+              <div class="card-title">Every account, contact, deal — one view.</div>
+              <div class="card-desc">
+                Normalized across CRM, support, chat, email, product telemetry.
+              </div>
+            </div>
+            <div class="card top-border">
+              <div class="card-label">04 · Intelligence</div>
+              <div class="card-title">Signals, not search.</div>
+              <div class="card-desc">
+                Risk · Opportunity · Memory · Context — surfaced in flow, not asked for.
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 730px;
+              display: grid;
+              grid-template-columns: 1fr 1fr 1fr;
+              gap: 12px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="card top-border-lime">
+              <div class="card-label" style="color: var(--lime-deep)">05 · Governance</div>
+              <div class="card-title">Policy, lineage, audit — by design.</div>
+              <div class="card-desc">
+                Permission-aware retrieval. Every memory write is provenanced and reversible.
+              </div>
+            </div>
+            <div class="card top-border-lime">
+              <div class="card-label" style="color: var(--lime-deep)">06 · Agent Execution</div>
+              <div class="card-title">Multi-agent, shared state.</div>
+              <div class="card-desc">
+                Browser automation via cua-driver pattern. Snapshot → Act → Verify.
+                Governance-gated. Shared memory across agents.
+              </div>
+            </div>
+            <div class="card highlight">
+              <div class="card-label">07 · Workbench</div>
+              <div class="card-title">Where humans &amp; twins meet.</div>
+              <div class="card-desc">
+                My Desk · Decide · Build · Grow · Run — one surface, every department.
+              </div>
+            </div>
+          </div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">
+            Memory · Knowledge · Entity360 · Intelligence · Governance · Agents · Workbench
+          </div>
+          <div class="footer-right">08 / 18</div>
+        </div>
+      </div>
+
+      <!-- S09 TWIN EVOLUTION -->
+      <div class="slide" data-slide="9">
+        <div class="slide-container paper-grain">
+          <div class="slide-label">09 — The Digital Twin Evolution</div>
+          <div class="slide-number">IntegrateWise</div>
+          <div class="header-rule"></div>
+          <div
+            class="eyebrow"
+            style="position: absolute; left: var(--pad); top: 180px; z-index: 10"
+          >
+            The continuity ladder
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 228px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="serif-display" style="font-size: clamp(40px, 5vw, 88px); color: var(--ink)">
+              Continuity grows <em style="font-style: italic; color: var(--forest)">with you.</em>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 355px;
+              max-width: 1400px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--sans);
+                font-size: clamp(16px, 1.8vw, 22px);
+                color: var(--ink-soft);
+                line-height: 1.45;
+                font-weight: 300;
+              "
+            >
+              The Twin is the <strong>Cognitive Orchestrator</strong> — not a chat agent, not an AI
+              router.<br />It observes memory, objectives, governance, operations, and time — then
+              proposes. One twin per person. Then per team. Then per department. Then — the org
+              itself thinks.
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 460px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+              display: grid;
+              grid-template-columns: repeat(4, 1fr);
+              gap: 16px;
+            "
+          >
+            <div
+              style="
+                background: var(--paper-warm);
+                border: 2px solid var(--lime-deep);
+                border-radius: 12px;
+                padding: 28px 20px;
+                text-align: center;
+                z-index: 5;
+              "
+            >
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 11px;
+                  letter-spacing: 0.18em;
+                  color: var(--lime-deep);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                  margin-bottom: 10px;
+                "
+              >
+                Stage 1
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: clamp(22px, 2.5vw, 32px);
+                  color: var(--ink);
+                  margin-bottom: 8px;
+                "
+              >
+                Personal
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: clamp(18px, 2vw, 24px);
+                  color: var(--ink);
+                  margin-bottom: 10px;
+                  font-style: italic;
+                "
+              >
+                "My Twin"
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: clamp(13px, 1.2vw, 15px);
+                  color: var(--ink-soft);
+                  line-height: 1.45;
+                "
+              >
+                Your preferences, commitments, calendar, decisions — continuous across every AI you
+                use.
+              </div>
+            </div>
+            <div
+              style="
+                background: var(--paper-warm);
+                border: 2px solid var(--sage);
+                border-radius: 12px;
+                padding: 28px 20px;
+                text-align: center;
+                z-index: 5;
+              "
+            >
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 11px;
+                  letter-spacing: 0.18em;
+                  color: var(--sage);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                  margin-bottom: 10px;
+                "
+              >
+                Stage 2
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: clamp(22px, 2.5vw, 32px);
+                  color: var(--ink);
+                  margin-bottom: 8px;
+                "
+              >
+                Team
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: clamp(18px, 2vw, 24px);
+                  color: var(--ink);
+                  margin-bottom: 10px;
+                  font-style: italic;
+                "
+              >
+                "Our Twin"
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: clamp(13px, 1.2vw, 15px);
+                  color: var(--ink-soft);
+                  line-height: 1.45;
+                "
+              >
+                Shared playbooks, customer history, deal context — the team brain that doesn't
+                forget.
+              </div>
+            </div>
+            <div
+              style="
+                background: var(--paper-warm);
+                border: 2px solid var(--tan);
+                border-radius: 12px;
+                padding: 28px 20px;
+                text-align: center;
+                z-index: 5;
+              "
+            >
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 11px;
+                  letter-spacing: 0.18em;
+                  color: var(--tan);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                  margin-bottom: 10px;
+                "
+              >
+                Stage 3
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: clamp(22px, 2.5vw, 32px);
+                  color: var(--ink);
+                  margin-bottom: 8px;
+                "
+              >
+                Department
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: clamp(16px, 1.6vw, 20px);
+                  color: var(--ink);
+                  margin-bottom: 10px;
+                  font-style: italic;
+                "
+              >
+                "Sales / RevOps / Support Twin"
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: clamp(13px, 1.2vw, 15px);
+                  color: var(--ink-soft);
+                  line-height: 1.45;
+                "
+              >
+                Function-level memory, governance, and decision rights as a queryable digital twin.
+              </div>
+            </div>
+            <div
+              style="
+                background: var(--forest);
+                border-radius: 12px;
+                padding: 28px 20px;
+                text-align: center;
+                z-index: 5;
+              "
+            >
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 11px;
+                  letter-spacing: 0.18em;
+                  color: var(--lime);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                  margin-bottom: 10px;
+                "
+              >
+                Stage 4
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: clamp(22px, 2.5vw, 32px);
+                  color: #f4efe4;
+                  margin-bottom: 8px;
+                "
+              >
+                Org
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: clamp(16px, 1.6vw, 20px);
+                  color: #f4efe4;
+                  margin-bottom: 10px;
+                  font-style: italic;
+                "
+              >
+                "The Organizational Twin"
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: clamp(13px, 1.2vw, 15px);
+                  color: rgba(244, 239, 228, 0.75);
+                  line-height: 1.45;
+                "
+              >
+                The company itself — modeled, queryable, decision-aware. The endgame of continuity.
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              bottom: 100px;
+              width: calc(100% - var(--pad) * 2);
+              height: 3px;
+              background: linear-gradient(90deg, var(--lime-deep), var(--forest));
+              z-index: 2;
+            "
+          ></div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">Personal → Team → Department → Organization</div>
+          <div class="footer-right">09 / 18</div>
+        </div>
+      </div>
+
+      <!-- S10 PRODUCT ARCHITECTURE -->
+      <div class="slide" data-slide="10">
+        <div class="slide-container paper-grain">
+          <div class="slide-label">10 — Product Architecture</div>
+          <div class="slide-number">IntegrateWise</div>
+          <div class="header-rule"></div>
+          <div
+            class="eyebrow"
+            style="position: absolute; left: var(--pad); top: 180px; z-index: 10"
+          >
+            Six components, one system
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 228px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="serif-display" style="font-size: clamp(40px, 5vw, 88px); color: var(--ink)">
+              How the <em style="font-style: italic; color: var(--forest)">spine</em> is built.
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 420px;
+              display: grid;
+              grid-template-columns: repeat(3, 1fr);
+              gap: 12px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="card">
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  margin-bottom: 18px;
+                "
+              >
+                <span class="card-label" style="margin-bottom: 0">01 · Surface</span
+                ><span
+                  style="
+                    font-family: var(--mono);
+                    font-size: 11px;
+                    letter-spacing: 0.14em;
+                    color: var(--ink-mute);
+                    text-transform: uppercase;
+                  "
+                  >User</span
+                >
+              </div>
+              <div class="card-title" style="font-size: 38px">Continuity Bridge</div>
+              <div class="card-desc">
+                The thin client where AI, people, and systems meet. Chat, agent, embed, API — same
+                memory underneath.
+              </div>
+            </div>
+            <div class="card">
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  margin-bottom: 18px;
+                "
+              >
+                <span class="card-label" style="margin-bottom: 0">02 · Ingress</span
+                ><span
+                  style="
+                    font-family: var(--mono);
+                    font-size: 11px;
+                    letter-spacing: 0.14em;
+                    color: var(--ink-mute);
+                    text-transform: uppercase;
+                  "
+                  >Connect</span
+                >
+              </div>
+              <div class="card-title" style="font-size: 38px">Gateway</div>
+              <div class="card-desc">
+                100+ first-party connectors. Bidirectional sync. Permission-aware. Rate-limited.
+                Replayable.
+              </div>
+            </div>
+            <div class="card highlight">
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  margin-bottom: 18px;
+                "
+              >
+                <span class="card-label" style="margin-bottom: 0">03 · Core</span
+                ><span
+                  style="
+                    font-family: var(--mono);
+                    font-size: 11px;
+                    letter-spacing: 0.14em;
+                    color: rgba(244, 239, 228, 0.55);
+                    text-transform: uppercase;
+                  "
+                  >Normalize</span
+                >
+              </div>
+              <div class="card-title" style="font-size: 38px">Atlas Spine</div>
+              <div class="card-desc">
+                Event Sourcing + CQRS. The single source of truth — every fact, every change, every
+                actor, time-stamped.
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 710px;
+              display: grid;
+              grid-template-columns: repeat(3, 1fr);
+              gap: 12px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="card">
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  margin-bottom: 18px;
+                "
+              >
+                <span class="card-label" style="margin-bottom: 0">04 · Semantics</span
+                ><span
+                  style="
+                    font-family: var(--mono);
+                    font-size: 11px;
+                    letter-spacing: 0.14em;
+                    color: var(--ink-mute);
+                    text-transform: uppercase;
+                  "
+                  >Reason</span
+                >
+              </div>
+              <div class="card-title" style="font-size: 38px">Knowledge Layer</div>
+              <div class="card-desc">
+                Entity graph, vector + BM25 + entity-linking retrieval, ontology, lineage —
+                queryable by any agent.
+              </div>
+            </div>
+            <div class="card">
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  margin-bottom: 18px;
+                "
+              >
+                <span class="card-label" style="margin-bottom: 0">05 · Runtime</span
+                ><span
+                  style="
+                    font-family: var(--mono);
+                    font-size: 11px;
+                    letter-spacing: 0.14em;
+                    color: var(--ink-mute);
+                    text-transform: uppercase;
+                  "
+                  >Execute</span
+                >
+              </div>
+              <div class="card-title" style="font-size: 38px">Twin Runtime</div>
+              <div class="card-desc">
+                Multi-agent orchestration. BYOM. Tool-use, planning, handoff — with shared, scoped
+                memory.
+              </div>
+            </div>
+            <div class="card">
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  margin-bottom: 18px;
+                "
+              >
+                <span class="card-label" style="margin-bottom: 0">06 · Render</span
+                ><span
+                  style="
+                    font-family: var(--mono);
+                    font-size: 11px;
+                    letter-spacing: 0.14em;
+                    color: var(--ink-mute);
+                    text-transform: uppercase;
+                  "
+                  >Deliver</span
+                >
+              </div>
+              <div class="card-title" style="font-size: 38px">Workbench</div>
+              <div class="card-desc">
+                My Desk · Decide · Build · Grow · Run — function-aware lenses on the same shared
+                spine.
+              </div>
+            </div>
+          </div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">
+            Bridge · Gateway · Spine · Knowledge · Twin Runtime · Workbench
+          </div>
+          <div class="footer-right">10 / 18</div>
+        </div>
+      </div>
+
+      <!-- S11 PLATFORM L1-L7 -->
+      <div class="slide" data-slide="11">
+        <div class="slide-container paper-grain">
+          <div class="slide-label">11 — Platform Architecture · L1–L7</div>
+          <div class="slide-number">IntegrateWise</div>
+          <div class="header-rule"></div>
+          <div
+            class="eyebrow"
+            style="position: absolute; left: var(--pad); top: 180px; z-index: 10"
+          >
+            The seven-layer stack
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 228px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              class="serif-display"
+              style="font-size: clamp(36px, 4.5vw, 78px); color: var(--ink)"
+            >
+              <em style="font-style: italic; color: var(--forest)">Surface</em> at L1.
+              <em style="font-style: italic; color: var(--forest)">Execute</em> at L7.
+            </div>
+          </div>
+          <div
+            style="position: absolute; left: var(--pad); top: 380px; max-width: 900px; z-index: 10"
+          >
+            <div style="display: grid; grid-template-columns: 90px 220px 1fr; gap: 0">
+              <div
+                style="
+                  background: var(--lime);
+                  padding: 18px 16px;
+                  border: 1px solid var(--ink);
+                  font-family: var(--mono);
+                  font-size: 16px;
+                  font-weight: 700;
+                  color: var(--ink);
+                  letter-spacing: 0.1em;
+                "
+              >
+                L1
+              </div>
+              <div
+                style="
+                  background: var(--paper-warm);
+                  padding: 18px 16px;
+                  border: 1px solid var(--ink);
+                  border-left: none;
+                  font-family: var(--serif);
+                  font-size: 24px;
+                  color: var(--ink);
+                  letter-spacing: -0.01em;
+                "
+              >
+                User Workbench
+              </div>
+              <div
+                style="
+                  background: var(--paper-warm);
+                  padding: 18px 20px;
+                  border: 1px solid var(--ink);
+                  border-left: none;
+                  font-family: var(--sans);
+                  font-size: 15px;
+                  color: var(--ink-soft);
+                  line-height: 1.45;
+                "
+              >
+                My Desk · Decide · Build · Grow · Run — the surface humans touch.
+              </div>
+              <div
+                style="
+                  background: var(--lime-deep);
+                  padding: 18px 16px;
+                  border: 1px solid var(--ink);
+                  border-top: none;
+                  font-family: var(--mono);
+                  font-size: 16px;
+                  font-weight: 700;
+                  color: #f4efe4;
+                  letter-spacing: 0.1em;
+                "
+              >
+                L2
+              </div>
+              <div
+                style="
+                  background: var(--paper-warm);
+                  padding: 18px 16px;
+                  border: 1px solid var(--ink);
+                  border-top: none;
+                  border-left: none;
+                  font-family: var(--serif);
+                  font-size: 24px;
+                  color: var(--ink);
+                  letter-spacing: -0.01em;
+                "
+              >
+                Twin Intelligence
+              </div>
+              <div
+                style="
+                  background: var(--paper-warm);
+                  padding: 18px 20px;
+                  border: 1px solid var(--ink);
+                  border-top: none;
+                  border-left: none;
+                  font-family: var(--sans);
+                  font-size: 15px;
+                  color: var(--ink-soft);
+                  line-height: 1.45;
+                "
+              >
+                Reasoning, planning, BYOM agents — Research Navigator, Sales Assistant, Workflow
+                Automator.
+              </div>
+              <div
+                style="
+                  background: var(--forest-soft);
+                  padding: 18px 16px;
+                  border: 1px solid var(--ink);
+                  border-top: none;
+                  font-family: var(--mono);
+                  font-size: 16px;
+                  font-weight: 700;
+                  color: #f4efe4;
+                  letter-spacing: 0.1em;
+                "
+              >
+                L3
+              </div>
+              <div
+                style="
+                  background: var(--paper-warm);
+                  padding: 18px 16px;
+                  border: 1px solid var(--ink);
+                  border-top: none;
+                  border-left: none;
+                  font-family: var(--serif);
+                  font-size: 24px;
+                  color: var(--ink);
+                  letter-spacing: -0.01em;
+                "
+              >
+                Governance
+              </div>
+              <div
+                style="
+                  background: var(--paper-warm);
+                  padding: 18px 20px;
+                  border: 1px solid var(--ink);
+                  border-top: none;
+                  border-left: none;
+                  font-family: var(--sans);
+                  font-size: 15px;
+                  color: var(--ink-soft);
+                  line-height: 1.45;
+                "
+              >
+                Policy, lineage, audit, RBAC, consent — by design, not by configuration.
+              </div>
+              <div
+                style="
+                  background: var(--forest-mid);
+                  padding: 18px 16px;
+                  border: 1px solid var(--ink);
+                  border-top: none;
+                  font-family: var(--mono);
+                  font-size: 16px;
+                  font-weight: 700;
+                  color: #f4efe4;
+                  letter-spacing: 0.1em;
+                "
+              >
+                L4
+              </div>
+              <div
+                style="
+                  background: var(--paper-warm);
+                  padding: 18px 16px;
+                  border: 1px solid var(--ink);
+                  border-top: none;
+                  border-left: none;
+                  font-family: var(--serif);
+                  font-size: 24px;
+                  color: var(--ink);
+                  letter-spacing: -0.01em;
+                "
+              >
+                Knowledge &amp; Assets
+              </div>
+              <div
+                style="
+                  background: var(--paper-warm);
+                  padding: 18px 20px;
+                  border: 1px solid var(--ink);
+                  border-top: none;
+                  border-left: none;
+                  font-family: var(--sans);
+                  font-size: 15px;
+                  color: var(--ink-soft);
+                  line-height: 1.45;
+                "
+              >
+                Entity graph, semantic store, retrieval — the queryable shape of organizational
+                memory.
+              </div>
+              <div
+                style="
+                  background: var(--forest);
+                  padding: 18px 16px;
+                  border: 1px solid var(--ink);
+                  border-top: none;
+                  font-family: var(--mono);
+                  font-size: 16px;
+                  font-weight: 700;
+                  color: #f4efe4;
+                  letter-spacing: 0.1em;
+                "
+              >
+                L5
+              </div>
+              <div
+                style="
+                  background: var(--paper-warm);
+                  padding: 18px 16px;
+                  border: 1px solid var(--ink);
+                  border-top: none;
+                  border-left: none;
+                  font-family: var(--serif);
+                  font-size: 24px;
+                  color: var(--ink);
+                  letter-spacing: -0.01em;
+                "
+              >
+                Playbooks
+              </div>
+              <div
+                style="
+                  background: var(--paper-warm);
+                  padding: 18px 20px;
+                  border: 1px solid var(--ink);
+                  border-top: none;
+                  border-left: none;
+                  font-family: var(--sans);
+                  font-size: 15px;
+                  color: var(--ink-soft);
+                  line-height: 1.45;
+                "
+              >
+                BYOT templates — procedural memory, workflow patterns, decision rights, escalation
+                paths.
+              </div>
+              <div
+                style="
+                  background: var(--forest-deep);
+                  padding: 18px 16px;
+                  border: 1px solid var(--ink);
+                  border-top: none;
+                  font-family: var(--mono);
+                  font-size: 16px;
+                  font-weight: 700;
+                  color: #f4efe4;
+                  letter-spacing: 0.1em;
+                "
+              >
+                L6
+              </div>
+              <div
+                style="
+                  background: var(--paper-warm);
+                  padding: 18px 16px;
+                  border: 1px solid var(--ink);
+                  border-top: none;
+                  border-left: none;
+                  font-family: var(--serif);
+                  font-size: 24px;
+                  color: var(--ink);
+                  letter-spacing: -0.01em;
+                "
+              >
+                Operations
+              </div>
+              <div
+                style="
+                  background: var(--paper-warm);
+                  padding: 18px 20px;
+                  border: 1px solid var(--ink);
+                  border-top: none;
+                  border-left: none;
+                  font-family: var(--sans);
+                  font-size: 15px;
+                  color: var(--ink-soft);
+                  line-height: 1.45;
+                "
+              >
+                Event sourcing, CQRS, queues, schedulers — the operational nervous system.
+              </div>
+              <div
+                style="
+                  background: #0a1810;
+                  padding: 18px 16px;
+                  border: 1px solid var(--ink);
+                  border-top: none;
+                  font-family: var(--mono);
+                  font-size: 16px;
+                  font-weight: 700;
+                  color: var(--lime);
+                  letter-spacing: 0.1em;
+                "
+              >
+                L7
+              </div>
+              <div
+                style="
+                  background: var(--paper-warm);
+                  padding: 18px 16px;
+                  border: 1px solid var(--ink);
+                  border-top: none;
+                  border-left: none;
+                  font-family: var(--serif);
+                  font-size: 24px;
+                  color: var(--ink);
+                  letter-spacing: -0.01em;
+                "
+              >
+                Execution
+              </div>
+              <div
+                style="
+                  background: var(--paper-warm);
+                  padding: 18px 20px;
+                  border: 1px solid var(--ink);
+                  border-top: none;
+                  border-left: none;
+                  font-family: var(--sans);
+                  font-size: 15px;
+                  color: var(--ink-soft);
+                  line-height: 1.45;
+                "
+              >
+                Gateway · 100+ connectors · Browser Agent (Playwright, cua-driver) · external
+                systems — where the world actually changes.
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              right: var(--pad);
+              top: 380px;
+              max-width: 676px;
+              height: 600px;
+              background: var(--forest);
+              z-index: 5;
+              padding: 40px;
+            "
+          >
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 13px;
+                letter-spacing: 0.16em;
+                color: var(--lime);
+                text-transform: uppercase;
+                font-weight: 600;
+                margin-bottom: 24px;
+              "
+            >
+              ↳ Design principles
+            </div>
+            <div
+              style="
+                font-family: var(--serif);
+                font-size: 44px;
+                color: #f4efe4;
+                line-height: 1.1;
+                letter-spacing: -0.02em;
+                margin-bottom: 30px;
+              "
+            >
+              Each layer is a <em style="font-style: italic; color: var(--lime)">lens</em>, not a
+              silo.
+            </div>
+            <div style="border-top: 1px solid rgba(244, 239, 228, 0.18); padding: 18px 0">
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 22px;
+                  color: #f4efe4;
+                  margin-bottom: 6px;
+                  font-style: italic;
+                "
+              >
+                Event-sourced
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 15px;
+                  color: rgba(244, 239, 228, 0.7);
+                  line-height: 1.45;
+                "
+              >
+                Every fact is captured once and replayable forever.
+              </div>
+            </div>
+            <div style="border-top: 1px solid rgba(244, 239, 228, 0.18); padding: 18px 0">
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 22px;
+                  color: #f4efe4;
+                  margin-bottom: 6px;
+                  font-style: italic;
+                "
+              >
+                CQRS-separated
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 15px;
+                  color: rgba(244, 239, 228, 0.7);
+                  line-height: 1.45;
+                "
+              >
+                Reads scale independently from writes. No lock contention.
+              </div>
+            </div>
+            <div style="border-top: 1px solid rgba(244, 239, 228, 0.18); padding: 18px 0">
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 22px;
+                  color: #f4efe4;
+                  margin-bottom: 6px;
+                  font-style: italic;
+                "
+              >
+                BYOM · BYOT
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 15px;
+                  color: rgba(244, 239, 228, 0.7);
+                  line-height: 1.45;
+                "
+              >
+                Bring your own model. Bring your own template. Data sovereignty preserved.
+              </div>
+            </div>
+            <div style="border-top: 1px solid rgba(244, 239, 228, 0.18); padding: 18px 0">
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 22px;
+                  color: #f4efe4;
+                  margin-bottom: 6px;
+                  font-style: italic;
+                "
+              >
+                Governable by default
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 15px;
+                  color: rgba(244, 239, 228, 0.7);
+                  line-height: 1.45;
+                "
+              >
+                Policy, lineage, audit at L3 — not bolted on later.
+              </div>
+            </div>
+          </div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">L1 Workbench → L7 Execution · Continuity at every layer</div>
+          <div class="footer-right">11 / 18</div>
+        </div>
+      </div>
+
+      <!-- S12 MARKET OPPORTUNITY -->
+      <div class="slide" data-slide="12">
+        <div class="slide-container paper-grain">
+          <div class="slide-label">12 — Market Opportunity</div>
+          <div class="slide-number">IntegrateWise</div>
+          <div class="header-rule"></div>
+          <div
+            class="eyebrow"
+            style="position: absolute; left: var(--pad); top: 180px; z-index: 10"
+          >
+            Why now
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 228px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="serif-display" style="font-size: clamp(40px, 5vw, 88px); color: var(--ink)">
+              The agent wave needs
+              <em style="font-style: italic; color: var(--forest)">infrastructure.</em>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 400px;
+              max-width: 740px;
+              width: calc(100% - var(--pad) * 2);
+              height: 570px;
+              background: var(--forest);
+              z-index: 5;
+              padding: 40px;
+            "
+          >
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 13px;
+                letter-spacing: 0.16em;
+                color: var(--lime);
+                text-transform: uppercase;
+                font-weight: 600;
+              "
+            >
+              ↳ AI Agents Market
+            </div>
+            <div
+              style="
+                font-family: var(--serif);
+                font-size: clamp(80px, 12vw, 200px);
+                color: #f4efe4;
+                line-height: 0.92;
+                letter-spacing: -0.04em;
+                margin-top: 30px;
+              "
+            >
+              $52.6B
+            </div>
+            <div
+              style="
+                font-family: var(--serif);
+                font-size: 28px;
+                color: rgba(244, 239, 228, 0.85);
+                font-style: italic;
+                margin-top: 18px;
+                line-height: 1.3;
+              "
+            >
+              by 2030 — from $7.84B in 2025
+            </div>
+            <div
+              style="
+                display: inline-block;
+                background: rgba(168, 209, 75, 0.18);
+                border: 1px solid rgba(168, 209, 75, 0.4);
+                padding: 8px 14px;
+                margin-top: 28px;
+              "
+            >
+              <span
+                style="
+                  font-family: var(--mono);
+                  font-size: 15px;
+                  color: var(--lime);
+                  letter-spacing: 0.14em;
+                  font-weight: 600;
+                "
+                >46.3% CAGR · 6.7×</span
+              >
+            </div>
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 13px;
+                letter-spacing: 0.14em;
+                color: rgba(244, 239, 228, 0.55);
+                text-transform: uppercase;
+                margin-top: 50px;
+              "
+            >
+              Source · MarketsandMarkets · Grand View Research
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              right: var(--pad);
+              top: 400px;
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 12px;
+              max-width: 876px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="card top-border-clay">
+              <div class="card-label" style="color: var(--clay)">AI Adoption</div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 90px;
+                  color: var(--ink);
+                  line-height: 0.95;
+                  letter-spacing: -0.03em;
+                  margin-top: 18px;
+                "
+              >
+                88%
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 22px;
+                  color: var(--ink);
+                  margin-top: 14px;
+                  line-height: 1.25;
+                "
+              >
+                of organizations now use AI in at least one function
+              </div>
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 11px;
+                  letter-spacing: 0.14em;
+                  color: var(--ink-mute);
+                  text-transform: uppercase;
+                  margin-top: 14px;
+                "
+              >
+                McKinsey · State of AI 2025
+              </div>
+            </div>
+            <div class="card top-border-clay">
+              <div class="card-label" style="color: var(--clay)">Agent Embed Rate</div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 90px;
+                  color: var(--ink);
+                  line-height: 0.95;
+                  letter-spacing: -0.03em;
+                  margin-top: 18px;
+                "
+              >
+                40%
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 22px;
+                  color: var(--ink);
+                  margin-top: 14px;
+                  line-height: 1.25;
+                "
+              >
+                of enterprise apps will embed task-specific agents by 2026 (up from &lt;5%)
+              </div>
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 11px;
+                  letter-spacing: 0.14em;
+                  color: var(--ink-mute);
+                  text-transform: uppercase;
+                  margin-top: 14px;
+                "
+              >
+                Gartner
+              </div>
+            </div>
+            <div class="card top-border-sage">
+              <div class="card-label" style="color: var(--sage)">Fragmentation Tax</div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 90px;
+                  color: var(--ink);
+                  line-height: 0.95;
+                  letter-spacing: -0.03em;
+                  margin-top: 18px;
+                "
+              >
+                2.5wks
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 22px;
+                  color: var(--ink);
+                  margin-top: 14px;
+                  line-height: 1.25;
+                "
+              >
+                lost per worker per year to tool-switching fatigue
+              </div>
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 11px;
+                  letter-spacing: 0.14em;
+                  color: var(--ink-mute);
+                  text-transform: uppercase;
+                  margin-top: 14px;
+                "
+              >
+                Lokalise · HCAmag
+              </div>
+            </div>
+            <div class="card top-border-sage">
+              <div class="card-label" style="color: var(--sage)">High Performers</div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 90px;
+                  color: var(--ink);
+                  line-height: 0.95;
+                  letter-spacing: -0.03em;
+                  margin-top: 18px;
+                "
+              >
+                6%
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 22px;
+                  color: var(--ink);
+                  margin-top: 14px;
+                  line-height: 1.25;
+                "
+              >
+                of orgs see &gt;5% of EBIT from AI — the rest lack the continuity layer
+              </div>
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 11px;
+                  letter-spacing: 0.14em;
+                  color: var(--ink-mute);
+                  text-transform: uppercase;
+                  margin-top: 14px;
+                "
+              >
+                McKinsey · State of AI 2025
+              </div>
+            </div>
+          </div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">Adoption is solved · continuity is the bottleneck</div>
+          <div class="footer-right">12 / 18</div>
+        </div>
+      </div>
+
+      <!-- S13 COMPETITIVE LANDSCAPE -->
+      <div class="slide" data-slide="13">
+        <div class="slide-container paper-grain">
+          <div class="slide-label">13 — Competitive Landscape</div>
+          <div class="slide-number">IntegrateWise</div>
+          <div class="header-rule"></div>
+          <div
+            class="eyebrow"
+            style="position: absolute; left: var(--pad); top: 180px; z-index: 10"
+          >
+            Five categories. One missing layer.
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 228px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="serif-display" style="font-size: clamp(40px, 5vw, 88px); color: var(--ink)">
+              Everyone solves <em style="font-style: italic">a piece.</em> We solve
+              <em style="font-style: italic; color: var(--forest)">continuity.</em>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 430px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 280px 460px 1fr 240px;
+                gap: 0;
+                border-top: 2px solid var(--ink);
+              "
+            >
+              <div
+                style="
+                  padding: 20px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--mono);
+                  font-size: 13px;
+                  letter-spacing: 0.14em;
+                  color: var(--ink-mute);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                "
+              >
+                Category
+              </div>
+              <div
+                style="
+                  padding: 20px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--mono);
+                  font-size: 13px;
+                  letter-spacing: 0.14em;
+                  color: var(--ink-mute);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                "
+              >
+                Representative players
+              </div>
+              <div
+                style="
+                  padding: 20px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--mono);
+                  font-size: 13px;
+                  letter-spacing: 0.14em;
+                  color: var(--ink-mute);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                "
+              >
+                What they solve
+              </div>
+              <div
+                style="
+                  padding: 20px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--mono);
+                  font-size: 13px;
+                  letter-spacing: 0.14em;
+                  color: var(--ink-mute);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                  text-align: right;
+                "
+              >
+                Continuity?
+              </div>
+              <div
+                style="
+                  padding: 24px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--serif);
+                  font-size: 28px;
+                  color: var(--ink);
+                  letter-spacing: -0.01em;
+                "
+              >
+                APIs
+              </div>
+              <div
+                style="
+                  padding: 24px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--sans);
+                  font-size: 20px;
+                  color: var(--ink);
+                  font-weight: 500;
+                "
+              >
+                MuleSoft · Workato · Zapier
+              </div>
+              <div
+                style="
+                  padding: 24px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--sans);
+                  font-size: 17px;
+                  color: var(--ink-soft);
+                  line-height: 1.4;
+                "
+              >
+                Move data point-to-point. No semantic layer, no memory.
+              </div>
+              <div
+                style="
+                  padding: 24px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--mono);
+                  font-size: 14px;
+                  color: var(--clay);
+                  text-align: right;
+                  font-weight: 600;
+                  letter-spacing: 0.1em;
+                "
+              >
+                ✕ NO
+              </div>
+              <div
+                style="
+                  padding: 24px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--serif);
+                  font-size: 28px;
+                  color: var(--ink);
+                  letter-spacing: -0.01em;
+                "
+              >
+                Data Integration
+              </div>
+              <div
+                style="
+                  padding: 24px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--sans);
+                  font-size: 20px;
+                  color: var(--ink);
+                  font-weight: 500;
+                "
+              >
+                Fivetran · Airbyte · Stitch
+              </div>
+              <div
+                style="
+                  padding: 24px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--sans);
+                  font-size: 17px;
+                  color: var(--ink-soft);
+                  line-height: 1.4;
+                "
+              >
+                ELT into a warehouse. Static rows, no live context.
+              </div>
+              <div
+                style="
+                  padding: 24px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--mono);
+                  font-size: 14px;
+                  color: var(--clay);
+                  text-align: right;
+                  font-weight: 600;
+                  letter-spacing: 0.1em;
+                "
+              >
+                ✕ NO
+              </div>
+              <div
+                style="
+                  padding: 24px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--serif);
+                  font-size: 28px;
+                  color: var(--ink);
+                  letter-spacing: -0.01em;
+                "
+              >
+                AI Platforms
+              </div>
+              <div
+                style="
+                  padding: 24px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--sans);
+                  font-size: 20px;
+                  color: var(--ink);
+                  font-weight: 500;
+                "
+              >
+                OpenAI · Anthropic · Google
+              </div>
+              <div
+                style="
+                  padding: 24px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--sans);
+                  font-size: 17px;
+                  color: var(--ink-soft);
+                  line-height: 1.4;
+                "
+              >
+                Build the models. Each model has its own session memory.
+              </div>
+              <div
+                style="
+                  padding: 24px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--mono);
+                  font-size: 14px;
+                  color: var(--clay);
+                  text-align: right;
+                  font-weight: 600;
+                  letter-spacing: 0.1em;
+                "
+              >
+                ✕ ISOLATED
+              </div>
+              <div
+                style="
+                  padding: 24px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--serif);
+                  font-size: 28px;
+                  color: var(--ink);
+                  letter-spacing: -0.01em;
+                "
+              >
+                Agent Frameworks
+              </div>
+              <div
+                style="
+                  padding: 24px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--sans);
+                  font-size: 20px;
+                  color: var(--ink);
+                  font-weight: 500;
+                "
+              >
+                CrewAI · LangGraph · Letta
+              </div>
+              <div
+                style="
+                  padding: 24px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--sans);
+                  font-size: 17px;
+                  color: var(--ink-soft);
+                  line-height: 1.4;
+                "
+              >
+                Build single-agent or multi-agent systems. Memory scoped to one app.
+              </div>
+              <div
+                style="
+                  padding: 24px 0;
+                  border-bottom: 1px solid var(--rule);
+                  font-family: var(--mono);
+                  font-size: 14px;
+                  color: var(--clay);
+                  text-align: right;
+                  font-weight: 600;
+                  letter-spacing: 0.1em;
+                "
+              >
+                ✕ APP-SCOPED
+              </div>
+              <div
+                style="
+                  padding: 28px 24px;
+                  background: var(--forest);
+                  font-family: var(--serif);
+                  font-size: 30px;
+                  color: #f4efe4;
+                  letter-spacing: -0.01em;
+                  font-style: italic;
+                "
+              >
+                Continuity Layer
+              </div>
+              <div
+                style="
+                  padding: 28px 24px;
+                  background: var(--forest);
+                  font-family: var(--sans);
+                  font-size: 22px;
+                  color: #f4efe4;
+                  font-weight: 600;
+                "
+              >
+                IntegrateWise
+              </div>
+              <div
+                style="
+                  padding: 28px 24px;
+                  background: var(--forest);
+                  font-family: var(--sans);
+                  font-size: 17px;
+                  color: rgba(244, 239, 228, 0.85);
+                  line-height: 1.4;
+                "
+              >
+                Normalize every system, persist shared memory, deliver continuity to every AI and
+                human.
+              </div>
+              <div
+                style="
+                  padding: 28px 24px;
+                  background: var(--forest);
+                  font-family: var(--mono);
+                  font-size: 14px;
+                  color: var(--lime);
+                  text-align: right;
+                  font-weight: 700;
+                  letter-spacing: 0.1em;
+                "
+              >
+                ✓ THE CATEGORY
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              bottom: 100px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+              text-align: center;
+            "
+          >
+            <div
+              style="
+                font-family: var(--serif);
+                font-size: 30px;
+                color: var(--ink-soft);
+                line-height: 1.3;
+                font-style: italic;
+              "
+            >
+              "All 8 leading agent-memory frameworks lack enterprise governance: no glossary,
+              lineage, or entity resolution."
+              <span
+                style="
+                  font-family: var(--mono);
+                  font-size: 14px;
+                  color: var(--ink-mute);
+                  font-style: normal;
+                  letter-spacing: 0.14em;
+                "
+                >— Atlan, 2026</span
+              >
+            </div>
+          </div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">Source · Atlan 2026 · Best AI Agent Memory Frameworks</div>
+          <div class="footer-right">13 / 18</div>
+        </div>
+      </div>
+
+      <!-- S14 BUSINESS MODEL -->
+      <div class="slide" data-slide="14">
+        <div class="slide-container paper-grain">
+          <div class="slide-label">14 — Business Model</div>
+          <div class="slide-number">IntegrateWise</div>
+          <div class="header-rule"></div>
+          <div
+            class="eyebrow"
+            style="position: absolute; left: var(--pad); top: 180px; z-index: 10"
+          >
+            Four tiers, one ladder
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 228px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="serif-display" style="font-size: clamp(40px, 5vw, 88px); color: var(--ink)">
+              Land with memory. Expand to
+              <em style="font-style: italic; color: var(--forest)">the org.</em>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 420px;
+              display: grid;
+              grid-template-columns: repeat(4, 1fr);
+              gap: 12px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                background: var(--paper-warm);
+                border: 1px solid var(--rule);
+                padding: 30px;
+                z-index: 5;
+                position: relative;
+              "
+            >
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 13px;
+                  letter-spacing: 0.18em;
+                  color: var(--ink-mute);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                "
+              >
+                Tier 01
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 48px;
+                  color: var(--ink);
+                  margin-top: 14px;
+                  letter-spacing: -0.02em;
+                "
+              >
+                Free
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 16px;
+                  color: var(--ink-soft);
+                  margin-top: 6px;
+                "
+              >
+                For individual builders
+              </div>
+              <div style="height: 1px; background: var(--rule); margin: 24px 0"></div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 16px;
+                  color: var(--ink);
+                  line-height: 1.8;
+                "
+              >
+                <div>· Personal Twin</div>
+                <div>· 3 AI connections</div>
+                <div>· 5 system connectors</div>
+                <div>· Community support</div>
+                <div>· OpenMemory MCP</div>
+              </div>
+              <div style="height: 1px; background: var(--rule); margin: 24px 0"></div>
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 12px;
+                  letter-spacing: 0.14em;
+                  color: var(--ink-mute);
+                  text-transform: uppercase;
+                "
+              >
+                Wedge · Adoption
+              </div>
+            </div>
+            <div
+              style="
+                background: var(--paper-warm);
+                border: 1px solid var(--rule);
+                padding: 30px;
+                z-index: 5;
+                position: relative;
+              "
+            >
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 13px;
+                  letter-spacing: 0.18em;
+                  color: var(--ink-mute);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                "
+              >
+                Tier 02
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 48px;
+                  color: var(--ink);
+                  margin-top: 14px;
+                  letter-spacing: -0.02em;
+                "
+              >
+                Starter
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 16px;
+                  color: var(--ink-soft);
+                  margin-top: 6px;
+                "
+              >
+                For small teams
+              </div>
+              <div style="height: 1px; background: var(--rule); margin: 24px 0"></div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 16px;
+                  color: var(--ink);
+                  line-height: 1.8;
+                "
+              >
+                <div>· Team Twin (up to 25)</div>
+                <div>· 20 system connectors</div>
+                <div>· Shared playbooks</div>
+                <div>· Email + Slack support</div>
+                <div>· Workbench · My Desk</div>
+              </div>
+              <div style="height: 1px; background: var(--rule); margin: 24px 0"></div>
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 12px;
+                  letter-spacing: 0.14em;
+                  color: var(--ink-mute);
+                  text-transform: uppercase;
+                "
+              >
+                Seat · per user / mo
+              </div>
+            </div>
+            <div
+              style="
+                background: var(--paper-warm);
+                border: 2px solid var(--lime-deep);
+                padding: 30px;
+                z-index: 5;
+                position: relative;
+              "
+            >
+              <div style="display: flex; align-items: center; gap: 10px">
+                <span
+                  style="
+                    font-family: var(--mono);
+                    font-size: 13px;
+                    letter-spacing: 0.18em;
+                    color: var(--lime-deep);
+                    text-transform: uppercase;
+                    font-weight: 600;
+                  "
+                  >Tier 03</span
+                ><span
+                  style="
+                    font-family: var(--mono);
+                    font-size: 11px;
+                    color: var(--lime-deep);
+                    background: rgba(168, 209, 75, 0.18);
+                    padding: 3px 8px;
+                    letter-spacing: 0.14em;
+                    font-weight: 600;
+                  "
+                  >POPULAR</span
+                >
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 48px;
+                  color: var(--ink);
+                  margin-top: 14px;
+                  letter-spacing: -0.02em;
+                "
+              >
+                Pro
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 16px;
+                  color: var(--ink-soft);
+                  margin-top: 6px;
+                "
+              >
+                For departments
+              </div>
+              <div style="height: 1px; background: var(--rule); margin: 24px 0"></div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 16px;
+                  color: var(--ink);
+                  line-height: 1.8;
+                "
+              >
+                <div>· Department Twin</div>
+                <div>· Unlimited connectors</div>
+                <div>· Agent collaboration</div>
+                <div>· Governance &amp; lineage</div>
+                <div>· SSO · SOC 2</div>
+                <div>· Priority support</div>
+              </div>
+              <div style="height: 1px; background: var(--rule); margin: 24px 0"></div>
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 12px;
+                  letter-spacing: 0.14em;
+                  color: var(--ink-mute);
+                  text-transform: uppercase;
+                "
+              >
+                Hub · per dept / mo
+              </div>
+            </div>
+            <div
+              style="
+                background: var(--forest);
+                border: none;
+                padding: 30px;
+                z-index: 5;
+                position: relative;
+              "
+            >
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 13px;
+                  letter-spacing: 0.18em;
+                  color: var(--lime);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                "
+              >
+                Tier 04
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 48px;
+                  color: #f4efe4;
+                  margin-top: 14px;
+                  letter-spacing: -0.02em;
+                "
+              >
+                Enterprise
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 16px;
+                  color: rgba(244, 239, 228, 0.7);
+                  margin-top: 6px;
+                "
+              >
+                For organizations
+              </div>
+              <div style="height: 1px; background: rgba(244, 239, 228, 0.2); margin: 24px 0"></div>
+              <div
+                style="font-family: var(--sans); font-size: 16px; color: #f4efe4; line-height: 1.8"
+              >
+                <div>· Organizational Twin</div>
+                <div>· Private deployment / VPC</div>
+                <div>· BYOM · BYOT · data residency</div>
+                <div>· Full L1–L7 platform</div>
+                <div>· Dedicated success + SLAs</div>
+                <div>· FedRAMP · HIPAA paths</div>
+              </div>
+              <div style="height: 1px; background: rgba(244, 239, 228, 0.2); margin: 24px 0"></div>
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 12px;
+                  letter-spacing: 0.14em;
+                  color: var(--lime);
+                  text-transform: uppercase;
+                "
+              >
+                Custom · org-wide
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              bottom: 68px;
+              width: calc(100% - var(--pad) * 2);
+              height: 54px;
+              background: var(--paper-warm);
+              border-top: 1px solid var(--rule);
+              border-bottom: 1px solid var(--rule);
+              z-index: 5;
+              display: flex;
+              align-items: center;
+              padding: 0 28px;
+              gap: 24px;
+              font-family: var(--mono);
+              font-size: 13px;
+              letter-spacing: 0.14em;
+              text-transform: uppercase;
+              color: var(--ink-soft);
+            "
+          >
+            <span style="color: var(--forest); font-weight: 700">REVENUE DRIVERS →</span>
+            <span>AI systems connected</span><span style="color: var(--rule)">·</span
+            ><span>Memory volume retained</span><span style="color: var(--rule)">·</span
+            ><span>Governance seats</span><span style="color: var(--rule)">·</span
+            ><span>Enterprise deployments</span>
+          </div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">Free → Starter → Pro → Enterprise · Twin grows with the org</div>
+          <div class="footer-right">14 / 18</div>
+        </div>
+      </div>
+
+      <!-- S15 GO-TO-MARKET -->
+      <div class="slide" data-slide="15">
+        <div class="slide-container paper-grain">
+          <div class="slide-label">15 — Go-To-Market</div>
+          <div class="slide-number">IntegrateWise</div>
+          <div class="header-rule"></div>
+          <div
+            class="eyebrow"
+            style="position: absolute; left: var(--pad); top: 180px; z-index: 10"
+          >
+            Land · Expand · Anchor
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 228px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="serif-display" style="font-size: clamp(40px, 5vw, 88px); color: var(--ink)">
+              Start with a <em style="font-style: italic; color: var(--clay)">wedge.</em> End with
+              the <em style="font-style: italic; color: var(--forest)">platform.</em>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 430px;
+              display: grid;
+              grid-template-columns: repeat(4, 1fr);
+              gap: 12px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                background: var(--paper-warm);
+                border-top: 4px solid var(--clay);
+                padding: 28px 30px;
+                z-index: 5;
+                position: relative;
+              "
+            >
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 13px;
+                  letter-spacing: 0.16em;
+                  color: var(--clay);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                "
+              >
+                Phase 01 · WEDGE
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 42px;
+                  color: var(--ink);
+                  margin-top: 14px;
+                  letter-spacing: -0.02em;
+                  line-height: 1.05;
+                "
+              >
+                Continuity Bridge
+              </div>
+              <div style="height: 1px; background: var(--rule); margin: 24px 0"></div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 17px;
+                  color: var(--ink);
+                  line-height: 1.55;
+                  margin-bottom: 18px;
+                "
+              >
+                <strong>The wedge.</strong> Give the AI you already use a memory it can actually
+                keep.
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 15px;
+                  color: var(--ink-soft);
+                  line-height: 1.5;
+                "
+              >
+                Buyer: VP Eng · CTO · AI Lead. Sells via PLG + bottom-up. Time-to-value: minutes.
+              </div>
+              <div
+                style="
+                  margin-top: 28px;
+                  font-family: var(--mono);
+                  font-size: 12px;
+                  color: var(--ink-mute);
+                  letter-spacing: 0.14em;
+                  text-transform: uppercase;
+                "
+              >
+                ICP · AI-native teams
+              </div>
+            </div>
+            <div
+              style="
+                background: var(--paper-warm);
+                border-top: 4px solid var(--sage);
+                padding: 28px 30px;
+                z-index: 5;
+                position: relative;
+              "
+            >
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 13px;
+                  letter-spacing: 0.16em;
+                  color: var(--sage);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                "
+              >
+                Phase 02 · EXPAND
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 42px;
+                  color: var(--ink);
+                  margin-top: 14px;
+                  letter-spacing: -0.02em;
+                  line-height: 1.05;
+                "
+              >
+                Digital Twins
+              </div>
+              <div style="height: 1px; background: var(--rule); margin: 24px 0"></div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 17px;
+                  color: var(--ink);
+                  line-height: 1.55;
+                  margin-bottom: 18px;
+                "
+              >
+                <strong>Personal → Team.</strong> The bridge becomes the shared brain.
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 15px;
+                  color: var(--ink-soft);
+                  line-height: 1.5;
+                "
+              >
+                Buyer: RevOps · Sales Ops · Customer Success leadership. Sells via department land.
+              </div>
+              <div
+                style="
+                  margin-top: 28px;
+                  font-family: var(--mono);
+                  font-size: 12px;
+                  color: var(--ink-mute);
+                  letter-spacing: 0.14em;
+                  text-transform: uppercase;
+                "
+              >
+                ICP · GTM teams · Series B+
+              </div>
+            </div>
+            <div
+              style="
+                background: var(--paper-warm);
+                border-top: 4px solid var(--tan);
+                padding: 28px 30px;
+                z-index: 5;
+                position: relative;
+              "
+            >
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 13px;
+                  letter-spacing: 0.16em;
+                  color: var(--tan);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                "
+              >
+                Phase 03 · DEPTH
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 42px;
+                  color: var(--ink);
+                  margin-top: 14px;
+                  letter-spacing: -0.02em;
+                  line-height: 1.05;
+                "
+              >
+                Operational Workbench
+              </div>
+              <div style="height: 1px; background: var(--rule); margin: 24px 0"></div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 17px;
+                  color: var(--ink);
+                  line-height: 1.55;
+                  margin-bottom: 18px;
+                "
+              >
+                <strong>Department Twin lives here.</strong> My Desk · Decide · Build · Grow · Run.
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 15px;
+                  color: var(--ink-soft);
+                  line-height: 1.5;
+                "
+              >
+                Buyer: COO · Chief of Staff · Department GMs. Sells as workflow displacement.
+              </div>
+              <div
+                style="
+                  margin-top: 28px;
+                  font-family: var(--mono);
+                  font-size: 12px;
+                  color: var(--ink-mute);
+                  letter-spacing: 0.14em;
+                  text-transform: uppercase;
+                "
+              >
+                ICP · Mid-market · 500–2,500 ppl
+              </div>
+            </div>
+            <div
+              style="
+                background: var(--forest);
+                border-top: none;
+                padding: 28px 30px;
+                z-index: 5;
+                position: relative;
+              "
+            >
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 13px;
+                  letter-spacing: 0.16em;
+                  color: var(--lime);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                "
+              >
+                Phase 04 · ANCHOR
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: 42px;
+                  color: #f4efe4;
+                  margin-top: 14px;
+                  letter-spacing: -0.02em;
+                  line-height: 1.05;
+                "
+              >
+                Enterprise Platform
+              </div>
+              <div style="height: 1px; background: rgba(244, 239, 228, 0.2); margin: 24px 0"></div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 17px;
+                  color: #f4efe4;
+                  line-height: 1.55;
+                  margin-bottom: 18px;
+                "
+              >
+                <strong>Org-wide L1–L7.</strong> The company itself becomes a queryable twin.
+              </div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: 15px;
+                  color: rgba(244, 239, 228, 0.7);
+                  line-height: 1.5;
+                "
+              >
+                Buyer: CIO · Chief Digital Officer · CEO. Sells via strategic anchor + multi-year.
+              </div>
+              <div
+                style="
+                  margin-top: 28px;
+                  font-family: var(--mono);
+                  font-size: 12px;
+                  color: var(--lime);
+                  letter-spacing: 0.14em;
+                  text-transform: uppercase;
+                "
+              >
+                ICP · Enterprise · 2,500+
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              bottom: 68px;
+              width: calc(100% - var(--pad) * 2);
+              height: 50px;
+              background: var(--paper-warm);
+              z-index: 5;
+              display: flex;
+              align-items: center;
+              padding: 0 28px;
+            "
+          >
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                font-family: var(--mono);
+                font-size: 13px;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                color: var(--ink-soft);
+                font-weight: 500;
+              "
+            >
+              <span
+                ><span style="color: var(--forest); font-weight: 700">NRR engine →</span> Wedge
+                expands to Twins; Twins expand to Workbench; Workbench anchors enterprise.</span
+              ><span style="color: var(--ink-mute)">12-month land → 36-month anchor</span>
+            </div>
+          </div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">Bridge → Twins → Workbench → Enterprise platform</div>
+          <div class="footer-right">15 / 18</div>
+        </div>
+      </div>
+
+      <!-- S16 ROADMAP -->
+      <div class="slide" data-slide="16">
+        <div class="slide-container paper-grain">
+          <div class="slide-label">16 — Roadmap</div>
+          <div class="slide-number">IntegrateWise</div>
+          <div class="header-rule"></div>
+          <div
+            class="eyebrow"
+            style="position: absolute; left: var(--pad); top: 180px; z-index: 10"
+          >
+            Four phases · One arc
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 228px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="serif-display" style="font-size: clamp(40px, 5vw, 88px); color: var(--ink)">
+              From <em style="font-style: italic; color: var(--clay)">bridge</em> to
+              <em style="font-style: italic; color: var(--forest)">operating system.</em>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 420px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+              display: grid;
+              grid-template-columns: repeat(4, 1fr);
+              gap: 0;
+            "
+          >
+            <div style="text-align: center; padding: 0 8px">
+              <div
+                style="
+                  width: 28px;
+                  height: 28px;
+                  background: var(--clay);
+                  border-radius: 50%;
+                  border: 4px solid var(--paper);
+                  margin: 0 auto 16px;
+                "
+              ></div>
+              <div style="height: 4px; background: var(--clay)"></div>
+            </div>
+            <div style="text-align: center; padding: 0 8px">
+              <div
+                style="
+                  width: 28px;
+                  height: 28px;
+                  background: var(--sage);
+                  border-radius: 50%;
+                  border: 4px solid var(--paper);
+                  margin: 0 auto 16px;
+                "
+              ></div>
+              <div
+                style="height: 4px; background: linear-gradient(90deg, var(--clay), var(--sage))"
+              ></div>
+            </div>
+            <div style="text-align: center; padding: 0 8px">
+              <div
+                style="
+                  width: 28px;
+                  height: 28px;
+                  background: var(--tan);
+                  border-radius: 50%;
+                  border: 4px solid var(--paper);
+                  margin: 0 auto 16px;
+                "
+              ></div>
+              <div
+                style="height: 4px; background: linear-gradient(90deg, var(--sage), var(--tan))"
+              ></div>
+            </div>
+            <div style="text-align: center; padding: 0 8px">
+              <div
+                style="
+                  width: 36px;
+                  height: 36px;
+                  background: var(--forest);
+                  border-radius: 50%;
+                  border: 4px solid var(--paper);
+                  margin: 0 auto 16px;
+                "
+              ></div>
+              <div
+                style="height: 4px; background: linear-gradient(90deg, var(--tan), var(--forest))"
+              ></div>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 530px;
+              display: grid;
+              grid-template-columns: repeat(4, 1fr);
+              gap: 12px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                background: var(--paper-warm);
+                border-left: 3px solid var(--clay);
+                padding: 28px 24px;
+                z-index: 5;
+                position: relative;
+              "
+            >
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 12px;
+                  letter-spacing: 0.16em;
+                  color: var(--clay);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                "
+              >
+                Phase 01 · 2026 H1
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: clamp(28px, 3.5vw, 42px);
+                  color: var(--ink);
+                  margin-top: 14px;
+                  letter-spacing: -0.02em;
+                  line-height: 1.05;
+                "
+              >
+                Continuity Bridge
+              </div>
+              <div style="height: 1px; background: var(--rule); margin: 18px 0"></div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: clamp(13px, 1.2vw, 16px);
+                  color: var(--ink-soft);
+                  line-height: 1.6;
+                "
+              >
+                <div>· Atlas Spine v3.2 GA</div>
+                <div>· OpenMemory MCP server</div>
+                <div>· 50+ first-party connectors</div>
+                <div>· BYOM (OpenAI · Claude · Gemini)</div>
+                <div>· Personal Twin · Team Twin (β)</div>
+                <div>· Browser Agent (Playwright, cua-driver)</div>
+                <div>· Agent Continuity Protocol v3.0</div>
+              </div>
+            </div>
+            <div
+              style="
+                background: var(--paper-warm);
+                border-left: 3px solid var(--sage);
+                padding: 28px 24px;
+                z-index: 5;
+                position: relative;
+              "
+            >
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 12px;
+                  letter-spacing: 0.16em;
+                  color: var(--sage);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                "
+              >
+                Phase 02 · 2026 H2
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: clamp(28px, 3.5vw, 42px);
+                  color: var(--ink);
+                  margin-top: 14px;
+                  letter-spacing: -0.02em;
+                  line-height: 1.05;
+                "
+              >
+                Digital Twins
+              </div>
+              <div style="height: 1px; background: var(--rule); margin: 18px 0"></div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: clamp(13px, 1.2vw, 16px);
+                  color: var(--ink-soft);
+                  line-height: 1.6;
+                "
+              >
+                <div>· Team Twin GA</div>
+                <div>· Department Twin (β)</div>
+                <div>· Agent collaboration runtime</div>
+                <div>· Knowledge graph v2 (entity-linked)</div>
+                <div>· SOC 2 Type 2 · HIPAA</div>
+              </div>
+            </div>
+            <div
+              style="
+                background: var(--paper-warm);
+                border-left: 3px solid var(--tan);
+                padding: 28px 24px;
+                z-index: 5;
+                position: relative;
+              "
+            >
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 12px;
+                  letter-spacing: 0.16em;
+                  color: var(--tan);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                "
+              >
+                Phase 03 · 2027
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: clamp(28px, 3.5vw, 42px);
+                  color: var(--ink);
+                  margin-top: 14px;
+                  letter-spacing: -0.02em;
+                  line-height: 1.05;
+                "
+              >
+                Operational Workbench
+              </div>
+              <div style="height: 1px; background: var(--rule); margin: 18px 0"></div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: clamp(13px, 1.2vw, 16px);
+                  color: var(--ink-soft);
+                  line-height: 1.6;
+                "
+              >
+                <div>· Decide · Build · Grow · Run hubs</div>
+                <div>· Department Twin GA</div>
+                <div>· Procedural memory engine</div>
+                <div>· Marketplace · BYOT templates</div>
+                <div>· FedRAMP Moderate</div>
+              </div>
+            </div>
+            <div
+              style="
+                background: var(--forest);
+                border-left: none;
+                padding: 28px 24px;
+                z-index: 5;
+                position: relative;
+              "
+            >
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 12px;
+                  letter-spacing: 0.16em;
+                  color: var(--lime);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                "
+              >
+                Phase 04 · 2028+
+              </div>
+              <div
+                style="
+                  font-family: var(--serif);
+                  font-size: clamp(28px, 3.5vw, 42px);
+                  color: #f4efe4;
+                  margin-top: 14px;
+                  letter-spacing: -0.02em;
+                  line-height: 1.05;
+                "
+              >
+                Enterprise OS
+              </div>
+              <div style="height: 1px; background: rgba(244, 239, 228, 0.2); margin: 18px 0"></div>
+              <div
+                style="
+                  font-family: var(--sans);
+                  font-size: clamp(13px, 1.2vw, 16px);
+                  color: rgba(244, 239, 228, 0.85);
+                  line-height: 1.6;
+                "
+              >
+                <div>· Organizational Twin GA</div>
+                <div>· Full L1–L7 platform</div>
+                <div>· Private deployment · VPC</div>
+                <div>· Self-improving spine</div>
+                <div>· Vertical packs</div>
+              </div>
+            </div>
+          </div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">Bridge (now) → Twins → Workbench → Enterprise OS</div>
+          <div class="footer-right">16 / 18</div>
+        </div>
+      </div>
+
+      <!-- S17 VISION -->
+      <div class="slide" data-slide="17">
+        <div class="slide-container" style="background: var(--paper)">
+          <div
+            style="
+              position: absolute;
+              inset: 0;
+              background: radial-gradient(
+                ellipse at 30% 40%,
+                rgba(31, 58, 43, 0.05) 0%,
+                transparent 60%
+              );
+              z-index: 2;
+            "
+          ></div>
+          <div class="slide-label">17 — Vision</div>
+          <div class="slide-number">IntegrateWise</div>
+          <div class="header-rule"></div>
+          <div
+            class="eyebrow"
+            style="position: absolute; left: var(--pad); top: 220px; z-index: 10"
+          >
+            The endgame
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 300px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              class="serif-display"
+              style="
+                font-size: clamp(60px, 8vw, 128px);
+                color: var(--ink);
+                line-height: 1.02;
+                letter-spacing: -0.025em;
+                font-weight: 400;
+              "
+            >
+              Every person.<br />Every team.<br />Every organization.
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 750px;
+              width: 120px;
+              height: 3px;
+              background: var(--forest);
+              z-index: 3;
+            "
+          ></div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 790px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              class="serif-display"
+              style="
+                font-size: clamp(40px, 5vw, 80px);
+                color: var(--ink);
+                line-height: 1.1;
+                letter-spacing: -0.025em;
+              "
+            >
+              Has a <em style="font-style: italic; color: var(--forest)">Digital Twin.</em>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 920px;
+              max-width: 1400px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              style="
+                font-family: var(--serif);
+                font-size: 32px;
+                color: var(--ink-soft);
+                line-height: 1.3;
+                font-style: italic;
+                font-weight: 300;
+              "
+            >
+              IntegrateWise is the continuity layer<br />that makes it possible.
+            </div>
+          </div>
+          <div class="footer-rule"></div>
+          <div class="footer-left">— The continuity layer —</div>
+          <div class="footer-right">17 / 18</div>
+        </div>
+      </div>
+
+      <!-- S18 CLOSING -->
+      <div class="slide" data-slide="18">
+        <div class="slide-container dark">
+          <div
+            style="
+              position: absolute;
+              inset: 0;
+              background: radial-gradient(
+                ellipse at 80% 30%,
+                rgba(168, 209, 75, 0.16) 0%,
+                transparent 55%
+              );
+              z-index: 2;
+            "
+          ></div>
+          <div class="slide-label light">18 — Closing</div>
+          <div class="slide-number light">IntegrateWise</div>
+          <div class="header-rule light"></div>
+          <div style="position: absolute; left: var(--pad); top: 240px; z-index: 10">
+            <div
+              style="
+                display: inline-flex;
+                align-items: center;
+                gap: 12px;
+                padding: 8px 16px;
+                background: rgba(168, 209, 75, 0.14);
+                border: 1px solid rgba(168, 209, 75, 0.4);
+                border-radius: 2px;
+              "
+            >
+              <div
+                style="width: 8px; height: 8px; background: var(--lime); border-radius: 50%"
+              ></div>
+              <span
+                style="
+                  font-family: var(--mono);
+                  font-size: 14px;
+                  letter-spacing: 0.18em;
+                  color: var(--lime);
+                  text-transform: uppercase;
+                  font-weight: 500;
+                "
+                >v3.2 · Available now</span
+              >
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 320px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div class="serif-display" style="font-size: clamp(80px, 10vw, 172px); color: #f4efe4">
+              Your AI is ready.
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 510px;
+              width: calc(100% - var(--pad) * 2);
+              z-index: 10;
+            "
+          >
+            <div
+              class="serif-display"
+              style="font-size: clamp(80px, 10vw, 172px); color: var(--lime)"
+            >
+              <em style="font-style: italic">Give it memory.</em>
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              left: var(--pad);
+              top: 780px;
+              width: calc(100% - var(--pad) * 2);
+              height: 1px;
+              background: rgba(244, 239, 228, 0.18);
+              z-index: 3;
+            "
+          ></div>
+          <div
+            style="position: absolute; left: var(--pad); top: 810px; max-width: 900px; z-index: 10"
+          >
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 14px;
+                letter-spacing: 0.18em;
+                color: rgba(244, 239, 228, 0.55);
+                text-transform: uppercase;
+                margin-bottom: 18px;
+              "
+            >
+              Product · v3.2 · Launch-Ready
+            </div>
+            <div
+              style="
+                font-family: var(--serif);
+                font-size: 52px;
+                color: #f4efe4;
+                line-height: 1.1;
+                letter-spacing: -0.02em;
+              "
+            >
+              IW Continuity Bridge
+            </div>
+            <div
+              style="
+                font-family: var(--sans);
+                font-size: 20px;
+                color: rgba(244, 239, 228, 0.75);
+                line-height: 1.5;
+                margin-top: 14px;
+                max-width: 780px;
+              "
+            >
+              The continuity layer between humans, AI systems, enterprise applications, and
+              organizational memory.
+            </div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              right: var(--pad);
+              top: 810px;
+              max-width: 636px;
+              width: calc(100% - var(--pad) * 2);
+              height: 170px;
+              background: rgba(244, 239, 228, 0.06);
+              border: 1px solid rgba(244, 239, 228, 0.18);
+              z-index: 5;
+              padding: 28px 40px;
+            "
+          >
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 13px;
+                letter-spacing: 0.18em;
+                color: var(--lime);
+                text-transform: uppercase;
+                font-weight: 600;
+                margin-bottom: 18px;
+              "
+            >
+              ↳ Next steps
+            </div>
+            <div
+              style="font-family: var(--serif); font-size: 24px; color: #f4efe4; line-height: 1.4"
+            >
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  padding: 8px 0;
+                  border-bottom: 1px solid rgba(244, 239, 228, 0.12);
+                "
+              >
+                <span>Live demo</span
+                ><span
+                  style="
+                    font-family: var(--mono);
+                    font-size: 14px;
+                    color: rgba(244, 239, 228, 0.7);
+                    letter-spacing: 0.1em;
+                  "
+                  >30 MIN</span
+                >
+              </div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  padding: 8px 0;
+                  border-bottom: 1px solid rgba(244, 239, 228, 0.12);
+                "
+              >
+                <span>Architecture review</span
+                ><span
+                  style="
+                    font-family: var(--mono);
+                    font-size: 14px;
+                    color: rgba(244, 239, 228, 0.7);
+                    letter-spacing: 0.1em;
+                  "
+                  >60 MIN</span
+                >
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 8px 0">
+                <span>Pilot proposal</span
+                ><span
+                  style="
+                    font-family: var(--mono);
+                    font-size: 14px;
+                    color: rgba(244, 239, 228, 0.7);
+                    letter-spacing: 0.1em;
+                  "
+                  >30 DAYS</span
+                >
+              </div>
+            </div>
+          </div>
+          <div class="footer-rule light"></div>
+          <div class="footer-left light">
+            IntegrateWise · Continuity Infrastructure for AI · 2026
+          </div>
+          <div class="footer-right light">18 / 18 — FIN</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NAV BAR -->
+    <div class="nav-bar">
+      <button onclick="goSlide(current - 1)">← PREV</button>
+      <span class="counter" id="counter">01 / 18</span>
+      <button onclick="goSlide(current + 1)">NEXT →</button>
+    </div>
+
+    <script>
+      const slides = document.querySelectorAll(".slide");
+      let current = 0;
+      function goSlide(n) {
+        if (n < 0 || n >= slides.length) return;
+        slides[current].classList.remove("active");
+        current = n;
+        slides[current].classList.add("active");
+        document.getElementById("counter").textContent =
+          String(current + 1).padStart(2, "0") + " / " + slides.length;
+        document.getElementById("progress").style.width =
+          ((current + 1) / slides.length) * 100 + "%";
+      }
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight" || e.key === " ") goSlide(current + 1);
+        if (e.key === "ArrowLeft") goSlide(current - 1);
+        if (e.key === "Home") goSlide(0);
+        if (e.key === "End") goSlide(slides.length - 1);
+      });
+      document.getElementById("progress").style.width = (1 / slides.length) * 100 + "%";
+    </script>
+  </body>
+</html>

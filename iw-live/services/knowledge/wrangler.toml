@@ -1,0 +1,242 @@
+name = "knowledge"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+find_additional_modules = true
+
+# Observability (see docs/WORKERS_OBSERVABILITY_OTLP.md)
+[observability]
+enabled = true
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+[observability.traces]
+enabled = true
+head_sampling_rate = 0.1
+
+# NOTE: SUPABASE_* bindings removed — source code uses env.DB (D1) exclusively (DECISION 22)
+
+# Secrets from Cloudflare Secrets Store — replace 1fd83fc5881e4cd296ae3c2fbe80693c (see docs/SECRETS_STORE_SETUP.md)
+[[secrets_store_secrets]]
+binding = "OPENROUTER_API_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "OPENROUTER_API_KEY"
+
+# Consumes knowledge ingestion
+
+# NOTE: MCP binding removed — mcp-connector was merged into connector service
+
+[[services]]
+binding = "PIPELINE"
+service = "integratewise-pipeline"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+# Knowledge ingestion (MCP sessions, artifacts) → queue() handler
+[[queues.consumers]]
+queue = "knowledge-ingest"
+max_batch_size = 10
+max_batch_timeout = 30
+
+# Memory Consolidator triage queue → queue() handler (consolidation tasks)
+[[queues.consumers]]
+queue = "memory-consolidation-tasks"
+max_batch_size = 5
+max_batch_timeout = 60
+
+[[queues.producers]]
+queue = "memory-consolidation-tasks"
+binding = "TASKS_QUEUE"
+
+# R2 for file storage
+[[r2_buckets]]
+binding = "FILES"
+bucket_name = "integratewise-files-prod"
+
+# KV for consolidator state (last run times, locks)
+[[kv_namespaces]]
+binding = "STATE"
+id = "d546c00b8ee84d0497e4a4b3ac661db8"
+
+# Durable Objects for Memory Consolidator coordination
+[durable_objects]
+bindings = [
+  { name = "CONSOLIDATOR", class_name = "MemoryConsolidator" }
+]
+
+[[migrations]]
+tag = "v1-memory-consolidator"
+new_sqlite_classes = ["MemoryConsolidator"]
+
+# Service bindings for consolidator
+# NOTE: dev targets must equal each worker's `name=` (intelligence/knowledge),
+# not the "integratewise-*" package name, or wrangler deploy fails.
+[[services]]
+binding = "THINK"
+service = "intelligence"
+
+# IQ Hub: self-binding so Memory Consolidator can call GET /iq/sessions (session list for consolidation)
+[[services]]
+binding = "IQ_HUB"
+service = "knowledge"
+
+# Workers AI for Triage bot (session/memory triage after MCP capture)
+[ai]
+binding = "AI"
+
+[[vectorize]]
+binding = "VECTORIZE_INDEX"
+index_name = "integratewise-knowledge"
+
+# Triage Center AI: single hourly tick drives hourly/daily/weekly tiers.
+# handleScheduled() in memory-consolidator.ts derives the tier from UTC time,
+# so one cron is sufficient (do NOT add duplicate crons per tier).
+[triggers]
+crons = ["0 * * * *"]
+
+[env.test]
+name = "knowledge-test"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+[[env.test.d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+[[env.test.kv_namespaces]]
+binding = "STATE"
+id = "d546c00b8ee84d0497e4a4b3ac661db8"
+
+[[env.test.queues.consumers]]
+queue = "knowledge-ingest"
+max_batch_size = 10
+max_batch_timeout = 30
+
+[[env.test.queues.consumers]]
+queue = "memory-consolidation-tasks"
+max_batch_size = 5
+max_batch_timeout = 60
+
+[[env.test.queues.producers]]
+queue = "memory-consolidation-tasks"
+binding = "TASKS_QUEUE"
+
+[[env.test.r2_buckets]]
+binding = "FILES"
+bucket_name = "integratewise-files-staging"
+
+# NOTE: MCP binding removed — mcp-connector was merged into connector service
+
+[[env.test.services]]
+binding = "PIPELINE"
+service = "pipeline-test"
+
+[[env.test.services]]
+binding = "THINK"
+service = "intelligence-test"
+
+[[env.test.services]]
+binding = "IQ_HUB"
+service = "knowledge-test"
+
+# AI binding for test
+[env.test.ai]
+binding = "AI"
+
+# Vectorize binding for test
+[[env.test.vectorize]]
+binding = "VECTORIZE_INDEX"
+index_name = "integratewise-knowledge"
+
+# Durable Objects for test
+[env.test.durable_objects]
+bindings = [
+  { name = "CONSOLIDATOR", class_name = "MemoryConsolidator" }
+]
+
+# Secrets Store Secrets for test
+[[env.test.secrets_store_secrets]]
+binding = "OPENROUTER_API_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "OPENROUTER_API_KEY"
+
+[env.prod]
+name = "knowledge-prod"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+[[env.prod.d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+[[env.prod.kv_namespaces]]
+binding = "STATE"
+id = "d546c00b8ee84d0497e4a4b3ac661db8"
+
+[[env.prod.queues.consumers]]
+queue = "knowledge-ingest"
+max_batch_size = 10
+max_batch_timeout = 30
+
+[[env.prod.queues.consumers]]
+queue = "memory-consolidation-tasks"
+max_batch_size = 5
+max_batch_timeout = 60
+
+[[env.prod.queues.producers]]
+queue = "memory-consolidation-tasks"
+binding = "TASKS_QUEUE"
+
+[[env.prod.r2_buckets]]
+binding = "FILES"
+bucket_name = "integratewise-files-prod"
+
+# [[env.prod.services]]
+# binding = "MCP"
+# service = "mcp-connector-prod"
+
+[[env.prod.services]]
+binding = "PIPELINE"
+service = "pipeline-prod"
+
+[[env.prod.services]]
+binding = "THINK"
+service = "intelligence-prod"
+
+[[env.prod.services]]
+binding = "IQ_HUB"
+service = "knowledge-prod"
+
+# AI binding for prod
+[env.prod.ai]
+binding = "AI"
+
+# Vectorize binding for prod
+[[env.prod.vectorize]]
+binding = "VECTORIZE_INDEX"
+index_name = "integratewise-knowledge"
+
+# Durable Objects for prod
+[env.prod.durable_objects]
+bindings = [
+  { name = "CONSOLIDATOR", class_name = "MemoryConsolidator" }
+]
+
+# Secrets Store Secrets for prod
+[[env.prod.secrets_store_secrets]]
+binding = "OPENROUTER_API_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "OPENROUTER_API_KEY"
+
+# Memory consolidation/aging cron (named envs do NOT inherit base [triggers]).
+# One hourly tick; handleScheduled() derives hourly/daily/weekly tier from UTC.
+[env.prod.triggers]
+crons = ["0 * * * *"]
+
+[dev]
+inspector_port = 9249
+port = 8789

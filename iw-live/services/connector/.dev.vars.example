@@ -1,0 +1,5 @@
+# Copy to .dev.vars and fill for local connector dev (wrangler dev).
+# MCP auth for /tools and /invoke (Bearer or X-MCP-Key)
+MCP_CONNECTOR_API_KEY=your-mcp-api-key
+# Optional: Figma Personal Access Token for figma.* tools (get from Figma → Settings → Personal access tokens)
+# FIGMA_ACCESS_TOKEN=figd_...

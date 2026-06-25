@@ -1,0 +1,2192 @@
+integratewise-live/
+├── .claude/
+│   └── settings.local.json
+├── .cursor/
+│   ├── plans/
+│   │   ├── env
+│   │   └── rebuild_landing_pages_(emerald_green_base_+_workspace_layers)_6d41927c.plan.md
+│   ├── rules/
+│   │   ├── ai-context-no-hallucination.mdc
+│   │   ├── cursor-development.mdc
+│   │   ├── deployment-cloudflare.mdc
+│   │   ├── docs-no-multi-file-references.mdc
+│   │   ├── docs-no-suggestions-except-summary-of-work.mdc
+│   │   ├── event-queue-dlq.mdc
+│   │   ├── execution-flows-and-modules.mdc
+│   │   ├── hard-rules-execution.mdc
+│   │   ├── product-clarity-spine-moat.mdc
+│   │   ├── project-context.mdc
+│   │   ├── spine-ssot-wiring.mdc
+│   │   ├── supabase-postgres-best-practices.mdc
+│   │   ├── user-journey-copilot.mdc
+│   │   ├── workspace-hardening.mdc
+│   │   └── workspace-view-model.mdc
+│   ├── mcp.json
+│   └── settings.json
+├── .github/
+│   ├── agents/
+│   │   └── my-agent.agent.md
+│   ├── workflows/
+│   │   ├── ci.yml
+│   │   ├── deploy-cloudflare.yml
+│   │   ├── deploy-frontend.yml
+│   │   ├── deploy-landing.yml
+│   │   └── deploy-workers.yml
+│   └── agent.md
+├── .vscode/
+│   ├── extensions.json
+│   ├── launch.json
+│   ├── mcp.json
+│   ├── settings.json
+│   └── tasks.json
+├── apps/
+│   ├── desktop/
+│   │   ├── src/
+│   │   │   ├── main/
+│   │   │   │   └── index.ts
+│   │   │   ├── preload/
+│   │   │   │   └── index.ts
+│   │   │   └── renderer/
+│   │   │       └── index.html
+│   │   ├── electron.vite.config.ts
+│   │   └── package.json
+│   ├── mobile/
+│   │   ├── app/
+│   │   │   ├── _layout.tsx
+│   │   │   └── index.tsx
+│   │   ├── lib/
+│   │   │   └── supabase-provider.tsx
+│   │   ├── app.json
+│   │   └── package.json
+│   └── web/
+│       ├── e2e/
+│       │   ├── README.md
+│       │   ├── app-routes.spec.ts
+│       │   ├── marketing-pages.spec.ts
+│       │   ├── navigation.spec.ts
+│       │   └── no-redirects.spec.ts
+│       ├── public/
+│       │   ├── favicon.svg
+│       │   ├── logo-icon.svg
+│       │   ├── logo-primary.svg
+│       │   ├── logo.svg
+│       │   └── section-background.svg
+│       ├── src/
+│       │   ├── api/
+│       │   │   └── workspace.ts
+│       │   ├── clients/
+│       │   │   ├── analytics/
+│       │   │   │   └── predictive-analytics.ts
+│       │   │   ├── n8n/
+│       │   │   │   └── n8n-service.ts
+│       │   │   └── realtime/
+│       │   │       └── realtime-service.ts
+│       │   ├── components/
+│       │   │   ├── accelerators/
+│       │   │   │   ├── accelerator-card.tsx
+│       │   │   │   └── accelerator-panel.tsx
+│       │   │   ├── admin/
+│       │   │   │   ├── pages/
+│       │   │   │   │   ├── actions-page.tsx
+│       │   │   │   │   ├── admin-today-page.tsx
+│       │   │   │   │   ├── audit-page.tsx
+│       │   │   │   │   ├── billing-page.tsx
+│       │   │   │   │   ├── connectors-page.tsx
+│       │   │   │   │   ├── governance-page.tsx
+│       │   │   │   │   ├── iam-page.tsx
+│       │   │   │   │   ├── knowledge-governance-page.tsx
+│       │   │   │   │   ├── observability-page.tsx
+│       │   │   │   │   ├── provisioning-page.tsx
+│       │   │   │   │   ├── registry-page.tsx
+│       │   │   │   │   ├── roles-page.tsx
+│       │   │   │   │   ├── schema-page.tsx
+│       │   │   │   │   ├── tenancy-page.tsx
+│       │   │   │   │   ├── tools-page.tsx
+│       │   │   │   │   ├── usage-page.tsx
+│       │   │   │   │   └── users-page.tsx
+│       │   │   │   ├── admin-shell.tsx
+│       │   │   │   ├── approval-workflows.tsx
+│       │   │   │   ├── data-table.tsx
+│       │   │   │   ├── detail-drawer.tsx
+│       │   │   │   ├── diff-viewer.tsx
+│       │   │   │   ├── edit-flow.tsx
+│       │   │   │   ├── mock-data.ts
+│       │   │   │   ├── rbac-manager.tsx
+│       │   │   │   ├── tenant-manager.tsx
+│       │   │   │   ├── types.ts
+│       │   │   │   ├── use-admin-api.ts
+│       │   │   │   └── user-management.tsx
+│       │   │   ├── analytics/
+│       │   │   │   └── custom-dashboard.tsx
+│       │   │   ├── approvals/
+│       │   │   │   ├── action-bar.tsx
+│       │   │   │   ├── approval-modal.tsx
+│       │   │   │   ├── approvals-api.ts
+│       │   │   │   ├── evidence-drawer.tsx
+│       │   │   │   ├── execution-status-card.tsx
+│       │   │   │   ├── index.ts
+│       │   │   │   └── pending-approvals-card.tsx
+│       │   │   ├── auth/
+│       │   │   │   ├── auth-provider.tsx
+│       │   │   │   ├── login-page.tsx
+│       │   │   │   └── signup-page.tsx
+│       │   │   ├── bridge/
+│       │   │   │   ├── BridgeControlPanel.tsx
+│       │   │   │   ├── Got it.jl
+│       │   │   │   ├── api.ts
+│       │   │   │   ├── bridge.css
+│       │   │   │   ├── flowchart TD
+│       │   │   │   ├── index.ts
+│       │   │   │   └── 🔍 Complete Branch Audit Results.md
+│       │   │   ├── business-ops/
+│       │   │   │   ├── accounts.tsx
+│       │   │   │   ├── analytics-view.tsx
+│       │   │   │   ├── calendar-view.tsx
+│       │   │   │   ├── dashboard.tsx
+│       │   │   │   ├── documents.tsx
+│       │   │   │   ├── integrations.tsx
+│       │   │   │   ├── tasks.tsx
+│       │   │   │   ├── workflow-canvas.tsx
+│       │   │   │   └── workflows.tsx
+│       │   │   ├── cognitive/
+│       │   │   │   ├── domain-happy-path/
+│       │   │   │   │   └── domain-happy-path-views.tsx
+│       │   │   │   ├── panels/
+│       │   │   │   │   ├── context-panel.tsx
+│       │   │   │   │   ├── correct-redo-panel.tsx
+│       │   │   │   │   ├── decision-memory-panel.tsx
+│       │   │   │   │   ├── drift-detection-panel.tsx
+│       │   │   │   │   ├── index.tsx
+│       │   │   │   │   ├── policy-panel.tsx
+│       │   │   │   │   ├── proactive-twin-panel.tsx
+│       │   │   │   │   ├── simulation-panel.tsx
+│       │   │   │   │   ├── spine-panel.tsx
+│       │   │   │   │   ├── think-panel.tsx
+│       │   │   │   │   ├── trust-dashboard-panel.tsx
+│       │   │   │   │   └── workflows-panel.tsx
+│       │   │   │   ├── CognitiveLayer.tsx
+│       │   │   │   ├── cognitive-panel-provider.tsx
+│       │   │   │   ├── cognitive-triggers.tsx
+│       │   │   │   ├── index.ts
+│       │   │   │   ├── l2-drawer-animated.tsx
+│       │   │   │   ├── l2-drawer.tsx
+│       │   │   │   ├── l2-redirect.tsx
+│       │   │   │   └── sliding-panel.tsx
+│       │   │   ├── command-palette/
+│       │   │   │   └── index.tsx
+│       │   │   ├── connectors/
+│       │   │   │   ├── connect-button.tsx
+│       │   │   │   └── oauth-callback.tsx
+│       │   │   ├── document-storage/
+│       │   │   │   ├── document-storage.tsx
+│       │   │   │   ├── mock-data.ts
+│       │   │   │   └── types.ts
+│       │   │   ├── domains/
+│       │   │   │   ├── account-success/
+│       │   │   │   │   ├── views/
+│       │   │   │   │   │   ├── account-health-view.tsx
+│       │   │   │   │   │   ├── account-master-view.tsx
+│       │   │   │   │   │   ├── account-team-view.tsx
+│       │   │   │   │   │   ├── api-portfolio-view.tsx
+│       │   │   │   │   │   ├── at-risk-view.tsx
+│       │   │   │   │   │   ├── business-context-view.tsx
+│       │   │   │   │   │   ├── capabilities-view.tsx
+│       │   │   │   │   │   ├── company-growth-view.tsx
+│       │   │   │   │   │   ├── cs-decision-log-view.tsx
+│       │   │   │   │   │   ├── cs-today-view.tsx
+│       │   │   │   │   │   ├── engagement-log-view.tsx
+│       │   │   │   │   │   ├── initiatives-view.tsx
+│       │   │   │   │   │   ├── insights-view.tsx
+│       │   │   │   │   │   ├── people-team-view.tsx
+│       │   │   │   │   │   ├── platform-health-view.tsx
+│       │   │   │   │   │   ├── product-client-view.tsx
+│       │   │   │   │   │   ├── risk-register-view.tsx
+│       │   │   │   │   │   ├── stakeholder-outcomes-view.tsx
+│       │   │   │   │   │   ├── strategic-objectives-view.tsx
+│       │   │   │   │   │   ├── success-plans-view.tsx
+│       │   │   │   │   │   ├── task-manager-view.tsx
+│       │   │   │   │   │   ├── tasks-cards-view.tsx
+│       │   │   │   │   │   └── value-streams-view.tsx
+│       │   │   │   │   ├── accounts-view.tsx
+│       │   │   │   │   ├── contacts-view.tsx
+│       │   │   │   │   ├── csm-calendar.tsx
+│       │   │   │   │   ├── csm-data.ts
+│       │   │   │   │   ├── csm-intelligence-data.ts
+│       │   │   │   │   ├── dashboard.tsx
+│       │   │   │   │   ├── documents-view.tsx
+│       │   │   │   │   ├── executive-dashboard-wired.tsx
+│       │   │   │   │   ├── executive-dashboard.tsx
+│       │   │   │   │   ├── fabric-admin-view.tsx
+│       │   │   │   │   ├── health-gauge.tsx
+│       │   │   │   │   ├── index.ts
+│       │   │   │   │   ├── intelligence-overlay.tsx
+│       │   │   │   │   ├── kanban-board.tsx
+│       │   │   │   │   ├── meetings-view.tsx
+│       │   │   │   │   ├── projects-view.tsx
+│       │   │   │   │   ├── renewals-view.tsx
+│       │   │   │   │   ├── risk-matrix-view.tsx
+│       │   │   │   │   ├── settings-view.tsx
+│       │   │   │   │   ├── shell.tsx
+│       │   │   │   │   ├── success-projection-utils.ts
+│       │   │   │   │   └── tasks-view.tsx
+│       │   │   │   ├── bizops/
+│       │   │   │   │   ├── bizops-views.tsx
+│       │   │   │   │   ├── dashboard.tsx
+│       │   │   │   │   ├── ops-command-center-view.tsx
+│       │   │   │   │   └── shell.tsx
+│       │   │   │   ├── finance/
+│       │   │   │   │   ├── accounting-view.tsx
+│       │   │   │   │   ├── billing-view.tsx
+│       │   │   │   │   ├── budget-view.tsx
+│       │   │   │   │   ├── collections-view.tsx
+│       │   │   │   │   ├── compliance-view.tsx
+│       │   │   │   │   ├── dashboard.tsx
+│       │   │   │   │   ├── data-governance-view.tsx
+│       │   │   │   │   ├── expenses-view.tsx
+│       │   │   │   │   ├── fabric-admin-view.tsx
+│       │   │   │   │   ├── finance-views.tsx
+│       │   │   │   │   ├── forecasting-view.tsx
+│       │   │   │   │   ├── invoice-approvals-view.tsx
+│       │   │   │   │   ├── invoices-view.tsx
+│       │   │   │   │   ├── payment-portal-view.tsx
+│       │   │   │   │   ├── payroll-view.tsx
+│       │   │   │   │   ├── reports-view.tsx
+│       │   │   │   │   ├── revenue-view.tsx
+│       │   │   │   │   ├── settings-view.tsx
+│       │   │   │   │   ├── shell.tsx
+│       │   │   │   │   └── tax-view.tsx
+│       │   │   │   ├── it-admin/
+│       │   │   │   │   ├── views/
+│       │   │   │   │   │   ├── audit-logs-view.tsx
+│       │   │   │   │   │   ├── change-management-view.tsx
+│       │   │   │   │   │   ├── compliance-reports-view.tsx
+│       │   │   │   │   │   ├── incident-response-view.tsx
+│       │   │   │   │   │   ├── it-insights-view.tsx
+│       │   │   │   │   │   ├── resource-utilization-view.tsx
+│       │   │   │   │   │   ├── security-alerts-view.tsx
+│       │   │   │   │   │   └── system-health-view.tsx
+│       │   │   │   │   ├── audits-view.tsx
+│       │   │   │   │   ├── automation-view.tsx
+│       │   │   │   │   ├── backups-view.tsx
+│       │   │   │   │   ├── capacity-view.tsx
+│       │   │   │   │   ├── compliance-view.tsx
+│       │   │   │   │   ├── dashboard.tsx
+│       │   │   │   │   ├── devices-view.tsx
+│       │   │   │   │   ├── fabric-admin-view.tsx
+│       │   │   │   │   ├── incidents-view.tsx
+│       │   │   │   │   ├── infrastructure-view.tsx
+│       │   │   │   │   ├── integrations-view.tsx
+│       │   │   │   │   ├── intelligence-overlay.tsx
+│       │   │   │   │   ├── it-admin-views.tsx
+│       │   │   │   │   ├── maintenance-view.tsx
+│       │   │   │   │   ├── monitoring-view.tsx
+│       │   │   │   │   ├── networks-view.tsx
+│       │   │   │   │   ├── performance-view.tsx
+│       │   │   │   │   ├── security-view.tsx
+│       │   │   │   │   ├── settings-view.tsx
+│       │   │   │   │   ├── shell.tsx
+│       │   │   │   │   ├── systems-view.tsx
+│       │   │   │   │   └── users-view.tsx
+│       │   │   │   ├── marketing/
+│       │   │   │   │   ├── attribution-view.tsx
+│       │   │   │   │   ├── blog-view.tsx
+│       │   │   │   │   ├── campaigns-view.tsx
+│       │   │   │   │   ├── dashboard.tsx
+│       │   │   │   │   ├── email-studio-view.tsx
+│       │   │   │   │   ├── fabric-admin-view.tsx
+│       │   │   │   │   ├── forms-view.tsx
+│       │   │   │   │   ├── marketing-views.tsx
+│       │   │   │   │   ├── media-view.tsx
+│       │   │   │   │   ├── pages-view.tsx
+│       │   │   │   │   ├── seo-view.tsx
+│       │   │   │   │   ├── settings-view.tsx
+│       │   │   │   │   ├── shell.tsx
+│       │   │   │   │   ├── social-view.tsx
+│       │   │   │   │   ├── theme-view.tsx
+│       │   │   │   │   └── website-dashboard-view.tsx
+│       │   │   │   ├── personal/
+│       │   │   │   │   ├── bookmarks-view.tsx
+│       │   │   │   │   ├── dashboard.tsx
+│       │   │   │   │   ├── founder-decisions-view.tsx
+│       │   │   │   │   ├── founder-projects-view.tsx
+│       │   │   │   │   ├── founder-today-view.tsx
+│       │   │   │   │   ├── hub-home-view.tsx
+│       │   │   │   │   ├── hub-today-view.tsx
+│       │   │   │   │   ├── knowledge-hub-view.tsx
+│       │   │   │   │   ├── personal-views.tsx
+│       │   │   │   │   └── shell.tsx
+│       │   │   │   ├── procurement/
+│       │   │   │   │   ├── contracts-view.tsx
+│       │   │   │   │   ├── dashboard.tsx
+│       │   │   │   │   ├── fabric-admin-view.tsx
+│       │   │   │   │   ├── orders-view.tsx
+│       │   │   │   │   ├── procurement-views.tsx
+│       │   │   │   │   ├── renewals-view.tsx
+│       │   │   │   │   ├── savings-view.tsx
+│       │   │   │   │   ├── settings-view.tsx
+│       │   │   │   │   ├── shell.tsx
+│       │   │   │   │   ├── spend-view.tsx
+│       │   │   │   │   └── vendors-view.tsx
+│       │   │   │   ├── product-engineering/
+│       │   │   │   │   ├── analytics-view.tsx
+│       │   │   │   │   ├── bugs-view.tsx
+│       │   │   │   │   ├── dashboard.tsx
+│       │   │   │   │   ├── fabric-admin-view.tsx
+│       │   │   │   │   ├── features-view.tsx
+│       │   │   │   │   ├── feedback-view.tsx
+│       │   │   │   │   ├── incident-queue-view.tsx
+│       │   │   │   │   ├── product-views.tsx
+│       │   │   │   │   ├── releases-view.tsx
+│       │   │   │   │   ├── roadmap-view.tsx
+│       │   │   │   │   ├── settings-view.tsx
+│       │   │   │   │   ├── shell.tsx
+│       │   │   │   │   ├── sprints-view.tsx
+│       │   │   │   │   └── tasks-view.tsx
+│       │   │   │   ├── revops/
+│       │   │   │   │   ├── dashboard.tsx
+│       │   │   │   │   ├── decision-log-view.tsx
+│       │   │   │   │   ├── fabric-admin-view.tsx
+│       │   │   │   │   ├── pending-review-view.tsx
+│       │   │   │   │   ├── revops-views.tsx
+│       │   │   │   │   ├── settings-view.tsx
+│       │   │   │   │   └── shell.tsx
+│       │   │   │   ├── sales/
+│       │   │   │   │   ├── dashboard.tsx
+│       │   │   │   │   ├── sales-views.tsx
+│       │   │   │   │   └── shell.tsx
+│       │   │   │   ├── salesops/
+│       │   │   │   │   ├── dashboard.tsx
+│       │   │   │   │   ├── fabric-admin-view.tsx
+│       │   │   │   │   ├── salesops-views.tsx
+│       │   │   │   │   ├── settings-view.tsx
+│       │   │   │   │   └── shell.tsx
+│       │   │   │   ├── service/
+│       │   │   │   │   ├── analytics-view.tsx
+│       │   │   │   │   ├── customers-view.tsx
+│       │   │   │   │   ├── dashboard.tsx
+│       │   │   │   │   ├── fabric-admin-view.tsx
+│       │   │   │   │   ├── knowledge-view.tsx
+│       │   │   │   │   ├── satisfaction-view.tsx
+│       │   │   │   │   ├── service-views.tsx
+│       │   │   │   │   ├── settings-view.tsx
+│       │   │   │   │   ├── shell.tsx
+│       │   │   │   │   ├── sla-dashboard-view.tsx
+│       │   │   │   │   └── tickets-view.tsx
+│       │   │   │   ├── student-teacher/
+│       │   │   │   │   ├── assignments-view.tsx
+│       │   │   │   │   ├── at-risk-view.tsx
+│       │   │   │   │   ├── courses-view.tsx
+│       │   │   │   │   ├── dashboard.tsx
+│       │   │   │   │   ├── discussions-view.tsx
+│       │   │   │   │   ├── fabric-admin-view.tsx
+│       │   │   │   │   ├── grades-view.tsx
+│       │   │   │   │   ├── projects-view.tsx
+│       │   │   │   │   ├── settings-view.tsx
+│       │   │   │   │   └── shell.tsx
+│       │   │   │   ├── domain-sidebar.tsx
+│       │   │   │   ├── domain-types.ts
+│       │   │   │   └── spine-projection.ts
+│       │   │   ├── error/
+│       │   │   │   └── l2-error-boundary.tsx
+│       │   │   ├── evidence/
+│       │   │   │   └── enhanced-evidence-drawer.tsx
+│       │   │   ├── goal-framework/
+│       │   │   │   ├── goal-alignment-bar.tsx
+│       │   │   │   ├── goal-context.tsx
+│       │   │   │   └── goal-schema.ts
+│       │   │   ├── hydration/
+│       │   │   │   ├── providers/
+│       │   │   │   │   ├── doppler-adapter.ts
+│       │   │   │   │   ├── kv-adapter.ts
+│       │   │   │   │   ├── rest-adapter.ts
+│       │   │   │   │   ├── spine-adapter.ts
+│       │   │   │   │   └── static-adapter.ts
+│       │   │   │   ├── fabric-admin-panel.tsx
+│       │   │   │   ├── fabric-engine.tsx
+│       │   │   │   ├── hooks.ts
+│       │   │   │   ├── index.ts
+│       │   │   │   ├── provider-bus.ts
+│       │   │   │   ├── types.ts
+│       │   │   │   └── use-hydrate-projection.ts
+│       │   │   ├── intelligence/
+│       │   │   │   ├── intelligence-drawer.tsx
+│       │   │   │   └── intelligence-overlay.tsx
+│       │   │   ├── knowledge/
+│       │   │   │   ├── icons/
+│       │   │   │   │   ├── CloseIcon.tsx
+│       │   │   │   │   ├── DownloadIcon.tsx
+│       │   │   │   │   ├── LogoIcon.tsx
+│       │   │   │   │   ├── PaperclipIcon.tsx
+│       │   │   │   │   └── ProviderIcons.tsx
+│       │   │   │   ├── services/
+│       │   │   │   │   └── api.ts
+│       │   │   │   ├── DemoPage.tsx
+│       │   │   │   ├── Header.tsx
+│       │   │   │   ├── InboxPage.tsx
+│       │   │   │   ├── SearchPage.tsx
+│       │   │   │   ├── TopicsPage.tsx
+│       │   │   │   ├── demo-setup.tsx
+│       │   │   │   ├── inbox-view.tsx
+│       │   │   │   ├── metadata.json
+│       │   │   │   ├── search-view.tsx
+│       │   │   │   ├── topics-view.tsx
+│       │   │   │   └── types.ts
+│       │   │   ├── landing/
+│       │   │   │   ├── figma/
+│       │   │   │   │   └── ImageWithFallback.tsx
+│       │   │   │   ├── motion/
+│       │   │   │   │   └── AnimateIn.tsx
+│       │   │   │   ├── pages/
+│       │   │   │   │   ├── ArchitecturePage.tsx
+│       │   │   │   │   ├── DemoPage.tsx
+│       │   │   │   │   ├── HomePage.tsx
+│       │   │   │   │   ├── IntegrationsPage.tsx
+│       │   │   │   │   ├── NotFound.tsx
+│       │   │   │   │   ├── PlatformPage.tsx
+│       │   │   │   │   ├── PricingPage.tsx
+│       │   │   │   │   ├── ProductPage.tsx
+│       │   │   │   │   ├── ProofPageScaffold.tsx
+│       │   │   │   │   ├── SecurityPage.tsx
+│       │   │   │   │   ├── StoryPage.tsx
+│       │   │   │   │   ├── UseCasesPage.tsx
+│       │   │   │   │   ├── WhoItsForPage.tsx
+│       │   │   │   │   └── WorkspacePage.tsx
+│       │   │   │   ├── ui/
+│       │   │   │   │   ├── accordion.tsx
+│       │   │   │   │   ├── alert-dialog.tsx
+│       │   │   │   │   ├── alert.tsx
+│       │   │   │   │   ├── aspect-ratio.tsx
+│       │   │   │   │   ├── avatar.tsx
+│       │   │   │   │   ├── badge.tsx
+│       │   │   │   │   ├── breadcrumb.tsx
+│       │   │   │   │   ├── button.tsx
+│       │   │   │   │   ├── calendar.tsx
+│       │   │   │   │   ├── card.tsx
+│       │   │   │   │   ├── carousel.tsx
+│       │   │   │   │   ├── chart.tsx
+│       │   │   │   │   ├── checkbox.tsx
+│       │   │   │   │   ├── collapsible.tsx
+│       │   │   │   │   ├── command.tsx
+│       │   │   │   │   ├── context-menu.tsx
+│       │   │   │   │   ├── dialog.tsx
+│       │   │   │   │   ├── drawer.tsx
+│       │   │   │   │   ├── dropdown-menu.tsx
+│       │   │   │   │   ├── form.tsx
+│       │   │   │   │   ├── hover-card.tsx
+│       │   │   │   │   ├── input-otp.tsx
+│       │   │   │   │   ├── input.tsx
+│       │   │   │   │   ├── label.tsx
+│       │   │   │   │   ├── menubar.tsx
+│       │   │   │   │   ├── navigation-menu.tsx
+│       │   │   │   │   ├── pagination.tsx
+│       │   │   │   │   ├── popover.tsx
+│       │   │   │   │   ├── progress.tsx
+│       │   │   │   │   ├── radio-group.tsx
+│       │   │   │   │   ├── resizable.tsx
+│       │   │   │   │   ├── scroll-area.tsx
+│       │   │   │   │   ├── select.tsx
+│       │   │   │   │   ├── separator.tsx
+│       │   │   │   │   ├── sheet.tsx
+│       │   │   │   │   ├── sidebar.tsx
+│       │   │   │   │   ├── skeleton.tsx
+│       │   │   │   │   ├── slider.tsx
+│       │   │   │   │   ├── sonner.tsx
+│       │   │   │   │   ├── switch.tsx
+│       │   │   │   │   ├── table.tsx
+│       │   │   │   │   ├── tabs.tsx
+│       │   │   │   │   ├── textarea.tsx
+│       │   │   │   │   ├── toggle-group.tsx
+│       │   │   │   │   ├── toggle.tsx
+│       │   │   │   │   ├── tooltip.tsx
+│       │   │   │   │   ├── use-mobile.ts
+│       │   │   │   │   └── utils.ts
+│       │   │   │   ├── v2/
+│       │   │   │   │   ├── ArchitectureSection.tsx
+│       │   │   │   │   ├── CTASection.tsx
+│       │   │   │   │   ├── HeaderV2.tsx
+│       │   │   │   │   ├── HeroSection.tsx
+│       │   │   │   │   ├── HomePageV2.tsx
+│       │   │   │   │   ├── ProofSection.tsx
+│       │   │   │   │   ├── SpineSection.tsx
+│       │   │   │   │   ├── TrustSection.tsx
+│       │   │   │   │   └── index.ts
+│       │   │   │   ├── v3/
+│       │   │   │   │   ├── Architecture.tsx
+│       │   │   │   │   ├── CTA.tsx
+│       │   │   │   │   ├── Hero.tsx
+│       │   │   │   │   ├── LandingPage.tsx
+│       │   │   │   │   ├── Proof.tsx
+│       │   │   │   │   ├── Spine.tsx
+│       │   │   │   │   ├── Trust.tsx
+│       │   │   │   │   └── index.ts
+│       │   │   │   ├── workspace/
+│       │   │   │   │   └── WorkspaceScreen.tsx
+│       │   │   │   ├── AnimatedInfographic.tsx
+│       │   │   │   ├── AntiGravityBackground.tsx
+│       │   │   │   ├── AudienceSection.tsx
+│       │   │   │   ├── BlindSpotExplainer.tsx
+│       │   │   │   ├── ChaosToClarity.tsx
+│       │   │   │   ├── CognitiveLoopCanvas.tsx
+│       │   │   │   ├── ComparisonCards.tsx
+│       │   │   │   ├── ContextCrisisHero.tsx
+│       │   │   │   ├── CustomIllustrations.tsx
+│       │   │   │   ├── DesignSystemComponents.tsx
+│       │   │   │   ├── Footer.tsx
+│       │   │   │   ├── GovernedLoopSection.tsx
+│       │   │   │   ├── Header.tsx
+│       │   │   │   ├── HowItWorksSection.tsx
+│       │   │   │   ├── IndustryBenefits.tsx
+│       │   │   │   ├── LandingLayout.tsx
+│       │   │   │   ├── Layout.tsx
+│       │   │   │   ├── LivingLoopAnimation.tsx
+│       │   │   │   ├── Logo.tsx
+│       │   │   │   ├── MarketingHero.tsx
+│       │   │   │   ├── NarrativeSection.tsx
+│       │   │   │   ├── PersonaCanvasScenes.tsx
+│       │   │   │   ├── PersonaCards.tsx
+│       │   │   │   ├── RoleBasedIntelligence.tsx
+│       │   │   │   ├── SolutionReveal.tsx
+│       │   │   │   ├── TheSpineSection.tsx
+│       │   │   │   ├── ThreePlaneArchitecture.tsx
+│       │   │   │   ├── ToolLogos.tsx
+│       │   │   │   ├── UseCasesSection.tsx
+│       │   │   │   ├── ValueDeliveryCTA.tsx
+│       │   │   │   ├── WorkspacePreview.tsx
+│       │   │   │   └── index.ts
+│       │   │   ├── layouts/
+│       │   │   │   ├── app-shell.tsx
+│       │   │   │   ├── ctx-sidebar.tsx
+│       │   │   │   ├── kb-header.tsx
+│       │   │   │   ├── os-shell.tsx
+│       │   │   │   ├── page-layouts.tsx
+│       │   │   │   ├── smart-sidebar.tsx
+│       │   │   │   ├── top-bar.tsx
+│       │   │   │   ├── unified-page-template.tsx
+│       │   │   │   └── unified-shell.tsx
+│       │   │   ├── legacy-engine/
+│       │   │   │   ├── AIChatInterface.tsx
+│       │   │   │   ├── AIInsightsReveal.tsx
+│       │   │   │   ├── AILoader.tsx
+│       │   │   │   └── PersonaAssessment.tsx
+│       │   │   ├── loader/
+│       │   │   │   └── file-upload-handler.tsx
+│       │   │   ├── marketing/
+│       │   │   │   ├── attribution.tsx
+│       │   │   │   ├── campaigns.tsx
+│       │   │   │   ├── dashboard.tsx
+│       │   │   │   ├── email-studio.tsx
+│       │   │   │   ├── forms.tsx
+│       │   │   │   └── social.tsx
+│       │   │   ├── marketing-site/
+│       │   │   │   ├── landing/
+│       │   │   │   │   ├── Audience.tsx
+│       │   │   │   │   ├── AudiencePage.tsx
+│       │   │   │   │   ├── Comparison.tsx
+│       │   │   │   │   ├── Differentiators.tsx
+│       │   │   │   │   ├── DifferentiatorsDetail.tsx
+│       │   │   │   │   ├── Footer.tsx
+│       │   │   │   │   ├── GenericMarketingPage.tsx
+│       │   │   │   │   ├── GenericPage.tsx
+│       │   │   │   │   ├── Hero.tsx
+│       │   │   │   │   ├── Integrations.tsx
+│       │   │   │   │   ├── Layout.tsx
+│       │   │   │   │   ├── Navbar.tsx
+│       │   │   │   │   ├── Pillars.tsx
+│       │   │   │   │   ├── Pricing.tsx
+│       │   │   │   │   ├── PricingPage.tsx
+│       │   │   │   │   ├── Problem.tsx
+│       │   │   │   │   ├── ProblemPage.tsx
+│       │   │   │   │   ├── TechnicalPage.tsx
+│       │   │   │   │   ├── logo.tsx
+│       │   │   │   │   ├── page-content.ts
+│       │   │   │   │   ├── product-catalog.ts
+│       │   │   │   │   └── sections.tsx
+│       │   │   │   └── architecture-visualization.tsx
+│       │   │   ├── motion/
+│       │   │   │   ├── AnimateIn.tsx
+│       │   │   │   └── index.ts
+│       │   │   ├── navigation/
+│       │   │   │   ├── command-palette.tsx
+│       │   │   │   ├── sidebar.tsx
+│       │   │   │   └── top-bar.tsx
+│       │   │   ├── notifications/
+│       │   │   │   └── notification-center.tsx
+│       │   │   ├── onboarding/
+│       │   │   │   ├── role-domain/
+│       │   │   │   │   ├── account-success/
+│       │   │   │   │   │   └── modules.ts
+│       │   │   │   │   ├── bizops/
+│       │   │   │   │   │   └── modules.ts
+│       │   │   │   │   ├── business-ops/
+│       │   │   │   │   │   └── modules.ts
+│       │   │   │   │   ├── finance/
+│       │   │   │   │   │   └── modules.ts
+│       │   │   │   │   ├── it-admin/
+│       │   │   │   │   │   └── modules.ts
+│       │   │   │   │   ├── marketing/
+│       │   │   │   │   │   └── modules.ts
+│       │   │   │   │   ├── procurement/
+│       │   │   │   │   │   └── modules.ts
+│       │   │   │   │   ├── product-engineering/
+│       │   │   │   │   │   └── modules.ts
+│       │   │   │   │   ├── revops/
+│       │   │   │   │   │   └── modules.ts
+│       │   │   │   │   ├── salesops/
+│       │   │   │   │   │   └── modules.ts
+│       │   │   │   │   ├── service/
+│       │   │   │   │   │   └── modules.ts
+│       │   │   │   │   └── student-teacher/
+│       │   │   │   │       └── modules.ts
+│       │   │   │   ├── steps/
+│       │   │   │   │   ├── ConnectorStep.tsx
+│       │   │   │   │   ├── DomainStep.tsx
+│       │   │   │   │   └── IdentityStep.tsx
+│       │   │   │   ├── AILoader.tsx
+│       │   │   │   ├── OnboardingFlow.tsx
+│       │   │   │   ├── SchemaSelector.tsx
+│       │   │   │   └── WorkplaceLoading.tsx
+│       │   │   ├── os/
+│       │   │   │   ├── action-bar.tsx
+│       │   │   │   ├── evidence-drawer.tsx
+│       │   │   │   ├── knowledge-panel.tsx
+│       │   │   │   ├── signal-strip.tsx
+│       │   │   │   └── situations-panel.tsx
+│       │   │   ├── paywall/
+│       │   │   │   ├── FeatureGate.tsx
+│       │   │   │   ├── PlanBadge.tsx
+│       │   │   │   ├── PlanComparisonTable.tsx
+│       │   │   │   ├── UpgradePrompt.tsx
+│       │   │   │   ├── UsageMeter.tsx
+│       │   │   │   └── index.ts
+│       │   │   ├── personal/
+│       │   │   │   ├── accounts/
+│       │   │   │   │   └── personal-accounts-view.tsx
+│       │   │   │   ├── analytics/
+│       │   │   │   │   └── personal-analytics-view.tsx
+│       │   │   │   ├── calendar/
+│       │   │   │   │   └── personal-calendar-view.tsx
+│       │   │   │   ├── contacts/
+│       │   │   │   │   └── personal-contacts-view.tsx
+│       │   │   │   ├── docs/
+│       │   │   │   │   └── personal-docs-view.tsx
+│       │   │   │   ├── expansion/
+│       │   │   │   │   └── personal-expansion-view.tsx
+│       │   │   │   ├── home/
+│       │   │   │   │   └── personal-home-view.tsx
+│       │   │   │   ├── knowledge/
+│       │   │   │   │   └── personal-knowledge-view.tsx
+│       │   │   │   ├── meetings/
+│       │   │   │   │   └── personal-meetings-view.tsx
+│       │   │   │   ├── notes/
+│       │   │   │   │   └── personal-notes-view.tsx
+│       │   │   │   ├── pipeline/
+│       │   │   │   │   └── personal-pipeline-view.tsx
+│       │   │   │   ├── projects/
+│       │   │   │   │   └── personal-projects-view.tsx
+│       │   │   │   ├── risks/
+│       │   │   │   │   └── personal-risks-view.tsx
+│       │   │   │   └── team/
+│       │   │   │       └── personal-team-view.tsx
+│       │   │   ├── providers/
+│       │   │   │   ├── evidence-provider.tsx
+│       │   │   │   └── spine-context-provider.tsx
+│       │   │   ├── rbac/
+│       │   │   │   └── PermissionGate.tsx
+│       │   │   ├── realtime/
+│       │   │   │   └── RealtimeProvider.tsx
+│       │   │   ├── sales/
+│       │   │   │   ├── sales-views/
+│       │   │   │   │   └── index.tsx
+│       │   │   │   ├── salesops-dashboard/
+│       │   │   │   │   └── index.tsx
+│       │   │   │   ├── activities.tsx
+│       │   │   │   ├── contacts.tsx
+│       │   │   │   ├── dashboard.tsx
+│       │   │   │   ├── deals.tsx
+│       │   │   │   ├── forecasting.tsx
+│       │   │   │   ├── pipeline.tsx
+│       │   │   │   ├── quotes.tsx
+│       │   │   │   ├── sales-views-original.tsx
+│       │   │   │   └── salesops-dashboard-original.tsx
+│       │   │   ├── shared/
+│       │   │   │   ├── EvidenceDrawer.tsx
+│       │   │   │   └── analytics-shell.tsx
+│       │   │   ├── shell/
+│       │   │   │   ├── IntelligencePanel.tsx
+│       │   │   │   ├── MainSidebar.tsx
+│       │   │   │   ├── TopBar.tsx
+│       │   │   │   └── UnifiedShell.tsx
+│       │   │   ├── signals/
+│       │   │   │   ├── live-signals-strip-wired.tsx
+│       │   │   │   └── live-signals-strip.tsx
+│       │   │   ├── site/
+│       │   │   │   ├── pages/
+│       │   │   │   │   ├── ContactPage.tsx
+│       │   │   │   │   ├── DemoPage.tsx
+│       │   │   │   │   ├── DocsPage.tsx
+│       │   │   │   │   ├── HomePage.tsx
+│       │   │   │   │   ├── ImplementationsPage.tsx
+│       │   │   │   │   ├── LegalPage.tsx
+│       │   │   │   │   └── SignupPage.tsx
+│       │   │   │   ├── BrandLogo.tsx
+│       │   │   │   ├── SiteFooter.tsx
+│       │   │   │   ├── SiteHeader.tsx
+│       │   │   │   └── SitePrimitives.tsx
+│       │   │   ├── spine/
+│       │   │   │   ├── domain-data-registry.ts
+│       │   │   │   ├── metric-card.tsx
+│       │   │   │   ├── page-header.tsx
+│       │   │   │   ├── readiness-bar.tsx
+│       │   │   │   ├── spine-client.tsx
+│       │   │   │   └── types.ts
+│       │   │   ├── support/
+│       │   │   │   └── help-widget.tsx
+│       │   │   ├── think/
+│       │   │   │   ├── active-situations-wired.tsx
+│       │   │   │   └── active-situations.tsx
+│       │   │   ├── ui/
+│       │   │   │   ├── accordion.tsx
+│       │   │   │   ├── alert-dialog.tsx
+│       │   │   │   ├── alert.tsx
+│       │   │   │   ├── aspect-ratio.tsx
+│       │   │   │   ├── avatar.tsx
+│       │   │   │   ├── badge.tsx
+│       │   │   │   ├── breadcrumb.tsx
+│       │   │   │   ├── button-group.tsx
+│       │   │   │   ├── button.tsx
+│       │   │   │   ├── calendar.tsx
+│       │   │   │   ├── card.tsx
+│       │   │   │   ├── carousel.tsx
+│       │   │   │   ├── chart.tsx
+│       │   │   │   ├── checkbox.tsx
+│       │   │   │   ├── collapsible.tsx
+│       │   │   │   ├── command.tsx
+│       │   │   │   ├── context-menu.tsx
+│       │   │   │   ├── dialog.tsx
+│       │   │   │   ├── drawer.tsx
+│       │   │   │   ├── dropdown-menu.tsx
+│       │   │   │   ├── empty-state.tsx
+│       │   │   │   ├── empty.tsx
+│       │   │   │   ├── field.tsx
+│       │   │   │   ├── form.tsx
+│       │   │   │   ├── hover-card.tsx
+│       │   │   │   ├── input-group.tsx
+│       │   │   │   ├── input-otp.tsx
+│       │   │   │   ├── input.tsx
+│       │   │   │   ├── item.tsx
+│       │   │   │   ├── kbd.tsx
+│       │   │   │   ├── label.tsx
+│       │   │   │   ├── lazy-image.tsx
+│       │   │   │   ├── loading-states.tsx
+│       │   │   │   ├── menubar.tsx
+│       │   │   │   ├── navigation-menu.tsx
+│       │   │   │   ├── pagination.tsx
+│       │   │   │   ├── popover.tsx
+│       │   │   │   ├── progress.tsx
+│       │   │   │   ├── radio-group.tsx
+│       │   │   │   ├── resizable.tsx
+│       │   │   │   ├── scroll-area.tsx
+│       │   │   │   ├── select.tsx
+│       │   │   │   ├── separator.tsx
+│       │   │   │   ├── sheet.tsx
+│       │   │   │   ├── sidebar.tsx
+│       │   │   │   ├── skeleton.tsx
+│       │   │   │   ├── slider.tsx
+│       │   │   │   ├── sonner.tsx
+│       │   │   │   ├── spinner.tsx
+│       │   │   │   ├── switch.tsx
+│       │   │   │   ├── table.tsx
+│       │   │   │   ├── tabs.tsx
+│       │   │   │   ├── textarea.tsx
+│       │   │   │   ├── toggle-group.tsx
+│       │   │   │   ├── toggle.tsx
+│       │   │   │   ├── tooltip.tsx
+│       │   │   │   ├── use-mobile.ts
+│       │   │   │   └── utils.ts
+│       │   │   ├── utils/
+│       │   │   │   └── numerology.ts
+│       │   │   ├── views/
+│       │   │   │   ├── act/
+│       │   │   │   │   ├── history-view.tsx
+│       │   │   │   │   └── run-details-view.tsx
+│       │   │   │   ├── admin/
+│       │   │   │   │   ├── index.tsx
+│       │   │   │   │   └── release-dashboard.tsx
+│       │   │   │   ├── cs/
+│       │   │   │   │   └── index.tsx
+│       │   │   │   ├── entity/
+│       │   │   │   │   └── entity-360-view.tsx
+│       │   │   │   ├── finance/
+│       │   │   │   │   └── index.tsx
+│       │   │   │   ├── marketing/
+│       │   │   │   │   └── index.tsx
+│       │   │   │   ├── projects/
+│       │   │   │   │   └── index.tsx
+│       │   │   │   ├── sales/
+│       │   │   │   │   ├── accounts-view.tsx
+│       │   │   │   │   ├── contacts-view.tsx
+│       │   │   │   │   ├── deals-view.tsx
+│       │   │   │   │   ├── index.ts
+│       │   │   │   │   ├── insights-view.tsx
+│       │   │   │   │   ├── leads-view.tsx
+│       │   │   │   │   ├── pipeline-view.tsx
+│       │   │   │   │   ├── situations-view.tsx
+│       │   │   │   │   ├── tasks-view.tsx
+│       │   │   │   │   └── today-view.tsx
+│       │   │   │   ├── shared/
+│       │   │   │   │   └── cross-domain-views.tsx
+│       │   │   │   ├── stubs/
+│       │   │   │   │   ├── admin-stub.tsx
+│       │   │   │   │   └── view-stub.tsx
+│       │   │   │   ├── ActHistoryView.tsx
+│       │   │   │   ├── AuditLogsView.tsx
+│       │   │   │   ├── Entity360View.tsx
+│       │   │   │   ├── ProtectedView.tsx
+│       │   │   │   ├── TodayView.tsx
+│       │   │   │   ├── ViewRenderer.tsx
+│       │   │   │   ├── WebhookEventsView.tsx
+│       │   │   │   ├── act-dashboard.tsx
+│       │   │   │   ├── adjust-dashboard.tsx
+│       │   │   │   ├── ai-conversations-view.tsx
+│       │   │   │   ├── architecture-view.tsx
+│       │   │   │   ├── audit-dashboard.tsx
+│       │   │   │   ├── bridge-dashboard.tsx
+│       │   │   │   ├── business-dashboard.tsx
+│       │   │   │   ├── campaigns-view.tsx
+│       │   │   │   ├── client-detail-view.tsx
+│       │   │   │   ├── clients-view.tsx
+│       │   │   │   ├── content-library-view.tsx
+│       │   │   │   ├── context-dashboard.tsx
+│       │   │   │   ├── context-view.tsx
+│       │   │   │   ├── customers-view.tsx
+│       │   │   │   ├── data-flow-view.tsx
+│       │   │   │   ├── data-sources-view.tsx
+│       │   │   │   ├── deals-view.tsx
+│       │   │   │   ├── finance-view.tsx
+│       │   │   │   ├── govern-dashboard.tsx
+│       │   │   │   ├── home-view.tsx
+│       │   │   │   ├── integrations-view.tsx
+│       │   │   │   ├── knowledge-dashboard.tsx
+│       │   │   │   ├── knowledge-view.tsx
+│       │   │   │   ├── leads-view.tsx
+│       │   │   │   ├── n8n-dashboard.tsx
+│       │   │   │   ├── os-home-view-wired.tsx
+│       │   │   │   ├── os-home-view.tsx
+│       │   │   │   ├── pipeline-view.tsx
+│       │   │   │   ├── products-view.tsx
+│       │   │   │   ├── profile-view.tsx
+│       │   │   │   ├── projects-view.tsx
+│       │   │   │   ├── sales-hub-view.tsx
+│       │   │   │   ├── services-view.tsx
+│       │   │   │   ├── sessions-view.tsx
+│       │   │   │   ├── strategic-hub-view.tsx
+│       │   │   │   ├── think-dashboard.tsx
+│       │   │   │   ├── today-dashboard.tsx
+│       │   │   │   ├── view-components.tsx
+│       │   │   │   ├── view-stub.tsx
+│       │   │   │   └── website-manager-view.tsx
+│       │   │   ├── website/
+│       │   │   │   ├── blog.tsx
+│       │   │   │   ├── dashboard.tsx
+│       │   │   │   ├── media.tsx
+│       │   │   │   ├── pages.tsx
+│       │   │   │   ├── seo.tsx
+│       │   │   │   └── theme.tsx
+│       │   │   ├── workflow-builder/
+│       │   │   │   └── workflow-canvas.tsx
+│       │   │   ├── workspace/
+│       │   │   │   ├── animated-content-router.tsx
+│       │   │   │   ├── content-router.tsx
+│       │   │   │   ├── dashboard-view.tsx
+│       │   │   │   ├── data-density-scorer.ts
+│       │   │   │   ├── feature-bag-sidebar.tsx
+│       │   │   │   ├── loader-phase1.tsx
+│       │   │   │   ├── settings-view.tsx
+│       │   │   │   ├── workspace-config.ts
+│       │   │   │   └── workspace-shell-new.tsx
+│       │   │   ├── ProtectedView.tsx
+│       │   │   ├── integratewise-logo.tsx
+│       │   │   └── integrations-hub.tsx
+│       │   ├── config/
+│       │   │   ├── os-shell-registry.ts
+│       │   │   └── plan-tiers.ts
+│       │   ├── contexts/
+│       │   │   ├── ctx-context.tsx
+│       │   │   ├── tenant-context.tsx
+│       │   │   ├── workspace-bag-context.tsx
+│       │   │   └── world-scope.tsx
+│       │   ├── hooks/
+│       │   │   ├── use-accelerator.ts
+│       │   │   ├── use-agent-colony.ts
+│       │   │   ├── use-api.ts
+│       │   │   ├── use-billing.ts
+│       │   │   ├── use-cs-data.ts
+│       │   │   ├── use-flow-b.ts
+│       │   │   ├── use-flow-c.ts
+│       │   │   ├── use-l2.ts
+│       │   │   ├── use-rbac.ts
+│       │   │   ├── use-reduced-motion.ts
+│       │   │   ├── use-signals.ts
+│       │   │   ├── use-situations.ts
+│       │   │   ├── use-toast.ts
+│       │   │   ├── useAdminRoles.ts
+│       │   │   ├── useCognitiveData.ts
+│       │   │   ├── useDeals.ts
+│       │   │   ├── useRBAC.ts
+│       │   │   └── useViewAccess.ts
+│       │   ├── lib/
+│       │   │   ├── rbac/
+│       │   │   │   ├── roles.ts
+│       │   │   │   └── types.ts
+│       │   │   ├── api-client.ts
+│       │   │   ├── api-cs.ts
+│       │   │   ├── api.ts
+│       │   │   ├── app-urls.ts
+│       │   │   ├── billing-client.ts
+│       │   │   ├── entitlements.ts
+│       │   │   ├── l2-client.ts
+│       │   │   ├── onboarding-api.ts
+│       │   │   ├── spine-client.ts
+│       │   │   ├── spine.ts
+│       │   │   ├── stream-client.ts
+│       │   │   ├── ui-audit-manifest.ts
+│       │   │   └── utils.ts
+│       │   ├── pages/
+│       │   │   └── Dashboard.tsx
+│       │   ├── shims/
+│       │   │   ├── next-image.tsx
+│       │   │   ├── next-link.tsx
+│       │   │   └── next-navigation.ts
+│       │   ├── types/
+│       │   │   ├── admin.ts
+│       │   │   ├── ctx.ts
+│       │   │   ├── externals.d.ts
+│       │   │   └── uuid.ts
+│       │   ├── utils/
+│       │   │   └── supabase/
+│       │   │       ├── client.ts
+│       │   │       └── info.tsx
+│       │   ├── App.tsx
+│       │   ├── AppShell.tsx
+│       │   ├── app.css
+│       │   ├── main.tsx
+│       │   ├── routes.tsx
+│       │   └── vite-env.d.ts
+│       ├── test-results/
+│       │   ├── marketing-pages-Marketing--13490-tion-loads-without-redirect-chromium/
+│       │   │   ├── error-context.md
+│       │   │   └── test-failed-1.png
+│       │   ├── marketing-pages-Marketing--16371-ding-loads-without-redirect-chromium/
+│       │   │   ├── error-context.md
+│       │   │   └── test-failed-1.png
+│       │   ├── marketing-pages-Marketing--405bc-rity-loads-without-redirect-chromium/
+│       │   │   ├── error-context.md
+│       │   │   └── test-failed-1.png
+│       │   ├── marketing-pages-Marketing--4f051-gnup-loads-without-redirect-chromium/
+│       │   │   ├── error-context.md
+│       │   │   └── test-failed-1.png
+│       │   ├── marketing-pages-Marketing--57179-vacy-loads-without-redirect-chromium/
+│       │   │   ├── error-context.md
+│       │   │   └── test-failed-1.png
+│       │   ├── marketing-pages-Marketing--65af9-ures-loads-without-redirect-chromium/
+│       │   │   ├── error-context.md
+│       │   │   └── test-failed-1.png
+│       │   ├── marketing-pages-Marketing--6ff66-erms-loads-without-redirect-chromium/
+│       │   │   ├── error-context.md
+│       │   │   └── test-failed-1.png
+│       │   ├── marketing-pages-Marketing--ac1d0-e-controls-are-keyboardable-chromium/
+│       │   │   ├── error-context.md
+│       │   │   └── test-failed-1.png
+│       │   ├── marketing-pages-Marketing--bc169-rces-loads-without-redirect-chromium/
+│       │   │   ├── error-context.md
+│       │   │   └── test-failed-1.png
+│       │   ├── marketing-pages-Marketing--bc3a9--stay-responsive-at-desktop-chromium/
+│       │   │   ├── error-context.md
+│       │   │   └── test-failed-1.png
+│       │   ├── marketing-pages-Marketing--d1f49-s-stay-responsive-at-mobile-chromium/
+│       │   │   ├── error-context.md
+│       │   │   └── test-failed-1.png
+│       │   ├── marketing-pages-Marketing--d521d-s-stay-responsive-at-tablet-chromium/
+│       │   │   ├── error-context.md
+│       │   │   └── test-failed-1.png
+│       │   ├── marketing-pages-Marketing--d6303-bout-loads-without-redirect-chromium/
+│       │   │   ├── error-context.md
+│       │   │   └── test-failed-1.png
+│       │   ├── marketing-pages-Marketing--fec3a-tact-loads-without-redirect-chromium/
+│       │   │   ├── error-context.md
+│       │   │   └── test-failed-1.png
+│       │   └── marketing-pages-Pricing-re-60192-pp-pricing-redirects-to-app-chromium/
+│       │       ├── error-context.md
+│       │       └── test-failed-1.png
+│       ├── SHIM_MODULES_CREATED.md
+│       ├── doppler.yaml
+│       ├── index.html
+│       ├── package.json
+│       ├── playwright.config.ts
+│       ├── tsconfig.json
+│       ├── tsconfig.node.json
+│       ├── tsconfig.tsbuildinfo
+│       ├── vite-env.d.ts
+│       ├── vite.config.d.ts
+│       └── vite.config.ts
+├── configs/
+│   ├── root/
+│   │   ├── firebase.json
+│   │   ├── pnpm-workspace.yaml
+│   │   ├── tsconfig.base.json
+│   │   ├── turbo.json
+│   │   └── vercel.json
+│   ├── scripts/
+│   │   └── validate-configs.sh
+│   ├── templates/
+│   │   ├── packages/
+│   │   │   ├── tsconfig.json
+│   │   │   └── tsup.config.ts
+│   │   └── services/
+│   │       ├── tsconfig.json
+│   │       └── wrangler.toml
+│   └── README.md
+├── docs/
+│   ├── New Folder With Items/
+│   │   ├── AGENTS_AND_WORKFLOWS_EFFICIENT_BUSINESS_OPS.md
+│   │   ├── AGENT_WORKFLOWS_INDEX.md
+│   │   ├── BUSINESS_USER_NAV_AND_SCHEMA.md
+│   │   ├── CONSOLIDATED_AGENT_TODO.md
+│   │   ├── CONSOLIDATED_IMPLEMENTATION_REFERENCE.md
+│   │   ├── CONSOLIDATED_WORK_REVIEW.md
+│   │   ├── CURSOR_AND_ENVIRONMENTS.md
+│   │   ├── CURSOR_DEVELOPMENT_BEST_PRACTICES.md
+│   │   ├── CURSOR_WORKSPACE_SETUP.md
+│   │   ├── FLOW_C_AI_CHATS_KNOWLEDGE_AND_NO_HALLUCINATION_LIBRARY.md
+│   │   ├── FULL_DATA_FLOW_FROM_LANDING.md
+│   │   ├── FULL_DATA_FLOW_SPEC.md
+│   │   ├── MCP_ACTIVATION_AND_TESTING.md
+│   │   ├── README.md
+│   │   ├── VERIFICATION_PAYWALL_ADMIN_TENANT_USER.md
+│   │   ├── WEBHOOKS_AND_SLACK_APP.md
+│   │   ├── WORKSPACE_AUDIT_ORPHANS.md
+│   │   ├── Work_2646f160-e5ac-43be-9c77-13c40eeb645c.md
+│   │   ├── Work_7e4f5a2b-9c3d-4e1f-a0b1-2c3d4e5f6a7b.md
+│   │   ├── Work_<Cursor_Request_ID>.md
+│   │   ├── Work_Cursor_Request_ID.md
+│   │   ├── Work_Pending items.md
+│   │   └── Work_glowingpancake-stitch.md
+│   ├── architecture/
+│   │   ├── Spine/
+│   │   │   └── drive-download-20260320T091258Z-3-001/
+│   │   ├── ARCHITECTURE.md
+│   │   ├── BFF_WIRING.md
+│   │   ├── COMPLETE_PRODUCT_ARCHITECTURE.md
+│   │   ├── CONNECTOR_AGENT_BRIEFS.md
+│   │   ├── CONNECTOR_CATALOG_PLAN.md
+│   │   ├── CONSOLIDATED_HARDENING_PLAN.md
+│   │   ├── CUSTOMER_SUPPORT_AND_FEEDBACK_ARCHITECTURE.md
+│   │   ├── DATA_FLOW_LOADER_NORMALIZER_SPINE_AND_CONTEXT.md
+│   │   ├── DATA_LEAK_AUDIT_LAYERS.md
+│   │   ├── DEPARTMENTS_INDUSTRIES_SPINE_MODEL.md
+│   │   ├── DESIGN_SOURCES_INTEGRATION.md
+│   │   ├── ENTERPRISE_CONNECTOR_SPEC.md
+│   │   ├── FIRST_HARDENING_SCOPE.md
+│   │   ├── HAPPY_PATH_WIRING_12_DEPARTMENTS.md
+│   │   ├── HARDENING_AND_WIRING.md
+│   │   ├── INITIAL_HYDRATION_AND_ENTITY360_BOUNDARY.md
+│   │   ├── INPUT_SOURCE_TOUCH_MAP.md
+│   │   ├── INTEGRATEWISE_BIZOPS_DATA_FLOW.md
+│   │   ├── INTELLIGENCE_LAYER_SERVICES.md
+│   │   ├── MARKETING_PRODUCT_AGNOSTIC_SCHEMA_PLAN.md
+│   │   ├── MULESOFT_ACCOUNT_SUCCESS_SPINE.md
+│   │   ├── MULESOFT_CS_AND_BUSINESS_USERS_FOCUS.md
+│   │   ├── PRODUCTION_SERVICE_RUNTIME_MAP.md
+│   │   ├── PRODUCT_ARCHITECTURE.md
+│   │   ├── PRODUCT_ARCHITECTURE_FROM_CODE.md
+│   │   ├── README.md
+│   │   ├── SCHEMA_DISCOVERY.md
+│   │   ├── SEQUENCE_AND_DATA_FLOW_DIAGRAM.md
+│   │   ├── SPINE_AS_FOUNDATION_ARCHITECTURE.md
+│   │   ├── SPINE_END_TO_END_FLOW_DIAGRAM.md
+│   │   ├── SPINE_SCHEMA_GROWTH_AND_ROUTER.md
+│   │   ├── SYSTEM_ARCHITECTURE_INDEX.md
+│   │   ├── WIRING_CHECK_SUMMARY.md
+│   │   ├── WIRING_ROADMAP.md
+│   │   └── WORKSPACE_HARDENING_PLAN_WHAT_HOW.md
+│   ├── archive/
+│   │   ├── legacy-workspace/
+│   │   │   ├── ACTIVE_WEBHOOK_SYSTEM.md
+│   │   │   ├── ACTUAL_INFRASTRUCTURE_COSTS.md
+│   │   │   ├── ARCHITECTURE_PLAN.md
+│   │   │   ├── ATLAS_SPINE_EXTENDED_INTEGRATIONS.md
+│   │   │   ├── ATLAS_SPINE_TABLE_RELATIONSHIPS.md
+│   │   │   ├── BILLING_QUICK_REFERENCE.md
+│   │   │   ├── BILLING_SETUP.md
+│   │   │   ├── CLOUDFLARE_WORKERS_ARCHITECTURE.md
+│   │   │   ├── COMPLETE_IMPLEMENTATION_ROADMAP.md
+│   │   │   ├── CONSOLIDATION_MAP.json
+│   │   │   ├── DEPLOYMENT_ARCHITECTURE.md
+│   │   │   └── README.md
+│   │   ├── CONNECTOR_CATALOG_PLAN_STUB.md
+│   │   ├── INTEGRATION_OS_MASTER_STRATEGY.md
+│   │   ├── README.md
+│   │   ├── SEQUENCE_AND_DATA_FLOW_STUB.md
+│   │   └── SYSTEM_ARCHITECTURE_INDEX_STUB.md
+│   ├── assets/
+│   │   ├── spine-end-to-end-flow-canonical.png
+│   │   └── workflow-cognitive-layer-entity360.png
+│   ├── playbooks/
+│   │   ├── README.md
+│   │   ├── connector-go-live.md
+│   │   ├── release-readiness.md
+│   │   └── tenant-onboarding-and-initial-hydration.md
+│   ├── reference/
+│   │   ├── CSM_ACCOUNT_MANAGEMENT_SCHEMA_MAPPING.md
+│   │   └── CSM_ACCOUNT_MANAGEMENT_SCHEMA_REFERENCE.sql
+│   ├── runbooks/
+│   │   ├── README.md
+│   │   ├── connector-oauth-troubleshooting.md
+│   │   ├── data-recovery.md
+│   │   ├── deployment-and-rollback.md
+│   │   ├── incident-response.md
+│   │   └── sync-failure-and-dlq-redrive.md
+│   ├── ui/
+│   │   ├── APP_ROUTE_INVENTORY.md
+│   │   └── APP_UI_AUDIT_MATRIX.md
+│   ├── ADMIN_WEBHOOKS_SERVICES_CHECK.md
+│   ├── AGENTS_AND_WORKFLOWS_EFFICIENT_BUSINESS_OPS.md
+│   ├── AGENT_RUNS_GOVERNED_EXECUTION_LOOP.md
+│   ├── AGENT_WORKFLOWS_INDEX.md
+│   ├── AGENT_WORK_CONSOLIDATED_TABLE.md
+│   ├── AGENT_WORK_CONSOLIDATED_TODO.md
+│   ├── AGENT_WORK_CONSOLIDATED_TODO_TABLE.md
+│   ├── API_ROUTES.md
+│   ├── ASSET_MIGRATION_PLAN.md
+│   ├── BEST_PRACTICES_IMPLEMENTATION.md
+│   ├── BEST_PRACTICES_MASTER_CHECKLIST.md
+│   ├── BRAND_MESSAGING_SYSTEM.md
+│   ├── BUSINESS_USER_NAV_AND_SCHEMA.md
+│   ├── BYOM_AND_TEMPLATES.md
+│   ├── CANONICAL_DOCS_EXTRACTION_REPORT.md
+│   ├── CI_CD_DEPLOYMENT.md
+│   ├── CLEAN_ARCHITECTURE.md
+│   ├── CLOUDFLARE_ENV_AND_E2E_ALIGNMENT.md
+│   ├── CODE_STANDARDS_COMPARISON_REPOS.md
+│   ├── COMMIT_SCAN_RELATED_REPOS.md
+│   ├── COMPLETE_USER_JOURNEY.md
+│   ├── CONNECTOR_CATALOG_PLAN.md
+│   ├── CONNECTOR_IMPLEMENTATION_TODO.md
+│   ├── CONNECTOR_MARKETING_IMPLEMENTATION_REPORT.md
+│   ├── CONSOLIDATED_IMPLEMENTATION_REFERENCE.md
+│   ├── CONSOLIDATED_WORK_REVIEW.md
+│   ├── CONTENT_ROUTING_AUDIT.md
+│   ├── CUSTOM_DOMAINS_CLOUDFLARE.md
+│   ├── DATA_FLOW_MERMAID.md
+│   ├── DEPARTMENT_SPECIFIC_L1.md
+│   ├── DEPLOYMENT_BEST_PRACTICES.md
+│   ├── DEPLOYMENT_CLOUDFLARE_WORKERS_BUILDS.md
+│   ├── DEV_PORTAL_AND_GLOWING_PANCAKE.md
+│   ├── DONE_AND_PENDING_SUMMARY.md
+│   ├── DUPLICATES_AUDIT.md
+│   ├── END_TO_END_COMPLETENESS_AUDIT.md
+│   ├── EVENT_DRIVEN_QUEUE_CHECKLIST.md
+│   ├── EXPLORATION_AND_CONSOLIDATION_STATE.md
+│   ├── EXPLORATION_EXCAVATION_AUDIT_GAPS.md
+│   ├── FEATURE_LIST.md
+│   ├── FINAL_ARCHITECTURE_SUMMARY.md
+│   ├── FLAGSHIP_CUSTOMER_SUCCESS_PATH.md
+│   ├── FLOW_B_UNSTRUCTURED_CONTEXT_INTEGRATION.md
+│   ├── FLOW_CLASSIFIER.md
+│   ├── FLOW_C_AI_CHATS_KNOWLEDGE_AND_NO_HALLUCINATION_LIBRARY.md
+│   ├── FLOW_WIRING_COMPLETE.md
+│   ├── FLOW_WIRING_LEAKS_AUDIT.md
+│   ├── FOUNDER_DECK_MASTER.md
+│   ├── FRAMER_THEME_SYSTEM.md
+│   ├── FRONTEND_WIRING.md
+│   ├── FULL_DATA_FLOW_FROM_LANDING.md
+│   ├── FULL_DATA_FLOW_SPEC.md
+│   ├── FULL_DATA_FLOW_SPEC_MISSING_PIECES.md
+│   ├── FULL_WIRING_VERIFICATION_CHECKLIST.md
+│   ├── GETTING_STARTED.md
+│   ├── GLOSSARY_INDEX.md
+│   ├── GO_LIVE_CHECKLIST.md
+│   ├── IMPLEMENTATION_CLEAN_ARCHITECTURE.md
+│   ├── IMPLEMENTATION_COMPLETE_REFERENCE.md
+│   ├── IMPLEMENTATION_FINAL.md
+│   ├── IMPLEMENTATION_FINAL_VERIFIED.md
+│   ├── IMPLEMENTATION_SUMMARY.md
+│   ├── INFRASTRUCTURE_MAP.md
+│   ├── INSTRUCTION_MANUAL.md
+│   ├── INTEGRATEWISE_ONE_PAGER.md
+│   ├── INTEGRATEWISE_OS_IMPLEMENTATION.md
+│   ├── INTEGRATEWISE_PORTFOLIO.md
+│   ├── INTEGRATEWISE_RIGHT_STORY.md
+│   ├── INTEGRATEWISE_WEBHOOKS_EXPLORATION.md
+│   ├── INTEGRATING_AI_CONTEXT_AND_PYTHON_WITH_SPINE.md
+│   ├── INTEGRATIONS_SUPPORT.md
+│   ├── INTEGRATION_OS_MASTER_STRATEGY.md
+│   ├── KNOWLEDGE_UI_IMPLEMENTATION.md
+│   ├── L1_L2_ARCHITECTURE.md
+│   ├── LEGACY_NEON_AND_DB_EXPLORATION.md
+│   ├── LEGACY_REPO_RETIREMENT.md
+│   ├── LOCAL_DEVELOPMENT.md
+│   ├── MARKETING_DECK_CONTENT.md
+│   ├── MASTER_ARCHITECTURE_NARRATIVE.md
+│   ├── MCP_ACTIVATION_AND_TESTING.md
+│   ├── NEON_HUB_SCHEMA_REFERENCE.md
+│   ├── NEON_TO_SUPABASE_MIGRATION.md
+│   ├── ONBOARDING_DESIGN_ALIGNMENT.md
+│   ├── ONBOARDING_FLOW.md
+│   ├── ONBOARDING_QUESTIONS_CHECK.md
+│   ├── POSITIONING_AND_GTM.md
+│   ├── PRODUCTION_WIRING_BEST_PRACTICES.md
+│   ├── PRODUCT_BLUEPRINT.md
+│   ├── PRODUCT_BRAND_COLOR_GUIDE.md
+│   ├── Presentation1.pdf
+│   ├── README.md
+│   ├── REAL_USER_FLOW.md
+│   ├── RELATED_REPOS_AUDIT_AND_EXCAVATION.md
+│   ├── REPLAN_TODO.md
+│   ├── REPO_STRUCTURE.md
+│   ├── SALES_DECK_CONTENT.md
+│   ├── SECRETS_CHECKLIST.md
+│   ├── SECRETS_STORE_SETUP.md
+│   ├── SEQUENCE_AND_DATA_FLOW_DIAGRAM.md
+│   ├── SERVICES_APPS_AND_GROUNDING_CHECK.md
+│   ├── SINGLE_REPO_CONSOLIDATION.md
+│   ├── SLACK_FLOW_C_IMPLEMENTATION.md
+│   ├── SLACK_TENANT_MAPPING.md
+│   ├── SLACK_WORKFLOWS_AND_CONNECTIVITY_PLAN.md
+│   ├── SOLO_FOUNDER_BEST_PRACTICES.md
+│   ├── SUPABASE_CLOUDFLARE_BINDING_AND_FEATURES.md
+│   ├── SYSTEM_ARCHITECTURE_INDEX.md
+│   ├── TECHNICAL_DOCUMENT.md
+│   ├── TEST_MCP_FIGMA.md
+│   ├── THREE_LAYER_ARCHITECTURE.md
+│   ├── TREASURE_EXCAVATION_MICRO.md
+│   ├── TRIAGE_SERVICE.md
+│   ├── TWO_VIEW_MODEL_VERIFICATION.md
+│   ├── UNIFIED_SYSTEM_WITH_WORKSPACE.md
+│   ├── VERIFICATION_PAYWALL_ADMIN_TENANT_USER.md
+│   ├── WEBHOOKS_AND_SLACK_APP.md
+│   ├── WIRING_CONSTANT_VARIABLE_ARCHITECTURE.md
+│   ├── WORKERS_OBSERVABILITY_OTLP.md
+│   ├── WORKSPACE_AUDIT_ORPHANS.md
+│   ├── WORKSPACE_HARDENING_SPEC.md
+│   ├── WORK_COMPLETE_SUMMARY.md
+│   ├── WORK_FROM_NEW_FOLDER_ORDERED_AND_WIRED.md
+│   └── cursor_phase_2_analytics_and_ai_integra.md
+├── migrations/
+│   ├── supabase-export/
+│   │   └── supabase_public_schema_data.sql
+│   ├── 20250106_ai_conversations.sql
+│   └── 20260301_product_skus_and_billing.sql
+├── packages/
+│   ├── accelerators/
+│   │   ├── src/
+│   │   │   ├── packs/
+│   │   │   │   ├── commercial-pack.ts
+│   │   │   │   ├── cs-growth-pack.ts
+│   │   │   │   ├── csm-role.ts
+│   │   │   │   ├── domain-intelligence.ts
+│   │   │   │   ├── enterprise-governance-pack.ts
+│   │   │   │   ├── exec-role.ts
+│   │   │   │   ├── foundation-pack.ts
+│   │   │   │   ├── revenue-pack.ts
+│   │   │   │   ├── saas-vertical.ts
+│   │   │   │   └── universal-packs.ts
+│   │   │   ├── index.ts
+│   │   │   ├── registry.ts
+│   │   │   ├── runner.ts
+│   │   │   └── types.ts
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   └── tsconfig.tsbuildinfo
+│   ├── analytics/
+│   │   ├── src/
+│   │   │   ├── providers/
+│   │   │   │   ├── amplitude.ts
+│   │   │   │   ├── console.ts
+│   │   │   │   ├── mixpanel.ts
+│   │   │   │   └── posthog.ts
+│   │   │   ├── hooks.ts
+│   │   │   ├── index.ts
+│   │   │   ├── manager.ts
+│   │   │   └── types.ts
+│   │   ├── README.md
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   └── tsup.config.ts
+│   ├── api/
+│   │   ├── migrations/
+│   │   │   └── 003_webhooks.sql
+│   │   ├── src/
+│   │   │   ├── ai.ts
+│   │   │   ├── db.ts
+│   │   │   ├── index.ts
+│   │   │   └── types.ts
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   └── wrangler.toml
+│   ├── config/
+│   │   ├── src/
+│   │   │   ├── env.ts
+│   │   │   ├── features.ts
+│   │   │   └── index.ts
+│   │   ├── eslint.config.js
+│   │   ├── eslint.config.mjs
+│   │   ├── package.json
+│   │   ├── test.txt
+│   │   ├── tsconfig.json
+│   │   └── tsconfig.tsbuildinfo
+│   ├── connector-contracts/
+│   │   ├── src/
+│   │   │   └── index.ts
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   ├── connector-utils/
+│   │   ├── src/
+│   │   │   └── index.ts
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   ├── connectors/
+│   │   ├── src/
+│   │   │   ├── accelerators/
+│   │   │   │   ├── engineering.ts
+│   │   │   │   ├── finance.ts
+│   │   │   │   ├── hr.ts
+│   │   │   │   ├── index.ts
+│   │   │   │   ├── india-accounting.ts
+│   │   │   │   ├── subscription.ts
+│   │   │   │   └── support-marketing.ts
+│   │   │   ├── accounting/
+│   │   │   │   ├── chargebee.ts
+│   │   │   │   ├── freshbooks.ts
+│   │   │   │   ├── quickbooks.ts
+│   │   │   │   ├── stripe.ts
+│   │   │   │   ├── xero.ts
+│   │   │   │   └── zoho-books.ts
+│   │   │   ├── ai/
+│   │   │   │   ├── anthropic.ts
+│   │   │   │   ├── cohere.ts
+│   │   │   │   └── openai.ts
+│   │   │   ├── analytics/
+│   │   │   │   ├── amplitude.ts
+│   │   │   │   ├── google-analytics.ts
+│   │   │   │   ├── heap.ts
+│   │   │   │   ├── metabase.ts
+│   │   │   │   ├── mixpanel.ts
+│   │   │   │   └── tableau.ts
+│   │   │   ├── billing/
+│   │   │   │   └── paddle.ts
+│   │   │   ├── communication/
+│   │   │   │   ├── discord.ts
+│   │   │   │   ├── gmail.ts
+│   │   │   │   ├── intercom.ts
+│   │   │   │   ├── microsoft-teams.ts
+│   │   │   │   ├── outlook.ts
+│   │   │   │   ├── slack.ts
+│   │   │   │   ├── twilio.ts
+│   │   │   │   └── zoom.ts
+│   │   │   ├── compliance/
+│   │   │   │   ├── gst-portal.ts
+│   │   │   │   ├── index.ts
+│   │   │   │   └── indiafilings.ts
+│   │   │   ├── crm/
+│   │   │   │   ├── close.ts
+│   │   │   │   ├── freshsales.ts
+│   │   │   │   ├── hubspot.ts
+│   │   │   │   ├── pipedrive.ts
+│   │   │   │   ├── salesforce.ts
+│   │   │   │   └── zoho-crm.ts
+│   │   │   ├── domain-master/
+│   │   │   │   ├── domains/
+│   │   │   │   │   ├── ai.ts
+│   │   │   │   │   ├── analytics.ts
+│   │   │   │   │   ├── commerce.ts
+│   │   │   │   │   ├── communication.ts
+│   │   │   │   │   ├── compliance.ts
+│   │   │   │   │   ├── crm.ts
+│   │   │   │   │   ├── engineering.ts
+│   │   │   │   │   ├── finance.ts
+│   │   │   │   │   ├── index.ts
+│   │   │   │   │   ├── marketing.ts
+│   │   │   │   │   ├── productivity.ts
+│   │   │   │   │   └── support.ts
+│   │   │   │   ├── catalog-bridge.ts
+│   │   │   │   ├── connector-registry.ts
+│   │   │   │   ├── domain-master-connector.ts
+│   │   │   │   ├── index.ts
+│   │   │   │   └── types.ts
+│   │   │   ├── ecommerce/
+│   │   │   │   ├── bigcommerce.ts
+│   │   │   │   ├── shopify.ts
+│   │   │   │   └── woocommerce.ts
+│   │   │   ├── marketing/
+│   │   │   │   ├── braze.ts
+│   │   │   │   ├── customer-io.ts
+│   │   │   │   ├── hubspot-marketing.ts
+│   │   │   │   ├── mailchimp.ts
+│   │   │   │   ├── marketo.ts
+│   │   │   │   ├── segment.ts
+│   │   │   │   └── sendgrid.ts
+│   │   │   ├── productivity/
+│   │   │   │   ├── airtable.ts
+│   │   │   │   ├── calendly.ts
+│   │   │   │   ├── dropbox.ts
+│   │   │   │   ├── google-calendar.ts
+│   │   │   │   ├── google-drive.ts
+│   │   │   │   ├── notion.ts
+│   │   │   │   └── onedrive.ts
+│   │   │   ├── project-management/
+│   │   │   │   ├── asana.ts
+│   │   │   │   ├── bitbucket.ts
+│   │   │   │   ├── github.ts
+│   │   │   │   ├── gitlab.ts
+│   │   │   │   ├── index.ts
+│   │   │   │   ├── jira.ts
+│   │   │   │   └── linear.ts
+│   │   │   ├── support/
+│   │   │   │   ├── freshdesk.ts
+│   │   │   │   ├── freshworks.ts
+│   │   │   │   ├── front.ts
+│   │   │   │   ├── helpscout.ts
+│   │   │   │   ├── kustomer.ts
+│   │   │   │   ├── whatsapp-business.ts
+│   │   │   │   └── zendesk.ts
+│   │   │   ├── catalog-types.ts
+│   │   │   ├── catalog.ts
+│   │   │   ├── index.ts
+│   │   │   ├── intelligent-manager.ts
+│   │   │   ├── orchestrator.ts
+│   │   │   ├── placeholders.ts
+│   │   │   ├── registry.test.ts
+│   │   │   ├── registry.ts
+│   │   │   ├── resilience.ts
+│   │   │   ├── revenue-connectors-additional.test.ts
+│   │   │   ├── revenue-connectors.test.ts
+│   │   │   ├── revenue-sync-adapters.test.ts
+│   │   │   ├── spine-emitter.ts
+│   │   │   └── sync-adapters.ts
+│   │   ├── README.md
+│   │   ├── eslint.config.mjs
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   ├── tsconfig.tsbuildinfo
+│   │   └── vitest.config.mts
+│   ├── db/
+│   │   ├── src/
+│   │   │   ├── index.ts
+│   │   │   └── supabase.ts
+│   │   ├── README.md
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   ├── hub/
+│   ├── integratewise-mcp-tool-connector/
+│   │   ├── src/
+│   │   │   ├── index.ts
+│   │   │   └── worker.ts
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   └── wrangler.toml
+│   ├── integration-tests/
+│   │   ├── src/
+│   │   │   └── stripe.test.ts
+│   │   └── package.json
+│   ├── knowledge-bank-ui/
+│   │   ├── components/
+│   │   │   ├── icons/
+│   │   │   │   ├── CloseIcon.tsx
+│   │   │   │   ├── DownloadIcon.tsx
+│   │   │   │   ├── LogoIcon.tsx
+│   │   │   │   ├── PaperclipIcon.tsx
+│   │   │   │   └── ProviderIcons.tsx
+│   │   │   ├── DemoPage.tsx
+│   │   │   ├── Header.tsx
+│   │   │   ├── InboxPage.tsx
+│   │   │   ├── SearchPage.tsx
+│   │   │   └── TopicsPage.tsx
+│   │   ├── services/
+│   │   │   └── api.ts
+│   │   ├── App.tsx
+│   │   ├── README.md
+│   │   ├── index.html
+│   │   ├── index.tsx
+│   │   ├── metadata.json
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   └── types.ts
+│   ├── lib/
+│   │   ├── src/
+│   │   │   ├── api-client.ts
+│   │   │   ├── audit.ts
+│   │   │   ├── cache.ts
+│   │   │   ├── circuit-breaker.ts
+│   │   │   ├── correlation.ts
+│   │   │   ├── db-gate.ts
+│   │   │   ├── error-handling.ts
+│   │   │   ├── index.ts
+│   │   │   ├── neon.ts
+│   │   │   ├── normalizers.ts
+│   │   │   ├── openrouter-sdk.ts
+│   │   │   ├── openrouter.ts
+│   │   │   ├── outbox.ts
+│   │   │   ├── pagination.ts
+│   │   │   ├── utils.ts
+│   │   │   └── webhook-processor.ts
+│   │   ├── eslint.config.js
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   ├── os-ui/
+│   │   └── components/
+│   │       └── ai/
+│   │           ├── ai-assistant.tsx
+│   │           └── command-search.tsx
+│   ├── rbac/
+│   │   ├── src/
+│   │   │   ├── engine.ts
+│   │   │   ├── index.ts
+│   │   │   ├── middleware.ts
+│   │   │   ├── types.ts
+│   │   │   └── worker-middleware.ts
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   ├── tsconfig.tsbuildinfo
+│   │   └── vitest.config.mts
+│   ├── supabase/
+│   │   ├── migrations/
+│   │   │   └── 001_core_schema.sql
+│   │   ├── src/
+│   │   │   ├── hooks/
+│   │   │   │   └── index.ts
+│   │   │   ├── client.ts
+│   │   │   ├── index.ts
+│   │   │   ├── native.ts
+│   │   │   ├── server.ts
+│   │   │   └── types.ts
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   └── tsup.config.ts
+│   ├── tenancy/
+│   │   ├── src/
+│   │   │   ├── billing/
+│   │   │   │   ├── providers/
+│   │   │   │   │   ├── razorpay.ts
+│   │   │   │   │   └── stripe.ts
+│   │   │   │   ├── index.ts
+│   │   │   │   ├── manager.ts
+│   │   │   │   ├── provider.ts
+│   │   │   │   └── types.ts
+│   │   │   ├── helpers.ts
+│   │   │   ├── index.ts
+│   │   │   ├── middleware.ts
+│   │   │   ├── resolver.ts
+│   │   │   ├── types.ts
+│   │   │   ├── utils.ts
+│   │   │   └── worker.ts
+│   │   ├── README.md
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   ├── types/
+│   │   ├── src/
+│   │   │   ├── spine-entities/
+│   │   │   │   ├── conversation.ts
+│   │   │   │   ├── entities.ts
+│   │   │   │   ├── health-metric.ts
+│   │   │   │   ├── index.ts
+│   │   │   │   ├── note.ts
+│   │   │   │   ├── plan.ts
+│   │   │   │   └── task.ts
+│   │   │   ├── adaptive-schema.ts
+│   │   │   ├── billing.ts
+│   │   │   ├── common.ts
+│   │   │   ├── event-bus.ts
+│   │   │   ├── flow-classifier.ts
+│   │   │   ├── index.ts
+│   │   │   ├── schema-updater.ts
+│   │   │   ├── spine.ts
+│   │   │   ├── spine_contracts.ts
+│   │   │   ├── success-schema.ts
+│   │   │   ├── unified-connector-registry.ts
+│   │   │   ├── uuid.ts
+│   │   │   ├── webhooks.ts
+│   │   │   ├── wiring-constants.ts
+│   │   │   └── workspace-updater.ts
+│   │   ├── contracts.ts
+│   │   ├── eslint.config.js
+│   │   ├── index.ts
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   ├── tsconfig.tsbuildinfo
+│   │   ├── tsup.config.ts
+│   │   └── types.ts
+│   ├── webhooks/
+│   │   ├── migrations/
+│   │   │   └── 001_webhook_ingress.sql
+│   │   ├── src/
+│   │   │   └── worker.ts
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   └── wrangler.toml
+│   └── website/
+├── public/
+│   ├── NO_HALLUCINATION_LIBRARY.md
+│   ├── context.json
+│   ├── favicon-iw.svg
+│   ├── favicon.svg
+│   ├── icon.svg
+│   ├── integratewise-logo-official.png
+│   ├── integratewise-logo.png
+│   ├── integratewise-logomark-woven.svg
+│   ├── llm.txt
+│   ├── logo-iw-navy.svg
+│   ├── logo-iw-white.svg
+│   ├── manifest.json
+│   └── webflow-sitemap.xml
+├── scripts/
+│   ├── README.md
+│   ├── cloudflare-deploy-worker.sh
+│   ├── cloudflare-deploy.sh
+│   ├── data-check-neon.mjs
+│   ├── deploy-all-workers.sh
+│   ├── deploy-production.sh
+│   ├── ensure-pnpm.sh
+│   ├── export-neon-schema.sh
+│   ├── integratewise-mcp-bridge.mjs
+│   ├── package-release.sh
+│   ├── rotate-secrets.sh
+│   ├── run-adaptive-spine-migration.sh
+│   ├── security-check.ts
+│   ├── set-secrets-store-id.sh
+│   ├── setup-secrets.sh
+│   ├── setup-supabase.sh
+│   ├── sync-doppler-to-workers.sh
+│   ├── sync-local-env.sh
+│   ├── test-mcp-figma.mjs
+│   ├── test-mcp-figma.sh
+│   ├── test-real-oauth.sh
+│   ├── validate-cloudflare-config.sh
+│   ├── verify-deployment.sh
+│   └── verify-l2-happy-path.sh
+├── services/
+│   ├── act/
+│   │   ├── src/
+│   │   │   ├── lib/
+│   │   │   │   └── execution.ts
+│   │   │   ├── act.test.ts
+│   │   │   └── index.ts
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   ├── tsconfig.tsbuildinfo
+│   │   └── wrangler.toml
+│   ├── admin/
+│   │   ├── dashboard/
+│   │   │   └── page.tsx
+│   │   ├── src/
+│   │   │   ├── admin.test.ts
+│   │   │   └── index.ts
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   └── wrangler.toml
+│   ├── agents/
+│   │   ├── migrations/
+│   │   │   └── 0001_create_agent_colony_runs.sql
+│   │   ├── src/
+│   │   │   ├── agents.test.ts
+│   │   │   └── index.ts
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   ├── vitest.config.mts
+│   │   └── wrangler.toml
+│   ├── billing/
+│   │   ├── lib/
+│   │   │   ├── __tests__/
+│   │   │   │   ├── entitlement-enforcement.test.ts
+│   │   │   │   └── webhook-idempotency.test.ts
+│   │   │   ├── supabase/
+│   │   │   │   └── server.ts
+│   │   │   ├── admin.ts
+│   │   │   ├── enforcement.ts
+│   │   │   ├── hooks.ts
+│   │   │   ├── index.ts
+│   │   │   ├── service.ts
+│   │   │   ├── types.ts
+│   │   │   └── webhooks.ts
+│   │   ├── src/
+│   │   │   ├── __tests__/
+│   │   │   │   └── webhook-signature.test.ts
+│   │   │   ├── billing-service.ts
+│   │   │   └── index.ts
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   ├── tsconfig.tsbuildinfo
+│   │   ├── vitest.config.ts
+│   │   └── wrangler.toml
+│   ├── cognitive-brain/
+│   ├── connector/
+│   │   ├── src/
+│   │   │   ├── routes/
+│   │   │   │   └── internal.ts
+│   │   │   ├── connector.test.ts
+│   │   │   ├── index.ts
+│   │   │   └── types.ts
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   └── wrangler.toml
+│   ├── connector-sync/
+│   │   ├── src/
+│   │   │   └── index.ts
+│   │   ├── package.json
+│   │   └── wrangler.toml
+│   ├── gateway/
+│   │   ├── src/
+│   │   │   ├── gateway.test.ts
+│   │   │   └── index.ts
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   ├── tsconfig.tsbuildinfo
+│   │   └── wrangler.toml
+│   ├── govern/
+│   │   ├── src/
+│   │   │   ├── audit.ts
+│   │   │   ├── governance-engine.ts
+│   │   │   ├── index.ts
+│   │   │   ├── policies.test.ts
+│   │   │   ├── policies.ts
+│   │   │   ├── types.ts
+│   │   │   └── workflow.ts
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   ├── tsconfig.tsbuildinfo
+│   │   ├── vitest.config.ts
+│   │   └── wrangler.toml
+│   ├── intelligence/
+│   │   ├── src/
+│   │   │   ├── index.ts
+│   │   │   ├── intelligence.test.ts
+│   │   │   └── python-client.ts
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   └── wrangler.toml
+│   ├── iq-hub/
+│   ├── knowledge/
+│   │   ├── server/
+│   │   │   ├── src/
+│   │   │   │   ├── jobs/
+│   │   │   │   │   └── topic-sync.ts
+│   │   │   │   ├── middleware/
+│   │   │   │   │   └── auth.ts
+│   │   │   │   ├── routes/
+│   │   │   │   │   ├── inbox.ts
+│   │   │   │   │   ├── ingest.ts
+│   │   │   │   │   ├── search.ts
+│   │   │   │   │   └── topics.ts
+│   │   │   │   ├── services/
+│   │   │   │   │   ├── firestore.ts
+│   │   │   │   │   ├── search.ts
+│   │   │   │   │   └── storage.ts
+│   │   │   │   ├── config.ts
+│   │   │   │   ├── index.ts
+│   │   │   │   └── types.ts
+│   │   │   ├── Dockerfile
+│   │   │   ├── package.json
+│   │   │   └── tsconfig.json
+│   │   ├── src/
+│   │   │   ├── chunking/
+│   │   │   │   ├── chunker.ts
+│   │   │   │   ├── config.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── embedding/
+│   │   │   │   ├── index.ts
+│   │   │   │   ├── service.ts
+│   │   │   │   └── storage.ts
+│   │   │   ├── schema/
+│   │   │   │   └── ai-conversations.sql
+│   │   │   ├── search/
+│   │   │   │   ├── index.ts
+│   │   │   │   └── service.ts
+│   │   │   ├── services/
+│   │   │   │   └── ai-conversation-service.ts
+│   │   │   ├── embeddings.ts
+│   │   │   ├── flow-b-endpoints.test.ts
+│   │   │   ├── index.ts
+│   │   │   ├── iq-hub.ts
+│   │   │   └── memory-consolidator.ts
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   ├── tsconfig.tsbuildinfo
+│   │   ├── vitest.config.ts
+│   │   └── wrangler.toml
+│   ├── l2/
+│   │   ├── src/
+│   │   │   ├── index.ts
+│   │   │   └── l2.test.ts
+│   │   ├── package.json
+│   │   └── wrangler.toml
+│   ├── loader/
+│   │   ├── scripts/
+│   │   │   ├── webflow-content-generator.ts
+│   │   │   ├── webflow-enhance-site.ts
+│   │   │   ├── webflow-quick-start.sh
+│   │   │   └── webflow-site-audit.ts
+│   │   ├── src/
+│   │   │   ├── handlers/
+│   │   │   │   ├── ai-relay.ts
+│   │   │   │   ├── api.ts
+│   │   │   │   ├── cron.ts
+│   │   │   │   ├── discord.ts
+│   │   │   │   ├── enhanced-stripe.ts
+│   │   │   │   ├── hubspot.ts
+│   │   │   │   ├── integrations.ts
+│   │   │   │   ├── loaders.ts
+│   │   │   │   ├── nettools.ts
+│   │   │   │   ├── notion.ts
+│   │   │   │   ├── slack.ts
+│   │   │   │   ├── stripe.ts
+│   │   │   │   ├── telemetry.ts
+│   │   │   │   ├── tools.ts
+│   │   │   │   ├── webflow.ts
+│   │   │   │   └── webform.ts
+│   │   │   ├── jobs/
+│   │   │   │   └── ai-session-sync.ts
+│   │   │   ├── lib/
+│   │   │   │   ├── firestore.ts
+│   │   │   │   ├── flowA.ts
+│   │   │   │   ├── generic-handler.ts
+│   │   │   │   ├── idempotency.ts
+│   │   │   │   ├── logging.ts
+│   │   │   │   ├── schema.ts
+│   │   │   │   ├── signature.ts
+│   │   │   │   ├── tool-registry.ts
+│   │   │   │   └── webflow-client.ts
+│   │   │   ├── index.ts
+│   │   │   ├── pipeline-stages.ts
+│   │   │   ├── pipeline.ts
+│   │   │   └── types.ts
+│   │   ├── check-tables.js
+│   │   ├── eslint.config.js
+│   │   ├── package.json
+│   │   ├── run-migrations.js
+│   │   ├── schema.sql
+│   │   ├── tsconfig.json
+│   │   └── wrangler.toml
+│   ├── mcp-connector/
+│   │   ├── mcp-tools/
+│   │   │   └── mcp-tools.json
+│   │   ├── scripts/
+│   │   │   └── test-figma-mcp.sh
+│   │   ├── src/
+│   │   │   ├── handlers/
+│   │   │   │   └── tools.ts
+│   │   │   ├── lib/
+│   │   │   │   ├── firestore.ts
+│   │   │   │   ├── logging.ts
+│   │   │   │   └── schema.ts
+│   │   │   ├── index.test.ts
+│   │   │   └── index.ts
+│   │   ├── package.json
+│   │   ├── pnpm-lock.yaml
+│   │   ├── test-mcp-endpoint.ts
+│   │   ├── tsconfig.json
+│   │   └── wrangler.toml
+│   ├── memory-consolidator/
+│   ├── normalizer/
+│   │   ├── src/
+│   │   │   ├── schemas/
+│   │   │   │   ├── account_master.schema.json
+│   │   │   │   ├── architecture_state.schema.json
+│   │   │   │   ├── client.schema.json
+│   │   │   │   ├── commercial_intel.schema.json
+│   │   │   │   ├── deal.schema.json
+│   │   │   │   ├── event.schema.json
+│   │   │   │   ├── index.ts
+│   │   │   │   ├── insight.schema.json
+│   │   │   │   ├── relationship_graph.schema.json
+│   │   │   │   ├── strategic_objective.schema.json
+│   │   │   │   ├── subscription.schema.json
+│   │   │   │   └── ticket.schema.json
+│   │   │   ├── dlq.ts
+│   │   │   ├── eslint.config.js
+│   │   │   ├── idempotency.ts
+│   │   │   ├── identity-mapper.ts
+│   │   │   ├── index.ts
+│   │   │   ├── normalize.test.ts
+│   │   │   ├── normalize.ts
+│   │   │   ├── normalizer-accelerator.ts
+│   │   │   ├── tsconfig.json
+│   │   │   └── types.ts
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   ├── tsconfig.tsbuildinfo
+│   │   ├── vitest.config.mts
+│   │   └── wrangler.toml
+│   ├── pipeline/
+│   │   ├── src/
+│   │   │   ├── index.ts
+│   │   │   └── pipeline.test.ts
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   └── wrangler.toml
+│   ├── python-intelligence/
+│   │   ├── Dockerfile
+│   │   ├── fly.toml
+│   │   ├── main.py
+│   │   └── requirements.txt
+│   ├── spine-v2/
+│   │   ├── src/
+│   │   │   ├── index.ts
+│   │   │   └── spine-v2.test.ts
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   ├── tsconfig.tsbuildinfo
+│   │   └── wrangler.toml
+│   ├── store/
+│   │   ├── src/
+│   │   │   ├── index.ts
+│   │   │   └── store.test.ts
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   ├── tsconfig.tsbuildinfo
+│   │   └── wrangler.toml
+│   ├── stream-gateway/
+│   ├── tenants/
+│   │   ├── src/
+│   │   │   ├── context.ts
+│   │   │   ├── index.ts
+│   │   │   ├── oauth-configs.ts
+│   │   │   └── types.ts
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   ├── tsconfig.tsbuildinfo
+│   │   ├── vitest.config.ts
+│   │   └── wrangler.toml
+│   ├── think/
+│   │   ├── src/
+│   │   │   ├── cognitive-routes/
+│   │   │   │   ├── decision-memory.ts
+│   │   │   │   ├── drift-detection.ts
+│   │   │   │   ├── simulation.ts
+│   │   │   │   └── trust-score.ts
+│   │   │   ├── use-cases/
+│   │   │   │   └── billing.ts
+│   │   │   ├── actions.ts
+│   │   │   ├── ai-provider.ts
+│   │   │   ├── cognitive-brain.ts
+│   │   │   ├── context-to-truth.test.ts
+│   │   │   ├── context.ts
+│   │   │   ├── engine.ts
+│   │   │   ├── fusion.test.ts
+│   │   │   ├── fusion.ts
+│   │   │   ├── index.test.ts
+│   │   │   ├── index.ts
+│   │   │   ├── narrative.ts
+│   │   │   ├── semantic-lookup.ts
+│   │   │   └── tenant-config.ts
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   ├── tsconfig.tsbuildinfo
+│   │   ├── vitest.config.ts
+│   │   └── wrangler.toml
+│   ├── views/
+│   ├── webhook-ingress/
+│   │   ├── src/
+│   │   │   ├── handlers/
+│   │   │   │   └── slack-workflow.ts
+│   │   │   └── index.ts
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   ├── tsconfig.tsbuildinfo
+│   │   └── wrangler.toml
+│   └── workflow/
+│       ├── d1_migrations/
+│       │   └── 0000_analytics_tables.sql
+│       ├── migrations/
+│       │   └── 0001_create_workflow_recommendations.sql
+│       ├── src/
+│       │   ├── durable-objects/
+│       │   │   └── hitl.ts
+│       │   ├── analytics.test.ts
+│       │   ├── analytics.ts
+│       │   ├── index.ts
+│       │   ├── stream-gateway.ts
+│       │   ├── tenant-spine-config.ts
+│       │   ├── views.ts
+│       │   └── workflow.test.ts
+│       ├── package.json
+│       ├── tsconfig.json
+│       ├── tsconfig.tsbuildinfo
+│       ├── vitest.config.mts
+│       └── wrangler.toml
+├── sql-migrations/
+│   ├── d1/
+│   │   ├── 0001_unified_schema.sql
+│   │   ├── 001_initial_spine.sql
+│   │   ├── 002_seed_demo.sql
+│   │   ├── 003_comprehensive_ssot.sql
+│   │   ├── 004_maximal_ssot.sql
+│   │   ├── 005_master_ssot_v11_7.sql
+│   │   ├── 006_universal_ssot_v11_8.sql
+│   │   ├── 007_universal_seed_360.sql
+│   │   ├── 010_analytics_tables.sql
+│   │   └── 011_support_feedback_system.sql
+│   ├── flow-a/
+│   │   ├── 000_baseline_ssot.sql
+│   │   ├── 001_create_profiles_workspaces.sql
+│   │   ├── 001_enable_vector_extension.sql
+│   │   ├── 002_create_interactions_table.sql
+│   │   ├── 002_profile_trigger.sql
+│   │   ├── 003_create_auth_tables.sql
+│   │   ├── 003_create_documents_table.sql
+│   │   ├── 004_create_tasks_table.sql
+│   │   ├── 005-neon-neutron-tam-tables.sql
+│   │   ├── 005_create_calendar_events_table.sql
+│   │   ├── 006-spend-insights-tables.sql
+│   │   ├── 006_create_emails_table.sql
+│   │   ├── 007-complete-rls-policies.sql
+│   │   ├── 007_create_drive_files_table.sql
+│   │   ├── 008-ha-dr-tables.sql
+│   │   ├── 008_create_activities_table.sql
+│   │   ├── 009_create_metrics_table.sql
+│   │   ├── 010_create_search_function.sql
+│   │   ├── 011_seed_sample_data.sql
+│   │   ├── 012_create_webhooks_table.sql
+│   │   ├── 013_create_services_schema.sql
+│   │   ├── 014_seed_integratewise_services.sql
+│   │   ├── 015_create_products_table.sql
+│   │   ├── 016_seed_products.sql
+│   │   ├── 017_create_crm_schema.sql
+│   │   ├── 018_seed_crm_data.sql
+│   │   ├── 019_create_brainstorming_layer.sql
+│   │   ├── 020_seed_brainstorming_sample.sql
+│   │   ├── 021_create_strategic_layer.sql
+│   │   ├── 022_seed_strategic_data.sql
+│   │   ├── 023_create_website_manager.sql
+│   │   ├── 024_seed_website_data.sql
+│   │   ├── 025_create_slack_discord_tables.sql
+│   │   ├── 026_create_webhook_notifications_view.sql
+│   │   ├── 026_create_webhook_scheduler.sql
+│   │   ├── 027_create_auth_schema.sql
+│   │   ├── 027_create_connectors_table.sql
+│   │   ├── 027_webhook_notifications_view_v2.sql
+│   │   ├── 028_create_admin_schema.sql
+│   │   ├── 028_seed_auth_data.sql
+│   │   ├── 028_vector_indexes.sql
+│   │   ├── 029_clerk_auth_schema.sql
+│   │   ├── 029_rls_tenant.sql
+│   │   ├── 030_create_billing_schema.sql
+│   │   ├── 030_seed_auth_data.sql
+│   │   ├── 031_seed_billing_plans.sql
+│   │   ├── 032_run_billing_setup.sql
+│   │   ├── 033_seed_billing_with_stripe_ids.sql
+│   │   ├── 034_create_admin_dashboard_tables.sql
+│   │   ├── 035_two_loop_architecture.sql
+│   │   ├── 040_create_ssot_schema.sql
+│   │   ├── 041_create_think_engine.sql
+│   │   ├── 042_saas_tenant_schema.sql
+│   │   ├── 043_fix_missing_indexes.sql
+│   │   ├── 044_force_rls.sql
+│   │   ├── 045_composite_indexes.sql
+│   │   └── seed-demo-data.sql
+│   ├── restore_usage/
+│   │   ├── 050_enable_pgvector.sql
+│   │   └── 051_triage_bot.sql
+│   ├── 001_supabase_schema.sql
+│   ├── 002_accounts_intelligence_os.sql
+│   ├── 003_signal_model.sql
+│   ├── 004_canonical_artifacts.sql
+│   ├── 005_ai_session_memories.sql
+│   ├── 006_connector_robustness.sql
+│   ├── 007_entity360.sql
+│   ├── 007_idempotency.sql
+│   ├── 008_ai_robustness.sql
+│   ├── 008_d1_edge_cache.sql
+│   ├── 009_spine_ssot.sql
+│   ├── 010-buckets.sql
+│   ├── 010_knowledge_storage.sql
+│   ├── 011_signal_engine_rules.sql
+│   ├── 012_operational_hardening.sql
+│   ├── 013_ux_polish_logic.sql
+│   ├── 014_product_onboarding.sql
+│   ├── 015_os_review_heartbeat.sql
+│   ├── 016_os_self_monitoring.sql
+│   ├── 017_action_runs.sql
+│   ├── 018_governance.sql
+│   ├── 019_semantic_chunks.sql
+│   ├── 020_normalization.sql
+│   ├── 021_best_practice_guardrails.sql
+│   ├── 022_day2_semantic_knowledge.sql
+│   ├── 023_onboarding_integrations.sql
+│   ├── 024_enterprise_resilience.sql
+│   ├── 025_brainstorm_sessions.sql
+│   ├── 025_layer2_cognitive_complete.sql
+│   ├── 026_enhanced_audit_logging.sql
+│   ├── 026_universal_spine_schema.sql
+│   ├── 027_data_migration_to_spine.sql
+│   ├── 027_message_persistence_enhancements.sql
+│   ├── 028_webhook_events_metadata.sql
+│   ├── 029_view_registry_world_scope.sql
+│   ├── 030_uuid_compliance.sql
+│   ├── 031_rbac_system.sql
+│   ├── 032_spine_department_streams.sql
+│   ├── 033_spine_accounts_intelligence.sql
+│   ├── 034_spine_progressive_universal.sql
+│   ├── 035_spine_adaptive_registry.sql
+│   ├── 036_spine_seed_streams.sql
+│   ├── 037_spine_seed_expected_fields.sql
+│   ├── 040_decision_memory.sql
+│   ├── 041_trust_score_engine.sql
+│   ├── 042_extraction_feedback.sql
+│   ├── 042_simulation_engine.sql
+│   ├── 043_reality_drift_detection.sql
+│   ├── 044_connectors_tenant_id.sql
+│   ├── 045_spine_sales_revops_intelligence.sql
+│   ├── 046_spine_marketing_support_intelligence.sql
+│   ├── 047_spine_remaining_domains_intelligence.sql
+│   ├── 048_spine_universal_depth.sql
+│   ├── 050_adaptive_spine_12_domains.sql
+│   ├── 051_tenant_spine_config.sql
+│   ├── 052_pgvector_file_store_spine.sql
+│   ├── 053_adaptive_spine_tenant_id_text.sql
+│   ├── 054_tenant_spine_config_industry_columns.sql
+│   ├── 055_adaptive_spine_12x11_full.sql
+│   ├── 056_neon_hardening_actions_govern.sql
+│   ├── 057_neon_reference_data_seed.sql
+│   ├── 058_triage_approval_status.sql
+│   ├── 059_support_feedback_system.sql
+│   ├── 20240319_onboarding_schema.sql
+│   └── phase-5-8-runbook.sql
+├── supabase/
+│   ├── migrations/
+│   │   ├── 20260312100000_tenant_spine_config.sql
+│   │   ├── 20260312200000_adaptive_spine_12x11_full.sql
+│   │   ├── 20260313100000_cs_mulesoft_account_success_spine.sql
+│   │   ├── 20260313150000_create_triage_bot_schema.sql
+│   │   ├── 20260313200000_spine_account_account_master_detail.sql
+│   │   ├── 20260313300000_seed_integratewise_workspaces.sql
+│   │   ├── 20260314000000_triage_approval_status.sql
+│   │   ├── 20260316000000_spine_schema_registry_tenant_text.sql
+│   │   └── 20260316120000_connectors_multi_org_workspace_key.sql
+│   └── config.toml
+├── vitest-stubs/
+│   └── cloudflare-workers.ts
+├── .env
+├── AGENTS.md
+├── ARCHITECTURE_OVERVIEW.md
+├── ARCHITECTURE_OVERVIEW_CORRECTED.md
+├── BUSINESS_OPS_SCHEMA_PLAN.md
+├── CLAUDE.md
+├── CONNECTOR_CS_SUPPORT_REPORT.md
+├── CONNECTOR_IMPLEMENTATION_REPORT.md
+├── IMPLEMENTATION_SUMMARY.md
+├── README.md
+├── REPOSITORY_MAP.md
+├── REPOSITORY_TREE.txt
+├── WEBSITE_UPDATES.md
+├── bitbucket-pipelines-production.yml
+├── bitbucket-pipelines.yml
+├── doppler.yaml
+├── lefthook.yml
+├── package.json
+├── pnpm-lock.yaml
+├── pnpm-workspace.yaml
+├── tsconfig.base.json
+├── tsconfig.json
+├── tsconfig.tsbuildinfo
+├── turbo.json
+└── wrangler.toml

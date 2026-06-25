@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Architecture State (SSOT)",
+  "type": "object",
+  "required": ["id", "account_id", "tenant_id"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "account_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "tenant_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "pattern_name": {
+      "type": "string"
+    },
+    "compliance_status": {
+      "type": "string",
+      "enum": ["compliant", "deviating", "anti-pattern"]
+    },
+    "it_complexity_score": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10
+    },
+    "latency_chain_p99_ms": {
+      "type": "integer"
+    },
+    "retry_storm_probability": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    }
+  },
+  "additionalProperties": true
+}

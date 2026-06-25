@@ -1,0 +1,23 @@
+{
+  "name": "@integratewise/agent-runtime",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tenant-isolated, Cloudflare-native user-facing agent runtime for IntegrateWise",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --inspector-port=0",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@cloudflare/voice": "^0.2.1",
+    "agents": "^0.15.0",
+    "hono": "^4.6.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260310.0",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.98.0"
+  }
+}

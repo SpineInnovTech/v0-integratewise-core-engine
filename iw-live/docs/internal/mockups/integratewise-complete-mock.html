@@ -1,0 +1,2705 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IntegrateWise — Complete Mock</title>
+    <style>
+      :root {
+        --forest: #1a3a2a;
+        --forest-light: #2d5a3d;
+        --forest-muted: #4a7a5a;
+        --paper: #f4f0e8;
+        --paper-dark: #e8e2d4;
+        --gold: #b8943f;
+        --gold-light: #d4ab5a;
+        --ink: #1a1a14;
+        --ink-muted: #6b6556;
+        --health-green: #2d7a4f;
+        --health-amber: #d4853a;
+        --health-red: #c0392b;
+        --card: #fdfaf4;
+        --border: #d4cdb8;
+        --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        --font-serif: "Lora", "Georgia", serif;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        font-family: var(--font);
+        background: var(--paper);
+        color: var(--ink);
+        overflow: hidden;
+      }
+
+      /* ===== LAYOUT ===== */
+      .app {
+        display: flex;
+        height: 100vh;
+        width: 100vw;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 240px;
+        background: var(--forest);
+        color: var(--paper-dark);
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        border-right: 1px solid var(--forest-light);
+      }
+      .sidebar-header {
+        padding: 20px 16px;
+        border-bottom: 1px solid var(--forest-light);
+      }
+      .sidebar-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .logo-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        background: var(--gold);
+        display: grid;
+        place-items: center;
+        font-size: 12px;
+        font-weight: bold;
+        color: var(--forest);
+      }
+      .logo-text {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--paper);
+        letter-spacing: -0.3px;
+      }
+      .logo-sub {
+        font-size: 11px;
+        color: var(--forest-muted);
+        margin-top: 2px;
+        padding-left: 38px;
+      }
+      .sidebar-section {
+        padding: 12px 12px;
+        border-bottom: 1px solid var(--forest-light);
+      }
+      .sidebar-section-title {
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: var(--forest-muted);
+        padding: 0 6px;
+        margin-bottom: 6px;
+        letter-spacing: 0.5px;
+      }
+      .sidebar-btn {
+        width: 100%;
+        text-align: left;
+        padding: 8px 10px;
+        border-radius: 6px;
+        font-size: 12.5px;
+        background: transparent;
+        border: none;
+        color: var(--paper-dark);
+        cursor: pointer;
+        transition: all 0.15s;
+        margin-bottom: 2px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .sidebar-btn:hover {
+        background: rgba(255, 255, 255, 0.06);
+      }
+      .sidebar-btn.active {
+        background: var(--gold);
+        color: var(--forest);
+        font-weight: 500;
+      }
+      .sidebar-btn.wb-active {
+        background: rgba(184, 148, 63, 0.15);
+        color: var(--gold);
+      }
+      .sidebar-footer {
+        padding: 14px 16px;
+        margin-top: auto;
+        border-top: 1px solid var(--forest-light);
+      }
+      .status-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 11px;
+        color: var(--forest-muted);
+        margin-bottom: 6px;
+      }
+      .status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+      }
+
+      /* Main area */
+      .main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+      .topbar {
+        height: 52px;
+        background: var(--card);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        flex-shrink: 0;
+      }
+      .breadcrumbs {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+      }
+      .breadcrumb-active {
+        font-weight: 600;
+        color: var(--forest);
+      }
+      .breadcrumb-sep {
+        color: var(--ink-muted);
+        font-size: 11px;
+      }
+      .search-box {
+        position: relative;
+        width: 320px;
+      }
+      .search-box input {
+        width: 100%;
+        padding: 7px 36px 7px 32px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--paper);
+        font-size: 12.5px;
+        outline: none;
+        color: var(--forest);
+      }
+      .search-box input::placeholder {
+        color: var(--ink-muted);
+      }
+      .search-icon {
+        position: absolute;
+        left: 10px;
+        top: 8px;
+        width: 14px;
+        height: 14px;
+        color: var(--ink-muted);
+      }
+      .search-kbd {
+        position: absolute;
+        right: 8px;
+        top: 7px;
+        font-size: 10px;
+        padding: 1px 5px;
+        border-radius: 4px;
+        border: 1px solid var(--border);
+        color: var(--ink-muted);
+        font-family: monospace;
+        background: var(--paper-dark);
+      }
+      .topbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .icon-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        border: none;
+        background: transparent;
+        color: var(--ink-muted);
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        transition: all 0.15s;
+        position: relative;
+      }
+      .icon-btn:hover {
+        background: var(--paper-dark);
+        color: var(--forest);
+      }
+      .badge {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--health-red);
+        border: 2px solid var(--card);
+      }
+      .user-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: var(--forest);
+        display: grid;
+        place-items: center;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--gold);
+        margin-left: 6px;
+      }
+
+      /* Content */
+      .content {
+        flex: 1;
+        overflow: hidden;
+        display: flex;
+      }
+      .content-scroll {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px;
+      }
+
+      /* Workbench switcher tabs */
+      .wb-tabs {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 20px;
+      }
+      .wb-tab {
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 500;
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--ink-muted);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .wb-tab:hover {
+        background: var(--paper-dark);
+        color: var(--forest);
+      }
+      .wb-tab.active {
+        background: var(--forest);
+        color: var(--paper);
+        border-color: var(--forest);
+      }
+
+      /* Panels */
+      .panel {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .panel-header {
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .panel-title {
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--forest);
+      }
+      .panel-badge {
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 12px;
+        background: var(--paper-dark);
+        color: var(--ink-muted);
+      }
+      .panel-body {
+        padding: 16px;
+      }
+
+      /* KPI Grid */
+      .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .kpi-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px;
+      }
+      .kpi-label {
+        font-size: 11px;
+        color: var(--ink-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+      .kpi-value {
+        font-size: 22px;
+        font-weight: 700;
+        margin-top: 4px;
+        color: var(--forest);
+      }
+      .kpi-value.alert {
+        color: var(--health-red);
+      }
+      .kpi-sub {
+        font-size: 11px;
+        color: var(--ink-muted);
+        margin-top: 4px;
+      }
+
+      /* Account list */
+      .account-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        background: var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .account-item {
+        background: var(--card);
+        padding: 14px 16px;
+        cursor: pointer;
+        transition: all 0.15s;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .account-item:hover {
+        background: var(--paper-dark);
+      }
+      .account-item.active {
+        background: var(--paper-dark);
+        border-left: 2px solid var(--gold);
+      }
+      .account-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--forest);
+      }
+      .account-meta {
+        font-size: 11px;
+        color: var(--ink-muted);
+        margin-top: 2px;
+      }
+      .account-tags {
+        display: flex;
+        gap: 4px;
+        margin-top: 6px;
+      }
+      .tag {
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 7px;
+        border-radius: 6px;
+      }
+      .tag-green {
+        background: #e8f5ee;
+        color: var(--health-green);
+      }
+      .tag-amber {
+        background: #fff3e0;
+        color: var(--health-amber);
+      }
+      .tag-red {
+        background: #fdecec;
+        color: var(--health-red);
+      }
+      .health-bar-bg {
+        height: 5px;
+        background: var(--border);
+        border-radius: 3px;
+        overflow: hidden;
+        width: 60px;
+      }
+      .health-bar-fill {
+        height: 100%;
+        border-radius: 3px;
+      }
+
+      /* Split view */
+      .split {
+        display: grid;
+        grid-template-columns: 360px 1fr;
+        gap: 16px;
+        height: 100%;
+      }
+      .split-left {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        overflow-y: auto;
+      }
+      .split-right {
+        overflow-y: auto;
+      }
+
+      /* Layer nav */
+      .layer-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        background: var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .layer-item {
+        background: var(--card);
+        padding: 10px 14px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.15s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-left: 2px solid transparent;
+      }
+      .layer-item:hover {
+        background: var(--paper-dark);
+      }
+      .layer-item.active {
+        background: var(--paper-dark);
+        border-left-color: var(--gold);
+        font-weight: 500;
+        color: var(--forest);
+      }
+      .layer-item .num {
+        font-size: 10px;
+        color: var(--ink-muted);
+        width: 18px;
+      }
+      .layer-item .icon {
+        color: var(--gold);
+        font-size: 12px;
+        width: 16px;
+        text-align: center;
+      }
+
+      /* Info grid */
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+      .info-cell {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px;
+      }
+      .info-label {
+        font-size: 10px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        color: var(--ink-muted);
+        margin-bottom: 4px;
+      }
+      .info-value {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--forest);
+      }
+      .info-value.alert {
+        color: var(--health-red);
+      }
+
+      /* Empty state */
+      .empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        text-align: center;
+        gap: 12px;
+        color: var(--ink-muted);
+      }
+      .empty-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: var(--paper-dark);
+        display: grid;
+        place-items: center;
+        font-size: 20px;
+        color: var(--forest-muted);
+      }
+
+      /* TWIN WORKBENCH */
+      .twin-layout {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 16px;
+        height: 100%;
+      }
+      .twin-chat {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        background: var(--card);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        overflow: hidden;
+      }
+      .twin-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .twin-status {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        color: var(--ink-muted);
+      }
+      .twin-status-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--health-green);
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+      }
+      .twin-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .msg {
+        max-width: 80%;
+        padding: 12px 16px;
+        border-radius: 14px;
+        font-size: 12.5px;
+        line-height: 1.6;
+      }
+      .msg.ai {
+        align-self: flex-start;
+        background: var(--paper);
+        border: 1px solid var(--border);
+        color: var(--forest);
+      }
+      .msg.user {
+        align-self: flex-end;
+        background: var(--forest);
+        color: var(--paper);
+      }
+      .msg-context {
+        font-size: 10px;
+        color: var(--gold);
+        margin-bottom: 4px;
+      }
+      .twin-input-area {
+        padding: 14px 16px;
+        border-top: 1px solid var(--border);
+      }
+      .twin-quick {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+      }
+      .twin-quick button {
+        font-size: 10.5px;
+        padding: 5px 10px;
+        border-radius: 6px;
+        background: var(--paper);
+        border: 1px solid var(--border);
+        color: var(--ink-muted);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .twin-quick button:hover {
+        background: var(--paper-dark);
+        color: var(--forest);
+      }
+      .twin-input-row {
+        display: flex;
+        gap: 8px;
+      }
+      .twin-input-row input {
+        flex: 1;
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--paper);
+        font-size: 12.5px;
+        outline: none;
+        color: var(--forest);
+      }
+      .twin-input-row input::placeholder {
+        color: var(--ink-muted);
+      }
+      .twin-input-row button {
+        padding: 10px 18px;
+        border-radius: 10px;
+        background: var(--forest);
+        color: var(--paper);
+        border: none;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      .twin-sidebar {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .twin-sidebar-header {
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--border);
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--forest);
+      }
+      .memory-item {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border);
+      }
+      .memory-item:last-child {
+        border-bottom: none;
+      }
+      .memory-title {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--forest);
+      }
+      .memory-meta {
+        font-size: 10px;
+        color: var(--ink-muted);
+        margin-top: 2px;
+      }
+
+      /* Section note */
+      .section-note {
+        margin-top: 14px;
+        padding: 12px 14px;
+        border-radius: 10px;
+        background: var(--paper-dark);
+        border: 1px solid var(--border);
+        font-size: 11.5px;
+        line-height: 1.6;
+        color: var(--ink-muted);
+      }
+
+      /* Progress bar */
+      .progress-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .progress-row:last-child {
+        margin-bottom: 0;
+      }
+      .progress-label {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--forest);
+        flex: 1;
+      }
+      .progress-bar-bg {
+        flex: 2;
+        height: 6px;
+        background: var(--border);
+        border-radius: 3px;
+        overflow: hidden;
+      }
+      .progress-bar-fill {
+        height: 100%;
+        border-radius: 3px;
+        background: var(--forest-light);
+      }
+      .progress-value {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--forest);
+        width: 40px;
+        text-align: right;
+      }
+
+      /* Capability bars */
+      .cap-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .cap-row:last-child {
+        border-bottom: none;
+      }
+      .cap-name {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--forest);
+        width: 140px;
+      }
+      .cap-bars {
+        display: flex;
+        gap: 3px;
+        flex: 1;
+      }
+      .cap-bar {
+        height: 8px;
+        flex: 1;
+        border-radius: 2px;
+      }
+      .cap-status {
+        font-size: 10px;
+        color: var(--ink-muted);
+        width: 70px;
+        text-align: right;
+      }
+
+      /* Timeline */
+      .timeline {
+        position: relative;
+        padding-left: 20px;
+      }
+      .timeline::before {
+        content: "";
+        position: absolute;
+        left: 5px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--border);
+      }
+      .timeline-item {
+        position: relative;
+        padding-bottom: 14px;
+      }
+      .timeline-item::before {
+        content: "";
+        position: absolute;
+        left: -17px;
+        top: 3px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--gold);
+      }
+      .timeline-time {
+        font-size: 10px;
+        color: var(--ink-muted);
+      }
+      .timeline-text {
+        font-size: 12px;
+        color: var(--forest);
+        margin-top: 2px;
+      }
+
+      /* Risk card */
+      .risk-card {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 14px;
+        border-radius: 10px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        margin-bottom: 10px;
+      }
+      .risk-score {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font-size: 13px;
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+      .risk-category {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--gold);
+      }
+      .risk-desc {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--forest);
+        margin-top: 2px;
+      }
+      .risk-meta {
+        font-size: 11px;
+        color: var(--ink-muted);
+        margin-top: 4px;
+      }
+
+      /* Insight card */
+      .insight-card {
+        padding: 14px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+      }
+      .insight-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 6px;
+      }
+      .insight-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+      }
+      .insight-title {
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .insight-text {
+        font-size: 12px;
+        line-height: 1.5;
+        color: var(--forest);
+      }
+      .insight-action {
+        font-size: 11px;
+        font-weight: 600;
+        margin-top: 8px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      /* Two col grid */
+      .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <!-- ===== SIDEBAR ===== -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-logo">
+            <div class="logo-icon">IW</div>
+            <div class="logo-text">IntegrateWise</div>
+          </div>
+          <div class="logo-sub">operations.integratewise.ai</div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Product</div>
+          <button class="sidebar-btn active" onclick="switchProduct('as')" id="btn-as">
+            Account Success
+          </button>
+          <button class="sidebar-btn" onclick="switchProduct('bizops')" id="btn-bizops">
+            Business Ops
+          </button>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Workbenches</div>
+          <button class="sidebar-btn wb-active" onclick="switchWorkbench('user')" id="wb-user">
+            👤 User Workbench
+          </button>
+          <button class="sidebar-btn" onclick="switchWorkbench('twin')" id="wb-twin">
+            ✦ Twin Workbench
+          </button>
+          <button class="sidebar-btn" onclick="switchWorkbench('cognitive')" id="wb-cognitive">
+            🧠 Cognitive Workbench
+          </button>
+          <button class="sidebar-btn" onclick="switchWorkbench('governance')" id="wb-governance">
+            🛡️ Governance Workbench
+          </button>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Memory</div>
+          <button class="sidebar-btn" onclick="switchMemory('conversational')" id="mem-convo">
+            💬 Conversational
+          </button>
+          <button class="sidebar-btn" onclick="switchMemory('personal')" id="mem-personal">
+            🔒 Personal
+          </button>
+          <button class="sidebar-btn" onclick="switchMemory('organizational')" id="mem-org">
+            🏢 Organizational
+          </button>
+        </div>
+
+        <div class="sidebar-footer">
+          <div class="status-row">
+            <span class="status-dot" style="background: #4ade80"></span>Hermes v0.14.0 — 116 skills
+          </div>
+          <div class="status-row">
+            <span class="status-dot" style="background: #facc15"></span>32 skill gap pending
+          </div>
+        </div>
+      </aside>
+
+      <!-- ===== MAIN ===== -->
+      <div class="main">
+        <div class="topbar">
+          <div class="breadcrumbs">
+            <span style="color: var(--ink-muted)">IntegrateWise</span>
+            <span class="breadcrumb-sep">›</span>
+            <span class="breadcrumb-active" id="bc-domain">Account Success</span>
+            <span class="breadcrumb-sep">›</span>
+            <span class="breadcrumb-active" id="bc-view">User Workbench</span>
+          </div>
+          <div class="search-box">
+            <svg
+              class="search-icon"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
+            <input type="text" placeholder="Search everything..." />
+            <span class="search-kbd">⌘K</span>
+          </div>
+          <div class="topbar-actions">
+            <button class="icon-btn" title="Notifications">
+              <svg
+                width="18"
+                height="18"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+              </svg>
+              <span class="badge"></span>
+            </button>
+            <button class="icon-btn" title="Toggle L2">
+              <svg
+                width="18"
+                height="18"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275Z"
+                />
+              </svg>
+            </button>
+            <div class="user-avatar">N</div>
+          </div>
+        </div>
+
+        <!-- ===== USER WORKBENCH ===== -->
+        <div class="content" id="view-user">
+          <div class="split">
+            <!-- Left: Account list + KPIs -->
+            <div class="split-left">
+              <div class="panel">
+                <div class="panel-header">
+                  <div class="panel-title">Account Success</div>
+                  <span class="panel-badge">6 accounts</span>
+                </div>
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 1px;
+                    background: var(--border);
+                  "
+                >
+                  <div style="background: var(--card); padding: 12px 14px">
+                    <div class="kpi-label">Total ARR</div>
+                    <div class="kpi-value">$1,813K</div>
+                  </div>
+                  <div style="background: var(--card); padding: 12px 14px">
+                    <div class="kpi-label">Expansion</div>
+                    <div class="kpi-value">$337K</div>
+                  </div>
+                  <div style="background: var(--card); padding: 12px 14px">
+                    <div class="kpi-label">At Risk</div>
+                    <div class="kpi-value alert">2 accts</div>
+                  </div>
+                  <div style="background: var(--card); padding: 12px 14px">
+                    <div class="kpi-label">Renewing ≤30d</div>
+                    <div class="kpi-value alert">2 accts</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="account-list">
+                <div class="account-item active" onclick="selectAccount(0)" id="acct-0">
+                  <div>
+                    <div style="display: flex; align-items: center; gap: 8px">
+                      <div class="account-name">Axiom Financial</div>
+                      <span class="tag tag-green">Healthy</span>
+                    </div>
+                    <div class="account-meta">Financial Services · CSM: Sarah Chen</div>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 6px">
+                      <span style="font-size: 12px; font-weight: 600; color: var(--forest)"
+                        >$420K ARR</span
+                      >
+                      <span style="font-size: 11px; color: var(--ink-muted)">94d renewal</span>
+                    </div>
+                    <div class="account-tags">
+                      <span class="tag tag-red">1 risk</span>
+                      <span class="tag" style="background: #e8f0ff; color: #3b5bdb">4 tasks</span>
+                    </div>
+                  </div>
+                  <div style="text-align: right">
+                    <div style="font-size: 12px; font-weight: 600; color: var(--health-green)">
+                      87
+                    </div>
+                    <div class="health-bar-bg">
+                      <div
+                        class="health-bar-fill"
+                        style="width: 87%; background: var(--health-green)"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="account-item" onclick="selectAccount(1)" id="acct-1">
+                  <div>
+                    <div style="display: flex; align-items: center; gap: 8px">
+                      <div class="account-name">MedCore Health Systems</div>
+                      <span class="tag tag-amber">At Risk</span>
+                    </div>
+                    <div class="account-meta">Healthcare · CSM: Marcus Webb</div>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 6px">
+                      <span style="font-size: 12px; font-weight: 600; color: var(--forest)"
+                        >$310K ARR</span
+                      >
+                      <span style="font-size: 11px; color: var(--health-red)">28d renewal</span>
+                    </div>
+                    <div class="account-tags">
+                      <span class="tag tag-red">5 risks</span>
+                      <span class="tag" style="background: #e8f0ff; color: #3b5bdb">9 tasks</span>
+                    </div>
+                  </div>
+                  <div style="text-align: right">
+                    <div style="font-size: 12px; font-weight: 600; color: var(--health-amber)">
+                      54
+                    </div>
+                    <div class="health-bar-bg">
+                      <div
+                        class="health-bar-fill"
+                        style="width: 54%; background: var(--health-amber)"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="account-item" onclick="selectAccount(2)" id="acct-2">
+                  <div>
+                    <div style="display: flex; align-items: center; gap: 8px">
+                      <div class="account-name">Stellarworks SaaS</div>
+                      <span class="tag tag-green">Healthy</span>
+                    </div>
+                    <div class="account-meta">Technology · CSM: Priya Nair</div>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 6px">
+                      <span style="font-size: 12px; font-weight: 600; color: var(--forest)"
+                        >$195K ARR</span
+                      >
+                      <span style="font-size: 11px; color: var(--ink-muted)">187d renewal</span>
+                    </div>
+                    <div class="account-tags">
+                      <span class="tag" style="background: #e8f0ff; color: #3b5bdb">2 tasks</span>
+                    </div>
+                  </div>
+                  <div style="text-align: right">
+                    <div style="font-size: 12px; font-weight: 600; color: var(--health-green)">
+                      91
+                    </div>
+                    <div class="health-bar-bg">
+                      <div
+                        class="health-bar-fill"
+                        style="width: 91%; background: var(--health-green)"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="account-item" onclick="selectAccount(3)" id="acct-3">
+                  <div>
+                    <div style="display: flex; align-items: center; gap: 8px">
+                      <div class="account-name">Vantage Telecom</div>
+                      <span class="tag tag-red">Critical</span>
+                    </div>
+                    <div class="account-meta">Telecommunications · CSM: Sarah Chen</div>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 6px">
+                      <span style="font-size: 12px; font-weight: 600; color: var(--forest)"
+                        >$540K ARR</span
+                      >
+                      <span style="font-size: 11px; color: var(--health-red)">11d renewal</span>
+                    </div>
+                    <div class="account-tags">
+                      <span class="tag tag-red">9 risks</span>
+                      <span class="tag" style="background: #e8f0ff; color: #3b5bdb">14 tasks</span>
+                    </div>
+                  </div>
+                  <div style="text-align: right">
+                    <div style="font-size: 12px; font-weight: 600; color: var(--health-red)">
+                      31
+                    </div>
+                    <div class="health-bar-bg">
+                      <div
+                        class="health-bar-fill"
+                        style="width: 31%; background: var(--health-red)"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="account-item" onclick="selectAccount(4)" id="acct-4">
+                  <div>
+                    <div style="display: flex; align-items: center; gap: 8px">
+                      <div class="account-name">Crestline Manufacturing</div>
+                      <span class="tag tag-green">Healthy</span>
+                    </div>
+                    <div class="account-meta">Manufacturing · CSM: Marcus Webb</div>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 6px">
+                      <span style="font-size: 12px; font-weight: 600; color: var(--forest)"
+                        >$260K ARR</span
+                      >
+                      <span style="font-size: 11px; color: var(--ink-muted)">142d renewal</span>
+                    </div>
+                  </div>
+                  <div style="text-align: right">
+                    <div style="font-size: 12px; font-weight: 600; color: var(--health-green)">
+                      73
+                    </div>
+                    <div class="health-bar-bg">
+                      <div
+                        class="health-bar-fill"
+                        style="width: 73%; background: var(--health-green)"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="account-item" onclick="selectAccount(5)" id="acct-5">
+                  <div>
+                    <div style="display: flex; align-items: center; gap: 8px">
+                      <div class="account-name">Luminos Retail Group</div>
+                      <span class="tag tag-green">Healthy</span>
+                    </div>
+                    <div class="account-meta">Retail & Commerce · CSM: Priya Nair</div>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 6px">
+                      <span style="font-size: 12px; font-weight: 600; color: var(--forest)"
+                        >$88K ARR</span
+                      >
+                      <span style="font-size: 11px; color: var(--ink-muted)">63d renewal</span>
+                    </div>
+                  </div>
+                  <div style="text-align: right">
+                    <div style="font-size: 12px; font-weight: 600; color: var(--health-green)">
+                      68
+                    </div>
+                    <div class="health-bar-bg">
+                      <div
+                        class="health-bar-fill"
+                        style="width: 68%; background: var(--health-green)"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Account Detail -->
+            <div class="split-right" id="account-detail">
+              <div class="empty">
+                <div class="empty-icon">◎</div>
+                <div style="font-size: 14px; font-weight: 600; color: var(--forest)">
+                  Select an account
+                </div>
+                <div style="font-size: 12px; max-width: 300px; line-height: 1.6">
+                  Choose an account from the list to view its 15-layer intelligence graph — from
+                  contract metadata to AI-generated strategic insights.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== TWIN WORKBENCH ===== -->
+        <div class="content hidden" id="view-twin">
+          <div class="twin-layout">
+            <div class="twin-chat">
+              <div class="twin-header">
+                <div>
+                  <div
+                    style="
+                      font-size: 14px;
+                      font-weight: 600;
+                      color: var(--forest);
+                      font-family: var(--font-serif);
+                    "
+                  >
+                    Digital Twin
+                  </div>
+                  <div style="font-size: 11px; color: var(--ink-muted); margin-top: 2px">
+                    Conversational · Personal · Organizational Memory
+                  </div>
+                </div>
+                <div class="twin-status">
+                  <span class="twin-status-dot"></span>
+                  <span>Online · Multi-model active</span>
+                </div>
+              </div>
+              <div class="twin-messages" id="twin-messages">
+                <div class="msg ai">
+                  <div class="msg-context">CTX_ACCOUNT_SUCCESS · Portfolio view</div>
+                  Good morning. I'm your Digital Twin. I've analyzed today's signals across all
+                  connected domains. There are 3 items requiring your attention.
+                </div>
+                <div class="msg user">
+                  Show me the at-risk accounts and what the system recommends.
+                </div>
+                <div class="msg ai">
+                  <div class="msg-context">CTX_ACCOUNT_SUCCESS · Cross-layer analysis</div>
+                  Based on full spine context (15 layers per account, cross-department signals, and
+                  historical patterns):
+                  <br /><br />
+                  <strong>1. Vantage Telecom</strong> — Health score 31, renewal in 11 days,
+                  champion departed. 89% churn probability without intervention. <br /><br />
+                  <strong>2. MedCore Health</strong> — API error rate elevated 3 weeks, NPS dropped
+                  to 38. Expansion pipeline at risk. <br /><br />
+                  <strong>3. TechFlow Inc</strong> — Usage declined 18%, support tickets up 34%.
+                  Early churn pattern detected.
+                </div>
+              </div>
+              <div class="twin-input-area">
+                <div class="twin-quick">
+                  <button onclick="sendQuick('Summarize portfolio')">Summarize portfolio</button>
+                  <button onclick="sendQuick('Health check all')">Health check all</button>
+                  <button onclick="sendQuick('Draft QBR prep')">Draft QBR prep</button>
+                  <button onclick="sendQuick('Churn forecast')">Churn forecast</button>
+                  <button onclick="sendQuick('Next actions')">Next actions</button>
+                </div>
+                <div class="twin-input-row">
+                  <input
+                    type="text"
+                    placeholder="Ask your Twin anything..."
+                    id="twin-input"
+                    onkeydown="if (event.key === 'Enter') sendTwin();"
+                  />
+                  <button onclick="sendTwin()">Send</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="twin-sidebar">
+              <div class="twin-sidebar-header">✦ Active Capabilities</div>
+              <div style="padding: 12px 16px; border-bottom: 1px solid var(--border)">
+                <div
+                  style="
+                    font-size: 10px;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.3px;
+                    color: var(--ink-muted);
+                    margin-bottom: 8px;
+                  "
+                >
+                  Memory Layers
+                </div>
+                <div class="memory-item" style="border-bottom: none; padding: 8px 0">
+                  <div class="memory-title">Conversational</div>
+                  <div class="memory-meta">6 active sessions</div>
+                </div>
+                <div class="memory-item" style="padding: 8px 0">
+                  <div class="memory-title">Personal</div>
+                  <div class="memory-meta">23 private notes</div>
+                </div>
+                <div class="memory-item" style="padding: 8px 0">
+                  <div class="memory-title">Organizational</div>
+                  <div class="memory-meta">142 promoted insights</div>
+                </div>
+              </div>
+              <div style="padding: 12px 16px">
+                <div
+                  style="
+                    font-size: 10px;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.3px;
+                    color: var(--ink-muted);
+                    margin-bottom: 8px;
+                  "
+                >
+                  System Features
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px">
+                  <div
+                    style="
+                      font-size: 11.5px;
+                      color: var(--forest);
+                      display: flex;
+                      align-items: center;
+                      gap: 6px;
+                    "
+                  >
+                    <span style="color: var(--gold)">✦</span> No Tool-Locked AI
+                  </div>
+                  <div
+                    style="
+                      font-size: 11.5px;
+                      color: var(--forest);
+                      display: flex;
+                      align-items: center;
+                      gap: 6px;
+                    "
+                  >
+                    <span style="color: var(--gold)">✦</span> Self-Evolving System
+                  </div>
+                  <div
+                    style="
+                      font-size: 11.5px;
+                      color: var(--forest);
+                      display: flex;
+                      align-items: center;
+                      gap: 6px;
+                    "
+                  >
+                    <span style="color: var(--gold)">✦</span> Folder Watcher
+                  </div>
+                  <div
+                    style="
+                      font-size: 11.5px;
+                      color: var(--forest);
+                      display: flex;
+                      align-items: center;
+                      gap: 6px;
+                    "
+                  >
+                    <span style="color: var(--gold)">✦</span> Journey Notes
+                  </div>
+                  <div
+                    style="
+                      font-size: 11.5px;
+                      color: var(--forest);
+                      display: flex;
+                      align-items: center;
+                      gap: 6px;
+                    "
+                  >
+                    <span style="color: var(--gold)">✦</span> Learn + Drift Protection
+                  </div>
+                  <div
+                    style="
+                      font-size: 11.5px;
+                      color: var(--forest);
+                      display: flex;
+                      align-items: center;
+                      gap: 6px;
+                    "
+                  >
+                    <span style="color: var(--gold)">✦</span> Continuity Substrate
+                  </div>
+                </div>
+              </div>
+              <div
+                style="padding: 12px 16px; border-top: 1px solid var(--border); margin-top: auto"
+              >
+                <div
+                  style="
+                    font-size: 10px;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.3px;
+                    color: var(--ink-muted);
+                    margin-bottom: 8px;
+                  "
+                >
+                  Active Models
+                </div>
+                <div style="font-size: 11px; color: var(--ink-muted); line-height: 1.8">
+                  Hermes Core v0.14.0<br />
+                  Claude Sonnet 4 · Anthropic<br />
+                  GPT-4o · OpenAI<br />
+                  Gemini 2.5 Pro · Google<br />
+                  Llama 4 Scout · Meta/Local
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== COGNITIVE WORKBENCH ===== -->
+        <div class="content hidden" id="view-cognitive">
+          <div class="content-scroll">
+            <div
+              style="
+                font-size: 18px;
+                font-weight: 700;
+                color: var(--forest);
+                font-family: var(--font-serif);
+                margin-bottom: 4px;
+              "
+            >
+              Cognitive Workbench
+            </div>
+            <div style="font-size: 12px; color: var(--ink-muted); margin-bottom: 20px">
+              Live signals, AI insights, predictions, and cross-domain correlations
+            </div>
+
+            <div class="kpi-grid">
+              <div class="kpi-card">
+                <div class="kpi-label">Active Signals</div>
+                <div class="kpi-value">24</div>
+                <div class="kpi-sub">6 high priority</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">AI Insight Accuracy</div>
+                <div class="kpi-value" style="color: var(--health-green)">87%</div>
+                <div class="kpi-sub">Last 30 days</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Spine Health</div>
+                <div class="kpi-value" style="color: var(--health-green)">98.4%</div>
+                <div class="kpi-sub">All systems operational</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Projection Coverage</div>
+                <div class="kpi-value">94%</div>
+                <div class="kpi-sub">16 of 17 entities mapped</div>
+              </div>
+            </div>
+
+            <div class="two-col">
+              <div>
+                <div
+                  style="
+                    font-size: 10px;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    color: var(--ink-muted);
+                    margin-bottom: 10px;
+                  "
+                >
+                  High Priority Signals
+                </div>
+                <div class="panel">
+                  <div class="panel-body">
+                    <div style="padding: 10px 0; border-bottom: 1px solid var(--border)">
+                      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px">
+                        <span class="tag tag-red" style="font-size: 9px">🔴 HIGH</span
+                        ><span style="font-size: 12px; font-weight: 600; color: var(--forest)"
+                          >Acme Corp — API error rate spike</span
+                        >
+                      </div>
+                      <div style="font-size: 11px; color: var(--ink-muted)">
+                        Payment API breaching SLA. Error rate exceeded threshold.
+                      </div>
+                    </div>
+                    <div style="padding: 10px 0; border-bottom: 1px solid var(--border)">
+                      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px">
+                        <span class="tag tag-amber" style="font-size: 9px">🟡 MED</span
+                        ><span style="font-size: 12px; font-weight: 600; color: var(--forest)"
+                          >TechFlow — Search latency degradation</span
+                        >
+                      </div>
+                      <div style="font-size: 11px; color: var(--ink-muted)">
+                        Latency &gt;300ms for 15min. Auto-scaling triggered.
+                      </div>
+                    </div>
+                    <div style="padding: 10px 0">
+                      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px">
+                        <span class="tag tag-red" style="font-size: 9px">🔴 HIGH</span
+                        ><span style="font-size: 12px; font-weight: 600; color: var(--forest)"
+                          >Marketing ↔ Sales lead quality mismatch</span
+                        >
+                      </div>
+                      <div style="font-size: 11px; color: var(--ink-muted)">
+                        MQL volume up 18% but SQL conversion dropped to 41%.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div
+                  style="
+                    font-size: 10px;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    color: var(--ink-muted);
+                    margin-bottom: 10px;
+                  "
+                >
+                  AI Insights
+                </div>
+                <div class="insight-card" style="background: #fdecec">
+                  <div class="insight-header">
+                    <div class="insight-dot" style="background: var(--health-red)"></div>
+                    <div class="insight-title" style="color: var(--health-red)">
+                      Renewal Risk Alert
+                    </div>
+                  </div>
+                  <div class="insight-text">
+                    Vantage Telecom renewal in 11 days. NPS dropped from 42 to 14. Recommend health
+                    check immediately.
+                  </div>
+                  <div class="insight-action" style="color: var(--health-red)">→ Schedule QBR</div>
+                </div>
+                <div class="insight-card" style="background: #e8f5ee">
+                  <div class="insight-header">
+                    <div class="insight-dot" style="background: var(--health-green)"></div>
+                    <div class="insight-title" style="color: var(--health-green)">
+                      Expansion Opportunity
+                    </div>
+                  </div>
+                  <div class="insight-text">
+                    Axiom Financial expansion potential: $180K. New use case detected in API usage
+                    patterns.
+                  </div>
+                  <div class="insight-action" style="color: var(--health-green)">
+                    → Send proposal
+                  </div>
+                </div>
+                <div class="insight-card" style="background: #e8f0ff">
+                  <div class="insight-header">
+                    <div class="insight-dot" style="background: #3b5bdb"></div>
+                    <div class="insight-title" style="color: #3b5bdb">Engagement Trend</div>
+                  </div>
+                  <div class="insight-text">
+                    Portfolio engagement down 12% MoM. Customer Success team should prioritize
+                    outreach.
+                  </div>
+                  <div class="insight-action" style="color: #3b5bdb">→ View insights</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== GOVERNANCE WORKBENCH ===== -->
+        <div class="content hidden" id="view-governance">
+          <div class="content-scroll">
+            <div
+              style="
+                font-size: 18px;
+                font-weight: 700;
+                color: var(--forest);
+                font-family: var(--font-serif);
+                margin-bottom: 4px;
+              "
+            >
+              Governance Workbench
+            </div>
+            <div style="font-size: 12px; color: var(--ink-muted); margin-bottom: 20px">
+              Approvals, trust checks, policy enforcement, and audit trail
+            </div>
+
+            <div class="kpi-grid">
+              <div class="kpi-card">
+                <div class="kpi-label">Pending Approvals</div>
+                <div class="kpi-value alert">2</div>
+                <div class="kpi-sub">Awaiting your review</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Policy Check</div>
+                <div class="kpi-value" style="color: var(--health-green)">Pass</div>
+                <div class="kpi-sub">All actions within bounds</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Drift Protection</div>
+                <div class="kpi-value" style="color: var(--health-green)">Active</div>
+                <div class="kpi-sub">Last scan: 4m ago</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Triage Bot Today</div>
+                <div class="kpi-value">24</div>
+                <div class="kpi-sub">6 escalated to human</div>
+              </div>
+            </div>
+
+            <div class="two-col">
+              <div>
+                <div
+                  style="
+                    font-size: 10px;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    color: var(--ink-muted);
+                    margin-bottom: 10px;
+                  "
+                >
+                  Approval Queue
+                </div>
+                <div class="panel">
+                  <div class="panel-body">
+                    <div
+                      style="
+                        padding: 14px;
+                        border-radius: 10px;
+                        background: var(--paper-dark);
+                        border: 1px solid var(--border);
+                        margin-bottom: 10px;
+                      "
+                    >
+                      <div
+                        style="
+                          font-size: 12px;
+                          font-weight: 600;
+                          color: var(--forest);
+                          margin-bottom: 4px;
+                        "
+                      >
+                        Extend renewal discount — Acme Corp
+                      </div>
+                      <div style="font-size: 11px; color: var(--ink-muted); margin-bottom: 10px">
+                        Proposed: 15% discount · Impact: -$67K · Confidence: 89%
+                      </div>
+                      <div style="display: flex; gap: 8px">
+                        <button
+                          style="
+                            padding: 6px 16px;
+                            border-radius: 6px;
+                            background: var(--health-green);
+                            color: white;
+                            border: none;
+                            font-size: 11px;
+                            font-weight: 600;
+                            cursor: pointer;
+                          "
+                        >
+                          Approve
+                        </button>
+                        <button
+                          style="
+                            padding: 6px 16px;
+                            border-radius: 6px;
+                            background: transparent;
+                            color: var(--ink-muted);
+                            border: 1px solid var(--border);
+                            font-size: 11px;
+                            font-weight: 600;
+                            cursor: pointer;
+                          "
+                        >
+                          Reject
+                        </button>
+                      </div>
+                    </div>
+                    <div
+                      style="
+                        padding: 14px;
+                        border-radius: 10px;
+                        background: var(--paper-dark);
+                        border: 1px solid var(--border);
+                      "
+                    >
+                      <div
+                        style="
+                          font-size: 12px;
+                          font-weight: 600;
+                          color: var(--forest);
+                          margin-bottom: 4px;
+                        "
+                      >
+                        Escalate TechFlow to executive sponsor
+                      </div>
+                      <div style="font-size: 11px; color: var(--ink-muted); margin-bottom: 10px">
+                        Trigger: NPS drop + usage decline · Confidence: 89%
+                      </div>
+                      <div style="display: flex; gap: 8px">
+                        <button
+                          style="
+                            padding: 6px 16px;
+                            border-radius: 6px;
+                            background: var(--health-green);
+                            color: white;
+                            border: none;
+                            font-size: 11px;
+                            font-weight: 600;
+                            cursor: pointer;
+                          "
+                        >
+                          Approve
+                        </button>
+                        <button
+                          style="
+                            padding: 6px 16px;
+                            border-radius: 6px;
+                            background: transparent;
+                            color: var(--ink-muted);
+                            border: 1px solid var(--border);
+                            font-size: 11px;
+                            font-weight: 600;
+                            cursor: pointer;
+                          "
+                        >
+                          Reject
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div
+                  style="
+                    font-size: 10px;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    color: var(--ink-muted);
+                    margin-bottom: 10px;
+                  "
+                >
+                  Trust & Audit
+                </div>
+                <div class="panel">
+                  <div class="panel-body">
+                    <div
+                      style="
+                        font-size: 12px;
+                        font-weight: 600;
+                        color: var(--forest);
+                        margin-bottom: 10px;
+                      "
+                    >
+                      AI Drift Protection
+                    </div>
+                    <div
+                      style="
+                        font-size: 11px;
+                        color: var(--ink-muted);
+                        line-height: 1.6;
+                        margin-bottom: 14px;
+                      "
+                    >
+                      Continuous monitoring for model drift, hallucination patterns, and confidence
+                      degradation. When drift exceeds 5%, the system auto-switches to a fallback
+                      model and alerts the trust team.
+                    </div>
+                    <div
+                      style="
+                        font-size: 12px;
+                        font-weight: 600;
+                        color: var(--forest);
+                        margin-bottom: 10px;
+                      "
+                    >
+                      Triage Bot Activity
+                    </div>
+                    <div style="display: flex; gap: 12px; font-size: 11px; color: var(--ink-muted)">
+                      <span>🤖 24 triaged</span><span>✓ 18 auto-resolved</span
+                      ><span>👤 6 escalated</span><span>⚡ 0 false positives</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="panel" style="margin-top: 12px">
+                  <div class="panel-body">
+                    <div
+                      style="
+                        font-size: 12px;
+                        font-weight: 600;
+                        color: var(--forest);
+                        margin-bottom: 8px;
+                      "
+                    >
+                      Self-Evolving System
+                    </div>
+                    <div style="font-size: 11px; color: var(--ink-muted); line-height: 1.6">
+                      System updates are gated behind human approval. Folder watcher monitors /QBRs,
+                      /Contracts, /Product-Updates. New files auto-ingested, summarized, and
+                      promoted to org memory based on relevance scoring.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ===== STATE =====
+      let state = { product: "as", workbench: "user", account: null, layer: 1 };
+
+      const accounts = [
+        {
+          id: 0,
+          name: "Axiom Financial",
+          industry: "Financial Services",
+          arr: 420000,
+          health: 87,
+          label: "Healthy",
+          renewal: 94,
+          csm: "Sarah Chen",
+          risks: 1,
+          tasks: 4,
+          nps: 72,
+          expansion: 180000,
+        },
+        {
+          id: 1,
+          name: "MedCore Health Systems",
+          industry: "Healthcare",
+          arr: 310000,
+          health: 54,
+          label: "At Risk",
+          renewal: 28,
+          csm: "Marcus Webb",
+          risks: 5,
+          tasks: 9,
+          nps: 38,
+          expansion: 0,
+        },
+        {
+          id: 2,
+          name: "Stellarworks SaaS",
+          industry: "Technology",
+          arr: 195000,
+          health: 91,
+          label: "Healthy",
+          renewal: 187,
+          csm: "Priya Nair",
+          risks: 0,
+          tasks: 2,
+          nps: 81,
+          expansion: 95000,
+        },
+        {
+          id: 3,
+          name: "Vantage Telecom",
+          industry: "Telecommunications",
+          arr: 540000,
+          health: 31,
+          label: "Critical",
+          renewal: 11,
+          csm: "Sarah Chen",
+          risks: 9,
+          tasks: 14,
+          nps: 14,
+          expansion: 0,
+        },
+        {
+          id: 4,
+          name: "Crestline Manufacturing",
+          industry: "Manufacturing",
+          arr: 260000,
+          health: 73,
+          label: "Healthy",
+          renewal: 142,
+          csm: "Marcus Webb",
+          risks: 2,
+          tasks: 5,
+          nps: 62,
+          expansion: 40000,
+        },
+        {
+          id: 5,
+          name: "Luminos Retail Group",
+          industry: "Retail & Commerce",
+          arr: 88000,
+          health: 68,
+          label: "Healthy",
+          renewal: 63,
+          csm: "Priya Nair",
+          risks: 2,
+          tasks: 3,
+          nps: 55,
+          expansion: 22000,
+        },
+      ];
+
+      const layers = [
+        { num: 1, name: "Account Master", icon: "◼" },
+        { num: 2, name: "People / Team", icon: "◉" },
+        { num: 3, name: "Business Context", icon: "◈" },
+        { num: 4, name: "Strategic Objectives", icon: "◇" },
+        { num: 5, name: "Capabilities", icon: "◑" },
+        { num: 6, name: "Value Streams", icon: "◐" },
+        { num: 7, name: "API Portfolio", icon: "◻" },
+        { num: 8, name: "Platform Health", icon: "◎" },
+        { num: 9, name: "Initiatives", icon: "◆" },
+        { num: 10, name: "Risk Register", icon: "▲" },
+        { num: 11, name: "Stakeholder Outcomes", icon: "◍" },
+        { num: 12, name: "Engagement Log", icon: "◌" },
+        { num: 13, name: "Success Plan", icon: "◊" },
+        { num: 14, name: "Task Manager", icon: "▣" },
+        { num: 15, name: "AI Insights", icon: "✦" },
+      ];
+
+      const objectives = [
+        {
+          name: "Reduce operational costs by 22%",
+          progress: 61,
+          target: "Q4 2025",
+          driver: "Automation",
+        },
+        { name: "Expand into APAC markets", progress: 18, target: "Q2 2026", driver: "Growth" },
+        {
+          name: "Achieve ISO 27001 certification",
+          progress: 75,
+          target: "Q1 2026",
+          driver: "Compliance",
+        },
+      ];
+
+      const risks = [
+        {
+          category: "Executive Sponsor",
+          desc: "Primary sponsor departed Q4",
+          impact: 8,
+          prob: 7,
+          mitigation: "Identify new champion",
+        },
+        {
+          category: "API Stability",
+          desc: "Error rate elevated 3 weeks",
+          impact: 9,
+          prob: 6,
+          mitigation: "Scheduled architecture review",
+        },
+        {
+          category: "Adoption",
+          desc: "Usage dropped 18% last 30 days",
+          impact: 7,
+          prob: 8,
+          mitigation: "Re-engagement QBR scheduled",
+        },
+      ];
+
+      const tasks = [
+        {
+          title: "Schedule Executive QBR",
+          owner: "Sarah Chen",
+          due: "3 days",
+          priority: "Critical",
+          linked: "Risk: Sponsor departure",
+        },
+        {
+          title: "API health root cause analysis",
+          owner: "Engineering",
+          due: "1 week",
+          priority: "High",
+          linked: "Risk: API Stability",
+        },
+        {
+          title: "Send usage report + commentary",
+          owner: "Sarah Chen",
+          due: "2 days",
+          priority: "High",
+          linked: "Adoption drop",
+        },
+        {
+          title: "Update success plan objectives",
+          owner: "Sarah Chen",
+          due: "2 weeks",
+          priority: "Medium",
+          linked: "Layer 13: Success Plan",
+        },
+      ];
+
+      const engagements = [
+        {
+          type: "QBR",
+          date: "May 10",
+          attendees: "James W, Diane R, Sarah C, Jordan K",
+          sentiment: "Positive",
+          topics: "Roadmap review, API migration update",
+          next: "Technical deep dive Jun 3",
+        },
+        {
+          type: "Escalation Call",
+          date: "Apr 28",
+          attendees: "Kevin S, Dev P, Sarah C",
+          sentiment: "Tense",
+          topics: "API error spike, SOAP adapter instability",
+          next: "RCA delivery May 2",
+        },
+        {
+          type: "Check-in",
+          date: "Apr 15",
+          attendees: "Diane R, Sarah C",
+          sentiment: "Neutral",
+          topics: "Usage review, onboarding backlog",
+          next: "Usage report May 5",
+        },
+      ];
+
+      function switchProduct(p) {
+        state.product = p;
+        document.getElementById("btn-as").classList.toggle("active", p === "as");
+        document.getElementById("btn-bizops").classList.toggle("active", p === "bizops");
+        document.getElementById("bc-domain").textContent =
+          p === "as" ? "Account Success" : "Business Ops";
+      }
+
+      function switchWorkbench(w) {
+        state.workbench = w;
+        ["user", "twin", "cognitive", "governance"].forEach((x) => {
+          document.getElementById("wb-" + x).classList.toggle("wb-active", x === w);
+          document.getElementById("view-" + x).classList.toggle("hidden", x !== w);
+        });
+        const names = {
+          user: "User Workbench",
+          twin: "Twin Workbench",
+          cognitive: "Cognitive Workbench",
+          governance: "Governance Workbench",
+        };
+        document.getElementById("bc-view").textContent = names[w];
+      }
+
+      function switchMemory(m) {
+        // Visual only for mock
+        ["convo", "personal", "org"].forEach((x) => {
+          document
+            .getElementById("mem-" + x)
+            .classList.toggle("wb-active", "mem-" + x === "mem-" + m.substring(0, 4));
+        });
+      }
+
+      function selectAccount(id) {
+        state.account = id;
+        document
+          .querySelectorAll(".account-item")
+          .forEach((el, i) => el.classList.toggle("active", i === id));
+        renderAccountDetail(id);
+      }
+
+      function renderAccountDetail(id) {
+        const a = accounts[id];
+        const el = document.getElementById("account-detail");
+        const healthColor =
+          a.label === "Healthy"
+            ? "var(--health-green)"
+            : a.label === "At Risk"
+              ? "var(--health-amber)"
+              : "var(--health-red)";
+        const healthBg =
+          a.label === "Healthy" ? "#E8F5EE" : a.label === "At Risk" ? "#FFF3E0" : "#FDECEC";
+
+        el.innerHTML = `
+    <div style="padding-bottom:24px;">
+      <!-- Header -->
+      <div style="background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:16px;">
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:16px;">
+          <div>
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+              <h2 style="font-size:18px; font-weight:700; color:var(--forest); font-family:var(--font-serif);">${a.name}</h2>
+              <span style="font-size:11px; font-weight:600; padding:3px 10px; border-radius:6px; background:${healthBg}; color:${healthColor}">${a.label}</span>
+            </div>
+            <p style="font-size:12px; color:var(--ink-muted);">${a.industry} · CSM: ${a.csm} · Last engagement: 2 days ago</p>
+          </div>
+          <div style="display:flex; gap:20px; text-align:center;">
+            <div><div style="font-size:22px; font-weight:700; color:${healthColor}">${a.health}</div><div style="font-size:10px; color:var(--ink-muted);">Health</div></div>
+            <div><div style="font-size:22px; font-weight:700; color:var(--forest)">$${(a.arr / 1000).toFixed(0)}K</div><div style="font-size:10px; color:var(--ink-muted);">ARR</div></div>
+            <div><div style="font-size:22px; font-weight:700; color:${a.renewal <= 30 ? "var(--health-red)" : "var(--forest)"}">${a.renewal}d</div><div style="font-size:10px; color:var(--ink-muted);">Renewal</div></div>
+            <div><div style="font-size:22px; font-weight:700; color:var(--forest)">${a.nps}</div><div style="font-size:10px; color:var(--ink-muted);">NPS</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:180px 1fr; gap:16px;">
+        <!-- Layer Nav -->
+        <div>
+          <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--ink-muted); margin-bottom:8px; padding-left:4px;">15 Layers</div>
+          <div class="layer-nav">
+            ${layers
+              .map(
+                (l) => `
+              <div class="layer-item ${state.layer === l.num ? "active" : ""}" onclick="switchLayer(${l.num})">
+                <span class="icon">${l.icon}</span>
+                <span class="num">${l.num}.</span>
+                <span>${l.name}</span>
+              </div>
+            `
+              )
+              .join("")}
+          </div>
+        </div>
+
+        <!-- Layer Content -->
+        <div>
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+            <span style="font-size:10px; font-weight:700; padding:3px 10px; border-radius:6px; background:var(--forest); color:var(--gold);">Layer ${state.layer}</span>
+            <h3 style="font-size:14px; font-weight:600; color:var(--forest); font-family:var(--font-serif);">${layers.find((l) => l.num === state.layer)?.name}</h3>
+          </div>
+          <div id="layer-content"></div>
+        </div>
+      </div>
+    </div>
+  `;
+        renderLayerContent(a);
+      }
+
+      function switchLayer(n) {
+        state.layer = n;
+        document
+          .querySelectorAll(".layer-item")
+          .forEach((el, i) => el.classList.toggle("active", i === n - 1));
+        document.querySelector("#account-detail h3").textContent = layers.find(
+          (l) => l.num === n
+        )?.name;
+        document.querySelector("#account-detail span").textContent = "Layer " + n;
+        renderLayerContent(accounts[state.account]);
+      }
+
+      function renderLayerContent(a) {
+        const container = document.getElementById("layer-content");
+        const l = state.layer;
+
+        if (l === 1) {
+          container.innerHTML = `
+      <div class="info-grid">
+        <div class="info-cell"><div class="info-label">Contract Start</div><div class="info-value">Jan 1, 2023</div></div>
+        <div class="info-cell"><div class="info-label">Renewal Date</div><div class="info-value ${a.renewal <= 30 ? "alert" : ""}">In ${a.renewal} days</div></div>
+        <div class="info-cell"><div class="info-label">ARR</div><div class="info-value">$${(a.arr / 1000).toFixed(0)}K</div></div>
+        <div class="info-cell"><div class="info-label">ACV</div><div class="info-value">$${(a.arr / 12 / 1000).toFixed(1)}K / mo</div></div>
+        <div class="info-cell"><div class="info-label">Health Score</div><div class="info-value">${a.health} / 100</div></div>
+        <div class="info-cell"><div class="info-label">Engagement Cadence</div><div class="info-value">Bi-weekly</div></div>
+        <div class="info-cell"><div class="info-label">Account Status</div><div class="info-value">${a.label === "Healthy" ? "Expansion" : "Renewal Risk"}</div></div>
+        <div class="info-cell"><div class="info-label">Region</div><div class="info-value">North America</div></div>
+        <div class="info-cell"><div class="info-label">Tier</div><div class="info-value">Enterprise</div></div>
+      </div>
+    `;
+        } else if (l === 2) {
+          container.innerHTML = `
+      <div class="info-grid">
+        <div class="info-cell"><div class="info-label">CSM</div><div class="info-value">${a.csm}</div></div>
+        <div class="info-cell"><div class="info-label">AE</div><div class="info-value">Jordan Kim</div></div>
+        <div class="info-cell"><div class="info-label">Solutions Architect</div><div class="info-value">Dev Patel</div></div>
+        <div class="info-cell"><div class="info-label">CSM ARR Load</div><div class="info-value">$1.2M total</div></div>
+        <div class="info-cell"><div class="info-label">At-Risk ARR</div><div class="info-value">$780K</div></div>
+        <div class="info-cell"><div class="info-label">Team Capacity</div><div class="info-value">87%</div></div>
+      </div>
+      <div class="section-note">${a.csm} manages 8 accounts totalling $1.2M ARR. 3 of those accounts are at risk or critical, representing a concentration risk for the team.</div>
+    `;
+        } else if (l === 3) {
+          container.innerHTML = `
+      <div class="info-grid">
+        <div class="info-cell"><div class="info-label">Business Model</div><div class="info-value">B2B SaaS</div></div>
+        <div class="info-cell"><div class="info-label">Market Position</div><div class="info-value">Market Leader</div></div>
+        <div class="info-cell"><div class="info-label">Digital Maturity</div><div class="info-value">Advanced</div></div>
+        <div class="info-cell"><div class="info-label">Cloud Strategy</div><div class="info-value">Hybrid</div></div>
+        <div class="info-cell"><div class="info-label">IT Complexity</div><div class="info-value">High</div></div>
+        <div class="info-cell"><div class="info-label">Data Classification</div><div class="info-value">Regulated (PII)</div></div>
+      </div>
+      <div class="section-note">Operating in a heavily regulated environment with significant legacy ERP dependencies. Cloud migration is a stated 3-year priority. Data sovereignty requirements constrain integration architecture choices.</div>
+    `;
+        } else if (l === 4) {
+          container.innerHTML = `
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        ${objectives
+          .map(
+            (obj) => `
+          <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px 16px;">
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:10px;">
+              <div style="font-size:12px; font-weight:600; color:var(--forest);">${obj.name}</div>
+              <span style="font-size:10px; padding:2px 8px; border-radius:6px; background:var(--paper-dark); color:var(--ink-muted);">${obj.driver}</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div style="flex:1; height:6px; background:var(--border); border-radius:3px; overflow:hidden;">
+                <div style="height:100%; border-radius:3px; width:${obj.progress}%; background:var(--forest-light);"></div>
+              </div>
+              <span style="font-size:12px; font-weight:600; color:var(--forest); width:30px; text-align:right;">${obj.progress}%</span>
+              <span style="font-size:10px; color:var(--ink-muted); width:60px; text-align:right;">${obj.target}</span>
+            </div>
+          </div>
+        `
+          )
+          .join("")}
+      </div>
+    `;
+        } else if (l === 5) {
+          const caps = [
+            { domain: "Data Integration", current: 3, target: 5, gap: 2, status: "In Progress" },
+            { domain: "API Management", current: 4, target: 5, gap: 1, status: "Nearly Done" },
+            { domain: "Security & Compliance", current: 2, target: 4, gap: 2, status: "Planning" },
+            { domain: "Analytics & BI", current: 1, target: 4, gap: 3, status: "Not Started" },
+            { domain: "Process Automation", current: 3, target: 5, gap: 2, status: "In Progress" },
+          ];
+          container.innerHTML = `
+      <div style="display:flex; flex-direction:column;">
+        ${caps
+          .map(
+            (cap) => `
+          <div class="cap-row">
+            <div class="cap-name">${cap.domain}</div>
+            <div class="cap-bars">
+              ${[1, 2, 3, 4, 5].map((n) => `<div class="cap-bar" style="background:${n <= cap.current ? "var(--forest)" : n <= cap.target ? "var(--forest-muted)" : "var(--border)"}; opacity:${n <= cap.current ? 1 : n <= cap.target ? 0.35 : 1};"></div>`).join("")}
+            </div>
+            <div class="cap-status">${cap.status}</div>
+          </div>
+        `
+          )
+          .join("")}
+      </div>
+    `;
+        } else if (l === 6) {
+          const streams = [
+            {
+              name: "Order Processing",
+              volume: "42K txns/day",
+              cycle: "4.2 hrs",
+              value: "$8.4M/mo",
+              csat: 72,
+            },
+            {
+              name: "Customer Onboarding",
+              volume: "120 / mo",
+              cycle: "8.5 days",
+              value: "$210K",
+              csat: 58,
+            },
+            {
+              name: "Support Resolution",
+              volume: "890 / mo",
+              cycle: "28 hrs",
+              value: "$180K",
+              csat: 61,
+            },
+          ];
+          container.innerHTML = `
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        ${streams
+          .map(
+            (s) => `
+          <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px 16px;">
+            <div style="font-size:12px; font-weight:600; color:var(--forest); margin-bottom:10px;">${s.name}</div>
+            <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:12px;">
+              <div><div style="font-size:10px; color:var(--ink-muted);">Volume</div><div style="font-size:12px; font-weight:600; color:var(--forest); margin-top:2px;">${s.volume}</div></div>
+              <div><div style="font-size:10px; color:var(--ink-muted);">Cycle Time</div><div style="font-size:12px; font-weight:600; color:var(--forest); margin-top:2px;">${s.cycle}</div></div>
+              <div><div style="font-size:10px; color:var(--ink-muted);">Business Value</div><div style="font-size:12px; font-weight:600; color:var(--forest); margin-top:2px;">${s.value}</div></div>
+              <div><div style="font-size:10px; color:var(--ink-muted);">CSAT</div><div style="font-size:12px; font-weight:600; color:var(--forest); margin-top:2px;">${s.csat}/100</div></div>
+            </div>
+          </div>
+        `
+          )
+          .join("")}
+      </div>
+    `;
+        } else if (l === 7) {
+          const apis = [
+            {
+              name: "Core REST API v4",
+              type: "REST",
+              health: a.apiHealth || 99.2,
+              sla: 99.9,
+              errors: 0.08,
+            },
+            { name: "Webhook Events Bus", type: "Webhook", health: 97.4, sla: 99.5, errors: 0.24 },
+            { name: "GraphQL Gateway", type: "GraphQL", health: 99.1, sla: 99.5, errors: 0.12 },
+            { name: "Legacy SOAP Adapter", type: "SOAP", health: 88.2, sla: 95.0, errors: 1.8 },
+          ];
+          container.innerHTML = `
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        ${apis
+          .map(
+            (api) => `
+          <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:12px 16px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:10px; padding:2px 6px; border-radius:4px; background:var(--paper-dark); color:var(--ink-muted); font-family:monospace;">${api.type}</span>
+                <span style="font-size:12px; font-weight:600; color:var(--forest);">${api.name}</span>
+              </div>
+              <span style="font-size:11px; font-weight:700; color:${api.health >= 99 ? "var(--health-green)" : api.health >= 95 ? "var(--health-amber)" : "var(--health-red)"}">${api.health}% up</span>
+            </div>
+            <div style="display:flex; gap:16px; font-size:11px; color:var(--ink-muted);">
+              <span>SLA: ${api.sla}%</span><span>Error rate: ${api.errors}%</span>
+            </div>
+          </div>
+        `
+          )
+          .join("")}
+      </div>
+    `;
+        } else if (l === 8) {
+          const metrics = [
+            {
+              name: "API Uptime",
+              current: a.apiHealth || 99.2,
+              target: 99.9,
+              warn: 99,
+              crit: 97,
+              unit: "%",
+            },
+            {
+              name: "Monthly Active Users",
+              current: 412,
+              target: 600,
+              warn: 400,
+              crit: 300,
+              unit: "",
+            },
+            {
+              name: "Feature Adoption Rate",
+              current: 38,
+              target: 70,
+              warn: 45,
+              crit: 30,
+              unit: "%",
+            },
+            { name: "Support CSAT", current: a.nps, target: 80, warn: 60, crit: 40, unit: "" },
+            {
+              name: "Avg Response Time",
+              current: 124,
+              target: 100,
+              warn: 200,
+              crit: 400,
+              unit: "ms",
+            },
+          ];
+          container.innerHTML = `
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        ${metrics
+          .map((m) => {
+            const pct = Math.min((m.current / m.target) * 100, 100);
+            const color =
+              m.current >= m.warn
+                ? "var(--health-green)"
+                : m.current >= m.crit
+                  ? "var(--health-amber)"
+                  : "var(--health-red)";
+            return `
+            <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:12px 16px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+                <span style="font-size:12px; font-weight:600; color:var(--forest);">${m.name}</span>
+                <span style="font-size:12px; font-weight:700; color:${color}">${m.current}${m.unit} <span style="font-size:10px; font-weight:400; color:var(--ink-muted);">/ ${m.target}${m.unit}</span></span>
+              </div>
+              <div style="height:5px; background:var(--border); border-radius:3px; overflow:hidden;">
+                <div style="height:100%; border-radius:3px; width:${pct}%; background:${color};"></div>
+              </div>
+            </div>
+          `;
+          })
+          .join("")}
+      </div>
+    `;
+        } else if (l === 9) {
+          const initiatives = [
+            {
+              name: "API Migration v3 → v4",
+              phase: "In Progress",
+              investment: 120000,
+              benefit: 240000,
+              status: "On Track",
+            },
+            {
+              name: "Platform SSO Rollout",
+              phase: "Planning",
+              investment: 45000,
+              benefit: 90000,
+              status: "On Track",
+            },
+            {
+              name: "Data Analytics Integration",
+              phase: "Blocked",
+              investment: 80000,
+              benefit: 200000,
+              status: "Blocked",
+            },
+          ];
+          container.innerHTML = `
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        ${initiatives
+          .map(
+            (init) => `
+          <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px 16px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+              <span style="font-size:12px; font-weight:600; color:var(--forest);">${init.name}</span>
+              <span style="font-size:10px; padding:2px 8px; border-radius:6px; background:${init.status === "Blocked" ? "#FDECEC" : "#E8F5EE"}; color:${init.status === "Blocked" ? "var(--health-red)" : "var(--health-green)"};">${init.status}</span>
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px;">
+              <div><div style="font-size:10px; color:var(--ink-muted);">Phase</div><div style="font-size:12px; font-weight:500; color:var(--forest); margin-top:2px;">${init.phase}</div></div>
+              <div><div style="font-size:10px; color:var(--ink-muted);">Investment</div><div style="font-size:12px; font-weight:500; color:var(--forest); margin-top:2px;">$${(init.investment / 1000).toFixed(0)}K</div></div>
+              <div><div style="font-size:10px; color:var(--ink-muted);">Annual Benefit</div><div style="font-size:12px; font-weight:500; color:var(--health-green); margin-top:2px;">$${(init.benefit / 1000).toFixed(0)}K</div></div>
+            </div>
+          </div>
+        `
+          )
+          .join("")}
+      </div>
+    `;
+        } else if (l === 10) {
+          container.innerHTML = `
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        ${risks
+          .map((risk) => {
+            const score = risk.impact * risk.prob;
+            const color =
+              score >= 60
+                ? "var(--health-red)"
+                : score >= 35
+                  ? "var(--health-amber)"
+                  : "var(--health-green)";
+            return `
+            <div class="risk-card">
+              <div class="risk-score" style="background:${color}22; color:${color};">${score}</div>
+              <div style="flex:1;">
+                <div class="risk-category">${risk.category}</div>
+                <div class="risk-desc">${risk.desc}</div>
+                <div class="risk-meta">Impact: <strong style="color:var(--forest)">${risk.impact}/10</strong> · Probability: <strong style="color:var(--forest)">${risk.prob}/10</strong></div>
+                <div style="margin-top:6px; padding:6px 8px; border-radius:6px; background:var(--paper-dark); font-size:11px; color:var(--ink-muted);">Mitigation: ${risk.mitigation}</div>
+              </div>
+            </div>
+          `;
+          })
+          .join("")}
+      </div>
+    `;
+        } else if (l === 11) {
+          const stakeholders = [
+            {
+              name: "James Whitmore",
+              role: "CTO",
+              outcome: "Zero unplanned downtime",
+              baseline: 3,
+              current: 1.2,
+              target: 0,
+              unit: "incidents/mo",
+            },
+            {
+              name: "Diane Reeves",
+              role: "VP Operations",
+              outcome: "25% cost reduction",
+              baseline: 100,
+              current: 82,
+              target: 75,
+              unit: "% baseline",
+            },
+            {
+              name: "Kevin Shah",
+              role: "Head of Engineering",
+              outcome: "API latency < 100ms",
+              baseline: 380,
+              current: 124,
+              target: 100,
+              unit: "ms",
+            },
+          ];
+          container.innerHTML = `
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        ${stakeholders
+          .map(
+            (s) => `
+          <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px 16px;">
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:10px;">
+              <div>
+                <div style="font-size:12px; font-weight:600; color:var(--forest);">${s.name}</div>
+                <div style="font-size:10px; color:var(--ink-muted);">${s.role}</div>
+              </div>
+              <span style="font-size:10px; padding:2px 8px; border-radius:6px; background:var(--paper-dark); color:var(--ink-muted);">${s.outcome}</span>
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; text-align:center;">
+              <div style="padding:8px; border-radius:6px; background:var(--paper-dark);">
+                <div style="font-size:10px; color:var(--ink-muted);">Baseline</div>
+                <div style="font-size:12px; font-weight:700; color:var(--forest); margin-top:2px;">${s.baseline} <span style="font-size:10px; font-weight:400;">${s.unit}</span></div>
+              </div>
+              <div style="padding:8px; border-radius:6px; background:var(--paper-dark);">
+                <div style="font-size:10px; color:var(--ink-muted);">Current</div>
+                <div style="font-size:12px; font-weight:700; color:var(--forest); margin-top:2px;">${s.current} <span style="font-size:10px; font-weight:400;">${s.unit}</span></div>
+              </div>
+              <div style="padding:8px; border-radius:6px; background:var(--paper-dark);">
+                <div style="font-size:10px; color:var(--ink-muted);">Target</div>
+                <div style="font-size:12px; font-weight:700; color:var(--forest); margin-top:2px;">${s.target} <span style="font-size:10px; font-weight:400;">${s.unit}</span></div>
+              </div>
+            </div>
+          </div>
+        `
+          )
+          .join("")}
+      </div>
+    `;
+        } else if (l === 12) {
+          container.innerHTML = `
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        ${engagements
+          .map(
+            (e) => `
+          <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px 16px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:10px; font-weight:700; padding:2px 8px; border-radius:6px; background:var(--paper-dark); color:var(--forest);">${e.type}</span>
+                <span style="font-size:11px; color:var(--ink-muted);">${e.date}</span>
+              </div>
+              <span style="font-size:10px; padding:2px 8px; border-radius:6px; background:${e.sentiment === "Positive" ? "#E8F5EE" : e.sentiment === "Tense" ? "#FDECEC" : "var(--paper-dark)"}; color:${e.sentiment === "Positive" ? "var(--health-green)" : e.sentiment === "Tense" ? "var(--health-red)" : "var(--ink-muted)"};">${e.sentiment}</span>
+            </div>
+            <div style="font-size:12px; color:var(--forest); margin-bottom:4px;">${e.topics}</div>
+            <div style="font-size:10px; color:var(--ink-muted);">Attendees: ${e.attendees}</div>
+            <div style="font-size:10px; color:var(--gold); margin-top:4px;">→ ${e.next}</div>
+          </div>
+        `
+          )
+          .join("")}
+      </div>
+    `;
+        } else if (l === 13) {
+          container.innerHTML = `
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px 16px;">
+          <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--gold); margin-bottom:6px;">Executive Summary</div>
+          <div style="font-size:12px; line-height:1.6; color:var(--forest);">
+            ${a.name} is a ${a.label === "Healthy" ? "high-performing" : "high-risk"} enterprise account with ${a.renewal} days to renewal.
+            Primary focus areas: executive champion stabilization, API platform health, and usage re-engagement.
+            Expansion pipeline of $${(a.expansion / 1000).toFixed(0)}K identified pending health recovery.
+          </div>
+        </div>
+        <div class="info-grid">
+          <div class="info-cell"><div class="info-label">Account Plan</div><div class="info-value">v3 — Updated May 2025</div></div>
+          <div class="info-cell"><div class="info-label">Executive Sponsor (Us)</div><div class="info-value">Rachel Odom, VP CS</div></div>
+          <div class="info-cell"><div class="info-label">Executive Sponsor (Them)</div><div class="info-value">James Whitmore, CTO</div></div>
+          <div class="info-cell"><div class="info-label">Next QBR</div><div class="info-value">Jun 3, 2025</div></div>
+          <div class="info-cell"><div class="info-label">Success Milestones</div><div class="info-value">4 of 7 achieved</div></div>
+          <div class="info-cell"><div class="info-label">Renewal Confidence</div><div class="info-value">${a.label === "Critical" ? "Low" : a.label === "At Risk" ? "Medium" : "High"}</div></div>
+        </div>
+      </div>
+    `;
+        } else if (l === 14) {
+          container.innerHTML = `
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        ${tasks
+          .map(
+            (task) => `
+          <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:12px 16px; display:flex; align-items:flex-start; gap:10px;">
+            <div style="width:16px; height:16px; border-radius:4px; border:2px solid ${task.priority === "Critical" ? "var(--health-red)" : task.priority === "High" ? "var(--health-amber)" : "var(--border)"}; margin-top:2px; flex-shrink:0;"></div>
+            <div style="flex:1;">
+              <div style="font-size:12px; font-weight:600; color:var(--forest);">${task.title}</div>
+              <div style="font-size:10px; color:var(--ink-muted); margin-top:2px;">${task.owner} · Due: ${task.due} · Linked: ${task.linked}</div>
+            </div>
+            <span style="font-size:10px; padding:2px 8px; border-radius:6px; background:${task.priority === "Critical" ? "#FDECEC" : task.priority === "High" ? "#FFF3E0" : "var(--paper-dark)"}; color:${task.priority === "Critical" ? "var(--health-red)" : task.priority === "High" ? "var(--health-amber)" : "var(--ink-muted)"}; flex-shrink:0;">${task.priority}</span>
+          </div>
+        `
+          )
+          .join("")}
+      </div>
+    `;
+        } else if (l === 15) {
+          const insights = [
+            {
+              type: "Risk",
+              confidence: 92,
+              text: `${a.name} exhibits a churn signal pattern: executive sponsor departure + usage decline + open critical risks. Historical similarity: 78% of accounts with this pattern churned within 90 days without intervention.`,
+              action: "Schedule executive QBR within 7 days. Involve your VP of CS.",
+              linked: ["Risk Register", "Engagement Log", "Platform Health"],
+            },
+            {
+              type: "Opportunity",
+              confidence: 81,
+              text: `API v4 migration completion will unlock the Analytics module. ${a.name} has expressed strong interest in BI capabilities. Expansion opportunity of $${(a.expansion / 1000).toFixed(0)}K identified.`,
+              action:
+                "Include Analytics roadmap demo in next QBR. Tie to cost reduction objective.",
+              linked: ["API Portfolio", "Strategic Objectives", "Initiatives"],
+            },
+            {
+              type: "Pattern",
+              confidence: 74,
+              text: "Support ticket volume has increased 34% over 60 days while CSAT has declined 11 points. This precedes a relationship depth drop in similar accounts.",
+              action: "Assign TAM to shadow 3 open tickets. Identify systemic cause.",
+              linked: ["Platform Health", "Stakeholder Outcomes"],
+            },
+          ];
+          container.innerHTML = `
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div style="display:flex; align-items:center; gap:8px; padding:10px 12px; border-radius:8px; background:#1A3A2A11; border:1px solid #1A3A2A22;">
+          <span style="color:var(--gold)">✦</span>
+          <span style="font-size:11px; color:var(--forest);"><strong>Twin Workbench Active</strong> — AI is operating on full account context: 15 layers, ${a.name} history, team patterns.</span>
+        </div>
+        ${insights
+          .map(
+            (ins) => `
+          <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px 16px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+              <span style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; padding:2px 8px; border-radius:6px; background:${ins.type === "Risk" ? "#FDECEC" : ins.type === "Opportunity" ? "#E8F5EE" : "#E8F0FF"}; color:${ins.type === "Risk" ? "var(--health-red)" : ins.type === "Opportunity" ? "var(--health-green)" : "#3B5BDB"};">${ins.type}</span>
+              <span style="font-size:10px; font-weight:600; color:var(--gold);">${ins.confidence}% confidence</span>
+            </div>
+            <div style="font-size:12px; line-height:1.6; color:var(--forest); margin-bottom:10px;">${ins.text}</div>
+            <div style="padding:8px 10px; border-radius:6px; background:var(--forest); color:var(--paper); font-size:11px; line-height:1.5;">
+              <span style="color:var(--gold); font-weight:700; text-transform:uppercase; font-size:9px; letter-spacing:0.5px;">Recommended Action</span><br>
+              ${ins.action}
+            </div>
+            <div style="display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;">
+              ${ins.linked.map((l) => `<span style="font-size:10px; padding:2px 6px; border-radius:4px; background:var(--paper-dark); color:var(--ink-muted);">${l}</span>`).join("")}
+            </div>
+          </div>
+        `
+          )
+          .join("")}
+      </div>
+    `;
+        } else {
+          container.innerHTML = `<div class="section-note">Layer ${l} content would render here based on the selected account's spine data.</div>`;
+        }
+      }
+
+      // ===== TWIN CHAT =====
+      function sendTwin() {
+        const input = document.getElementById("twin-input");
+        const text = input.value.trim();
+        if (!text) return;
+        const msgs = document.getElementById("twin-messages");
+        msgs.innerHTML += `<div class="msg user">${escapeHtml(text)}</div>`;
+        input.value = "";
+        msgs.scrollTop = msgs.scrollHeight;
+        setTimeout(() => {
+          msgs.innerHTML += `<div class="msg ai"><div class="msg-context">CTX_ACCOUNT_SUCCESS · Twin response</div>I've analyzed your request across the full spine projection. Based on current signals and historical patterns, here are my recommendations. Would you like me to draft the specific actions for approval?</div>`;
+          msgs.scrollTop = msgs.scrollHeight;
+        }, 600);
+      }
+
+      function sendQuick(text) {
+        document.getElementById("twin-input").value = text;
+        sendTwin();
+      }
+
+      function escapeHtml(text) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+      }
+    </script>
+  </body>
+</html>

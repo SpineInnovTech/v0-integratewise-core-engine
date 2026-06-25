@@ -1,0 +1,44 @@
+name = "integratewise-billing"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Secrets from Cloudflare Secrets Store — replace 1fd83fc5881e4cd296ae3c2fbe80693c (see docs/SECRETS_STORE_SETUP.md)
+[[secrets_store_secrets]]
+binding = "SUPABASE_URL"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SUPABASE_URL"
+
+[[secrets_store_secrets]]
+binding = "SUPABASE_SERVICE_KEY"
+store_id = "1fd83fc5881e4cd296ae3c2fbe80693c"
+secret_name = "SUPABASE_SERVICE_KEY"
+
+[[kv_namespaces]]
+binding = "WEBHOOK_REPLAY"
+id = "5f0718b2fb7048cf97a077f9787651ee"
+
+[vars]
+WEBHOOK_REPLAY_TTL_SECONDS = "86400"
+
+[env.staging]
+name = "integratewise-billing-staging"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+[env.production]
+name = "integratewise-billing"
+account_id = "a1bbbb12a32cdbb68dd170b09fe8b5f3"
+
+[dev]
+inspector_port = 9243
+port = 8783
+
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+[observability.logs]
+enabled = true
+invocation_logs = true
+head_sampling_rate = 1
