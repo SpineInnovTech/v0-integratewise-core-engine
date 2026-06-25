@@ -1,0 +1,22 @@
+# Architectural Correction: Restore Next.js Production Deployment Sources
+
+Cease all development, refactoring, and token mapping inside the local Vite + React workspace. The local repository is using an incorrect framework scaffold. The live, functional Continuity Bridge OS running on Vercel is a Next.js application utilizing server components and static chunk paths.
+
+## 1. Locate and Extract the Authoritative Next.js Source
+- Inspect the local workspace environment for the original `FRONTEND` deployment zip asset block (`FRONTEND_1782166538252.zip` or similar attached asset path).
+- If the archive is found locally, create a clean directory at `apps/web-next` and extract the entire Next.js multi-directory project structure into it.
+- If the archive is missing from the active path, pull the complete, un-truncated file tree straight from the Vercel deployment pipeline metadata linked to Project ID `prj_xYIMx4rNKkkdPtDDTVugGmvSyjlz`.
+
+## 2. Re-Scaffold the Local `apps/web` Directory
+- Backup and safely discard the existing, flat Vite `src/` component silos that lack the workspace shell and command palettes.
+- Move the extracted Next.js production project file structure into the primary `apps/web` directory workspace slot.
+- Verify that the target directory contains the authoritative Next.js app routing layers:
+  - `src/app/page.tsx` (The real 4-Pillars landing canvas)
+  - `src/app/auth/login/page.tsx` & `/sign-up/page.tsx` (Clerk/Auth entry paths)
+  - `src/app/components/twin-ui/` (The 14 custom twin components)
+  - `src/app/components/workspace-shell.tsx` & `intelligence-overlay.tsx` (The global ⌘K/⌘J layout structures)
+
+## 3. Clear Package Tree & Run Local Next Dependency Compilations
+- Clean the local node cache and update the root `package.json` file to point its workspace engine to the Next.js runtime execution configurations.
+- Run `npm install` or `pnpm install` across the monorepo root to link the D1 database bindings, Supabase relational spine, and active MCP gateway clients straight to the newly restored Next.js frontend layer.
+- Execute a clean local development server build pass (`npm run dev`) and verify that the console compiles without framework mismatch errors.
