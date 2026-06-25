@@ -9,6 +9,19 @@ import {
 import type { ModuleId, NavGroup, SchemaGroup } from "./types";
 
 import { ContextualMemoryView } from "@/components/views/contextual-memory-view";
+import { CommandCenterView } from "@/components/views/command-center-view";
+import { CockpitView } from "@/components/views/cockpit-view";
+import { IQHubView } from "@/components/views/iq-hub-view";
+import { GovernanceView } from "@/components/views/governance-view";
+import { CSAccountsView } from "@/components/views/cs-accounts-view";
+import { CSContactsView } from "@/components/views/cs-contacts-view";
+import { CSMeetingsView } from "@/components/views/cs-meetings-view";
+import { ReleaseControlView } from "@/components/views/release-control-view";
+import { InsightsView } from "@/components/views/insights-view";
+import { LoaderView } from "@/components/views/loader-view";
+import { ProfileView } from "@/components/views/profile-view";
+import { SpendInsightsView } from "@/components/views/spend-insights-view";
+import { TodayView } from "@/components/views/today-view";
 import { LeadsView } from "@/components/views/leads-view";
 import { PipelineView } from "@/components/views/pipeline-view";
 import { DealsView } from "@/components/views/deals-view";
@@ -85,6 +98,20 @@ export const MODULE_REGISTRY: Record<ModuleId, ModuleDef> = {
   integrations: { id: "integrations", label: "Integrations", icon: Webhook, path: "/integrations", group: "System", requiredSchema: ["platform"], Component: IntegrationsView },
   admin: { id: "admin", label: "Admin Console", icon: Shield, path: "/admin", group: "System", requiredSchema: ["platform"], Component: AdminModule },
   settings: { id: "settings", label: "Settings", icon: Settings, path: "/settings", group: "System", Component: SettingsView },
+  "command-center": { id: "command-center", label: "Command Center", icon: Home, path: "/command-center", group: "Workspace", Component: CommandCenterView },
+  cockpit: { id: "cockpit", label: "Cockpit", icon: Brain, path: "/cockpit", group: "Workspace", Component: CockpitView },
+  "iq-hub": { id: "iq-hub", label: "IQ Hub", icon: Brain, path: "/iq-hub", group: "Knowledge", Component: IQHubView },
+  governance: { id: "governance", label: "Governance", icon: Shield, path: "/governance", group: "System", Component: GovernanceView },
+  "cs-accounts": { id: "cs-accounts", label: "CS Accounts", icon: Building2, path: "/cs-accounts", group: "Delivery", requiredSchema: ["company"], Component: CSAccountsView },
+  "cs-contacts": { id: "cs-contacts", label: "CS Contacts", icon: Users, path: "/cs-contacts", group: "Delivery", requiredSchema: ["person"], Component: CSContactsView },
+  "cs-meetings": { id: "cs-meetings", label: "CS Meetings", icon: CalendarDays, path: "/cs-meetings", group: "Delivery", requiredSchema: ["activity"], Component: CSMeetingsView },
+  "release-control": { id: "release-control", label: "Release Control", icon: GitBranch, path: "/release-control", group: "System", Component: ReleaseControlView },
+  insights: { id: "insights", label: "Insights", icon: BarChart3, path: "/insights", group: "Platform", Component: InsightsView },
+  loader: { id: "loader", label: "AI Loader", icon: Database, path: "/loader", group: "Platform", Component: LoaderView },
+  profile: { id: "profile", label: "Profile", icon: Settings, path: "/profile", group: "System", Component: ProfileView },
+  "spend-insights": { id: "spend-insights", label: "Spend Insights", icon: BarChart3, path: "/spend-insights", group: "Platform", Component: SpendInsightsView },
+  today: { id: "today", label: "Today", icon: Home, path: "/today", group: "Workspace", Component: TodayView },
+  "cs-account-detail": { id: "cs-account-detail", label: "Account Detail", icon: Building2, path: "/cs-account-detail", group: "Delivery" },
 };
 
 export const NAV_GROUP_ORDER: NavGroup[] = [

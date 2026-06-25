@@ -81,7 +81,21 @@ export type ModuleId =
   | "website"
   | "integrations"
   | "admin"
-  | "settings";
+  | "settings"
+  | "cockpit"
+  | "iq-hub"
+  | "governance"
+  | "command-center"
+  | "cs-accounts"
+  | "cs-contacts"
+  | "cs-meetings"
+  | "release-control"
+  | "insights"
+  | "loader"
+  | "profile"
+  | "cs-account-detail"
+  | "spend-insights"
+  | "today";
 
 /** Sidebar grouping for the derived nav. */
 export type NavGroup =

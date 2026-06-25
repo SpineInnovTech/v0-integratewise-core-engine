@@ -20,6 +20,8 @@ import AuthSignUpSuccessPage from "@/pages/auth/sign-up-success/index";
 import AuthErrorPage from "@/pages/auth/error/index";
 import NotFound from "@/pages/not-found";
 import LandingPage from "@/pages/landing/index";
+import PricingPage from "@/pages/pricing/index";
+import { CommandCenterView } from "@/components/views/command-center-view";
 
 const queryClient = new QueryClient();
 
@@ -42,7 +44,20 @@ function KnowledgeCategoryRoute() {
 function WorkspaceRoutes() {
   return (
     <Switch>
-      <Route path="/" component={RoleDashboard} />
+      <Route path="/" component={CommandCenterView} />
+      <Route path="/command-center" component={CommandCenterView} />
+      <Route path="/cockpit" component={() => <ModuleHost id="cockpit" />} />
+      <Route path="/iq-hub" component={() => <ModuleHost id="iq-hub" />} />
+      <Route path="/governance" component={() => <ModuleHost id="governance" />} />
+      <Route path="/cs-accounts" component={() => <ModuleHost id="cs-accounts" />} />
+      <Route path="/cs-contacts" component={() => <ModuleHost id="cs-contacts" />} />
+      <Route path="/cs-meetings" component={() => <ModuleHost id="cs-meetings" />} />
+      <Route path="/release-control" component={() => <ModuleHost id="release-control" />} />
+      <Route path="/insights" component={() => <ModuleHost id="insights" />} />
+      <Route path="/loader" component={() => <ModuleHost id="loader" />} />
+      <Route path="/profile" component={() => <ModuleHost id="profile" />} />
+      <Route path="/spend-insights" component={() => <ModuleHost id="spend-insights" />} />
+      <Route path="/today" component={() => <ModuleHost id="today" />} />
       <Route path="/twin" component={TwinPage} />
       <Route path="/context" component={() => <ModuleHost id="context" />} />
       <Route path="/email" component={() => <ModuleHost id="email" />} />
@@ -83,6 +98,9 @@ function Router() {
       {/* Marketing landing page — bare, no shell */}
       <Route path="/" component={LandingPage} />
 
+      {/* Marketing pages — bare, no shell */}
+      <Route path="/pricing" component={PricingPage} />
+
       {/* Auth surfaces — bare, no shell */}
       <Route path="/auth/login" component={AuthLoginPage} />
       <Route path="/auth/sign-up" component={AuthSignUpPage} />
@@ -90,6 +108,15 @@ function Router() {
       <Route path="/auth/error" component={AuthErrorPage} />
 
       {/* Workspace app lives under /app — shell stays mounted across navigation */}
+      <Route path="/app">
+        <WouterRouter base={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/app`}>
+          <SpineProvider>
+            <WorkspaceShell>
+              <WorkspaceRoutes />
+            </WorkspaceShell>
+          </SpineProvider>
+        </WouterRouter>
+      </Route>
       <Route path="/app/:rest*">
         <WouterRouter base={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/app`}>
           <SpineProvider>

@@ -7,6 +7,7 @@ import { groupModules } from "@/spine/derive-workspace";
 import { ALL_ROLES, CTX_CONFIG } from "@/spine/role-registry";
 import { ALL_INDUSTRIES, INDUSTRIES } from "@/spine/industry-registry";
 import type { CTXEnum, Industry } from "@/spine/types";
+import { LayerSwitcher } from "@/components/workspace/layer-switcher";
 
 export function WorkspaceSidebar({ onNavigate }: { onNavigate?: () => void }) {
   const [pathname] = useLocation();
@@ -60,6 +61,9 @@ export function WorkspaceSidebar({ onNavigate }: { onNavigate?: () => void }) {
           </select>
         </label>
       </div>
+
+      {/* Layer switcher */}
+      <LayerSwitcher />
 
       {/* Derived nav */}
       <nav className="touch-pan-y flex-1 space-y-6 overflow-y-auto overscroll-contain px-4 py-6 custom-scrollbar">
