@@ -1,0 +1,327 @@
+Yes—and I would make this an explicit architectural principle because it's one of the biggest advantages of IntegrateWise.
+
+Instead of saying every frontend is a "product," define them as **projections with arbitrary feature composition**.
+
+---
+
+# Frontend Philosophy
+
+> **A frontend is simply a projection of the Continuity Bridge.**
+
+It does **not** need to expose every capability.
+
+It does **not** need to follow a predefined application.
+
+It can expose **any combination of features** that makes sense for its users.
+
+---
+
+# Feature Composition
+
+A frontend may contain **one feature**, **ten features**, or **hundreds of features**.
+
+Examples
+
+## Example 1
+
+```text
+Customer Dashboard
+
+✓ Accounts
+✓ Tasks
+```
+
+Nothing else.
+
+---
+
+## Example 2
+
+```text
+Executive Portal
+
+✓ KPIs
+✓ AI Insights
+✓ Approvals
+✓ Search
+```
+
+No CRM.
+
+No Tasks.
+
+No Connectors.
+
+---
+
+## Example 3
+
+```text
+Architecture Studio
+
+✓ MCP
+✓ Schemas
+✓ Connectors
+✓ Logs
+✓ AI
+```
+
+No Customer Success features.
+
+---
+
+## Example 4
+
+```text
+Meeting Assistant
+
+✓ Calendar
+
+✓ Email
+
+✓ AI Summary
+
+✓ Memory
+
+✓ Search
+```
+
+That's the entire application.
+
+---
+
+## Example 5
+
+```text
+Browser Extension
+
+✓ Entity Lookup
+
+✓ AI Explain
+
+✓ Notes
+```
+
+Nothing more.
+
+---
+
+## Example 6
+
+```text
+Mobile App
+
+✓ Notifications
+
+✓ Tasks
+
+✓ Health Score
+
+✓ Voice Twin
+```
+
+No dashboards.
+
+---
+
+# Features are Independent
+
+The backend exposes capabilities.
+
+The frontend chooses which ones to consume.
+
+```text
+Frontend
+
+Account Success
+
+──────────────
+
+Health
+
+Accounts
+
+Timeline
+
+Signals
+
+Tasks
+
+
+
+Executive
+
+──────────────
+
+KPIs
+
+Forecast
+
+Insights
+
+Approvals
+
+
+
+Developer
+
+──────────────
+
+Connectors
+
+Schemas
+
+Logs
+
+MCP
+
+
+
+Finance
+
+──────────────
+
+Invoices
+
+Revenue
+
+Forecast
+
+Collections
+```
+
+Every frontend is different.
+
+---
+
+# Random Feature Composition is Allowed
+
+There is **no requirement** that features belong together.
+
+A customer may ask for
+
+```text
+✓ Calendar
+
+✓ AI Chat
+
+✓ Documents
+
+✓ CRM Timeline
+```
+
+That's valid.
+
+Another customer may ask for
+
+```text
+✓ Memory
+
+✓ Search
+
+✓ Voice
+
+✓ Email
+```
+
+Also valid.
+
+Another may ask for
+
+```text
+✓ Tasks
+
+✓ Finance
+
+✓ MCP
+
+✓ Developer Logs
+```
+
+Still valid.
+
+The platform should support **arbitrary feature combinations**.
+
+---
+
+# Backend Doesn't Care
+
+The backend doesn't know it's serving
+
+* Account Success
+* BI
+* Executive
+* Mobile
+* Browser
+* White-label
+
+It simply exposes capabilities.
+
+The Projection Manifest determines what each frontend can access.
+
+---
+
+# Capability Selection
+
+Instead of
+
+```text
+Frontend
+      ↓
+Entire Backend
+```
+
+think
+
+```text
+Frontend
+      │
+      ▼
+Projection Manifest
+
+Accounts
+Tasks
+Memory
+Search
+AI
+Calendar
+
+      ▼
+
+Gateway
+
+      ▼
+
+Projection Facade
+
+      ▼
+
+Only those capabilities are assembled
+```
+
+---
+
+# Selling Model
+
+This is where IntegrateWise becomes powerful.
+
+You are **not selling applications**.
+
+You are selling **feature bundles**.
+
+Examples:
+
+* **Starter Pack:** Tasks + Calendar + AI Notes
+* **Customer Success Pack:** Accounts + Health + Signals + Timeline
+* **Executive Pack:** KPIs + Forecast + Insights + Approvals
+* **Developer Pack:** MCP + Connectors + Schema + Logs
+* **Architecture Pack:** Entity360 + Integrations + Governance
+* **Custom Pack:** Any combination the customer wants
+
+---
+
+## Constitutional Rule
+
+> **A frontend is a disposable projection. It may expose any arbitrary combination of capabilities. There is no fixed relationship between features, products, or screens. Feature composition is determined entirely by the Projection Manifest, while the backend remains unchanged.**
+
+I would add this as a **Platform Constitution** rule because it reinforces one of IntegrateWise's core strengths: **the backend is stable, while every frontend is just a configurable view assembled from the same underlying capabilities.**

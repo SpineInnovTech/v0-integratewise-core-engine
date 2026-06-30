@@ -1,0 +1,721 @@
+Given your final architecture and product direction, I would freeze the frontend ecosystem like this.
+
+IntegrateWise Continuity Bridge — Frontend Ecosystem
+
+                                FRONTENDS
+                                      │
+         ┌────────────────────────────┼────────────────────────────┐
+         │                            │                            │
+         ▼                            ▼                            ▼
+   Adaptive Workbench         Projection Apps            Embedded Experiences
+         │                            │                            │
+         ├──────────────┬─────────────┼──────────────┬────────────┤
+         ▼              ▼             ▼              ▼            ▼
+ Brainstorming     Account Success   Business BI   Executive    Personal
+ Human Layer          & TAM           Workspace     Workspace    Workspace
+
+         ▼              ▼             ▼              ▼            ▼
+ Customer Success   Architecture    Developer     Finance     Operations
+
+         ▼
+ AI Twin Workspace
+
+         ▼
+ Mobile App
+
+         ▼
+ Desktop App
+
+         ▼
+ Partner Portal
+
+         ▼
+ White-label Portal
+
+
+Every Frontend Gets Only Three Things
+
+1. Projection Manifest
+
+What this frontend can do
+
+
+Example
+
+projection: account-success
+
+navigation:
+widgets:
+commands:
+permissions:
+features:
+capabilities:
+
+
+No business logic.
+
+2. Gateway SDK
+
+sdk.projection.load(...)
+sdk.command.execute(...)
+sdk.search(...)
+sdk.stream(...)
+
+
+Only communication layer.
+
+Never
+
+fetch(...)
+Worker
+D1
+Connector
+Pipeline
+
+
+3. Design System
+
+Everything visual.
+
+Typography
+
+Spacing
+
+Cards
+
+Tables
+
+Buttons
+
+Charts
+
+Dialogs
+
+Forms
+
+Animations
+
+Icons
+
+Themes
+
+
+Frontend Categories
+
+1. Adaptive Workbench
+
+The main application.
+
+Used internally.
+
+Examples
+
+Customer Zero
+
+Founder
+
+Employees
+
+Contains
+
+Everything needed
+
+
+2. Projection Applications
+
+Products sold individually.
+
+Examples
+
+Account Success
+
+Business Intelligence
+
+Architecture Studio
+
+Developer Console
+
+Executive Workspace
+
+Finance Workspace
+
+Operations Workspace
+
+Personal Workspace
+
+Governance Workspace
+
+
+Each loads a different projection.
+
+3. Embedded Experiences
+
+Small applications.
+
+Examples
+
+Slack App
+
+Teams App
+
+Salesforce Widget
+
+HubSpot Widget
+
+Browser Extension
+
+Email Plugin
+
+Mobile Widget
+
+
+Very lightweight.
+
+4. Partner Applications
+
+OEM integrations.
+
+Partner Dashboard
+
+Consultant Portal
+
+Implementation Portal
+
+Marketplace Apps
+
+
+5. White-label Experiences
+
+Customer branded
+
+Partner branded
+
+Enterprise branded
+
+
+Same backend.
+
+Different branding.
+
+Customer Journey
+
+Small Company
+
+Buys only
+
+Account Success
+
+
+Backend usage
+
+25%
+
+
+Customer Success Team
+
+Buys
+
+Account Success
+
+Brainstorming
+
+
+Backend usage
+
+40%
+
+
+Enterprise
+
+Buys
+
+Account Success
+
+BI
+
+Executive
+
+Developer
+
+Architecture
+
+Twin
+
+
+Backend usage
+
+100%
+
+
+What Each Frontend Receives
+
+Instead of
+
+50 API calls
+
+
+it receives
+
+sdk.projection.load({
+    projection:"account-success"
+})
+
+
+returns
+
+Account Success Projection
+
+
+which already contains
+
+Accounts
+
+Health
+
+Timeline
+
+Signals
+
+Tasks
+
+Approvals
+
+Insights
+
+Commands
+
+Permissions
+
+
+Nothing else.
+
+Repository Structure
+
+apps/
+
+adaptive-workbench/
+│
+├── brainstorming/
+├── customer-zero/
+├── workspace/
+
+projection-account-success/
+projection-business-intelligence/
+projection-executive/
+projection-developer/
+projection-architecture/
+projection-finance/
+projection-operations/
+projection-personal/
+projection-governance/
+
+embedded-slack/
+embedded-salesforce/
+embedded-hubspot/
+embedded-browser/
+
+mobile/
+
+desktop/
+
+partner/
+
+white-label/
+
+
+Final Rule
+
+Every frontend follows the same contract:
+
+Frontend
+    │
+    ├── Projection Manifest
+    ├── Gateway SDK
+    └── Design System
+            │
+            ▼
+       IntegrateWise Gateway
+            │
+     Projection Facade
+            │
+     Continuity Bridge
+
+
+This aligns well with your product strategy because customers can buy individual projection applications (such as Account Success or Business Intelligence) without purchasing the entire platform, while all of them continue to run on the same shared backend, Adaptive Spine, governance, and Continuity Bridge. This gives you a single backend with multiple sellable products, rather than one monolithic application.Based on everything you've consolidated over the last two days, I would freeze the backend as follows. I would not add any more architectural layers beyond this.
+
+IntegrateWise Continuity Bridge v1.0 — Final Backend
+
+                           CUSTOMER ECOSYSTEM
+ CRM • Support • Finance • Engineering • AI • Storage • Custom APIs
+                                    │
+                                    ▼
+                         CONTINUITY BRIDGE (Layer 5)
+──────────────────────────────────────────────────────────────────────────────
+ Nango OAuth
+ Connector Pool
+ MCP Pool
+ Discovery
+ Webhooks
+ Change Capture
+ Schema AI
+ Normalization
+──────────────────────────────────────────────────────────────────────────────
+                                    │
+                                    ▼
+                          ADAPTIVE SPINE (Truth)
+──────────────────────────────────────────────────────────────────────────────
+ Entity360
+ Relationships
+ Goals
+ Metrics
+ Signals
+ Lineage
+ Audit
+──────────────────────────────────────────────────────────────────────────────
+                                    │
+                                    ▼
+                         CONTEXT ASSEMBLY ENGINE
+──────────────────────────────────────────────────────────────────────────────
+ Entity Resolution
+ Memory Retrieval
+ Capability Discovery
+ Tool Retrieval
+ Prompt Assembly
+ Evidence Retrieval
+ Context Optimization
+──────────────────────────────────────────────────────────────────────────────
+                                    │
+                                    ▼
+                           ADAPTIVE MEMORY
+──────────────────────────────────────────────────────────────────────────────
+ Personal
+ Work
+ Organization
+ Relationship
+ Twin
+ Promotion
+ Versioning
+ Decay
+──────────────────────────────────────────────────────────────────────────────
+                                    │
+                                    ▼
+                          CAPABILITY ENGINE
+──────────────────────────────────────────────────────────────────────────────
+ Customer Success
+ Sales
+ Finance
+ Operations
+ Productivity
+ Executive
+ Developer
+ Architecture
+──────────────────────────────────────────────────────────────────────────────
+                                    │
+                                    ▼
+                          GOVERNANCE ENGINE
+──────────────────────────────────────────────────────────────────────────────
+ Proposal
+ Policies
+ HITL
+ Evidence
+ Approval
+ Audit
+ Confidence
+ Escalation
+──────────────────────────────────────────────────────────────────────────────
+                                    │
+                                    ▼
+                         CAPABILITY RUNTIME
+──────────────────────────────────────────────────────────────────────────────
+ MCP Runtime
+ ADK Runtime
+ Agent Runtime
+ Workflow Runtime
+ Queue Runtime
+ Job Runtime
+──────────────────────────────────────────────────────────────────────────────
+                                    │
+                                    ▼
+                        PROJECTION FACADE LAYER
+──────────────────────────────────────────────────────────────────────────────
+ Workspace Facade
+ Customer Success Facade
+ Executive Facade
+ Developer Facade
+ Brainstorm Facade
+ Twin Facade
+ Embedded Facade
+ White Label Facade
+──────────────────────────────────────────────────────────────────────────────
+                                    │
+                                    ▼
+                           PROJECTION ENGINE
+──────────────────────────────────────────────────────────────────────────────
+ Capability Resolution
+ Layout Composition
+ Navigation Composition
+ Widget Composition
+ Command Composition
+ Permission Resolution
+──────────────────────────────────────────────────────────────────────────────
+                                    │
+                                    ▼
+                         PROJECTION REGISTRY
+──────────────────────────────────────────────────────────────────────────────
+ Workspace
+ CS
+ Executive
+ Developer
+ Finance
+ Governance
+ Personal
+ Architecture
+ Partner
+ White-label
+──────────────────────────────────────────────────────────────────────────────
+                                    │
+                                    ▼
+                         GATEWAY (ONLY DOOR)
+──────────────────────────────────────────────────────────────────────────────
+ JWT
+ Clerk
+ API Keys
+ Rate Limits
+ Quotas
+ Tenant Isolation
+ Audit
+ Streaming
+ REST
+ WebSocket
+ MCP
+──────────────────────────────────────────────────────────────────────────────
+                                    │
+                                    ▼
+                        FRONTENDS (REPLACEABLE)
+──────────────────────────────────────────────────────────────────────────────
+ Adaptive Workbench
+ Customer Success
+ Business Intelligence
+ Brainstorming
+ Twin
+ Desktop
+ Mobile
+ Partner Portal
+ Embedded Apps
+ White-label
+
+
+Infrastructure (Frozen)
+
+Cloudflare Workers
+Cloudflare D1
+Cloudflare KV
+Cloudflare R2
+Cloudflare Durable Objects
+Cloudflare Queues
+Cloudflare AI Gateway
+Cloudflare AI Search
+Cloudflare Vectorize
+Cloudflare Images
+Cloudflare Analytics
+Cloudflare WAF
+Cloudflare Access
+Cloudflare DNS
+Cloudflare Pages
+
+
+Nothing outside Cloudflare belongs to the product plane.
+
+Backend Service Groups
+
+Gateway
+
+Authentication
+
+Authorization
+
+Rate Limiting
+
+Tenant Isolation
+
+Streaming
+
+Routing
+
+Continuity Bridge
+
+Connectors
+
+OAuth
+
+Sync
+
+Webhooks
+
+Discovery
+
+MCP
+
+Schema AI
+
+Spine
+
+Entity360
+
+Relationships
+
+Signals
+
+Metrics
+
+Goals
+
+Audit
+
+Lineage
+
+Memory
+
+Personal
+
+Work
+
+Organization
+
+Relationship
+
+Twin
+
+Intelligence
+
+Think
+
+Act
+
+Govern
+
+Insights
+
+Predictions
+
+Context
+
+Recommendations
+
+Runtime
+
+Agents
+
+MCP
+
+ADK
+
+Workflows
+
+Jobs
+
+Queues
+
+Projection
+
+Projection Facades
+
+Projection Engine
+
+Projection Registry
+
+Dependency Direction (Locked)
+
+Frontend
+        ↓
+Gateway SDK
+        ↓
+Gateway
+        ↓
+Projection Facades
+        ↓
+Capability Engine
+        ↓
+Capability Runtime
+        ↓
+Adaptive Spine
+        ↓
+Cloudflare Infrastructure
+
+
+This dependency direction should never be violated.
+
+Backend Responsibilities
+
+The backend owns:
+
+Authentication
+
+Authorization
+
+Business Logic
+
+Entity Resolution
+
+Memory
+
+AI
+
+Governance
+
+Permissions
+
+Context
+
+Search
+
+Signals
+
+Workflows
+
+Connectors
+
+Projection Assembly
+
+State
+
+Audit
+
+Streaming
+
+The frontend owns none of these.
+
+Frontend Contract
+
+Every frontend receives exactly one projection.
+
+const projection = await sdk.projection.load({
+  projection: "workspace",
+  tenantId,
+  userId,
+  role,
+  device,
+});
+
+
+The frontend renders the returned projection. It never orchestrates backend services or composes business data.
+
+Final Principles
+
+One Gateway — all clients communicate through a single gateway.
+
+One Spine — canonical business truth lives in the Adaptive Spine.
+
+One Projection Contract — frontends consume projections, not services.
+
+Projection Facades — compose capabilities into frontend-ready views.
+
+Replaceable Frontends — any UI can be swapped without backend changes.
+
+Cloudflare-only Product Plane — all core infrastructure remains on Cloudflare.
+
+Backend Owns Intelligence — AI, memory, governance, and business logic stay server-side.
+
+Frontend Owns Presentation — UI renders data and handles interaction only.
+
+With this, the backend architecture is effectively frozen. Future work should focus on implementing capabilities and projections rather than introducing new foundational layers.

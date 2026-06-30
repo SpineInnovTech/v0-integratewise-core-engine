@@ -1,4 +1,4 @@
-import { Switch, Route, Router as WouterRouter, useParams } from "wouter";
+import { Switch, Route, Router as WouterRouter, useParams, Redirect } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
@@ -7,20 +7,16 @@ import { PlatformProvider } from "@/platform/platform-context";
 import { SpineProvider } from "@/spine/spine-context";
 import { WorkspaceShell } from "@/components/workspace/workspace-shell";
 import { ModuleHost } from "@/components/workspace/module-host";
-import { RoleDashboard } from "@/components/workspace/role-dashboard";
 import { TwinPage } from "@/components/twin-ui/twin-page";
 
 import { LeadDetailView } from "@/components/views/lead-detail-view";
 import { ClientDetailView } from "@/components/views/client-detail-view";
 
-// Auth pages render bare (outside the persistent shell)
 import AuthLoginPage from "@/pages/auth/login/index";
 import AuthSignUpPage from "@/pages/auth/sign-up/index";
 import AuthSignUpSuccessPage from "@/pages/auth/sign-up-success/index";
 import AuthErrorPage from "@/pages/auth/error/index";
 import NotFound from "@/pages/not-found";
-import LandingPage from "@/pages/landing/index";
-import PricingPage from "@/pages/pricing/index";
 import { CommandCenterView } from "@/components/views/command-center-view";
 
 const queryClient = new QueryClient();
@@ -40,7 +36,7 @@ function KnowledgeCategoryRoute() {
   return <ModuleHost id="knowledge" category={category || ""} />;
 }
 
-/** Routes rendered inside the persistent workspace shell. */
+/** All routes rendered inside the persistent workspace shell. */
 function WorkspaceRoutes() {
   return (
     <Switch>
@@ -50,6 +46,7 @@ function WorkspaceRoutes() {
       <Route path="/iq-hub" component={() => <ModuleHost id="iq-hub" />} />
       <Route path="/governance" component={() => <ModuleHost id="governance" />} />
       <Route path="/cs-accounts" component={() => <ModuleHost id="cs-accounts" />} />
+      <Route path="/cs-accounts/:id" component={() => <ModuleHost id="cs-account-detail" />} />
       <Route path="/cs-contacts" component={() => <ModuleHost id="cs-contacts" />} />
       <Route path="/cs-meetings" component={() => <ModuleHost id="cs-meetings" />} />
       <Route path="/release-control" component={() => <ModuleHost id="release-control" />} />
@@ -92,43 +89,27 @@ function WorkspaceRoutes() {
   );
 }
 
+/**
+ * Customer Zero is an internal ops surface — it opens directly into the workspace.
+ * No marketing gate. Auth routes are bare; everything else is the workspace shell.
+ */
 function Router() {
   return (
     <Switch>
-      {/* Marketing landing page — bare, no shell */}
-      <Route path="/" component={LandingPage} />
-
-      {/* Marketing pages — bare, no shell */}
-      <Route path="/pricing" component={PricingPage} />
-
       {/* Auth surfaces — bare, no shell */}
       <Route path="/auth/login" component={AuthLoginPage} />
       <Route path="/auth/sign-up" component={AuthSignUpPage} />
       <Route path="/auth/sign-up-success" component={AuthSignUpSuccessPage} />
       <Route path="/auth/error" component={AuthErrorPage} />
 
-      {/* Workspace app lives under /app — shell stays mounted across navigation */}
-      <Route path="/app">
-        <WouterRouter base={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/app`}>
-          <SpineProvider>
-            <WorkspaceShell>
-              <WorkspaceRoutes />
-            </WorkspaceShell>
-          </SpineProvider>
-        </WouterRouter>
+      {/* Workspace — the whole app. Shell stays mounted across navigation. */}
+      <Route>
+        <SpineProvider>
+          <WorkspaceShell>
+            <WorkspaceRoutes />
+          </WorkspaceShell>
+        </SpineProvider>
       </Route>
-      <Route path="/app/:rest*">
-        <WouterRouter base={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/app`}>
-          <SpineProvider>
-            <WorkspaceShell>
-              <WorkspaceRoutes />
-            </WorkspaceShell>
-          </SpineProvider>
-        </WouterRouter>
-      </Route>
-
-      {/* Fallback */}
-      <Route component={NotFound} />
     </Switch>
   );
 }

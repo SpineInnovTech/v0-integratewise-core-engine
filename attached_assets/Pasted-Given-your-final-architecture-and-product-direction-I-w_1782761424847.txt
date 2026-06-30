@@ -1,0 +1,393 @@
+Given your final architecture and product direction, I would freeze the **frontend ecosystem** like this.
+
+# IntegrateWise Continuity Bridge — Frontend Ecosystem
+
+```
+                                FRONTENDS
+                                      │
+         ┌────────────────────────────┼────────────────────────────┐
+         │                            │                            │
+         ▼                            ▼                            ▼
+   Adaptive Workbench         Projection Apps            Embedded Experiences
+         │                            │                            │
+         ├──────────────┬─────────────┼──────────────┬────────────┤
+         ▼              ▼             ▼              ▼            ▼
+ Brainstorming     Account Success   Business BI   Executive    Personal
+ Human Layer          & TAM           Workspace     Workspace    Workspace
+
+         ▼              ▼             ▼              ▼            ▼
+ Customer Success   Architecture    Developer     Finance     Operations
+
+         ▼
+ AI Twin Workspace
+
+         ▼
+ Mobile App
+
+         ▼
+ Desktop App
+
+         ▼
+ Partner Portal
+
+         ▼
+ White-label Portal
+```
+
+---
+
+# Every Frontend Gets Only Three Things
+
+## 1. Projection Manifest
+
+```text
+What this frontend can do
+```
+
+Example
+
+```yaml
+projection: account-success
+
+navigation:
+widgets:
+commands:
+permissions:
+features:
+capabilities:
+```
+
+No business logic.
+
+---
+
+## 2. Gateway SDK
+
+```typescript
+sdk.projection.load(...)
+sdk.command.execute(...)
+sdk.search(...)
+sdk.stream(...)
+```
+
+Only communication layer.
+
+Never
+
+```
+fetch(...)
+Worker
+D1
+Connector
+Pipeline
+```
+
+---
+
+## 3. Design System
+
+Everything visual.
+
+```
+Typography
+
+Spacing
+
+Cards
+
+Tables
+
+Buttons
+
+Charts
+
+Dialogs
+
+Forms
+
+Animations
+
+Icons
+
+Themes
+```
+
+---
+
+# Frontend Categories
+
+## 1. Adaptive Workbench
+
+The main application.
+
+Used internally.
+
+Examples
+
+* Customer Zero
+* Founder
+* Employees
+
+Contains
+
+```
+Everything needed
+```
+
+---
+
+## 2. Projection Applications
+
+Products sold individually.
+
+Examples
+
+```
+Account Success
+
+Business Intelligence
+
+Architecture Studio
+
+Developer Console
+
+Executive Workspace
+
+Finance Workspace
+
+Operations Workspace
+
+Personal Workspace
+
+Governance Workspace
+```
+
+Each loads a different projection.
+
+---
+
+## 3. Embedded Experiences
+
+Small applications.
+
+Examples
+
+```
+Slack App
+
+Teams App
+
+Salesforce Widget
+
+HubSpot Widget
+
+Browser Extension
+
+Email Plugin
+
+Mobile Widget
+```
+
+Very lightweight.
+
+---
+
+## 4. Partner Applications
+
+OEM integrations.
+
+```
+Partner Dashboard
+
+Consultant Portal
+
+Implementation Portal
+
+Marketplace Apps
+```
+
+---
+
+## 5. White-label Experiences
+
+```
+Customer branded
+
+Partner branded
+
+Enterprise branded
+```
+
+Same backend.
+
+Different branding.
+
+---
+
+# Customer Journey
+
+### Small Company
+
+Buys only
+
+```
+Account Success
+```
+
+Backend usage
+
+```
+25%
+```
+
+---
+
+### Customer Success Team
+
+Buys
+
+```
+Account Success
+
+Brainstorming
+```
+
+Backend usage
+
+```
+40%
+```
+
+---
+
+### Enterprise
+
+Buys
+
+```
+Account Success
+
+BI
+
+Executive
+
+Developer
+
+Architecture
+
+Twin
+```
+
+Backend usage
+
+```
+100%
+```
+
+---
+
+# What Each Frontend Receives
+
+Instead of
+
+```
+50 API calls
+```
+
+it receives
+
+```typescript
+sdk.projection.load({
+    projection:"account-success"
+})
+```
+
+returns
+
+```text
+Account Success Projection
+```
+
+which already contains
+
+```
+Accounts
+
+Health
+
+Timeline
+
+Signals
+
+Tasks
+
+Approvals
+
+Insights
+
+Commands
+
+Permissions
+```
+
+Nothing else.
+
+---
+
+# Repository Structure
+
+```
+apps/
+
+adaptive-workbench/
+│
+├── brainstorming/
+├── customer-zero/
+├── workspace/
+
+projection-account-success/
+projection-business-intelligence/
+projection-executive/
+projection-developer/
+projection-architecture/
+projection-finance/
+projection-operations/
+projection-personal/
+projection-governance/
+
+embedded-slack/
+embedded-salesforce/
+embedded-hubspot/
+embedded-browser/
+
+mobile/
+
+desktop/
+
+partner/
+
+white-label/
+```
+
+---
+
+# Final Rule
+
+Every frontend follows the same contract:
+
+```
+Frontend
+    │
+    ├── Projection Manifest
+    ├── Gateway SDK
+    └── Design System
+            │
+            ▼
+       IntegrateWise Gateway
+            │
+     Projection Facade
+            │
+     Continuity Bridge
+```
+
+This aligns well with your product strategy because customers can buy **individual projection applications** (such as Account Success or Business Intelligence) without purchasing the entire platform, while all of them continue to run on the same shared backend, Adaptive Spine, governance, and Continuity Bridge. This gives you a single backend with multiple sellable products, rather than one monolithic application.
